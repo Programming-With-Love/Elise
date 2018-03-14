@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ironhand-analyzer" />
+        <module name="ironhand-common" />
+        <module name="ironhand-downloader" />
+        <module name="ironhand-schedule" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ironhand-analyzer" target="1.8" />
+      <module name="ironhand-build" target="1.8" />
+      <module name="ironhand-common" target="1.8" />
+      <module name="ironhand-downloader" target="1.8" />
+      <module name="ironhand-schedule" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

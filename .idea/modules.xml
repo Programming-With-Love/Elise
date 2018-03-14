@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ironhand-analyzer/ironhand-analyzer.iml" filepath="$PROJECT_DIR$/ironhand-analyzer/ironhand-analyzer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ironhand-build.iml" filepath="$PROJECT_DIR$/ironhand-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ironhand-common/ironhand-common.iml" filepath="$PROJECT_DIR$/ironhand-common/ironhand-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ironhand-downloader/ironhand-downloader.iml" filepath="$PROJECT_DIR$/ironhand-downloader/ironhand-downloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ironhand-schedule/ironhand-schedule.iml" filepath="$PROJECT_DIR$/ironhand-schedule/ironhand-schedule.iml" />
+    </modules>
+  </component>
+</project>
