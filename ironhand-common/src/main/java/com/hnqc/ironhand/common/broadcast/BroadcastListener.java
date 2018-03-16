@@ -1,23 +1,26 @@
-package com.hnqc.ironhand.common.message;
+package com.hnqc.ironhand.common.broadcast;
 
+import com.hnqc.ironhand.common.pojo.message.BroadcastMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-
-import java.util.concurrent.CountDownLatch;
 
 public class BroadcastListener {
     private String groupId;
     private String topic = "broadcast";
-    public final static CountDownLatch latch = new CountDownLatch(1);
+    private Handler handler;
 
-    public BroadcastListener(String groupId) {
+    public interface Handler {
+        void handle(BroadcastMessage message);
+    }
+
+    public BroadcastListener(String groupId, Handler handler) {
         this.groupId = groupId;
+        this.handler = handler;
     }
 
     @KafkaListener(topics = "#{__listener.topic}", groupId = "#{__listener.groupId}")
-    public void listen(ConsumerRecord<String, String> record) {
-        System.out.println(groupId+"组收到："+record.value());
-        latch.countDown();
+    public void listen(ConsumerRecord<Integer, BroadcastMessage> record) {
+        this.handler.handle(record.value());
     }
 
     public String getGroupId() {

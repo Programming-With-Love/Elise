@@ -1,15 +1,13 @@
 package com.hnqc.ironhand.common.pojo;
 
-import com.hnqc.ironhand.common.pojo.entity.UrlEntry;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SeedData {
-    private Integer id;
-    private List<UrlEntry> html = new ArrayList<>();
-    private List<UrlEntry> js = new ArrayList<>();
-    private List<UrlEntry> img = new ArrayList<>();
+    private List<UrlEntry> html;
+    private List<UrlEntry> js;
+    private List<UrlEntry> img;
 
     public List<UrlEntry> getHtml() {
         return html;
@@ -35,11 +33,22 @@ public class SeedData {
         this.img = img;
     }
 
-    public Integer getId() {
-        return id;
+    private void add(List<UrlEntry> list, UrlEntry... entry) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        list.addAll(Arrays.asList(entry));
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void addToHtml(UrlEntry... entry) {
+        add(html, entry);
+    }
+
+    public void addToJs(UrlEntry... entries) {
+        add(js, entries);
+    }
+
+    public void addToImg(UrlEntry... entries) {
+        add(img, entries);
     }
 }

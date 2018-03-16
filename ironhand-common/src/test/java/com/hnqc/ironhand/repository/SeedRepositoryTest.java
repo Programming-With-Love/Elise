@@ -1,11 +1,9 @@
 package com.hnqc.ironhand.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hnqc.ironhand.common.CommonApplication;
 import com.hnqc.ironhand.common.pojo.SeedData;
-import com.hnqc.ironhand.common.pojo.entity.UrlEntry;
 import com.hnqc.ironhand.common.pojo.entity.Seed;
+import com.hnqc.ironhand.common.pojo.UrlEntry;
 import com.hnqc.ironhand.common.repository.SeedRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,12 +37,7 @@ public class SeedRepositoryTest {
         List<UrlEntry> html = new ArrayList<>();
         html.add(new UrlEntry("name", "value"));
         seedData.setHtml(html);
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            seed.setData(objectMapper.writeValueAsString(seedData));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        seed.setData(seedData);
         entityManager.persist(seed);
     }
 
