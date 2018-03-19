@@ -1,17 +1,15 @@
-package com.hnqc.ironhand.schedule.task;
+package com.hnqc.ironhand.analyzer;
 
-import com.hnqc.ironhand.common.pojo.message.TaskMessage;
+import com.hnqc.ironhand.common.pojo.entity.Seed;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
 
-@Component
-public class TaskListener {
-    private String groupId = "task";
-    private String topic = "task";
+public class AnalyzerListener {
+    private String groupId = "analyzer";
+    private String topic = "analyzer";
 
     @KafkaListener(topics = "#{__listener.topic}", groupId = "#{__listener.groupId}")
-    public void listen(ConsumerRecord<Integer, TaskMessage> record) {
+    public void listen(ConsumerRecord<Integer, Seed> record) {
 
     }
 

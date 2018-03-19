@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.schedule.task;
+package com.hnqc.ironhand.common.sender;
 
 import com.hnqc.ironhand.common.pojo.message.TaskMessage;
 import org.springframework.kafka.core.KafkaTemplate;

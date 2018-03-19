@@ -10,10 +10,10 @@
     <version>${project.version}</version>
     <description>ironhand分布式爬虫系统</description>
     <modules>
+        <module>ironhand-common</module>
         <module>ironhand-downloader</module>
         <module>ironhand-schedule</module>
         <module>ironhand-analyzer</module>
-        <module>ironhand-common</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

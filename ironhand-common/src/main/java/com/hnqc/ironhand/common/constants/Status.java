@@ -1,9 +1,11 @@
 package com.hnqc.ironhand.common.constants;
 
 /**
- * 种子执行状态
+ * 任务执行状态
  */
 public enum Status {
+    // 执行中
+    RUNNING,
     //失败
     FAIL,
     //成功
