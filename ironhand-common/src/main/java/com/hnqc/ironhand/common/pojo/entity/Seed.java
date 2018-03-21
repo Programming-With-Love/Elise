@@ -17,7 +17,7 @@ public class Seed {
     @GeneratedValue
     private Long id;
     private String title;
-    @Column(name = "data", length = 3000)
+    @Column(name = "data", length = 10000)
     private String jsonData;
     @Transient
     private SeedData data;
@@ -59,5 +59,13 @@ public class Seed {
             logger.error(String.format("seed[id:%d]设置json失败", id), e);
 
         }
+    }
+
+    public String getJsonData() {
+        return jsonData;
+    }
+
+    public void setJsonData(String jsonData) {
+        this.jsonData = jsonData;
     }
 }

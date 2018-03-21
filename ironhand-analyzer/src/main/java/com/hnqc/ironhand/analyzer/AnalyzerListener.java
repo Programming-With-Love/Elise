@@ -10,6 +10,7 @@ public class AnalyzerListener {
 
     @KafkaListener(topics = "#{__listener.topic}", groupId = "#{__listener.groupId}")
     public void listen(ConsumerRecord<Integer, Seed> record) {
+        Seed seed = record.value();
 
     }
 

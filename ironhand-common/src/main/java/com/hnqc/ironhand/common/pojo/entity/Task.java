@@ -1,6 +1,5 @@
 package com.hnqc.ironhand.common.pojo.entity;
 
-import com.hnqc.ironhand.common.constants.ScheduleMode;
 import com.hnqc.ironhand.common.constants.Status;
 import com.hnqc.ironhand.common.utils.ListBuilder;
 
@@ -34,13 +33,6 @@ public class Task {
      */
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
-
-    //定时执行模式
-    private ScheduleMode mode;
-
-    //执行时间
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date runTime;
 
 
 
@@ -153,16 +145,6 @@ public class Task {
         private void initDefaultTask() {
             task.setCreateTime(new Date());
             task.setStatus(Status.RUNNING);
-        }
-
-        public TaskBuilder mode(ScheduleMode mode) {
-            task.setMode(mode);
-            return this;
-        }
-
-        public TaskBuilder runTime(Date runtime) {
-            task.setRunTime(runtime);
-            return this;
         }
 
         public TaskBuilder id(Long id) {
@@ -345,21 +327,5 @@ public class Task {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-    public ScheduleMode getMode() {
-        return mode;
-    }
-
-    public void setMode(ScheduleMode mode) {
-        this.mode = mode;
-    }
-
-    public Date getRunTime() {
-        return runTime;
-    }
-
-    public void setRunTime(Date runTime) {
-        this.runTime = runTime;
     }
 }

@@ -8,6 +8,7 @@ public class CommonConfig {
     private String messageService;
     private Long workerId;
     private Long dataCenterId;
+    private String rootFilePath;
 
     public String getBroadId() {
         return broadId;
@@ -39,5 +40,13 @@ public class CommonConfig {
 
     public void setDataCenterId(Long dataCenterId) {
         this.dataCenterId = dataCenterId;
+    }
+
+    public String getRootFilePath() {
+        return rootFilePath;
+    }
+
+    public void setRootFilePath(String rootFilePath) {
+        this.rootFilePath = rootFilePath;
     }
 }

@@ -28,7 +28,7 @@ public class SeedRepositoryTest {
     private TestEntityManager entityManager;
 
     @Before
-    public void prepareDate() {
+    public void prepareData() {
         Seed seed = new Seed();
         seed.setId(1L);
         seed.setTaskId(1);
