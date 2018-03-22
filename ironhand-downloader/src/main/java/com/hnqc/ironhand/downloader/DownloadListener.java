@@ -1,6 +1,5 @@
 package com.hnqc.ironhand.downloader;
 
-import com.hnqc.ironhand.common.pojo.SeedData;
 import com.hnqc.ironhand.common.pojo.UrlEntry;
 import com.hnqc.ironhand.common.pojo.entity.Seed;
 import com.hnqc.ironhand.common.utils.ValidateUtils;
@@ -18,12 +17,11 @@ public class DownloadListener {
     @KafkaListener(topics = "#{__listener.topic}", groupId = "#{__listener.groupId}")
     public void listen(ConsumerRecord<Integer, Seed> record) {
         Seed seed = record.value();
-        SeedData data = seed.getData();
-        List<UrlEntry> html = data.getHtml();
+        List<UrlEntry> html = seed.getUrls();
         for (UrlEntry urlEntry : html) {
             String name = urlEntry.getName();
             String value = urlEntry.getValue();
-            if(ValidateUtils.isEmpty(value)){
+            if (ValidateUtils.isEmpty(value)) {
 
             }
         }

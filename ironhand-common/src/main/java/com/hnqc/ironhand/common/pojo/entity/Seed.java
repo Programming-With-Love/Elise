@@ -1,27 +1,33 @@
 package com.hnqc.ironhand.common.pojo.entity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hnqc.ironhand.common.pojo.SeedData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.hnqc.ironhand.common.pojo.UrlEntry;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Seed {
-    @Transient
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private static Logger logger = LoggerFactory.getLogger(Seed.class);
     @Id
-    @GeneratedValue
     private Long id;
     private String title;
     @Column(name = "data", length = 10000)
     private String jsonData;
     @Transient
-    private SeedData data;
+    private List<UrlEntry> urls;
+    @Transient
+    private List<UrlEntry> scripts;
+    @Transient
+    private List<UrlEntry> images;
+
     private Integer taskId;
+    private Integer parentTaskId;
 
     public Long getId() {
         return id;
@@ -47,25 +53,99 @@ public class Seed {
         this.taskId = taskId;
     }
 
-    public SeedData getData() {
-        return data;
-    }
-
-    public void setData(SeedData data) {
-        this.data = data;
-        try {
-            this.jsonData = objectMapper.writeValueAsString(data);
-        } catch (JsonProcessingException e) {
-            logger.error(String.format("seed[id:%d]设置json失败", id), e);
-
-        }
-    }
-
     public String getJsonData() {
         return jsonData;
     }
 
     public void setJsonData(String jsonData) {
         this.jsonData = jsonData;
+    }
+
+
+    public List<UrlEntry> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(List<UrlEntry> urls) {
+        this.urls = urls;
+    }
+
+    public List<UrlEntry> getScripts() {
+        return scripts;
+    }
+
+    public void setScripts(List<UrlEntry> scripts) {
+        this.scripts = scripts;
+    }
+
+    public List<UrlEntry> getImages() {
+        return images;
+    }
+
+    public void setImages(List<UrlEntry> images) {
+        this.images = images;
+    }
+
+    private void add(List<UrlEntry> list, UrlEntry... entry) {
+        list.addAll(Arrays.asList(entry));
+    }
+
+    public void addToUrls(UrlEntry... entry) {
+        if (urls == null) {
+            urls = new ArrayList<>();
+        }
+        add(getUrls(), entry);
+    }
+
+    public void addToScripts(UrlEntry... entries) {
+        if (scripts == null) {
+            scripts = new ArrayList<>();
+        }
+        add(scripts, entries);
+    }
+
+    public void addToImages(UrlEntry... entries) {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        add(images, entries);
+    }
+
+    @Column(length = 2000)
+    @JSONField(serialize = false)
+    public String getJsonUrl() {
+        return JSON.toJSONString(urls);
+    }
+
+    public void setJsonUrl(String jsonUrl) {
+        this.urls = JSON.parseArray(jsonUrl, UrlEntry.class);
+    }
+
+    @Column(length = 2000)
+    @JSONField(serialize = false)
+    public String getJsonJs() {
+        return JSON.toJSONString(scripts);
+    }
+
+    public void setJsonJs(String jsonJs) {
+        this.scripts = JSON.parseArray(jsonJs, UrlEntry.class);
+    }
+
+    @Column(length = 2000)
+    @JSONField(serialize = false)
+    public String getJsonImg() {
+        return JSON.toJSONString(images);
+    }
+
+    public void setJsonImg(String jsonImg) {
+        this.images = JSON.parseArray(jsonImg, UrlEntry.class);
+    }
+
+    public Integer getParentTaskId() {
+        return parentTaskId;
+    }
+
+    public void setParentTaskId(Integer parentTaskId) {
+        this.parentTaskId = parentTaskId;
     }
 }

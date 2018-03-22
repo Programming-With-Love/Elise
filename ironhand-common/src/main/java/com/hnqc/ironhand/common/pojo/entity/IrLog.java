@@ -9,7 +9,6 @@ import java.util.Date;
 @Entity
 public class IrLog {
     @Id
-    @GeneratedValue
     private Long id;
     private Long seedId;
     private Type type;

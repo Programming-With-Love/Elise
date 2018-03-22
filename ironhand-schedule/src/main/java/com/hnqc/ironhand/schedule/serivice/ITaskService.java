@@ -1,9 +1,9 @@
 package com.hnqc.ironhand.schedule.serivice;
 
-import com.hnqc.ironhand.common.pojo.entity.Task;
+import com.hnqc.ironhand.common.pojo.entity.Scheduler;
 
 public interface ITaskService {
-    void addTask(Task task);
+    void addTask(Scheduler scheduler);
 
-    Task getTask(Long id);
+    Scheduler getTask(Long id);
 }
