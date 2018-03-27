@@ -1,7 +1,6 @@
 package com.hnqc.ironhand.analyzer;
 
 import com.hnqc.ironhand.common.pojo.entity.Seed;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 
 public class AnalyzerListener {
@@ -9,8 +8,7 @@ public class AnalyzerListener {
     private String topic = "analyzer";
 
     @KafkaListener(topics = "#{__listener.topic}", groupId = "#{__listener.groupId}")
-    public void listen(ConsumerRecord<Integer, Seed> record) {
-        Seed seed = record.value();
+    public void listen(Seed seed) {
 
     }
 

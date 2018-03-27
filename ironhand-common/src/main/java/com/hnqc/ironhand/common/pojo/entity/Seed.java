@@ -16,6 +16,7 @@ import java.util.List;
 public class Seed {
     @Id
     private Long id;
+    private Long schedulerId;
     private String title;
     @Column(name = "data", length = 10000)
     private String jsonData;
@@ -26,15 +27,15 @@ public class Seed {
     @Transient
     private List<UrlEntry> images;
 
-    private Integer taskId;
-    private Integer parentTaskId;
 
-    public Long getId() {
-        return id;
+    private Integer parentId;
+
+    public Long getSchedulerId() {
+        return schedulerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSchedulerId(Long schedulerId) {
+        this.schedulerId = schedulerId;
     }
 
     public String getTitle() {
@@ -45,12 +46,12 @@ public class Seed {
         this.title = title;
     }
 
-    public Integer getTaskId() {
-        return taskId;
+    public Long getId() {
+        return id;
     }
 
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getJsonData() {
@@ -141,11 +142,11 @@ public class Seed {
         this.images = JSON.parseArray(jsonImg, UrlEntry.class);
     }
 
-    public Integer getParentTaskId() {
-        return parentTaskId;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setParentTaskId(Integer parentTaskId) {
-        this.parentTaskId = parentTaskId;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 }

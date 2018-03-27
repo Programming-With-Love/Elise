@@ -1,15 +1,16 @@
 package com.hnqc.ironhand.common.constants;
 
-public enum  Rule {
+public enum Rule {
     EQUALS(1, "等于"),
-    SCRIPT(2, "描述");
+    SCRIPT(2, "描述"),
+    REGEX(3, "正则");
 
     private int type;
-    private String desciption;
+    private String description;
 
     Rule(int type, String description) {
         this.type = type;
-        this.desciption = description;
+        this.description = description;
     }
 
     public int getType() {
@@ -20,11 +21,11 @@ public enum  Rule {
         this.type = type;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

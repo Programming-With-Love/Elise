@@ -29,8 +29,8 @@ public class SeedRepositoryTest {
     @Before
     public void prepareData() {
         Seed seed = new Seed();
+        seed.setSchedulerId(1L);
         seed.setId(1L);
-        seed.setTaskId(1);
         seed.setTitle("第一个任务");
         List<UrlEntry> html = new ArrayList<>();
         html.add(new UrlEntry("name", "value"));

@@ -1,6 +1,4 @@
-package com.hnqc.ironhand.downloader.exceptions;
-
-import com.hnqc.ironhand.common.exceptions.NestedRuntimeException;
+package com.hnqc.ironhand.common.exceptions;
 
 public class WriteException extends NestedRuntimeException {
     public WriteException(String msg) {

@@ -47,6 +47,6 @@ public class CommonConfig {
     }
 
     public void setRootFilePath(String rootFilePath) {
-        this.rootFilePath = rootFilePath;
+        this.rootFilePath = rootFilePath.replaceAll("(^/)(/$)", "");
     }
 }

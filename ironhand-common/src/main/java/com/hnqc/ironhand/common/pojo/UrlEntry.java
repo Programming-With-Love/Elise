@@ -10,6 +10,11 @@ public class UrlEntry {
      */
     private String value;
 
+    /**
+     * 尝试下载次数
+     */
+    private Integer tryTimes = 0;
+
     public UrlEntry() {
 
     }
@@ -37,5 +42,13 @@ public class UrlEntry {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Integer getTryTimes() {
+        return tryTimes;
+    }
+
+    public void setTryTimes(Integer tryTimes) {
+        this.tryTimes = tryTimes;
     }
 }
