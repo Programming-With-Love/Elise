@@ -3,6 +3,7 @@ package com.hnqc.ironhand.analyzer;
 import com.hnqc.ironhand.common.constants.Rule;
 import com.hnqc.ironhand.common.pojo.UrlEntry;
 import com.hnqc.ironhand.common.pojo.UrlRule;
+import com.hnqc.ironhand.common.pojo.entity.ContentResult;
 import com.hnqc.ironhand.common.pojo.entity.Scheduler;
 import com.hnqc.ironhand.common.pojo.entity.Seed;
 import com.hnqc.ironhand.common.query.RuleFactory;
@@ -11,6 +12,10 @@ import com.hnqc.ironhand.common.query.UrlQuery;
 import com.hnqc.ironhand.common.repository.SchedulerRepository;
 import com.hnqc.ironhand.common.sender.DownLoadSender;
 import com.hnqc.ironhand.common.service.IFileService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +89,16 @@ public class Analyzer {
                             }
 
                             //TODO 匹配html
+                            Document document = Jsoup.parse(html);
+                            Element body = document.body();
+                            List<String> savedCssSelectors = urlQuery.getSavedCssSelectors();
+                            for (String savedCssSelector : savedCssSelectors) {
+                                Elements select = body.select(savedCssSelector);
+                                String result = select.html();
+                                ContentResult contentResult = new ContentResult(seed.getId());
 
+
+                            }
                         }
                         //如果有js没有下载完全,返回给downloader继续下载
                         if (seedScripts.stream().anyMatch(entry -> entry.getValue() == null)) {
@@ -95,6 +109,10 @@ public class Analyzer {
                 }
             }
         });
+    }
+
+    private String getTextFromElement(){
+
     }
 
     /**
@@ -112,7 +130,6 @@ public class Analyzer {
     private String runJsOnHtml(String html, List<String> scripts) {
         return html;
     }
-
 
     /**
      * 检测匹配
