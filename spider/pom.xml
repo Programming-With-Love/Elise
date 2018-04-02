@@ -23,6 +23,10 @@
             <version>4.5.3</version>
         </dependency>
         <dependency>
+            <groupId>com.hnqc</groupId>
+            <artifactId>ironhand-utils</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.10.3</version>

@@ -1,7 +1,7 @@
 package com.hnqc.ironhand.spider;
 
 public interface Task {
-    String getID();
+    Long getID();
 
     Site getSite();
 }

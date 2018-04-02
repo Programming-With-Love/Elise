@@ -1,6 +1,7 @@
 package com.hnqc.ironhand.spider;
 
 import com.hnqc.ironhand.spider.utils.StatusCode;
+import com.hnqc.ironhand.utils.IdWorker;
 
 import java.util.*;
 
@@ -161,12 +162,8 @@ public class Site {
     public Task toTask() {
         return new Task() {
             @Override
-            public String getID() {
-                String uuid = Site.this.getDomain();
-                if (uuid == null) {
-                    uuid = UUID.randomUUID().toString();
-                }
-                return uuid;
+            public Long getID() {
+                return IdWorker.nextId();
             }
 
             @Override

@@ -15,6 +15,7 @@
         <module>ironhand-schedule</module>
         <module>ironhand-analyzer</module>
         <module>spider</module>
+        <module>ironhand-utils</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,6 +50,11 @@
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-schedule</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hnqc</groupId>
+                <artifactId>ironhand-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

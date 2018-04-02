@@ -1,8 +1,5 @@
-package com.hnqc.ironhand.common;
+package com.hnqc.ironhand.utils;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-@ConfigurationProperties(prefix = "com.hnqc.config")
 public class CommonConfig {
     private String broadId;
     private String messageService;

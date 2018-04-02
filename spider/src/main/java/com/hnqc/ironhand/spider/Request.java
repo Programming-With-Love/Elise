@@ -22,6 +22,15 @@ public class Request implements Serializable {
 
     private String charset;
 
+    public Request(Request request) {
+        this.url = request.url;
+        this.method = request.method;
+        this.extras = request.extras;
+        this.cookies = request.cookies;
+        this.headers = request.headers;
+        this.charset = request.charset;
+    }
+
     public Request() {
 
     }
