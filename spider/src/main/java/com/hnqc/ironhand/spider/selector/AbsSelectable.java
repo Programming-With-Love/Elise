@@ -45,7 +45,7 @@ public abstract class AbsSelectable implements Selectable {
 
     @Override
     public String get() {
-        if (ValidateUtils.isEmpty(all())) {
+        if (!ValidateUtils.isEmpty(all())) {
             return all().get(0);
         }
         return null;

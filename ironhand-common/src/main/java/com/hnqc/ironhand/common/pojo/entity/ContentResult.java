@@ -1,6 +1,6 @@
 package com.hnqc.ironhand.common.pojo.entity;
 
-import com.hnqc.ironhand.common.utils.IdWorker;
+import com.hnqc.ironhand.utils.IdWorker;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

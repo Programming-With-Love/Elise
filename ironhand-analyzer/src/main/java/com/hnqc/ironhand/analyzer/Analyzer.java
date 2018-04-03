@@ -111,10 +111,6 @@ public class Analyzer {
         });
     }
 
-    private String getTextFromElement(){
-
-    }
-
     /**
      * 根据js匹配规则，获取对应的js url
      *

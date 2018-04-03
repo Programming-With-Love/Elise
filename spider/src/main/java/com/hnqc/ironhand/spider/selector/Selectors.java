@@ -17,6 +17,10 @@ public class Selectors {
         return new RegexSelector(regex);
     }
 
+    public static RegexSelector regex(String regex, int group) {
+        return new RegexSelector(regex, group);
+    }
+
     public static AndSelector and(Selector... selectors) {
         return new AndSelector(selectors);
     }

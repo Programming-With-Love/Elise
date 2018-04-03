@@ -44,6 +44,6 @@ public class XPathSelector extends AbsElementSelector {
 
     @Override
     public List<String> selectList(Element element) {
-        return null;
+        return xPathEvaluator.evaluate(element).list();
     }
 }

@@ -1,6 +1,7 @@
 package com.hnqc.ironhand.common.exceptions;
 
-import com.hnqc.ironhand.common.utils.NestedRuntimeUtils;
+
+import com.hnqc.ironhand.utils.NestedRuntimeUtils;
 
 /**
  * 包装异常类,规范化异常信息

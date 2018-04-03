@@ -16,6 +16,7 @@
         <module>ironhand-analyzer</module>
         <module>spider</module>
         <module>ironhand-utils</module>
+        <module>spider-distributed</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -55,6 +56,16 @@
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hnqc</groupId>
+                <artifactId>spider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hnqc</groupId>
+                <artifactId>spider-distributed</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

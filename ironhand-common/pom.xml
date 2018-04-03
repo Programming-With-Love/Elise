@@ -50,6 +50,10 @@
         </dependency>
         <dependency>
             <groupId>com.hnqc</groupId>
+            <artifactId>spider-distributed</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hnqc</groupId>
             <artifactId>ironhand-utils</artifactId>
         </dependency>
         <dependency>

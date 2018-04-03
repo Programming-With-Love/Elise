@@ -2,31 +2,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.hnqc</groupId>
         <artifactId>ironhand-build</artifactId>
+        <groupId>com.hnqc</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>ironhand-schedule</artifactId>
-    <name>ironhand-schedule</name>
-    <description>爬虫系统任务端</description>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>spider-distributed</artifactId>
+    <description>spider爬虫框架的分布式扩展</description>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hnqc</groupId>
-            <artifactId>ironhand-common</artifactId>
+            <artifactId>spider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.46</version>
         </dependency>
         <dependency>
             <groupId>com.hnqc</groupId>
             <artifactId>ironhand-utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

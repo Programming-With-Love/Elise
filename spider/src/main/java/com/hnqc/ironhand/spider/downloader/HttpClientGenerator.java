@@ -53,9 +53,7 @@ public class HttpClientGenerator {
             return new SSLConnectionSocketFactory(createIgnoreVerifySSL(), new String[]{"SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"},
                     null,
                     new DefaultHostnameVerifier()); // 优先绕过安全证书
-        } catch (KeyManagementException e) {
-            logger.error("ssl connection fail", e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
             logger.error("ssl connection fail", e);
         }
         return SSLConnectionSocketFactory.getSocketFactory();
@@ -104,14 +102,9 @@ public class HttpClientGenerator {
             httpClientBuilder.setUserAgent("");
         }
         if (site.isUseGzip()) {
-            httpClientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
-
-                public void process(
-                        final HttpRequest request,
-                        final HttpContext context) throws HttpException, IOException {
-                    if (!request.containsHeader("Accept-Encoding")) {
-                        request.addHeader("Accept-Encoding", "gzip");
-                    }
+            httpClientBuilder.addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
+                if (!request.containsHeader("Accept-Encoding")) {
+                    request.addHeader("Accept-Encoding", "gzip");
                 }
             });
         }

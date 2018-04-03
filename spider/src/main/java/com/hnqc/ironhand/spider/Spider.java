@@ -31,32 +31,32 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author zido
  */
 public class Spider implements Runnable, Task {
-    protected Downloader downloader;
-    protected List<Pipeline> pipelines = new ArrayList<Pipeline>();
-    protected PageProcessor pageProcessor;
-    protected List<Request> startRequests;
-    protected Site site;
-    protected Long ID;
-    protected Scheduler scheduler = new QueueScheduler();
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    protected CountableThreadPool threadPool;
-    protected ExecutorService executorService;
+    private Downloader downloader;
+    private List<Pipeline> pipelines = new ArrayList<>();
+    private PageProcessor pageProcessor;
+    private List<Request> startRequests;
+    private Site site;
+    private Long ID;
+    private Scheduler scheduler = new QueueScheduler();
+    private static Logger logger = LoggerFactory.getLogger(Spider.class);
+    private CountableThreadPool threadPool;
+    private ExecutorService executorService;
 
-    protected int threadNum = 1;
+    private int threadNum = 1;
 
-    protected AtomicInteger stat = new AtomicInteger(STAT_INIT);
+    private AtomicInteger stat = new AtomicInteger(STAT_INIT);
 
-    protected boolean exitWhenComplete = true;
+    private boolean exitWhenComplete = true;
 
-    protected final static int STAT_INIT = 0;
+    private final static int STAT_INIT = 0;
 
-    protected final static int STAT_RUNNING = 1;
+    private final static int STAT_RUNNING = 1;
 
-    protected final static int STAT_STOPPED = 2;
+    private final static int STAT_STOPPED = 2;
 
-    protected boolean spawnUrl = true;
+    private boolean spawnUrl = true;
 
-    protected boolean destroyWhenExit = true;
+    private boolean destroyWhenExit = true;
 
     private ReentrantLock newUrlLock = new ReentrantLock();
 
@@ -91,6 +91,10 @@ public class Spider implements Runnable, Task {
         this.site = pageProcessor.getSite();
     }
 
+    public Spider() {
+
+    }
+
     /**
      * Set startUrls of Spider.<br>
      * Prior to startUrls of Site.
@@ -123,7 +127,7 @@ public class Spider implements Runnable, Task {
      * @param id id
      * @return this
      */
-    public Spider setUUID(Long id) {
+    public Spider setID(Long id) {
         this.ID = id;
         return this;
     }
@@ -238,19 +242,16 @@ public class Spider implements Runnable, Task {
                 // wait until new url added
                 waitNewUrl();
             } else {
-                threadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            processRequest(request);
-                            onSuccess(request);
-                        } catch (Exception e) {
-                            onError(request);
-                            logger.error("process request " + request + " error", e);
-                        } finally {
-                            pageCount.incrementAndGet();
-                            signalNewUrl();
-                        }
+                threadPool.execute(() -> {
+                    try {
+                        processRequest(request);
+                        onSuccess(request);
+                    } catch (Exception e) {
+                        onError(request);
+                        logger.error("process request " + request + " error", e);
+                    } finally {
+                        pageCount.incrementAndGet();
+                        signalNewUrl();
                     }
                 });
             }
@@ -298,7 +299,8 @@ public class Spider implements Runnable, Task {
         for (Pipeline pipeline : pipelines) {
             destroyEach(pipeline);
         }
-        threadPool.shutdown();
+        if (threadPool != null)
+            threadPool.shutdown();
     }
 
     private void destroyEach(Object object) {
@@ -325,7 +327,7 @@ public class Spider implements Runnable, Task {
         }
     }
 
-    private void processRequest(Request request) {
+    protected void processRequest(Request request) {
         Page page = downloader.download(request, this);
         if (page.isDownloadSuccess()) {
             onDownloadSuccess(request, page);
@@ -334,7 +336,7 @@ public class Spider implements Runnable, Task {
         }
     }
 
-    private void onDownloadSuccess(Request request, Page page) {
+    public void onDownloadSuccess(Request request, Page page) {
         if (site.getAcceptStatCode().contains(page.getStatusCode())) {
             pageProcessor.process(page);
             extractAndAddRequests(page, spawnUrl);
@@ -350,7 +352,7 @@ public class Spider implements Runnable, Task {
         return;
     }
 
-    private void onDownloaderFail(Request request) {
+    public void onDownloaderFail(Request request) {
         if (site.getCycleRetryTimes() == 0) {
             sleep(site.getSleepTime());
         } else {
@@ -452,9 +454,9 @@ public class Spider implements Runnable, Task {
 
     public <T> T get(String url) {
         List<String> urls = Collections.singletonList(url);
-        List<T> resultItemses = getAll(urls);
-        if (resultItemses != null && resultItemses.size() > 0) {
-            return resultItemses.get(0);
+        List<T> resultItems = getAll(urls);
+        if (resultItems != null && resultItems.size() > 0) {
+            return resultItems.get(0);
         } else {
             return null;
         }
@@ -676,5 +678,25 @@ public class Spider implements Runnable, Task {
      */
     public void setEmptySleepTime(int emptySleepTime) {
         this.emptySleepTime = emptySleepTime;
+    }
+
+    public Downloader getDownloader() {
+        return downloader;
+    }
+
+    public void setPageProcessor(PageProcessor pageProcessor) {
+        this.pageProcessor = pageProcessor;
+    }
+
+    public void setSite(Site site) {
+        this.site = site;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setPageCount(Long pageCount) {
+        this.pageCount.set(pageCount);
     }
 }

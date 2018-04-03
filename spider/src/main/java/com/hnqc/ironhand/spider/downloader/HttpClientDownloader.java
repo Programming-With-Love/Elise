@@ -64,7 +64,7 @@ public class HttpClientDownloader extends AbsDownloader {
         Page page = Page.fail();
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
-            page = handleResponse(request, request.getCharset() != null ? request.getCharset() : task.getSite().getCharset(), httpResponse, task);
+            page = handleResponse(request, request.getCharset() != null ? request.getCharset() : task.getSite().getCharset(), httpResponse);
             onSuccess(request);
             logger.info("downloading page success {}", request.getUrl());
             return page;
@@ -83,7 +83,7 @@ public class HttpClientDownloader extends AbsDownloader {
         }
     }
 
-    protected Page handleResponse(Request request, String charset, HttpResponse httpResponse, Task task) throws IOException {
+    protected Page handleResponse(Request request, String charset, HttpResponse httpResponse) throws IOException {
         byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         Page page = new Page();
