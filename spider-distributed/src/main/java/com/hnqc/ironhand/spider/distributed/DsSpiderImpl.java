@@ -56,8 +56,14 @@ public class DsSpiderImpl implements IDsSpider {
     }
 
     public DsSpiderImpl setPageProcessor(Site site, List<ExtractRule> extractRules) {
-        spider.setSite(site);
+        this.setSite(site);
         this.extractRules = extractRules;
+        return this;
+    }
+
+    public DsSpiderImpl setPageProcessor(ConfigurablePageProcessor pageProcessor) {
+        this.setSite(pageProcessor.getSite());
+        this.extractRules = pageProcessor.getExtractRules();
         return this;
     }
 
@@ -84,6 +90,7 @@ public class DsSpiderImpl implements IDsSpider {
 
     @Override
     public void run(Request request, Page page) {
+        init();
         if (page.isDownloadSuccess()) {
             spider.onDownloadSuccess(request, page);
         } else {
@@ -107,31 +114,35 @@ public class DsSpiderImpl implements IDsSpider {
         return ID;
     }
 
-    public void setID(Long ID) {
+    public DsSpiderImpl setID(Long ID) {
         this.ID = ID;
+        return this;
     }
 
     public Site getSite() {
         return site;
     }
 
-    public void setSite(Site site) {
+    public DsSpiderImpl setSite(Site site) {
         this.site = site;
+        return this;
     }
 
     public boolean isSpawnUrl() {
         return spawnUrl;
     }
 
-    public void setSpawnUrl(boolean spawnUrl) {
+    public DsSpiderImpl setSpawnUrl(boolean spawnUrl) {
         this.spawnUrl = spawnUrl;
+        return this;
     }
 
     public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public DsSpiderImpl setStartTime(Date startTime) {
         this.startTime = startTime;
+        return this;
     }
 }

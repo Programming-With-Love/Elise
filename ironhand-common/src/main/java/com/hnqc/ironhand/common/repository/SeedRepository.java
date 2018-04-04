@@ -1,6 +1,6 @@
 package com.hnqc.ironhand.common.repository;
 
-import com.hnqc.ironhand.common.pojo.entity.Seed;
+import com.hnqc.ironhand.common.pojo.Seed;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

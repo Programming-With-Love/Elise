@@ -1,13 +1,20 @@
 package com.hnqc.ironhand.schedule.api;
 
-import com.hnqc.ironhand.common.constants.Status;
+import com.hnqc.ironhand.common.SpringDistributedScheduler;
+import com.hnqc.ironhand.common.pipelines.SavedPipeline;
+import com.hnqc.ironhand.common.pojo.Seed;
 import com.hnqc.ironhand.common.pojo.entity.Scheduler;
+import com.hnqc.ironhand.common.sender.AnalyzerSender;
+import com.hnqc.ironhand.common.service.impl.AsyncDownloaderImpl;
 import com.hnqc.ironhand.schedule.pojo.AjaxResult;
 import com.hnqc.ironhand.schedule.serivice.ITaskService;
+import com.hnqc.ironhand.spider.configurable.ConfigurablePageProcessor;
+import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
 import com.hnqc.ironhand.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 
 @RestController
@@ -15,13 +22,26 @@ import java.util.Date;
 public class TaskController {
     private ITaskService taskService;
 
-    @PostMapping("/create")
-    public AjaxResult<String> createTask(@RequestBody Scheduler scheduler) {
+
+    private AnalyzerSender analyzerSender;
+
+    /**
+     * 创建spider接口
+     *
+     * @param pageProcessor 页面处理配置
+     * @return 创建成功的id，前端可使用此id进行进度查询
+     */
+    @PostMapping
+    public AjaxResult<String> createTask(@RequestBody ConfigurablePageProcessor pageProcessor) {
         long id = IdWorker.nextId();
-        scheduler.setScheduleId(id);
-        scheduler.setStatus(Status.RUNNING);
-        scheduler.setCreateTime(new Date());
-        taskService.addTask(scheduler);
+
+        DsSpiderImpl spider = new DsSpiderImpl();
+        spider.setID(id)
+                .setStartTime(new Date())
+                .setPageProcessor(pageProcessor);
+
+        analyzerSender.send(new Seed(spider));
+
         return AjaxResult.<String>success().setData(String.valueOf(id));
     }
 
@@ -34,5 +54,10 @@ public class TaskController {
     @Autowired
     public void setTaskService(ITaskService taskService) {
         this.taskService = taskService;
+    }
+
+    @Autowired
+    public void setAnalyzerSender(AnalyzerSender analyzerSender) {
+        this.analyzerSender = analyzerSender;
     }
 }

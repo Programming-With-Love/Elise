@@ -3,6 +3,7 @@ package com.hnqc.ironhand.schedule.serivice.impl;
 import com.hnqc.ironhand.common.pojo.entity.Scheduler;
 import com.hnqc.ironhand.common.repository.SchedulerRepository;
 import com.hnqc.ironhand.schedule.serivice.ITaskService;
+import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

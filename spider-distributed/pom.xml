@@ -13,10 +13,6 @@
     <description>spider爬虫框架的分布式扩展</description>
     <dependencies>
         <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.hnqc</groupId>
             <artifactId>spider</artifactId>
         </dependency>

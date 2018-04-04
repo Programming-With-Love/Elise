@@ -1,9 +1,9 @@
 package com.hnqc.ironhand.common.service.impl;
 
 import com.hnqc.common.image.OssImageUtil;
-import com.hnqc.ironhand.common.CommonConfig;
 import com.hnqc.ironhand.common.exceptions.WriteException;
 import com.hnqc.ironhand.common.service.IFileService;
+import com.hnqc.ironhand.utils.CommonConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

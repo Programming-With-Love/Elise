@@ -41,4 +41,16 @@ public class ConfigurablePageProcessor implements PageProcessor {
     public Site getSite() {
         return site;
     }
+
+    public void setSite(Site site) {
+        this.site = site;
+    }
+
+    public List<ExtractRule> getExtractRules() {
+        return extractRules;
+    }
+
+    public void setExtractRules(List<ExtractRule> extractRules) {
+        this.extractRules = extractRules;
+    }
 }

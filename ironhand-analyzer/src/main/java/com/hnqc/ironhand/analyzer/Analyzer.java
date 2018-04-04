@@ -5,7 +5,7 @@ import com.hnqc.ironhand.common.pojo.UrlEntry;
 import com.hnqc.ironhand.common.pojo.UrlRule;
 import com.hnqc.ironhand.common.pojo.entity.ContentResult;
 import com.hnqc.ironhand.common.pojo.entity.Scheduler;
-import com.hnqc.ironhand.common.pojo.entity.Seed;
+import com.hnqc.ironhand.common.pojo.Seed;
 import com.hnqc.ironhand.common.query.RuleFactory;
 import com.hnqc.ironhand.common.query.Ruler;
 import com.hnqc.ironhand.common.query.UrlQuery;
@@ -22,9 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

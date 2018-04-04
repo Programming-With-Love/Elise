@@ -34,7 +34,6 @@ public class JSONTest {
         dsSpider.setID(1L);
         dsSpider.setStartTime(new Date());
         dsSpider.setSpawnUrl(false);
-        dsSpider.setPageCount(20L);
 
         String s = JSON.toJSONString(dsSpider);
         DsSpiderImpl reverseSpider = JSON.parseObject(s, DsSpiderImpl.class);

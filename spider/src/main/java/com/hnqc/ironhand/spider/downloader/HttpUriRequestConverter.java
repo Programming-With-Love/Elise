@@ -33,11 +33,11 @@ public class HttpUriRequestConverter {
     public HttpClientRequestContext convert(Request request, Site site, Proxy proxy) {
         HttpClientRequestContext httpClientRequestContext = new HttpClientRequestContext();
         httpClientRequestContext.setHttpUriRequest(convertHttpUriRequest(request, site, proxy));
-        httpClientRequestContext.setHttpClientContext(convertHttpClientContext(request, site, proxy));
+        httpClientRequestContext.setHttpClientContext(convertHttpClientContext(request, proxy));
         return httpClientRequestContext;
     }
 
-    private HttpClientContext convertHttpClientContext(Request request, Site site, Proxy proxy) {
+    private HttpClientContext convertHttpClientContext(Request request, Proxy proxy) {
         HttpClientContext httpContext = new HttpClientContext();
         if (proxy != null && proxy.getUsername() != null) {
             AuthState authState = new AuthState();

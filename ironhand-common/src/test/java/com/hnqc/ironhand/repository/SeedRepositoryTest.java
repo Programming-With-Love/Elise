@@ -2,7 +2,7 @@ package com.hnqc.ironhand.repository;
 
 import com.hnqc.ironhand.common.CommonApplication;
 import com.hnqc.ironhand.common.pojo.UrlEntry;
-import com.hnqc.ironhand.common.pojo.entity.Seed;
+import com.hnqc.ironhand.common.pojo.Seed;
 import com.hnqc.ironhand.common.repository.SeedRepository;
 import org.junit.Assert;
 import org.junit.Before;

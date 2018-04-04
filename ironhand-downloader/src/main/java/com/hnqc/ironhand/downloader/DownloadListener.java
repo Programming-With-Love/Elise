@@ -2,7 +2,7 @@ package com.hnqc.ironhand.downloader;
 
 import com.hnqc.common.image.OssImageUtil;
 import com.hnqc.ironhand.common.pojo.UrlEntry;
-import com.hnqc.ironhand.common.pojo.entity.Seed;
+import com.hnqc.ironhand.common.pojo.Seed;
 import com.hnqc.ironhand.common.sender.AnalyzerSender;
 import com.hnqc.ironhand.common.utils.ValidateUtils;
 import com.hnqc.ironhand.downloader.service.IDownloadService;

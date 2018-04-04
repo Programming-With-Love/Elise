@@ -18,7 +18,7 @@ public class ExtractRule {
 
     private boolean multi = false;
 
-    private volatile Selector selector;
+    private volatile transient Selector selector;
 
     private boolean notNull = false;
 

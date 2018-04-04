@@ -12,7 +12,7 @@ public abstract class AbsDownloader implements Downloader {
 
     public Html download(String url, String charset) {
         Page page = download(new Request(url), new Site().setCharset(charset).toTask());
-        return (Html) page.getHtml();
+        return page.getHtml();
     }
 
     protected void onSuccess(Request request) {
