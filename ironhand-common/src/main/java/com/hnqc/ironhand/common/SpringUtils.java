@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.utils;
+package com.hnqc.ironhand.common;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;

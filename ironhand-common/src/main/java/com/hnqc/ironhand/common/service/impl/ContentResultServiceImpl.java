@@ -17,7 +17,8 @@ public class ContentResultServiceImpl implements IContentResultService {
     private ContentResultRepository contentResultRepository;
     private SchedulerCountRepository schedulerCountRepository;
 
-    @Transactional
+    @Override
+    @Transactional(rollbackOn = Exception.class)
     public void addContentResult(ContentResult result) {
         Long schedulerId = result.getSchedulerId();
         if (schedulerId == null) {

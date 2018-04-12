@@ -9,22 +9,24 @@ import com.hnqc.ironhand.spider.Task;
  * 用作信息载体，仅携带必要信息
  */
 public class DistributedTask implements Task {
-    private Long ID;
+    private Long id;
     private Site site;
 
     public DistributedTask(Task task) {
-        this.ID = task.getID();
+        this.id = task.getId();
         this.site = task.getSite();
     }
 
-    public Long getID() {
-        return ID;
+    @Override
+    public Long getId() {
+        return id;
     }
 
-    public void setID(Long ID) {
-        this.ID = ID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
+    @Override
     public Site getSite() {
         return site;
     }

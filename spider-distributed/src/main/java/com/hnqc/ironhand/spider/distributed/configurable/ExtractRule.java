@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.spider.configurable;
+package com.hnqc.ironhand.spider.distributed.configurable;
 
 import com.hnqc.ironhand.spider.selector.Selector;
 
@@ -6,8 +6,13 @@ import static com.hnqc.ironhand.spider.selector.Selectors.*;
 
 /**
  * 匹配规则
+ *
+ * @author zido
+ * @date 2018/30/12
+ * @deprecated
  */
 public class ExtractRule {
+
     private String fieldName;
 
     private ExpressionType expressionType;
@@ -77,9 +82,9 @@ public class ExtractRule {
         switch (expressionType) {
             case CSS:
                 if (expressionParams.length >= 1) {
-                    return $(expressionValue, expressionParams[0]);
+                    return css(expressionValue, expressionParams[0]);
                 } else {
-                    return $(expressionValue);
+                    return css(expressionValue);
                 }
             case XPATH:
                 return xpath(expressionValue);
@@ -92,10 +97,6 @@ public class ExtractRule {
             default:
                 return xpath(expressionValue);
         }
-    }
-
-    public void setSelector(Selector selector) {
-        this.selector = selector;
     }
 
     public boolean isNotNull() {

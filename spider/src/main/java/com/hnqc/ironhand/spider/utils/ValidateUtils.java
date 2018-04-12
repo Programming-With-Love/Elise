@@ -74,8 +74,9 @@ public class ValidateUtils {
 
     public static boolean isAllEmpty(List... lists) {
         for (List list : lists) {
-            if (isNotEmpty(list))
+            if (isNotEmpty(list)) {
                 return false;
+            }
         }
         return true;
     }

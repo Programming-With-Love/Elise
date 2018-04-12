@@ -7,7 +7,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkSelector extends AbsElementSelector {
+public class LinkSelector extends AbstractElementSelector {
     @Override
     public Element selectElement(Element element) {
         throw new UnsupportedOperationException();

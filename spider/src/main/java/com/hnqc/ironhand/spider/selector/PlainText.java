@@ -3,7 +3,7 @@ package com.hnqc.ironhand.spider.selector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlainText extends AbsSelectable {
+public class PlainText extends AbstractSelectable {
     protected List<String> sourceTexts;
 
     public PlainText(List<String> sourceTexts) {
@@ -20,12 +20,13 @@ public class PlainText extends AbsSelectable {
         throw new UnsupportedOperationException("xpath not support plaintext");
     }
 
-    public Selectable $(String selector) {
+    @Override
+    public Selectable css(String selector) {
         throw new UnsupportedOperationException("$ not support plaintext");
     }
 
     @Override
-    public Selectable $(String selector, String attrName) {
+    public Selectable css(String selector, String attrName) {
         throw new UnsupportedOperationException("$ can not apply to plain text");
     }
 

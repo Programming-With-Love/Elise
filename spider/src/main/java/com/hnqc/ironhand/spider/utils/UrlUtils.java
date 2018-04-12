@@ -30,8 +30,9 @@ public class UrlUtils {
                 return abs.toExternalForm();
             }
             // workaround: java resolves '//path/file + ?foo' to '//path/?foo', not '//path/file?foo' as desired
-            if (url.startsWith("?"))
+            if (url.startsWith("?")) {
                 url = base.getPath() + url;
+            }
             URL abs = new URL(base, url);
             return abs.toExternalForm();
         } catch (MalformedURLException e) {
@@ -74,10 +75,10 @@ public class UrlUtils {
         }
     }
 
-    private static final Pattern patternForCharset = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
 
     public static String getCharset(String contentType) {
-        Matcher matcher = patternForCharset.matcher(contentType);
+        Matcher matcher = PATTERN_FOR_CHARSET.matcher(contentType);
         if (matcher.find()) {
             String charset = matcher.group(1);
             if (Charset.isSupported(charset)) {

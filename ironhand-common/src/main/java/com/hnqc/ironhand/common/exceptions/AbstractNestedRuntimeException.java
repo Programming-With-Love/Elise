@@ -7,13 +7,14 @@ import com.hnqc.ironhand.utils.NestedRuntimeUtils;
  * 包装异常类,规范化异常信息
  *
  * @author zido
+ * @date 2018/45/12
  */
-public abstract class NestedRuntimeException extends RuntimeException {
-    public NestedRuntimeException(String msg) {
+public abstract class AbstractNestedRuntimeException extends RuntimeException {
+    public AbstractNestedRuntimeException(String msg) {
         super(msg);
     }
 
-    public NestedRuntimeException(String msg, Throwable cause) {
+    public AbstractNestedRuntimeException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
@@ -37,8 +38,9 @@ public abstract class NestedRuntimeException extends RuntimeException {
      * @return true/false
      */
     public boolean contains(Class<?> type) {
-        if (type == null)
+        if (type == null) {
             return false;
+        }
         if (type.isInstance(this)) {
             return true;
         }
@@ -46,8 +48,8 @@ public abstract class NestedRuntimeException extends RuntimeException {
         if (cause == this) {
             return false;
         }
-        if (cause instanceof NestedRuntimeException) {
-            return ((NestedRuntimeException) cause).contains(type);
+        if (cause instanceof AbstractNestedRuntimeException) {
+            return ((AbstractNestedRuntimeException) cause).contains(type);
         } else {
             while (cause != null) {
                 if (type.isInstance(cause)) {

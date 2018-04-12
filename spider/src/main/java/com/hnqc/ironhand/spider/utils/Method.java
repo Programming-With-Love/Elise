@@ -1,6 +1,7 @@
 package com.hnqc.ironhand.spider.utils;
 
-public abstract class Method {
+public class Method {
+    private Method(){}
     public static final String GET = "GET";
 
     public static final String HEAD = "HEAD";

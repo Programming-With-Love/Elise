@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Site;
 import com.hnqc.ironhand.spider.Task;
-import com.hnqc.ironhand.spider.configurable.ExpressionType;
-import com.hnqc.ironhand.spider.configurable.ExtractRule;
-import com.hnqc.ironhand.spider.distributed.AbsAsyncDownloader;
+import com.hnqc.ironhand.spider.distributed.configurable.ExpressionType;
+import com.hnqc.ironhand.spider.distributed.configurable.ExtractRule;
+import com.hnqc.ironhand.spider.distributed.AbstractAsyncDownloader;
 import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
 import com.hnqc.ironhand.spider.pipeline.ConsolePipeline;
 import com.hnqc.ironhand.spider.scheduler.QueueScheduler;
@@ -19,7 +19,7 @@ import java.util.Date;
 public class JSONTest {
     @Test
     public void testDsSpiderImplJson() {
-        DsSpiderImpl dsSpider = new DsSpiderImpl(Collections.singletonList(new ConsolePipeline()), new QueueScheduler(), new AbsAsyncDownloader() {
+        DsSpiderImpl dsSpider = new DsSpiderImpl(Collections.singletonList(new ConsolePipeline()), new QueueScheduler(), new AbstractAsyncDownloader() {
             @Override
             public void asyncDownload(Request request, Task task) {
 
@@ -31,7 +31,7 @@ public class JSONTest {
         extractRule.setExpressionParams(new String[]{"dwad"});
         dsSpider.setPageProcessor(new Site().setDomain("www.baidu.com"), Collections.singletonList(extractRule));
 
-        dsSpider.setID(1L);
+        dsSpider.setId(1L);
         dsSpider.setStartTime(new Date());
         dsSpider.setSpawnUrl(false);
 

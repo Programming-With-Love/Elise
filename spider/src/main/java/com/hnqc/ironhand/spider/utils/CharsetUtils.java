@@ -11,12 +11,14 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * @author code4crafter@gmail.com
- * Date: 17/3/11
- * Time: 10:36
- * @since 0.6.2
+ * 字符集工具类
+ *
+ * @author zido
+ * @date 2018/43/12
  */
-public abstract class CharsetUtils {
+public class CharsetUtils {
+    private CharsetUtils() {
+    }
 
     private static Logger logger = LoggerFactory.getLogger(CharsetUtils.class);
 

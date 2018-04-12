@@ -162,7 +162,7 @@ public class Site {
     public Task toTask() {
         return new Task() {
             @Override
-            public Long getID() {
+            public Long getId() {
                 return IdWorker.nextId();
             }
 
@@ -175,8 +175,12 @@ public class Site {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Site site = (Site) o;
         return sleepTime == site.sleepTime &&
                 retryTimes == site.retryTimes &&

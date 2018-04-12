@@ -50,7 +50,7 @@ public class MessageConfiguration {
     }
 
     private Map<String, Object> consumerConfig() {
-        Map<String, Object> props = new HashMap<>();
+        Map<String, Object> props = new HashMap<>(7);
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, service);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
@@ -67,7 +67,7 @@ public class MessageConfiguration {
     }
 
     private Map<String, Object> producerConfigs() {
-        Map<String, Object> props = new HashMap<>();
+        Map<String, Object> props = new HashMap<>(7);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, service);
         props.put(ProducerConfig.RETRIES_CONFIG, 0);
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);

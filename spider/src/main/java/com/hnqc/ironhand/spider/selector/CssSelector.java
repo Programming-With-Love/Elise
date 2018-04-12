@@ -9,7 +9,17 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CssSelector extends AbsElementSelector {
+/**
+ * css选择器
+ *
+ * @author zido
+ * @date 2018/05/12
+ */
+public class CssSelector extends AbstractElementSelector {
+    public static final String INNER_HTML = "innerHtml";
+    public static final String TEXT = "text";
+    public static final String ALL_TEXT = "allText";
+    
     private String selectorText;
 
     private String attrName;
@@ -26,11 +36,11 @@ public class CssSelector extends AbsElementSelector {
     private String getValue(Element element) {
         if (attrName == null) {
             return element.outerHtml();
-        } else if ("innerHtml".equalsIgnoreCase(attrName)) {
+        } else if (INNER_HTML.equalsIgnoreCase(attrName)) {
             return element.html();
-        } else if ("text".equalsIgnoreCase(attrName)) {
+        } else if (TEXT.equalsIgnoreCase(attrName)) {
             return getText(element);
-        } else if ("allText".equalsIgnoreCase(attrName)) {
+        } else if (ALL_TEXT.equalsIgnoreCase(attrName)) {
             return element.text();
         } else {
             return element.attr(attrName);

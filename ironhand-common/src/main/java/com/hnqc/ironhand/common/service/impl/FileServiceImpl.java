@@ -3,7 +3,7 @@ package com.hnqc.ironhand.common.service.impl;
 import com.hnqc.common.image.OssImageUtil;
 import com.hnqc.ironhand.common.exceptions.WriteException;
 import com.hnqc.ironhand.common.service.IFileService;
-import com.hnqc.ironhand.utils.CommonConfig;
+import com.hnqc.ironhand.common.CommonConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -67,12 +67,14 @@ public class FileServiceImpl implements IFileService {
         Calendar calendar = Calendar.getInstance();
         result.append(calendar.get(Calendar.YEAR)).append(File.pathSeparator);
         String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
-        if (month.length() < 2)
+        if (month.length() < 2) {
             month = "0" + month;
+        }
         result.append(month).append(File.pathSeparator);
         String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-        if (day.length() < 2)
+        if (day.length() < 2) {
             day = "0" + day;
+        }
         result.append(day).append(File.pathSeparator);
         result.append(UUID.randomUUID());
         result.append(".").append(suffix);
@@ -84,12 +86,14 @@ public class FileServiceImpl implements IFileService {
         Calendar calendar = Calendar.getInstance();
         result.append(calendar.get(Calendar.YEAR)).append(File.pathSeparator);
         String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
-        if (month.length() < 2)
+        if (month.length() < 2) {
             month = "0" + month;
+        }
         result.append(month).append(File.pathSeparator);
         String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-        if (day.length() < 2)
+        if (day.length() < 2) {
             day = "0" + day;
+        }
         result.append(day).append(File.pathSeparator);
         return result.toString();
     }

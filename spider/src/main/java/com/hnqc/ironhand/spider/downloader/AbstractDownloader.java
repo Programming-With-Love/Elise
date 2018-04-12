@@ -5,7 +5,13 @@ import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Site;
 import com.hnqc.ironhand.spider.selector.Html;
 
-public abstract class AbsDownloader implements Downloader {
+/**
+ * 抽象下载类
+ *
+ * @author zido
+ * @date 2018/41/12
+ */
+public abstract class AbstractDownloader implements Downloader {
     public Html download(String url) {
         return download(url, null);
     }

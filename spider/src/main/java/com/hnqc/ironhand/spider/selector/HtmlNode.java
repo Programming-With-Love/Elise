@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class HtmlNode extends AbsSelectable {
+public class HtmlNode extends AbstractSelectable {
 
     private final List<Element> elements;
 
@@ -36,8 +36,8 @@ public class HtmlNode extends AbsSelectable {
 
     @Override
     public Selectable selectList(Selector selector) {
-        if (selector instanceof AbsElementSelector) {
-            return selectElements((AbsElementSelector) selector);
+        if (selector instanceof AbstractElementSelector) {
+            return selectElements((AbstractElementSelector) selector);
         }
         return selectList(selector, getSourceTexts());
     }
@@ -53,7 +53,7 @@ public class HtmlNode extends AbsSelectable {
      * @param elementSelector elementSelector
      * @return result
      */
-    protected Selectable selectElements(AbsElementSelector elementSelector) {
+    protected Selectable selectElements(AbstractElementSelector elementSelector) {
         ListIterator<Element> elementIterator = getElements().listIterator();
         if (!elementSelector.hasAttribute()) {
             List<Element> resultElements = new ArrayList<>();
@@ -96,14 +96,14 @@ public class HtmlNode extends AbsSelectable {
     }
 
     @Override
-    public Selectable $(String selector) {
-        CssSelector cssSelector = Selectors.$(selector);
+    public Selectable css(String selector) {
+        CssSelector cssSelector = Selectors.css(selector);
         return selectElements(cssSelector);
     }
 
     @Override
-    public Selectable $(String selector, String attrName) {
-        CssSelector cssSelector = Selectors.$(selector, attrName);
+    public Selectable css(String selector, String attrName) {
+        CssSelector cssSelector = Selectors.css(selector, attrName);
         return selectElements(cssSelector);
     }
 

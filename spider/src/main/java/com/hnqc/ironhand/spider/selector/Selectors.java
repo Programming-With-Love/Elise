@@ -1,11 +1,11 @@
 package com.hnqc.ironhand.spider.selector;
 
 public class Selectors {
-    public static CssSelector $(String selector) {
+    public static CssSelector css(String selector) {
         return new CssSelector(selector);
     }
 
-    public static CssSelector $(String selector, String attrName) {
+    public static CssSelector css(String selector, String attrName) {
         return new CssSelector(selector, attrName);
     }
 

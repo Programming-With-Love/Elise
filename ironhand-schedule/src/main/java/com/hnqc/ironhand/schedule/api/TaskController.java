@@ -1,20 +1,16 @@
 package com.hnqc.ironhand.schedule.api;
 
-import com.hnqc.ironhand.common.SpringDistributedScheduler;
-import com.hnqc.ironhand.common.pipelines.SavedPipeline;
 import com.hnqc.ironhand.common.pojo.Seed;
 import com.hnqc.ironhand.common.pojo.entity.Scheduler;
 import com.hnqc.ironhand.common.sender.AnalyzerSender;
-import com.hnqc.ironhand.common.service.impl.AsyncDownloaderImpl;
 import com.hnqc.ironhand.schedule.pojo.AjaxResult;
 import com.hnqc.ironhand.schedule.serivice.ITaskService;
-import com.hnqc.ironhand.spider.configurable.ConfigurablePageProcessor;
+import com.hnqc.ironhand.spider.distributed.configurable.ConfigurablePageProcessor;
 import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
 import com.hnqc.ironhand.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.Date;
 
 @RestController
@@ -36,7 +32,7 @@ public class TaskController {
         long id = IdWorker.nextId();
 
         DsSpiderImpl spider = new DsSpiderImpl();
-        spider.setID(id)
+        spider.setId(id)
                 .setStartTime(new Date())
                 .setPageProcessor(pageProcessor);
 

@@ -14,11 +14,13 @@ public class NestedRuntimeUtils {
      * @return 全异常信息
      */
     public static String buildMessage(String msg, Throwable cause) {
-        if (cause == null)
+        if (cause == null) {
             return msg;
+        }
         String result = "";
-        if (msg != null)
+        if (msg != null) {
             result += "发生异常：" + msg + "; 原因：";
+        }
         result += cause;
         return result;
     }
@@ -30,8 +32,9 @@ public class NestedRuntimeUtils {
      * @return 最顶层的异常/null
      */
     public static Throwable getRootCause(Throwable original) {
-        if (original == null)
+        if (original == null) {
             return null;
+        }
         Throwable rootCause = null;
         Throwable cause = original.getCause();
         while (cause != null && cause != rootCause) {

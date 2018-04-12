@@ -2,6 +2,7 @@ package com.hnqc.ironhand.downloader.service.impl;
 
 import com.hnqc.ironhand.downloader.exceptions.DownloadException;
 import com.hnqc.ironhand.downloader.service.IDownloadService;
+import com.hnqc.ironhand.spider.utils.StatusCode;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -14,11 +15,17 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 下载服务实现类
+ *
+ * @author zido
+ * @date 2018/34/12
+ */
 @Service
-public class DownloadService implements IDownloadService {
+public class DownloadServiceImpl implements IDownloadService {
     private HttpClient httpClient;
 
-    public DownloadService() {
+    public DownloadServiceImpl() {
         httpClient = HttpClients.createDefault();
     }
 
@@ -29,7 +36,7 @@ public class DownloadService implements IDownloadService {
             HttpResponse resp = httpClient.execute(httpGet);
             StatusLine line = resp.getStatusLine();
             int code = line.getStatusCode();
-            if (code >= 200 && code < 300) {
+            if (StatusCode.isSuccess(code)) {
                 HttpEntity entity = resp.getEntity();
                 return EntityUtils.toString(entity);
             } else {
@@ -47,7 +54,7 @@ public class DownloadService implements IDownloadService {
             HttpResponse response = httpClient.execute(httpGet);
             StatusLine statusLine = response.getStatusLine();
             int code = statusLine.getStatusCode();
-            if (code >= 200 && code < 300) {
+            if (StatusCode.isSuccess(code)) {
                 HttpEntity entity = response.getEntity();
                 return entity.getContent();
             } else {

@@ -5,6 +5,12 @@ import com.hnqc.ironhand.spider.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 抽象去重任务配置
+ *
+ * @author zido
+ * @date 2018/43/12
+ */
 public abstract class DuplicateRemovedScheduler implements Scheduler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 

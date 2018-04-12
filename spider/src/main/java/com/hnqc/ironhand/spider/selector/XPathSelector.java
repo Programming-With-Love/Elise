@@ -7,7 +7,7 @@ import us.codecraft.xsoup.Xsoup;
 
 import java.util.List;
 
-public class XPathSelector extends AbsElementSelector {
+public class XPathSelector extends AbstractElementSelector {
     private XPathEvaluator xPathEvaluator;
 
     public XPathSelector(XPathEvaluator xPathEvaluator) {

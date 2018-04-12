@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.spider.configurable;
+package com.hnqc.ironhand.spider.distributed.configurable;
 
 import com.hnqc.ironhand.spider.Page;
 import com.hnqc.ironhand.spider.Site;
@@ -6,6 +6,12 @@ import com.hnqc.ironhand.spider.processor.PageProcessor;
 
 import java.util.List;
 
+/**
+ * ConfigurablePageProcessor 可配置的页面处理器
+ *
+ * @author zido
+ * @date 2018/26/12
+ */
 public class ConfigurablePageProcessor implements PageProcessor {
     private Site site;
 

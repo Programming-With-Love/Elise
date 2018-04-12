@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HttpClientDownloader extends AbsDownloader {
+public class HttpClientDownloader extends AbstractDownloader {
     private Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
     private final Map<String, CloseableHttpClient> httpClients = new HashMap<>();
 
@@ -104,7 +104,7 @@ public class HttpClientDownloader extends AbsDownloader {
     }
 
     private Map<String, List<String>> convertHeaders(Header[] headers) {
-        Map<String, List<String>> results = new HashMap<>();
+        Map<String, List<String>> results = new HashMap<>(16);
         for (Header header : headers) {
             List<String> list = results.computeIfAbsent(header.getName(), k -> new ArrayList<>());
             list.add(header.getValue());

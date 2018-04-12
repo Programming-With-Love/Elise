@@ -12,7 +12,7 @@ import javax.persistence.Lob;
 @Entity
 public class ContentResult {
     private Long id;
-    private Long SchedulerId;
+    private Long schedulerId;
     @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -20,8 +20,8 @@ public class ContentResult {
     public ContentResult() {
     }
 
-    public ContentResult(Long SchedulerId) {
-        this.SchedulerId = SchedulerId;
+    public ContentResult(Long schedulerId) {
+        this.schedulerId = schedulerId;
         this.id = IdWorker.nextId();
     }
 
@@ -34,11 +34,11 @@ public class ContentResult {
     }
 
     public Long getSchedulerId() {
-        return SchedulerId;
+        return schedulerId;
     }
 
     public void setSchedulerId(Long schedulerId) {
-        this.SchedulerId = schedulerId;
+        this.schedulerId = schedulerId;
     }
 
     public String getContent() {

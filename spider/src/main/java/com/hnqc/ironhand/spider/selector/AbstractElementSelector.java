@@ -6,10 +6,18 @@ import org.jsoup.nodes.Element;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbsElementSelector implements Selector, ElementSelector {
+/**
+ * 抽象dom节点选择器
+ *
+ * @author zido
+ * @date 2018/42/12
+ */
+public abstract class AbstractElementSelector implements Selector, ElementSelector {
+    @Override
     public String select(String text) {
-        if (text != null)
+        if (text != null) {
             return select(Jsoup.parse(text));
+        }
         return null;
     }
 

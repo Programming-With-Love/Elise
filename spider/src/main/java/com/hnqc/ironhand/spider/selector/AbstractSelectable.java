@@ -4,19 +4,17 @@ import com.hnqc.ironhand.spider.utils.ValidateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public abstract class AbsSelectable implements Selectable {
+/**
+ * 抽象可被选择的文档描述
+ *
+ * @author zido
+ * @date 2018/42/12
+ */
+public abstract class AbstractSelectable implements Selectable {
     protected abstract List<String> getSourceTexts();
-
-    @Override
-    public Selectable css(String selector) {
-        return $(selector);
-    }
-
-    @Override
-    public Selectable css(String selector, String attrName) {
-        return $(selector, attrName);
-    }
 
     protected Selectable select(Selector selector, List<String> strings) {
         List<String> results = new ArrayList<>();
@@ -63,8 +61,9 @@ public abstract class AbsSelectable implements Selectable {
 
     public String getFirstSourceText() {
         List<String> sourceTexts = getSourceTexts();
-        if (ValidateUtils.isEmpty(sourceTexts))
+        if (ValidateUtils.isEmpty(sourceTexts)) {
             return null;
+        }
         return sourceTexts.get(0);
     }
 

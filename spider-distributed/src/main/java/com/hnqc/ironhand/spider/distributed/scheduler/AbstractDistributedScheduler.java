@@ -9,8 +9,11 @@ import com.hnqc.ironhand.spider.utils.ValidateUtils;
 
 /**
  * 基于redis的分布式任务调度实现
+ *
+ * @author zido
+ * @date 2018/40/12
  */
-public abstract class AbsDistributedScheduler extends DuplicateRemovedScheduler implements MonitorableScheduler, DuplicateRemover {
+public abstract class AbstractDistributedScheduler extends DuplicateRemovedScheduler implements MonitorableScheduler, DuplicateRemover {
 
     private static final String QUEUE_PREFIX = "queue_";
 
@@ -18,7 +21,7 @@ public abstract class AbsDistributedScheduler extends DuplicateRemovedScheduler 
 
     private static final String ITEM_PREFIX = "item_";
 
-    public AbsDistributedScheduler() {
+    public AbstractDistributedScheduler() {
     }
 
     protected boolean checkForAdditionalInfo(Request request) {
@@ -43,15 +46,15 @@ public abstract class AbsDistributedScheduler extends DuplicateRemovedScheduler 
     }
 
     protected String getSetKey(Task task) {
-        return SET_PREFIX + task.getID();
+        return SET_PREFIX + task.getId();
     }
 
     protected String getQueueKey(Task task) {
-        return QUEUE_PREFIX + task.getID();
+        return QUEUE_PREFIX + task.getId();
     }
 
     protected String getItemKey(Task task) {
-        return ITEM_PREFIX + task.getID();
+        return ITEM_PREFIX + task.getId();
     }
 
 }

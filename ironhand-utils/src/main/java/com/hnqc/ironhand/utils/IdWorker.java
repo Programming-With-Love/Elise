@@ -12,19 +12,14 @@ import java.net.NetworkInterface;
  */
 public class IdWorker {
 
-    private final static IdWorker instance;
+    private final static IdWorker INSTANCE;
 
     static {
-        CommonConfig commonConfig = SpringUtils.getBean(CommonConfig.class);
-        if (commonConfig != null && commonConfig.getDataCenterId() != null && commonConfig.getWorkerId() != null) {
-            instance = new IdWorker(commonConfig.getWorkerId(), commonConfig.getDataCenterId());
-        } else {
-            instance = new IdWorker();
-        }
+        INSTANCE = new IdWorker();
     }
 
     public static long nextId() {
-        return instance.next();
+        return INSTANCE.next();
     }
 
     /**

@@ -159,8 +159,9 @@ public class SchedulerBuilder {
             SchedulerBuilder builder;
             if (this.builder != null) {
                 builder = this.builder;
-            } else
+            } else {
                 builder = new SchedulerBuilder(this);
+            }
             Scheduler scheduler = builder.scheduler;
             List<UrlQuery> urlQueries = scheduler.getUrlQueries();
             if (urlQueries == null) {

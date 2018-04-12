@@ -40,6 +40,7 @@ public class Html extends HtmlNode {
         return document;
     }
 
+    @Override
     protected List<Element> getElements() {
         return Collections.singletonList(getDocument());
     }

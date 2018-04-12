@@ -48,7 +48,7 @@ public class Request implements Serializable {
 
     public Request putExtra(String key, Object value) {
         if (extras == null) {
-            extras = new HashMap<String, Object>();
+            extras = new HashMap<>(16);
         }
         extras.put(key, value);
         return this;
@@ -63,12 +63,18 @@ public class Request implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Request request = (Request) o;
 
-        if (url != null ? !url.equals(request.url) : request.url != null) return false;
+        if (url != null ? !url.equals(request.url) : request.url != null) {
+            return false;
+        }
         return method != null ? method.equals(request.method) : request.method == null;
     }
 

@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.utils;
+package com.hnqc.ironhand.common;
 
 public class CommonConfig {
     private String broadId;

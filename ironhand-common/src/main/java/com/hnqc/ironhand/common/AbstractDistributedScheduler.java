@@ -3,18 +3,18 @@ package com.hnqc.ironhand.common;
 import com.alibaba.fastjson.JSON;
 import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Task;
-import com.hnqc.ironhand.spider.distributed.scheduler.AbsDistributedScheduler;
+import com.hnqc.ironhand.spider.distributed.scheduler.AbstractDistributedScheduler;
 import com.hnqc.ironhand.spider.utils.ValidateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SpringDistributedScheduler extends AbsDistributedScheduler {
+public class AbstractDistributedScheduler extends AbstractDistributedScheduler {
     private RedisTemplate<String, String> template;
 
     @Autowired
-    public SpringDistributedScheduler(RedisTemplate<String, String> template) {
+    public AbstractDistributedScheduler(RedisTemplate<String, String> template) {
         super();
         this.template = template;
         setDuplicateRemover(this);

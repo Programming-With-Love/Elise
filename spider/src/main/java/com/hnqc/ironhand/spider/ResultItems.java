@@ -1,8 +1,16 @@
 package com.hnqc.ironhand.spider;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * 结果集
+ *
+ * @author zido
+ * @date 2018/29/12
+ */
 public class ResultItems {
     private Map<String, Object> fields = new LinkedHashMap<>();
 
@@ -41,5 +49,9 @@ public class ResultItems {
 
     public void setSkip(boolean skip) {
         this.skip = skip;
+    }
+
+    public List<ResultItems> getListFromResultItems() {
+        return (List<ResultItems>) fields.get("__list__");
     }
 }

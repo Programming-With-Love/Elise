@@ -1,5 +1,6 @@
 package com.hnqc.ironhand.spider.downloader;
 
+import com.hnqc.ironhand.spider.utils.Method;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolException;
@@ -15,10 +16,12 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 
 /**
- *支持post 302跳转策略实现类
- *HttpClient默认跳转：httpClientBuilder.setRedirectStrategy(new LaxRedirectStrategy());
- *上述代码在post/redirect/post这种情况下不会传递原有请求的数据信息。所以参考了下SeimiCrawler这个项目的重定向策略。
- *原代码地址：https://github.com/zhegexiaohuozi/SeimiCrawler/blob/master/project/src/main/java/cn/wanghaomiao/seimi/http/hc/SeimiRedirectStrategy.java
+ * 支持post 302跳转策略实现类
+ * HttpClient默认跳转：httpClientBuilder.setRedirectStrategy(new LaxRedirectStrategy());
+ * 上述代码在post/redirect/post这种情况下不会传递原有请求的数据信息。所以参考了下SeimiCrawler这个项目的重定向策略。
+ * 原代码地址：https://github.com/zhegexiaohuozi/SeimiCrawler/blob/master/project/src/main/java/cn/wanghaomiao/seimi/http/hc/SeimiRedirectStrategy.java
+ * @author zido
+ * @date 2018/04/12
  */
 public class CustomRedirectStrategy extends LaxRedirectStrategy {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -27,7 +30,7 @@ public class CustomRedirectStrategy extends LaxRedirectStrategy {
     public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context) throws ProtocolException {
         URI uri = getLocationURI(request, response, context);
         String method = request.getRequestLine().getMethod();
-        if ("post".equalsIgnoreCase(method)) {
+        if (Method.POST.equalsIgnoreCase(method)) {
             try {
                 HttpRequestWrapper httpRequestWrapper = (HttpRequestWrapper) request;
                 httpRequestWrapper.setURI(uri);

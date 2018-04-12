@@ -1,7 +1,7 @@
 package com.hnqc.ironhand.schedule.pojo;
 
 public class AjaxResult<T> {
-    private T Data;
+    private T data;
     private int code;
 
     public static <T> AjaxResult<T> success() {
@@ -9,11 +9,11 @@ public class AjaxResult<T> {
     }
 
     public T getData() {
-        return Data;
+        return data;
     }
 
     public AjaxResult<T> setData(T data) {
-        Data = data;
+        this.data = data;
         return this;
     }
 

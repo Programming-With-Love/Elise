@@ -10,13 +10,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 请求体描述
+ *
+ * @author zido
+ * @date 2018/35/12
+ */
 public class HttpRequestBody implements Serializable {
     private static final long serialVersionUID = 2018040215121L;
 
+    /**
+     * content类型
+     */
     public static enum ContentType {
+        /**
+         * json
+         */
         JSON("application/json"),
+        /**
+         * xml
+         */
         XML("text/xml"),
+        /**
+         * form
+         */
         FORM("application/x-www-form-urlencoded"),
+        /**
+         * 文件/file
+         */
         MULTIPART("multipart/form-data");
 
         private String value;
@@ -93,7 +114,7 @@ public class HttpRequestBody implements Serializable {
         return new HttpRequestBody(body, contentType, encoding);
     }
 
-    public static HttpRequestBody form(Map<String,Object> params, String encoding){
+    public static HttpRequestBody form(Map<String, Object> params, String encoding) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(params.size());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             nameValuePairs.add(new BasicNameValuePair(entry.getKey(), String.valueOf(entry.getValue())));

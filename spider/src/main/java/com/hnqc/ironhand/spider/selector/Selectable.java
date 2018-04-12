@@ -5,10 +5,6 @@ import java.util.List;
 public interface Selectable {
     Selectable xpath(String xpath);
 
-    Selectable $(String selector);
-
-    Selectable $(String selector, String attrName);
-
     Selectable css(String selector);
 
     Selectable css(String selector, String attrName);
@@ -19,6 +15,7 @@ public interface Selectable {
 
     Selectable regex(String regex, int group);
 
+    @Override
     String toString();
 
     String get();

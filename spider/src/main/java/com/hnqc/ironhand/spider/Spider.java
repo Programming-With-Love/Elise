@@ -36,7 +36,7 @@ public class Spider implements Runnable, Task {
     private PageProcessor pageProcessor;
     private List<Request> startRequests;
     private Site site;
-    private Long ID;
+    private Long id;
     private Scheduler scheduler = new QueueScheduler();
     private static Logger logger = LoggerFactory.getLogger(Spider.class);
     private CountableThreadPool threadPool;
@@ -127,8 +127,8 @@ public class Spider implements Runnable, Task {
      * @param id id
      * @return this
      */
-    public Spider setID(Long id) {
-        this.ID = id;
+    public Spider setId(Long id) {
+        this.id = id;
         return this;
     }
 
@@ -232,7 +232,7 @@ public class Spider implements Runnable, Task {
     public void run() {
         checkRunningStat();
         initComponent();
-        logger.info("Spider {} started!", getID());
+        logger.info("Spider {} started!", getId());
         while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
             final Request request = scheduler.poll(this);
             if (request == null) {
@@ -261,7 +261,7 @@ public class Spider implements Runnable, Task {
         if (destroyWhenExit) {
             close();
         }
-        logger.info("Spider {} closed! {} pages downloaded.", getID(), pageCount.get());
+        logger.info("Spider {} closed! {} pages downloaded.", getId(), pageCount.get());
     }
 
     protected void onError(Request request) {
@@ -299,8 +299,9 @@ public class Spider implements Runnable, Task {
         for (Pipeline pipeline : pipelines) {
             destroyEach(pipeline);
         }
-        if (threadPool != null)
+        if (threadPool != null) {
             threadPool.shutdown();
+        }
     }
 
     private void destroyEach(Object object) {
@@ -506,9 +507,9 @@ public class Spider implements Runnable, Task {
 
     public void stop() {
         if (stat.compareAndSet(STAT_RUNNING, STAT_STOPPED)) {
-            logger.info("Spider " + getID() + " stop success!");
+            logger.info("Spider " + getId() + " stop success!");
         } else {
-            logger.info("Spider " + getID() + " stop fail!");
+            logger.info("Spider " + getId() + " stop fail!");
         }
     }
 
@@ -588,7 +589,18 @@ public class Spider implements Runnable, Task {
 
 
     public enum Status {
-        Init(0), Running(1), Stopped(2);
+        /**
+         * 初始状态
+         */
+        Init(0),
+        /**
+         * 执行中
+         */
+        Running(1),
+        /**
+         * 停止
+         */
+        Stopped(2);
 
         private Status(int value) {
             this.value = value;
@@ -639,8 +651,8 @@ public class Spider implements Runnable, Task {
     }
 
     @Override
-    public Long getID() {
-        return ID;
+    public Long getId() {
+        return id;
     }
 
     public Spider setExecutorService(ExecutorService executorService) {

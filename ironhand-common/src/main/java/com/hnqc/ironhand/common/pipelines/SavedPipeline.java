@@ -26,7 +26,7 @@ public class SavedPipeline implements Pipeline {
         ContentResult contentResult = new ContentResult();
         contentResult.setId(IdWorker.nextId());
         contentResult.setContent(json);
-        contentResult.setSchedulerId(task.getID());
+        contentResult.setSchedulerId(task.getId());
         service.addContentResult(contentResult);
     }
 }

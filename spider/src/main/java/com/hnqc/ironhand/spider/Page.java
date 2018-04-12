@@ -11,7 +11,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 下载的页面对象
+ *
+ * @author zido
+ * @date 2018/33/12
+ */
 public class Page {
+    private static final String HASH_SEP = "#";
     private Request request;
 
     private ResultItems resultItems = new ResultItems();
@@ -96,7 +103,7 @@ public class Page {
      */
     public void addTargetRequests(List<String> requests) {
         for (String s : requests) {
-            if (ValidateUtils.isEmpty(s) || s.equals("#") || s.startsWith("javascript:")) {
+            if (ValidateUtils.isEmpty(s) || HASH_SEP.equals(s) || s.startsWith("javascript:")) {
                 continue;
             }
             s = UrlUtils.canonicalizeUrl(s, url.toString());
@@ -110,7 +117,7 @@ public class Page {
      * @param requestString requestString
      */
     public void addTargetRequest(String requestString) {
-        if (ValidateUtils.isEmpty(requestString) || requestString.equals("#")) {
+        if (ValidateUtils.isEmpty(requestString) || HASH_SEP.equals(requestString)) {
             return;
         }
         requestString = UrlUtils.canonicalizeUrl(requestString, url.toString());

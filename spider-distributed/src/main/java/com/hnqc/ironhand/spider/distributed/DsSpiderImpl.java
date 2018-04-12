@@ -4,8 +4,8 @@ import com.hnqc.ironhand.spider.Page;
 import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Site;
 import com.hnqc.ironhand.spider.Spider;
-import com.hnqc.ironhand.spider.configurable.ConfigurablePageProcessor;
-import com.hnqc.ironhand.spider.configurable.ExtractRule;
+import com.hnqc.ironhand.spider.distributed.configurable.ConfigurablePageProcessor;
+import com.hnqc.ironhand.spider.distributed.configurable.ExtractRule;
 import com.hnqc.ironhand.spider.pipeline.Pipeline;
 import com.hnqc.ironhand.spider.scheduler.Scheduler;
 import org.slf4j.Logger;
@@ -20,13 +20,13 @@ public class DsSpiderImpl implements IDsSpider {
     private List<ExtractRule> extractRules;
     private transient Spider spider;
 
-    private Long ID;
+    private Long id;
     private Site site;
     private boolean spawnUrl = true;
     private Date startTime;
 
 
-    public DsSpiderImpl(List<Pipeline> pipelines, Scheduler scheduler, AbsAsyncDownloader downloader) {
+    public DsSpiderImpl(List<Pipeline> pipelines, Scheduler scheduler, AbstractAsyncDownloader downloader) {
         if (pipelines == null) {
             throw new NullPointerException();
         }
@@ -50,7 +50,7 @@ public class DsSpiderImpl implements IDsSpider {
         return this;
     }
 
-    public DsSpiderImpl setDownloader(AbsAsyncDownloader downloader) {
+    public DsSpiderImpl setDownloader(AbstractAsyncDownloader downloader) {
         spider.setDownloader(downloader);
         return this;
     }
@@ -68,7 +68,7 @@ public class DsSpiderImpl implements IDsSpider {
     }
 
     public void init() {
-        spider.setID(ID);
+        spider.setId(id);
         if (getStartTime() == null) {
             Date date = new Date();
             spider.setStartTime(date);
@@ -82,7 +82,7 @@ public class DsSpiderImpl implements IDsSpider {
     @Override
     public void run() {
         init();
-        logger.info("Spider {} started!", spider.getID());
+        logger.info("Spider {} started!", spider.getId());
         Scheduler scheduler = spider.getScheduler();
         Request request = scheduler.poll(spider);
         processRequest(request);
@@ -110,12 +110,12 @@ public class DsSpiderImpl implements IDsSpider {
         return extractRules;
     }
 
-    public Long getID() {
-        return ID;
+    public Long getId() {
+        return id;
     }
 
-    public DsSpiderImpl setID(Long ID) {
-        this.ID = ID;
+    public DsSpiderImpl setId(Long id) {
+        this.id = id;
         return this;
     }
 

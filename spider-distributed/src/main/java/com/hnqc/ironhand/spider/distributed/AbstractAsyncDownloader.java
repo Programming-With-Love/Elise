@@ -5,7 +5,13 @@ import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Task;
 import com.hnqc.ironhand.spider.downloader.Downloader;
 
-public abstract class AbsAsyncDownloader implements Downloader {
+/**
+ * 抽象异步下载类
+ *
+ * @author zido
+ * @date 2018/40/12
+ */
+public abstract class AbstractAsyncDownloader implements Downloader {
 
     public abstract void asyncDownload(Request request, Task task);
 
