@@ -9,8 +9,8 @@ public class Selectors {
         return new CssSelector(selector, attrName);
     }
 
-    public static XPathSelector xpath(String xpath) {
-        return new XPathSelector(xpath);
+    public static XpathSelector xpath(String xpath) {
+        return new XpathSelector(xpath);
     }
 
     public static RegexSelector regex(String regex) {

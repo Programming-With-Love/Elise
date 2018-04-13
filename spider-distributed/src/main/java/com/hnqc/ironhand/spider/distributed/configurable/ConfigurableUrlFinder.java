@@ -1,8 +1,5 @@
 package com.hnqc.ironhand.spider.distributed.configurable;
 
-import com.hnqc.ironhand.spider.selector.RegexSelector;
-import com.hnqc.ironhand.spider.selector.Selector;
-
 /**
  * 配置url发现规则
  *
@@ -11,9 +8,7 @@ import com.hnqc.ironhand.spider.selector.Selector;
  */
 public class ConfigurableUrlFinder {
 
-    private static final String EMPTY_URL_PATTERN = "http://.*";
-
-    enum Type {
+    public enum Type {
         /**
          * 目标url抓取类型，目前仅支持regex抓取，后续可能会自定义规则
          */
@@ -60,18 +55,5 @@ public class ConfigurableUrlFinder {
     public ConfigurableUrlFinder setSourceRegion(String sourceRegion) {
         this.sourceRegion = sourceRegion;
         return this;
-    }
-
-
-    public Selector compileSelector() {
-        switch (type) {
-            case REGEX:
-            default:
-                String pattern = value;
-                if (pattern == null) {
-                    pattern = EMPTY_URL_PATTERN;
-                }
-                return new RegexSelector(value);
-        }
     }
 }

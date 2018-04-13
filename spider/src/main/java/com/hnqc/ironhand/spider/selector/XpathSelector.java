@@ -7,14 +7,20 @@ import us.codecraft.xsoup.Xsoup;
 
 import java.util.List;
 
-public class XPathSelector extends AbstractElementSelector {
+/**
+ * xpath选择器，基于xsoup
+ *
+ * @author zido
+ * @date 2018/52/13
+ */
+public class XpathSelector extends AbstractElementSelector {
     private XPathEvaluator xPathEvaluator;
 
-    public XPathSelector(XPathEvaluator xPathEvaluator) {
+    public XpathSelector(XPathEvaluator xPathEvaluator) {
         this.xPathEvaluator = xPathEvaluator;
     }
 
-    public XPathSelector(String xpathStr) {
+    public XpathSelector(String xpathStr) {
         this.xPathEvaluator = Xsoup.compile(xpathStr);
     }
 
@@ -33,7 +39,7 @@ public class XPathSelector extends AbstractElementSelector {
     }
 
     @Override
-    public boolean hasAttribute() {
+    public boolean isText() {
         return xPathEvaluator.hasAttribute();
     }
 

@@ -3,15 +3,17 @@ package com.hnqc.ironhand.spider.distributed.configurable;
 import com.hnqc.ironhand.spider.selector.Selector;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import java.util.List;
+
 /**
- * Extractor
+ * 内容抓取器
  *
  * @author zido
  * @date 2018/04/12
  */
 public class Extractor {
     /**
-     * 抽取范围枚举
+     * 抽取范围
      *
      * @author zido
      * @date 2018/30/12
@@ -41,11 +43,11 @@ public class Extractor {
 
     private final Source source;
 
-    private final Boolean nullable;
+    private final boolean nullable;
 
-    private final Boolean multi;
+    private final boolean multi;
 
-    public Extractor(String name, Selector selector, Source source, Boolean nullable, Boolean multi) {
+    public Extractor(String name, Selector selector, Source source, boolean nullable, boolean multi) {
         this.name = name;
         this.selector = selector;
         this.source = source;
@@ -61,11 +63,11 @@ public class Extractor {
         return source;
     }
 
-    public Boolean getNullable() {
+    public boolean getNullable() {
         return nullable;
     }
 
-    public Boolean getMulti() {
+    public boolean getMulti() {
         return multi;
     }
 

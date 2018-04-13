@@ -7,7 +7,17 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 链接选择器
+ *
+ * @author zido
+ * @date 2018/56/13
+ */
 public class LinkSelector extends AbstractElementSelector {
+    private static final String LIN_TARGET_TAG = "a";
+    private static final String ATTR_WITH_BASE = "abs:href";
+    private static final String ATTR = "href";
+
     @Override
     public Element selectElement(Element element) {
         throw new UnsupportedOperationException();
@@ -19,7 +29,7 @@ public class LinkSelector extends AbstractElementSelector {
     }
 
     @Override
-    public boolean hasAttribute() {
+    public boolean isText() {
         return true;
     }
 
@@ -30,13 +40,13 @@ public class LinkSelector extends AbstractElementSelector {
 
     @Override
     public List<String> selectList(Element element) {
-        Elements elements = element.select("a");
-        List<String> links = new ArrayList<String>(elements.size());
+        Elements elements = element.select(LIN_TARGET_TAG);
+        List<String> links = new ArrayList<>(elements.size());
         for (Element element0 : elements) {
             if (!ValidateUtils.isEmpty(element0.baseUri())) {
-                links.add(element0.attr("abs:href"));
+                links.add(element0.attr(ATTR_WITH_BASE));
             } else {
-                links.add(element0.attr("href"));
+                links.add(element0.attr(ATTR));
             }
         }
         return links;

@@ -73,7 +73,7 @@ public class CssSelector extends AbstractElementSelector {
     }
 
     @Override
-    public boolean hasAttribute() {
+    public boolean isText() {
         return attrName != null;
     }
 

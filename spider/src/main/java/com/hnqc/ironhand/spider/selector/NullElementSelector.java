@@ -22,7 +22,7 @@ public class NullElementSelector extends AbstractElementSelector {
     }
 
     @Override
-    public boolean hasAttribute() {
+    public boolean isText() {
         return false;
     }
 

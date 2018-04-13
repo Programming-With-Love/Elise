@@ -3,29 +3,12 @@ package com.hnqc.ironhand.spider.distributed.configurable;
 import java.util.ArrayList;
 
 /**
- * 抽取器配置类
+ * 抽取器描述
  * <p>
  * 配置抽取内容的规则
  * <p>
- * 可做为model配置，此时{@link #name} 为model名，e.g：当使用mysql时，为表明
- * <p>
  * 可做为单独的每条属性配置，此时{@link #name} 为字段名 <br>
- * e.g:
- * <code>
- * {
- * value:"div.class",
- * type:"CSS",
- * children:[{
- * value:"div.class",
- * name:"title",
- * },{
- * value:"div.class",
- * name:"content",
- * }]
- * }
- * </code>
- * </p>
- *
+
  * @author zido
  * @date 2018/28/12
  */
@@ -56,7 +39,6 @@ public class DefExtractor {
      * 是否允许空 ,默认允许为空
      */
     private Boolean nullable = true;
-
 
 
     public String getName() {

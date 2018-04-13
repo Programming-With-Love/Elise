@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * html节点
+ *
+ * @author zido
+ * @date 2018/57/13
+ */
 public class HtmlNode extends AbstractSelectable {
 
     private final List<Element> elements;
@@ -30,7 +36,7 @@ public class HtmlNode extends AbstractSelectable {
 
     @Override
     public Selectable xpath(String xpath) {
-        XPathSelector xpathSelector = Selectors.xpath(xpath);
+        XpathSelector xpathSelector = Selectors.xpath(xpath);
         return selectElements(xpathSelector);
     }
 
@@ -55,7 +61,7 @@ public class HtmlNode extends AbstractSelectable {
      */
     protected Selectable selectElements(AbstractElementSelector elementSelector) {
         ListIterator<Element> elementIterator = getElements().listIterator();
-        if (!elementSelector.hasAttribute()) {
+        if (!elementSelector.isText()) {
             List<Element> resultElements = new ArrayList<>();
             while (elementIterator.hasNext()) {
                 Element element = checkElementAndConvert(elementIterator);

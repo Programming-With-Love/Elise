@@ -44,9 +44,26 @@ public abstract class AbstractElementSelector implements Selector, ElementSelect
         return new ArrayList<>();
     }
 
+    /**
+     * 从parent dom节点中选择child dom节点
+     *
+     * @param element parent dom
+     * @return child dom
+     */
     public abstract Element selectElement(Element element);
 
+    /**
+     * 从parent dom节点中选择children dom节点
+     *
+     * @param element parent dom
+     * @return children dom
+     */
     public abstract List<Element> selectElements(Element element);
 
-    public abstract boolean hasAttribute();
+    /**
+     * 是否是文字
+     *
+     * @return true/false
+     */
+    public abstract boolean isText();
 }
