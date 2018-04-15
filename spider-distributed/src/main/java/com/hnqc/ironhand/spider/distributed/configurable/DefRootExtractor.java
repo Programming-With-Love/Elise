@@ -42,6 +42,11 @@ public class DefRootExtractor extends DefExtractor {
      */
     private Extractor.Source source;
 
+    /**
+     * 子规则
+     */
+    private ArrayList<DefExtractor> children;
+
     public Extractor.Source getSource() {
         return source;
     }
@@ -89,5 +94,21 @@ public class DefRootExtractor extends DefExtractor {
         }
         this.helpUrl.addAll(Arrays.asList(helpUrl));
         return this;
+    }
+
+    public ArrayList<DefExtractor> getChildren() {
+        return children;
+    }
+
+    public DefExtractor setChildren(ArrayList<DefExtractor> children) {
+        this.children = children;
+        return this;
+    }
+
+    public void addChildren(DefExtractor extractor) {
+        if (this.children == null) {
+            this.children = new ArrayList<>();
+        }
+        this.children.add(extractor);
     }
 }

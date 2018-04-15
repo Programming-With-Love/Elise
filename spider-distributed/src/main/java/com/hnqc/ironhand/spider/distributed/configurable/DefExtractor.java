@@ -1,7 +1,5 @@
 package com.hnqc.ironhand.spider.distributed.configurable;
 
-import java.util.ArrayList;
-
 /**
  * 抽取器描述
  * <p>
@@ -17,11 +15,6 @@ public class DefExtractor {
      * 字段名
      */
     private String name;
-
-    /**
-     * 子规则
-     */
-    private ArrayList<DefExtractor> children;
 
     /**
      * 抽取值，默认为xpath跟路径
@@ -47,15 +40,6 @@ public class DefExtractor {
 
     public DefExtractor setName(String name) {
         this.name = name;
-        return this;
-    }
-
-    public ArrayList<DefExtractor> getChildren() {
-        return children;
-    }
-
-    public DefExtractor setChildren(ArrayList<DefExtractor> children) {
-        this.children = children;
         return this;
     }
 
@@ -95,10 +79,4 @@ public class DefExtractor {
         return this;
     }
 
-    public void addChildren(DefExtractor extractor) {
-        if (this.children == null) {
-            this.children = new ArrayList<>();
-        }
-        this.children.add(extractor);
-    }
 }

@@ -32,6 +32,21 @@
         <version>2.0.0.RELEASE</version>
         <relativePath/>
     </parent>
+    <repositories>
+        <repository>
+            <id>hnqc</id>
+            <name>hnqc repo</name>
+            <url>http://maven.scustartup.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <layout>default</layout>
+        </repository>
+    </repositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
