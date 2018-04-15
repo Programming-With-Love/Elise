@@ -11,6 +11,7 @@ import java.util.List;
  *
  * @author zido
  * @date 2018/26/12
+ * @deprecated
  */
 public class ConfigurablePageProcessor implements PageProcessor {
     private Site site;

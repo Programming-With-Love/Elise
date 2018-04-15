@@ -38,23 +38,9 @@ public class DefRootExtractor extends DefExtractor {
     private List<ConfigurableUrlFinder> helpUrl;
 
     /**
-     * 选择抽取范围
-     */
-    private Extractor.Source source;
-
-    /**
      * 子规则
      */
     private ArrayList<DefExtractor> children;
-
-    public Extractor.Source getSource() {
-        return source;
-    }
-
-    public DefExtractor setSource(Extractor.Source source) {
-        this.source = source;
-        return this;
-    }
 
     public List<ConfigurableUrlFinder> getTargetUrl() {
         return targetUrl;

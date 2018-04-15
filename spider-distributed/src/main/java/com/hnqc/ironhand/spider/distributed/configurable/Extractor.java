@@ -3,6 +3,7 @@ package com.hnqc.ironhand.spider.distributed.configurable;
 import com.hnqc.ironhand.spider.selector.Selector;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,15 +27,15 @@ public class Extractor {
         /**
          * 从原html中抽取
          */
-        ROW_HTML,
+        RAW_HTML,
         /**
          * 从url中抽取
          */
         URL,
         /**
-         * 从文本中抽取（少用）
+         * 从文本中抽取
          */
-        RWO_TEXT
+        RAW_TEXT
     }
 
     private String name;

@@ -7,6 +7,9 @@ import com.hnqc.ironhand.spider.Task;
  * 可用于分布式传输的task
  * <br>
  * 用作信息载体，仅携带必要信息
+ *
+ * @author zido
+ * @date 2018/04/16
  */
 public class DistributedTask implements Task {
     private Long id;

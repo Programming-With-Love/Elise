@@ -8,7 +8,10 @@ import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
 import javax.persistence.Entity;
 
 /**
- * 下载种子
+ * 种子，信息载体
+ *
+ * @author zido
+ * @date 2018/04/16
  */
 public class Seed {
     private Request request;

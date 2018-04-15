@@ -2,18 +2,21 @@ package com.hnqc.ironhand.spider.distributed.configurable;
 
 import com.hnqc.ironhand.spider.Page;
 import com.hnqc.ironhand.spider.distributed.selector.UrlFinderSelector;
-import com.hnqc.ironhand.spider.selector.Selectable;
 import com.hnqc.ironhand.spider.selector.Selector;
 import com.hnqc.ironhand.spider.selector.Selectors;
 import com.hnqc.ironhand.spider.utils.ValidateUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.hnqc.ironhand.spider.selector.Selectors.css;
+import static com.hnqc.ironhand.spider.selector.Selectors.regex;
 
 /**
- * PageModelExtractor
+ * 页面模型抓取器
  *
  * @author zido
  * @date 2018/04/12
@@ -25,11 +28,14 @@ public class PageModelExtractor {
 
     private Extractor modelExtractor;
 
-    public PageModelExtractor(DefRootExtractor rootExtractor) {
-        init(rootExtractor);
-    }
+    private List<Extractor> fieldExtractors;
 
-    protected void init(DefRootExtractor defRootExtractor) {
+    /**
+     * 初始化基本数据
+     *
+     * @param defRootExtractor 抓取器描述
+     */
+    public PageModelExtractor(DefRootExtractor defRootExtractor) {
         //转化配置到具体类
         List<ConfigurableUrlFinder> targetUrlFinder = defRootExtractor.getTargetUrl();
         if (!ValidateUtils.isEmpty(targetUrlFinder)) {
@@ -45,7 +51,27 @@ public class PageModelExtractor {
                 this.helpUrlSelectors.add(urlFinderSelector);
             }
         }
+        modelExtractor = new Extractor(defRootExtractor.getName(),
+                Selectors.xpath(defRootExtractor.getValue()),
+                defRootExtractor.getSource(),
+                defRootExtractor.getNullable(),
+                defRootExtractor.getMulti());
+        this.fieldExtractors = defRootExtractor.getChildren().stream().map(defExtractor -> {
+            Extractor.Source source = defExtractor.getSource();
+            Selector selector = defExtractor.compileSelector();
+            return new Extractor(defExtractor.getName(),
+                    selector,
+                    source,
+                    defExtractor.getNullable(),
+                    defExtractor.getMulti());
+        }).collect(Collectors.toList());
+    }
 
+    public Object extractPage(Page page) {
+        if (multi()) {
+            return extractPageForList(page);
+        }
+        return extractPageItem(page);
     }
 
     /**
@@ -54,11 +80,128 @@ public class PageModelExtractor {
      * @param page page
      * @return result map
      */
-    public Map<String, Object> extractPage(Page page) {
+    public Map<String, Object> extractPageItem(Page page) {
         //不是目标链接直接返回
         if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> page.getUrl().select(urlFinderSelector).match())) {
             return null;
         }
-        return null;
+        String html = modelExtractor.getSelector().select(page.getRawText());
+        return processSingle(page, html);
+    }
+
+    /**
+     * 抓取页面内容，如果未抓取到/结果不匹配，返回empty list。
+     *
+     * @param page page
+     * @return result map
+     */
+    public List<Map<String, Object>> extractPageForList(Page page) {
+        //不是目标链接直接返回
+        if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> page.getUrl().select(urlFinderSelector).match())) {
+            return null;
+        }
+        List<Map<String, Object>> results = new ArrayList<>();
+        List<String> list = modelExtractor.getSelector().selectList(page.getRawText());
+        for (String html : list) {
+            Map<String, Object> result = processSingle(page, html);
+            if (result != null) {
+                results.add(result);
+            }
+        }
+        return results;
+    }
+
+    private Map<String, Object> processSingle(Page page, String html) {
+        Map<String, Object> map = new HashMap<>(fieldExtractors.size());
+        for (Extractor fieldExtractor : fieldExtractors) {
+            if (!fieldExtractor.getMulti()) {
+                String result = processField(fieldExtractor, page, html);
+                if (result == null && !fieldExtractor.getNullable()) {
+                    return null;
+                }
+                map.put(fieldExtractor.getName(), result);
+            } else {
+                List<String> results = processFieldForList(fieldExtractor, page, html);
+                if (ValidateUtils.isEmpty(results) && !fieldExtractor.getNullable()) {
+                    return null;
+                }
+                map.put(fieldExtractor.getName(), results);
+            }
+        }
+        return map;
+    }
+
+    private String processField(Extractor fieldExtractor, Page page, String html) {
+        String value;
+        switch (fieldExtractor.getSource()) {
+            case RAW_HTML:
+                value = page.getHtml().selectDocument(fieldExtractor.getSelector());
+                break;
+            case URL:
+                value = fieldExtractor.getSelector().select(page.getUrl().toString());
+                break;
+            case RAW_TEXT:
+                value = fieldExtractor.getSelector().select(page.getRawText());
+                break;
+            case SELECTED_HTML:
+            default:
+                value = fieldExtractor.getSelector().select(html);
+        }
+        return value;
+    }
+
+    private List<String> processFieldForList(Extractor fieldExtractor, Page page, String html) {
+        List<String> value;
+        switch (fieldExtractor.getSource()) {
+            case RAW_HTML:
+                value = page.getHtml().selectDocumentForList(fieldExtractor.getSelector());
+                break;
+            case URL:
+                value = fieldExtractor.getSelector().selectList(page.getUrl().toString());
+                break;
+            case RAW_TEXT:
+                value = fieldExtractor.getSelector().selectList(page.getRawText());
+                break;
+            case SELECTED_HTML:
+            default:
+                value = fieldExtractor.getSelector().selectList(html);
+        }
+        return value;
+    }
+
+    public boolean multi() {
+        return modelExtractor.getMulti();
+    }
+
+    public List<UrlFinderSelector> getTargetUrlSelectors() {
+        return targetUrlSelectors;
+    }
+
+    public void setTargetUrlSelectors(List<UrlFinderSelector> targetUrlSelectors) {
+        this.targetUrlSelectors = targetUrlSelectors;
+    }
+
+    public List<UrlFinderSelector> getHelpUrlSelectors() {
+        return helpUrlSelectors;
+    }
+
+    public void setHelpUrlSelectors(List<UrlFinderSelector> helpUrlSelectors) {
+        this.helpUrlSelectors = helpUrlSelectors;
+    }
+
+    public Extractor getModelExtractor() {
+        return modelExtractor;
+    }
+
+    public void setModelExtractor(Extractor modelExtractor) {
+        this.modelExtractor = modelExtractor;
+    }
+
+    public List<Extractor> getFieldExtractors() {
+        return fieldExtractors;
+    }
+
+    public void setFieldExtractors(List<Extractor> fieldExtractors) {
+        this.fieldExtractors = fieldExtractors;
     }
 }

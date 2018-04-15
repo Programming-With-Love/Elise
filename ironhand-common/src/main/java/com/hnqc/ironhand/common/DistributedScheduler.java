@@ -9,12 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * 分布式任务调度实现类，基于spring redis template
+ *
+ * @author zido
+ * @date 2018/04/15
+ */
 @Component
-public class AbstractDistributedScheduler extends AbstractDistributedScheduler {
+public class DistributedScheduler extends AbstractDistributedScheduler {
     private RedisTemplate<String, String> template;
 
     @Autowired
-    public AbstractDistributedScheduler(RedisTemplate<String, String> template) {
+    public DistributedScheduler(RedisTemplate<String, String> template) {
         super();
         this.template = template;
         setDuplicateRemover(this);

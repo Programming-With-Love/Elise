@@ -10,7 +10,7 @@ import java.util.Map;
  * @author zido
  * @date 2018/04/12
  */
-public class ClassPageModelPipeline<T> implements PageModelPipeline {
+public class ClassPageModelPipeline<T> implements PageModelPipeline<Map<String, Object>> {
     private Class<T> classzz;
 
     public ClassPageModelPipeline(Class<T> classzz) {
@@ -18,7 +18,7 @@ public class ClassPageModelPipeline<T> implements PageModelPipeline {
     }
 
     @Override
-    public void process(Map<String, Object> t, Task task) {
+    public void process(Map<String, Object> map, Task task) {
         //TODO map转化为class实例
     }
 }

@@ -1,14 +1,20 @@
 package com.hnqc.ironhand.analyzer;
 
-import com.hnqc.ironhand.common.AbstractDistributedScheduler;
 import com.hnqc.ironhand.common.pipelines.SavedPipeline;
 import com.hnqc.ironhand.common.pojo.Seed;
-import com.hnqc.ironhand.common.service.impl.AbstractAsyncDownloader;
+import com.hnqc.ironhand.spider.distributed.AbstractAsyncDownloader;
 import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
+import com.hnqc.ironhand.spider.distributed.scheduler.AbstractDistributedScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * 分析模块消息监听器
+ *
+ * @author zido
+ * @date 2018/04/15
+ */
 @Component
 public class AnalyzerListener {
     private String groupId = "analyzer";

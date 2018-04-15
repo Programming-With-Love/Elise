@@ -1,10 +1,6 @@
 package com.hnqc.ironhand.spider.distributed.pipeline;
 
-import com.hnqc.ironhand.spider.Task;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 集合page model处理器

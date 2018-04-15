@@ -1,12 +1,17 @@
 package com.hnqc.ironhand.spider.distributed.configurable;
 
+import com.hnqc.ironhand.spider.selector.CssSelector;
+import com.hnqc.ironhand.spider.selector.RegexSelector;
+import com.hnqc.ironhand.spider.selector.Selector;
+import com.hnqc.ironhand.spider.selector.XpathSelector;
+
 /**
  * 抽取器描述
  * <p>
  * 配置抽取内容的规则
  * <p>
  * 可做为单独的每条属性配置，此时{@link #name} 为字段名 <br>
-
+ *
  * @author zido
  * @date 2018/28/12
  */
@@ -32,6 +37,11 @@ public class DefExtractor {
      * 是否允许空 ,默认允许为空
      */
     private Boolean nullable = true;
+
+    /**
+     * 选择抽取范围
+     */
+    private Extractor.Source source;
 
 
     public String getName() {
@@ -77,6 +87,32 @@ public class DefExtractor {
     public DefExtractor setNullable(Boolean nullable) {
         this.nullable = nullable;
         return this;
+    }
+
+    public Extractor.Source getSource() {
+        return source;
+    }
+
+    public DefExtractor setSource(Extractor.Source source) {
+        this.source = source;
+        return this;
+    }
+
+    public Selector compileSelector() {
+        ExpressionType type = getType();
+        Selector selector;
+        switch (type) {
+            case CSS:
+                selector = new CssSelector(this.value);
+                break;
+            case REGEX:
+                selector = new RegexSelector(this.value);
+                break;
+            case XPATH:
+            default:
+                selector = new XpathSelector(this.value);
+        }
+        return selector;
     }
 
 }

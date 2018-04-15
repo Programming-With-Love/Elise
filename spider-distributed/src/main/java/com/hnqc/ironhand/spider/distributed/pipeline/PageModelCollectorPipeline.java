@@ -2,8 +2,11 @@ package com.hnqc.ironhand.spider.distributed.pipeline;
 
 import com.hnqc.ironhand.spider.ResultItems;
 import com.hnqc.ironhand.spider.Task;
+import com.hnqc.ironhand.spider.distributed.configurable.DefExtractor;
+import com.hnqc.ironhand.spider.distributed.configurable.DefRootExtractor;
 import com.hnqc.ironhand.spider.distributed.configurable.Extractor;
 import com.hnqc.ironhand.spider.distributed.configurable.Transfer;
+import com.hnqc.ironhand.spider.pipeline.CollectorPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +22,11 @@ public class PageModelCollectorPipeline<T> implements CollectorPipeline<T> {
 
     private final CollectorPageModelPipeline<T> pipeline;
 
-    private Extractor extractor;
+    private DefRootExtractor extractor;
 
     private Transfer transfer = new DefaultTransfer();
 
-    public PageModelCollectorPipeline(Extractor extractor, CollectorPageModelPipeline<T> pipeline) {
+    public PageModelCollectorPipeline(DefRootExtractor extractor, CollectorPageModelPipeline<T> pipeline) {
         this.extractor = extractor;
         this.pipeline = pipeline;
     }
@@ -54,7 +57,7 @@ public class PageModelCollectorPipeline<T> implements CollectorPipeline<T> {
     }
 
     @Override
-    public List<T> getCollected() {
+    public List<T> getCollection() {
         return pipeline.getCollected();
     }
 
