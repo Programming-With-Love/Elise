@@ -31,7 +31,9 @@ public abstract class AbstractSelectable implements Selectable {
         List<String> results = new ArrayList<>();
         for (String string : strings) {
             List<String> result = selector.selectList(string);
-            results.addAll(result);
+            if (result != null) {
+                results.addAll(result);
+            }
         }
         return new PlainText(results);
     }

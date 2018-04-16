@@ -20,6 +20,11 @@ public class DistributedTask implements Task {
         this.site = task.getSite();
     }
 
+    public DistributedTask(Long id, Site site) {
+        this.id = id;
+        this.site = site;
+    }
+
     @Override
     public Long getId() {
         return id;

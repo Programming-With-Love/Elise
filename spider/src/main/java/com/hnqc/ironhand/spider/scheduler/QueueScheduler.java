@@ -7,7 +7,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class QueueScheduler extends DuplicateRemovedScheduler implements MonitorableScheduler{
+/**
+ * 队列调度器，最简单的任务调度实现类
+ *
+ * @author zido
+ * @date 2018/50/16
+ */
+public class QueueScheduler extends DuplicateRemovedScheduler implements MonitorableScheduler {
 
     private BlockingQueue<Request> queue = new LinkedBlockingQueue<Request>();
 

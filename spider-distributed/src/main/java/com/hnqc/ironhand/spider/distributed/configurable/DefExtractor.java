@@ -41,7 +41,7 @@ public class DefExtractor {
     /**
      * 选择抽取范围
      */
-    private Extractor.Source source;
+    private Extractor.Source source = Extractor.Source.RAW_HTML;
 
 
     public String getName() {

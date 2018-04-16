@@ -2,6 +2,8 @@ package com.hnqc.ironhand.spider.selector;
 
 import org.jsoup.nodes.Element;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +20,7 @@ public class NullElementSelector extends AbstractElementSelector {
 
     @Override
     public List<Element> selectElements(Element element) {
-        return element.children();
+        return Collections.singletonList(element);
     }
 
     @Override
@@ -28,11 +30,16 @@ public class NullElementSelector extends AbstractElementSelector {
 
     @Override
     public String select(Element element) {
-        return null;
+        return element.html();
     }
 
     @Override
     public List<String> selectList(Element element) {
-        return null;
+        return Collections.singletonList(element.html());
+    }
+
+    @Override
+    public List<String> selectList(String text) {
+        return Collections.singletonList(text);
     }
 }

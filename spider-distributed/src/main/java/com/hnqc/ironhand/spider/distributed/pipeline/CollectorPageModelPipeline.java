@@ -13,7 +13,7 @@ public interface CollectorPageModelPipeline<T> extends PageModelPipeline<T> {
     /**
      * 获取集合
      *
-     * @return
+     * @return 结果集合
      */
     List<T> getCollected();
 }

@@ -45,11 +45,11 @@ public class ModelPipeline implements Pipeline {
                 Extractor extractor = extractorMap.get(pipelineEntry.getKey());
                 PageModelPipeline pageModelPipeline = pipelineEntry.getValue();
                 if (extractor == null || !extractor.getMulti()) {
-                    pageModelPipeline.process(resultItems.getAll(), task);
+                    pageModelPipeline.process(o, task);
                 } else {
-                    ArrayList<ResultItems> list = (ArrayList<ResultItems>) o;
-                    for (ResultItems items : list) {
-                        pageModelPipeline.process(items.getAll(), task);
+                    ArrayList<Object> list = (ArrayList<Object>) o;
+                    for (Object items : list) {
+                        pageModelPipeline.process(o, task);
                     }
                 }
             }
