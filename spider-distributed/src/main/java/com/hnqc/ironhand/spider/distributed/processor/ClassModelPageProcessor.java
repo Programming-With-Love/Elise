@@ -14,13 +14,8 @@ import java.util.List;
 public class ClassModelPageProcessor<T> extends MappedModelPageProcessor {
     private Class<T> classzz;
 
-    public ClassModelPageProcessor(Class<T> classzz, Site site, List<PageModelExtractor> extractors) {
-        super(site, extractors);
-        this.classzz = classzz;
-    }
-
-    public ClassModelPageProcessor(Class<T> classzz, Site site, PageModelExtractor... extractors) {
-        super(site, extractors);
+    public ClassModelPageProcessor(Class<T> classzz, Site site, PageModelExtractor extractor) {
+        super(site, extractor);
         this.classzz = classzz;
     }
 

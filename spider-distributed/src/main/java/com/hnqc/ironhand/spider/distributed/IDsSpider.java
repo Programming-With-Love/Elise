@@ -4,22 +4,22 @@ import com.hnqc.ironhand.spider.Page;
 import com.hnqc.ironhand.spider.Request;
 
 /**
- * 分布式spider接口
+ * distributed spider interface
  *
  * @author zido
  * @date 2018/58/16
  */
 public interface IDsSpider {
     /**
-     * 无参运行，一般是首次运行
+     * when you first run, you need to call this method
      */
     void run();
 
     /**
-     * 带参运行，处理请求和具体页面
+     * When the page download is complete, you need to call this method
      *
-     * @param request 请求
-     * @param page    页面
+     * @param request request contains url and more
+     * @param page    page contains html and more
      */
     void run(Request request, Page page);
 

@@ -3,26 +3,25 @@ package com.hnqc.ironhand.spider.distributed;
 import com.hnqc.ironhand.spider.*;
 import com.hnqc.ironhand.spider.distributed.configurable.DefRootExtractor;
 import com.hnqc.ironhand.spider.distributed.configurable.PageModelExtractor;
-import com.hnqc.ironhand.spider.distributed.downloader.ThreadAsyncDownloader;
+import com.hnqc.ironhand.spider.distributed.downloader.AsyncWithMessageDownloader;
+import com.hnqc.ironhand.spider.distributed.message.MessageManager;
 import com.hnqc.ironhand.spider.distributed.pipeline.MappedPageModelPipeline;
 import com.hnqc.ironhand.spider.distributed.pipeline.ModelPipeline;
 import com.hnqc.ironhand.spider.distributed.pipeline.PageModelCollectorPipeline;
 import com.hnqc.ironhand.spider.distributed.pipeline.PageModelPipeline;
 import com.hnqc.ironhand.spider.distributed.processor.MappedModelPageProcessor;
+import com.hnqc.ironhand.spider.downloader.Downloader;
 import com.hnqc.ironhand.spider.pipeline.CollectorPipeline;
-import com.hnqc.ironhand.spider.processor.PageProcessor;
-import com.hnqc.ironhand.spider.scheduler.QueueScheduler;
 import com.hnqc.ironhand.spider.scheduler.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
- * DsSpider
+ * distributed spider launcher,it extends from Spider
+ * <p>
+ * the instance of {@link Holder} prepare to launch application
+ * <p>
+ * Forced to use asynchronous download implementation class to provide download function
  *
  * @author zido
  * @date 2018/04/16
@@ -31,35 +30,28 @@ public class DsSpider extends Spider implements IDsSpider {
 
     private final static Logger logger = LoggerFactory.getLogger(DsSpider.class);
 
-    private List<DefRootExtractor> defRootExtractors = new ArrayList<>();
+    private DefRootExtractor defRootExtractor;
 
-    public DsSpider(Task task, PageModelPipeline pageModelPipeline, AbstractAsyncDownloader downloader, DefRootExtractor... defRootExtractor) {
+    public DsSpider(Task task, PageModelPipeline pageModelPipeline, Downloader downloader, DefRootExtractor defRootExtractor) {
         this(task.getSite(), pageModelPipeline, downloader, defRootExtractor);
         super.setId(task.getId());
     }
 
-    protected DsSpider(MappedModelPageProcessor modelPageProcessor, AbstractAsyncDownloader downloader) {
+    protected DsSpider(MappedModelPageProcessor modelPageProcessor, Downloader downloader) {
         super(modelPageProcessor);
         this.setDownloader(downloader);
     }
 
-    public DsSpider(Site site, PageModelPipeline pageModelPipeline, AbstractAsyncDownloader downloader, DefRootExtractor... defRootExtractor) {
-        this(new MappedModelPageProcessor(site,
-                Arrays.stream(defRootExtractor).map(PageModelExtractor::new).collect(Collectors.toList())
-        ), downloader);
+    public DsSpider(Site site, PageModelPipeline pageModelPipeline, Downloader downloader, DefRootExtractor defRootExtractor) {
+        this(new MappedModelPageProcessor(site, new PageModelExtractor(defRootExtractor)), downloader);
         ModelPipeline modelPipeline = new ModelPipeline();
-        for (DefRootExtractor def : defRootExtractor) {
-            if (pageModelPipeline != null) {
-                modelPipeline.putPageModelPipeline(def.getName(), pageModelPipeline);
-            }
-            defRootExtractors.add(def);
-        }
+        this.defRootExtractor = defRootExtractor;
         super.addPipeline(modelPipeline);
     }
 
     @Override
     protected CollectorPipeline getCollectorPipeline() {
-        return new PageModelCollectorPipeline<>(defRootExtractors.get(0), new MappedPageModelPipeline());
+        return new PageModelCollectorPipeline<>(this.defRootExtractor, new MappedPageModelPipeline());
     }
 
     @Override
@@ -78,31 +70,76 @@ public class DsSpider extends Spider implements IDsSpider {
         }
     }
 
-    public static Holder prepare(Task task, PageModelPipeline pageModelPipeline, AbstractAsyncDownloader downloader) {
-        return new Holder(task, pageModelPipeline).setDownloader(downloader);
+    public static SpiderBuilder builder() {
+        return new SpiderBuilder();
     }
 
-    public static Holder prepare(Task task, PageModelPipeline pageModelPipeline) {
-        return new Holder(task, pageModelPipeline);
-    }
-
+    /**
+     * hold some options,it cannot be directly instantiated
+     * <p>
+     * If you want to start a brand new spider you must add the url {@link #addUrl(String...)}
+     *
+     * @author zido
+     * @date 2018/41/17
+     */
     public static class Holder {
-        private Task task;
         private PageModelPipeline pageModelPipeline;
-        private AbstractAsyncDownloader downloader = new ThreadAsyncDownloader();
         private String[] initialUrl;
-        private Scheduler scheduler = new QueueScheduler();
+        private Scheduler scheduler;
+        private MessageManager messageManager;
+        private Downloader downloader;
 
-        private Holder(Task task, PageModelPipeline pageModelPipeline) {
-            this.task = task;
+        /**
+         * spider holder,this holder will be downloader and analyzer
+         *
+         * @param pageModelPipeline pipeline {@link PageModelPipeline}
+         * @param messageManager    the message manager
+         * @param downloader        downloader
+         * @param scheduler         scheduler
+         */
+        public Holder(PageModelPipeline pageModelPipeline,
+                      MessageManager messageManager,
+                      Downloader downloader,
+                      Scheduler scheduler) {
             this.pageModelPipeline = pageModelPipeline;
+            this.messageManager = messageManager;
+            this.downloader = downloader;
+            this.scheduler = scheduler;
+
         }
 
-        public Holder setDownloader(AbstractAsyncDownloader downloader) {
+        /**
+         * spider holder,this holder will be downloader
+         *
+         * @param downloader downloader
+         */
+        public Holder(Downloader downloader) {
+            this(null, null, downloader, null);
+        }
+
+        /**
+         * spider holder,this holder will be analyzer
+         *
+         * @param pageModelPipeline pipeline
+         * @param manager           manager
+         * @param scheduler         scheduler
+         */
+        public Holder(PageModelPipeline pageModelPipeline, MessageManager manager, Scheduler scheduler) {
+            this(pageModelPipeline, manager, null, scheduler);
+        }
+
+        public Holder setDownloader(AsyncWithMessageDownloader downloader) {
             this.downloader = downloader;
             return this;
         }
 
+
+        /**
+         * initial url
+         *
+         * @param initialUrl initial url
+         * @return this
+         */
         public Holder addUrl(String... initialUrl) {
             this.initialUrl = initialUrl;
             return this;
@@ -113,14 +150,14 @@ public class DsSpider extends Spider implements IDsSpider {
             return this;
         }
 
-        public void run(DefRootExtractor... defRootExtractor) {
-            DsSpider spider = new DsSpider(task, pageModelPipeline, downloader, defRootExtractor);
+        public void run(Task task, DefRootExtractor def) {
+            DsSpider spider = new DsSpider(task, pageModelPipeline, downloader, def);
             spider.setScheduler(scheduler);
             spider.addUrl(initialUrl).run();
         }
 
-        public void run(Request request, Page page, DefRootExtractor... defRootExtractors) {
-            DsSpider spider = new DsSpider(task, pageModelPipeline, downloader, defRootExtractors);
+        public void run(Task task, Request request, Page page, DefRootExtractor def) {
+            DsSpider spider = new DsSpider(task, pageModelPipeline, downloader, def);
             spider.setScheduler(scheduler);
             spider.run(request, page);
         }

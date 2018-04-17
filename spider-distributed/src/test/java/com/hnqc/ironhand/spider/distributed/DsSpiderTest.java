@@ -2,7 +2,8 @@ package com.hnqc.ironhand.spider.distributed;
 
 import com.hnqc.ironhand.spider.*;
 import com.hnqc.ironhand.spider.distributed.configurable.*;
-import com.hnqc.ironhand.spider.distributed.downloader.ThreadAsyncDownloader;
+import com.hnqc.ironhand.spider.distributed.downloader.AsyncWithMessageDownloader;
+import com.hnqc.ironhand.spider.distributed.message.ThreadMessageManager;
 import com.hnqc.ironhand.spider.distributed.pipeline.MappedPageModelPipeline;
 import com.hnqc.ironhand.spider.distributed.pipeline.ModelPipeline;
 import com.hnqc.ironhand.spider.distributed.processor.MappedModelPageProcessor;
@@ -54,21 +55,6 @@ public class DsSpiderTest {
     }
 
     @Test
-    public void testRun() {
-        AbstractAsyncDownloader downloader = new AbstractAsyncDownloader() {
-            @Override
-            public void asyncDownload(Request request, Task task) {
-                Assert.assertEquals("https://github.com/explore", request.getUrl());
-            }
-        };
-
-        DsSpider.Holder holder = DsSpider.prepare(task, new MappedPageModelPipeline(), downloader);
-
-        holder.addUrl("https://github.com/explore");
-        holder.run(def);
-    }
-
-    @Test
     public void testProcessor() {
         HttpClientDownloader downloader = new HttpClientDownloader();
         Page page = downloader.download(new Request("https://github.com/zidoshare/bone"), task);
@@ -102,16 +88,16 @@ public class DsSpiderTest {
     @Test
     public void testAll() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
-        DsSpider.Holder holder = DsSpider.prepare(task, new MappedPageModelPipeline() {
+        DsSpider.Holder holder = DsSpider.builder().pipeline(new MappedPageModelPipeline() {
             @Override
             public void process(Map<String, Object> t, Task task) {
                 super.process(t, task);
                 System.out.println(t.get("name"));
                 latch.countDown();
             }
-        }, new ThreadAsyncDownloader());
-        holder.addUrl("https://github.com/zidoshare/bone").run(def);
-        
+        }).downloader(new AsyncWithMessageDownloader(new ThreadMessageManager())).build();
+        holder.addUrl("https://github.com/zidoshare/bone").run(task, def);
+
         latch.await(30, TimeUnit.SECONDS);
     }
 }

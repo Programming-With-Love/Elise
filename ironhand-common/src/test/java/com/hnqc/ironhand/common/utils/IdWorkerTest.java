@@ -1,5 +1,6 @@
 package com.hnqc.ironhand.common.utils;
 
+import com.hnqc.ironhand.utils.IdWorker;
 import org.junit.Assert;
 import org.junit.Test;
 

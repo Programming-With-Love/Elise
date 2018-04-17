@@ -3,12 +3,18 @@ package com.hnqc.ironhand.common.query;
 import com.hnqc.ironhand.common.constants.Status;
 import com.hnqc.ironhand.common.pojo.UrlRule;
 import com.hnqc.ironhand.common.pojo.entity.Scheduler;
-import com.hnqc.ironhand.common.utils.ListBuilder;
+import com.hnqc.ironhand.utils.ListBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 任务构造器
+ *
+ * @author zido
+ * @date 2018/34/17
+ */
 public class SchedulerBuilder {
     private Scheduler scheduler;
 
@@ -74,7 +80,7 @@ public class SchedulerBuilder {
                 this.findList = findList;
             }
 
-            public ListBuilder<String, QueryBuilder.Opt> save() {
+            public ListBuilder<String, Opt> save() {
                 return new ListBuilder<>(saveList, this);
             }
 

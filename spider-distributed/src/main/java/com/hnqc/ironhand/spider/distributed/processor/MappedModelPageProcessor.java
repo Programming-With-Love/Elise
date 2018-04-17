@@ -24,17 +24,12 @@ import java.util.regex.Pattern;
  */
 public class MappedModelPageProcessor implements PageProcessor {
     private Site site;
-    private List<PageModelExtractor> extractors;
+    private PageModelExtractor extractor;
     private boolean extractLinks = true;
 
-    public MappedModelPageProcessor(Site site, List<PageModelExtractor> extractors) {
+    public MappedModelPageProcessor(Site site, PageModelExtractor extractor) {
         this.site = site;
-        this.extractors = extractors;
-    }
-
-    public MappedModelPageProcessor(Site site, PageModelExtractor... extractors) {
-        this.site = site;
-        this.extractors = Arrays.asList(extractors);
+        this.extractor = extractor;
     }
 
     protected Object transfer(Object obj) {
@@ -43,20 +38,18 @@ public class MappedModelPageProcessor implements PageProcessor {
 
     @Override
     public void process(Page page) {
-        for (PageModelExtractor extractor : extractors) {
-            if (extractLinks) {
-                extractLinks(page, extractor.getHelpUrlSelectors());
-                extractLinks(page, extractor.getTargetUrlSelectors());
-            }
-            Object result = extractor.extractPage(page);
-            if (result == null) {
-                continue;
-            }
-            if ((result instanceof List && ((List) result).size() == 0)) {
-                continue;
-            }
-            page.putField(extractor.getModelExtractor().getName(), transfer(result));
+        if (extractLinks) {
+            extractLinks(page, extractor.getHelpUrlSelectors());
+            extractLinks(page, extractor.getTargetUrlSelectors());
         }
+        Object result = extractor.extractPage(page);
+        if (result == null) {
+            return;
+        }
+        if ((result instanceof List && ((List) result).size() == 0)) {
+            return;
+        }
+        page.putField(extractor.getModelExtractor().getName(), transfer(result));
         if (page.getResultItems().getAll().size() == 0) {
             page.getResultItems().setSkip(true);
         }

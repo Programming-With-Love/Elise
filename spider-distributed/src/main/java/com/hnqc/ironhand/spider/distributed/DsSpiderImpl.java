@@ -6,6 +6,7 @@ import com.hnqc.ironhand.spider.Site;
 import com.hnqc.ironhand.spider.Spider;
 import com.hnqc.ironhand.spider.distributed.configurable.ConfigurablePageProcessor;
 import com.hnqc.ironhand.spider.distributed.configurable.ExtractRule;
+import com.hnqc.ironhand.spider.distributed.downloader.AsyncWithMessageDownloader;
 import com.hnqc.ironhand.spider.pipeline.Pipeline;
 import com.hnqc.ironhand.spider.scheduler.Scheduler;
 import org.slf4j.Logger;
@@ -14,6 +15,13 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * configurable distributed spider,it's unstable and will abandoned
+ *
+ * @author zido
+ * @date 2018/46/17
+ * @deprecated {@link DsSpider} provide better and more comprehensive functionality
+ */
 public class DsSpiderImpl implements IDsSpider {
 
     private final static Logger logger = LoggerFactory.getLogger(DsSpiderImpl.class);
@@ -26,7 +34,7 @@ public class DsSpiderImpl implements IDsSpider {
     private Date startTime;
 
 
-    public DsSpiderImpl(List<Pipeline> pipelines, Scheduler scheduler, AbstractAsyncDownloader downloader) {
+    public DsSpiderImpl(List<Pipeline> pipelines, Scheduler scheduler, AsyncWithMessageDownloader downloader) {
         if (pipelines == null) {
             throw new NullPointerException();
         }
@@ -50,7 +58,7 @@ public class DsSpiderImpl implements IDsSpider {
         return this;
     }
 
-    public DsSpiderImpl setDownloader(AbstractAsyncDownloader downloader) {
+    public DsSpiderImpl setDownloader(AsyncWithMessageDownloader downloader) {
         spider.setDownloader(downloader);
         return this;
     }

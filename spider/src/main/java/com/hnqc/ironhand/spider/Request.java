@@ -6,6 +6,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Request
+ *
+ * @author zido
+ * @date 2018/49/17
+ */
 public class Request implements Serializable {
     private static final long serialVersionUID = 2018040215121L;
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";

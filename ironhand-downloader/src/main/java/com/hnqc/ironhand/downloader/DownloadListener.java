@@ -1,12 +1,12 @@
 package com.hnqc.ironhand.downloader;
 
 import com.hnqc.common.image.OssImageUtil;
-import com.hnqc.ironhand.common.pojo.UrlEntry;
 import com.hnqc.ironhand.common.pojo.Seed;
+import com.hnqc.ironhand.common.pojo.UrlEntry;
 import com.hnqc.ironhand.common.sender.AnalyzerSender;
-import com.hnqc.ironhand.common.utils.ValidateUtils;
-import com.hnqc.ironhand.downloader.service.IDownloadService;
 import com.hnqc.ironhand.common.service.IFileService;
+import com.hnqc.ironhand.downloader.service.IDownloadService;
+import com.hnqc.ironhand.spider.utils.ValidateUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,51 +38,51 @@ public class DownloadListener {
 
     @KafkaListener(topics = "#{__listener.topic}", groupId = "#{__listener.groupId}")
     public void listen(ConsumerRecord<Integer, Seed> record) {
-        Seed seed = record.value();
-        List<UrlEntry> html = seed.getUrls();
-        for (UrlEntry urlEntry : html) {
-            String name = urlEntry.getName();
-            String value = urlEntry.getValue();
-            if (ValidateUtils.isEmpty(value)) {
-                urlEntry.setTryTimes(urlEntry.getTryTimes() + 1);
-                InputStream result = downloadService.getStream(name);
-                try {
-                    String path = fileService.writeHtml(result);
-                    urlEntry.setValue(path);
-                } catch (UnsupportedEncodingException e) {
-                    logger.error("下载出错,编码不支持", e);
-                }
-            }
-        }
-        List<UrlEntry> scripts = seed.getScripts();
-        for (UrlEntry urlEntry : scripts) {
-            String name = urlEntry.getName();
-            String value = urlEntry.getValue();
-            if (ValidateUtils.isEmpty(value)) {
-                urlEntry.setTryTimes(urlEntry.getTryTimes() + 1);
-                String result = downloadService.download(name);
-                try {
-                    String path = fileService.writeJs(result);
-                    urlEntry.setValue(path);
-                } catch (UnsupportedEncodingException e) {
-                    logger.error("下载出错，编码不支持", e);
-                }
-            }
-        }
-
-        List<UrlEntry> images = seed.getImages();
-        for (UrlEntry urlEntry : images) {
-            String name = urlEntry.getName();
-            String value = urlEntry.getValue();
-            if (ValidateUtils.isEmpty(value)) {
-                urlEntry.setTryTimes(urlEntry.getTryTimes() + 1);
-                InputStream stream = downloadService.getStream(name);
-                String s = OssImageUtil.saveImg(stream, name.substring(name.lastIndexOf(".")));
-                urlEntry.setValue(s);
-            }
-        }
-
-        analyzerSender.send(seed);
+//        Seed seed = record.value();
+//        List<UrlEntry> html = seed.getUrls();
+//        for (UrlEntry urlEntry : html) {
+//            String name = urlEntry.getName();
+//            String value = urlEntry.getValue();
+//            if (ValidateUtils.isEmpty(value)) {
+//                urlEntry.setTryTimes(urlEntry.getTryTimes() + 1);
+//                InputStream result = downloadService.getStream(name);
+//                try {
+//                    String path = fileService.writeHtml(result);
+//                    urlEntry.setValue(path);
+//                } catch (UnsupportedEncodingException e) {
+//                    logger.error("下载出错,编码不支持", e);
+//                }
+//            }
+//        }
+//        List<UrlEntry> scripts = seed.getScripts();
+//        for (UrlEntry urlEntry : scripts) {
+//            String name = urlEntry.getName();
+//            String value = urlEntry.getValue();
+//            if (ValidateUtils.isEmpty(value)) {
+//                urlEntry.setTryTimes(urlEntry.getTryTimes() + 1);
+//                String result = downloadService.download(name);
+//                try {
+//                    String path = fileService.writeJs(result);
+//                    urlEntry.setValue(path);
+//                } catch (UnsupportedEncodingException e) {
+//                    logger.error("下载出错，编码不支持", e);
+//                }
+//            }
+//        }
+//
+//        List<UrlEntry> images = seed.getImages();
+//        for (UrlEntry urlEntry : images) {
+//            String name = urlEntry.getName();
+//            String value = urlEntry.getValue();
+//            if (ValidateUtils.isEmpty(value)) {
+//                urlEntry.setTryTimes(urlEntry.getTryTimes() + 1);
+//                InputStream stream = downloadService.getStream(name);
+//                String s = OssImageUtil.saveImg(stream, name.substring(name.lastIndexOf(".")));
+//                urlEntry.setValue(s);
+//            }
+//        }
+//
+//        analyzerSender.send(seed);
     }
 
     public String getGroupId() {
