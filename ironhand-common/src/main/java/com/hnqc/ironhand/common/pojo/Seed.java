@@ -3,9 +3,6 @@ package com.hnqc.ironhand.common.pojo;
 import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Task;
 import com.hnqc.ironhand.spider.distributed.DistributedTask;
-import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
-
-import javax.persistence.Entity;
 
 /**
  * 种子，信息载体
@@ -16,14 +13,9 @@ import javax.persistence.Entity;
 public class Seed {
     private Request request;
     private DistributedTask task;
-    private DsSpiderImpl dsSpider;
 
     public Seed() {
 
-    }
-
-    public Seed(DsSpiderImpl dsSpider) {
-        this.dsSpider = dsSpider;
     }
 
     public Seed(Request request, Task task) {
@@ -49,13 +41,5 @@ public class Seed {
 
     public void setTask(DistributedTask task) {
         this.task = task;
-    }
-
-    public DsSpiderImpl getDsSpider() {
-        return dsSpider;
-    }
-
-    public void setDsSpider(DsSpiderImpl dsSpider) {
-        this.dsSpider = dsSpider;
     }
 }

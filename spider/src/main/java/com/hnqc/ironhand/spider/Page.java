@@ -6,7 +6,6 @@ import com.hnqc.ironhand.spider.utils.StatusCode;
 import com.hnqc.ironhand.spider.utils.UrlUtils;
 import com.hnqc.ironhand.spider.utils.ValidateUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class Page {
     private static final String HASH_SEP = "#";
     private Request request;
 
-    private ResultItems resultItems = new ResultItems();
+    private ResultItem resultItem = new ResultItem();
 
     private Html html;
 
@@ -37,8 +36,6 @@ public class Page {
 
     private byte[] bytes;
 
-    private List<Request> targetRequests = new ArrayList<>();
-
     private String charset;
 
     public Page() {
@@ -51,13 +48,13 @@ public class Page {
     }
 
     public Page setSkip(boolean skip) {
-        resultItems.setSkip(skip);
+        resultItem.setSkip(skip);
         return this;
 
     }
 
     public Page skip() {
-        resultItems.setSkip(true);
+        resultItem.setSkip(true);
         return this;
     }
 
@@ -68,7 +65,7 @@ public class Page {
      * @param field field
      */
     public void putField(String key, Object field) {
-        resultItems.put(key, field);
+        resultItem.put(key, field);
     }
 
     /**
@@ -90,47 +87,6 @@ public class Page {
      */
     public void setHtml(Html html) {
         this.html = html;
-    }
-
-    public List<Request> getTargetRequests() {
-        return targetRequests;
-    }
-
-    /**
-     * add urls to fetch
-     *
-     * @param requests requests
-     */
-    public void addTargetRequests(List<String> requests) {
-        for (String s : requests) {
-            if (ValidateUtils.isEmpty(s) || HASH_SEP.equals(s) || s.startsWith("javascript:")) {
-                continue;
-            }
-            s = UrlUtils.canonicalizeUrl(s, url.toString());
-            targetRequests.add(new Request(s));
-        }
-    }
-
-    /**
-     * add url to fetch
-     *
-     * @param requestString requestString
-     */
-    public void addTargetRequest(String requestString) {
-        if (ValidateUtils.isEmpty(requestString) || HASH_SEP.equals(requestString)) {
-            return;
-        }
-        requestString = UrlUtils.canonicalizeUrl(requestString, url.toString());
-        targetRequests.add(new Request(requestString));
-    }
-
-    /**
-     * add requests to fetch
-     *
-     * @param request request
-     */
-    public void addTargetRequest(Request request) {
-        targetRequests.add(request);
     }
 
     /**
@@ -157,11 +113,11 @@ public class Page {
 
     public void setRequest(Request request) {
         this.request = request;
-        this.resultItems.setRequest(request);
+        this.resultItem.setRequest(request);
     }
 
-    public ResultItems getResultItems() {
-        return resultItems;
+    public ResultItem getResultItem() {
+        return resultItem;
     }
 
     public int getStatusCode() {
@@ -217,14 +173,13 @@ public class Page {
     public String toString() {
         return "Page{" +
                 "request=" + request +
-                ", resultItems=" + resultItems +
+                ", resultItem=" + resultItem +
                 ", html=" + html +
                 ", rawText='" + rawText + '\'' +
                 ", url=" + url +
                 ", headers=" + headers +
                 ", statusCode=" + statusCode +
                 ", downloadSuccess=" + downloadSuccess +
-                ", targetRequests=" + targetRequests +
                 ", charset='" + charset + '\'' +
                 ", bytes=" + Arrays.toString(bytes) +
                 '}';

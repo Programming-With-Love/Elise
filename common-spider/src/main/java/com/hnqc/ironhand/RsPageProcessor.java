@@ -20,11 +20,6 @@ public class RsPageProcessor implements PageProcessor {
         }
     }
 
-    @Override
-    public Site getSite() {
-        return new Site().setRetryTimes(3);
-    }
-
     public static void main(String[] args) {
         Spider.create(new LDZLPageProcessor())
                 .setId(1L)

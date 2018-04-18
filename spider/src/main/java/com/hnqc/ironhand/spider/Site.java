@@ -1,5 +1,7 @@
 package com.hnqc.ironhand.spider;
 
+import com.hnqc.ironhand.spider.downloader.AbstractDownloaderTaskAdapter;
+import com.hnqc.ironhand.spider.extractor.ModelExtractor;
 import com.hnqc.ironhand.spider.utils.StatusCode;
 import com.hnqc.ironhand.utils.IdWorker;
 
@@ -160,7 +162,7 @@ public class Site {
     }
 
     public Task toTask() {
-        return new Task() {
+        return new AbstractDownloaderTaskAdapter() {
             @Override
             public Long getId() {
                 return IdWorker.nextId();

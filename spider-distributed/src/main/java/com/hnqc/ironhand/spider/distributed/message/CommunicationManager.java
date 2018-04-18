@@ -3,7 +3,9 @@ package com.hnqc.ironhand.spider.distributed.message;
 import com.hnqc.ironhand.spider.Page;
 import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Task;
-import com.hnqc.ironhand.spider.distributed.configurable.DefRootExtractor;
+import com.hnqc.ironhand.spider.distributed.configurable.ConfigurableModelExtractor;
+
+import java.util.List;
 
 /**
  * the interface of message manager,it provide message service.
@@ -18,7 +20,7 @@ import com.hnqc.ironhand.spider.distributed.configurable.DefRootExtractor;
  * @author zido
  * @date 2018/04/17
  */
-public interface MessageManager {
+public interface CommunicationManager {
     /**
      * analyzer listener,this interface should called by download service.
      * <p>
@@ -31,15 +33,14 @@ public interface MessageManager {
         /**
          * message listener.
          *
-         * @param task      the task {@link Task}
-         *                  Use {@link com.hnqc.ironhand.spider.distributed.DistributedTask} more to provide a better distributed messaging mechanism,
-         *                  significantly reducing the amount of data.
-         *
-         * @param request   request container
-         * @param page      page container
-         * @param extractor extractor definition
+         * @param task       the task {@link Task}
+         *                   Use {@link com.hnqc.ironhand.spider.distributed.DistributedTask} more to provide a better distributed messaging mechanism,
+         *                   significantly reducing the amount of data.
+         * @param request    request container
+         * @param page       page container
+         * @param extractors extractors definition
          */
-        void callback(Task task, Request request, Page page, DefRootExtractor extractor);
+        void onProcess(Task task, Request request, Page page, List<ConfigurableModelExtractor> extractors);
     }
 
     /**
@@ -52,13 +53,13 @@ public interface MessageManager {
         /**
          * message listener.
          *
-         * @param task      the task {@link Task}
-         *                  Use {@link com.hnqc.ironhand.spider.distributed.DistributedTask} more to provide a better distributed messaging mechanism,
-         *                  significantly reducing the amount of data.
-         * @param request   request container
-         * @param extractor extractor definition
+         * @param task       the task {@link Task}
+         *                   Use {@link com.hnqc.ironhand.spider.distributed.DistributedTask} more to provide a better distributed messaging mechanism,
+         *                   significantly reducing the amount of data.
+         * @param request    request container
+         * @param extractors extractors definition
          */
-        void callback(Task task, Request request, DefRootExtractor extractor);
+        void onDownload(Task task, Request request, List<ConfigurableModelExtractor> extractors);
     }
 
     /**
@@ -79,21 +80,23 @@ public interface MessageManager {
      * If the download client download is completed,
      * this method can be called to send the download completion message and pass the download page to the analysis client.
      * Next, please rest assured that the task scheduling to the manager,
-     * manager will select the appropriate scheduling program and asynchronous callback callback to other clients (of course, may also be yourself, if you are also an analysis client)
+     * manager will select the appropriate scheduling program and asynchronous onDownload onDownload to other clients (of course, may also be yourself, if you are also an analysis client)
      *
-     * @param task    the task information
-     * @param request the request
-     * @param page    page
+     * @param task       the task information
+     * @param request    the request
+     * @param page       page
+     * @param extractors extractors
      */
-    void downloadOver(Task task, Request request, Page page,DefRootExtractor extractor);
+    void process(Task task, Request request, Page page, List<ConfigurableModelExtractor> extractors);
 
     /**
      * If you need to download, you can call this method (usually after the analysis is completed)
      *
-     * @param task    the task information
-     * @param request the request
+     * @param task       the task information
+     * @param request    the request
+     * @param extractors extractors
      */
-    void analyzerOver(Task task, Request request,DefRootExtractor extractor);
+    void download(Task task, Request request, List<ConfigurableModelExtractor> extractors);
 
     /**
      * See how many messages are in the message container

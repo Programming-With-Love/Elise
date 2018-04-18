@@ -13,12 +13,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * MessageManagerTest
+ * CommunicationManagerTest
  *
  * @author zido
  * @date 2018/04/17
  */
-public class MessageManagerTest {
+public class CommunicationManagerTest {
     private Task task;
 
     @Before
@@ -29,7 +29,7 @@ public class MessageManagerTest {
     @Test
     public void testListen() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
-        MessageManager manager = new ThreadMessageManager();
+        CommunicationManager manager = new ThreadCommunicationManager();
         manager.registerAnalyzer((task, request, page, extractor) -> {
             Assert.assertEquals(1L, task.getId().longValue());
             Assert.assertEquals("www.baidu.com", request.getUrl());
@@ -42,17 +42,17 @@ public class MessageManagerTest {
             latch.countDown();
         });
 
-        MessageManager manager2 = new ThreadMessageManager();
+        CommunicationManager manager2 = new ThreadCommunicationManager();
         manager2.registerDownloader((task, request, extractor) -> {
             Assert.assertEquals(1L, task.getId().longValue());
             Assert.assertEquals("www.1.com", request.getUrl());
             latch.countDown();
         });
 
-        MessageManager sender = new ThreadMessageManager();
-        sender.downloadOver(task, new Request("www.baidu.com"), new Page(), null);
-        sender.analyzerOver(task, new Request("www.1.com"), null);
-        sender.analyzerOver(task, new Request("www.1.com"), null);
+        CommunicationManager sender = new ThreadCommunicationManager();
+        sender.process(task, new Request("www.baidu.com"), new Page(), null);
+        sender.download(task, new Request("www.1.com"), null);
+        sender.download(task, new Request("www.1.com"), null);
         latch.await(3, TimeUnit.SECONDS);
     }
 }

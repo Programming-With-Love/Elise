@@ -6,7 +6,7 @@ import com.hnqc.ironhand.spider.Site;
 import com.hnqc.ironhand.spider.selector.Html;
 
 /**
- * 抽象下载类
+ * abstract downloader,which support charset
  *
  * @author zido
  * @date 2018/41/12

@@ -13,9 +13,9 @@ public class JDBCTest {
                 return IdWorker.nextId();
             }
         });
-        ResultItems resultItems = new ResultItems();
-        resultItems.put("title","title");
-        resultItems.put("content","dawdaefewgre");
-        pipeline.process(resultItems,null);
+        ResultItem resultItem = new ResultItem();
+        resultItem.put("title","title");
+        resultItem.put("content","dawdaefewgre");
+        pipeline.process(resultItem,null);
     }
 }

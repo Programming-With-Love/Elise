@@ -2,11 +2,9 @@ package com.hnqc.ironhand.spider.distributed;
 
 import com.hnqc.ironhand.spider.*;
 import com.hnqc.ironhand.spider.distributed.configurable.*;
-import com.hnqc.ironhand.spider.distributed.downloader.AsyncWithMessageDownloader;
-import com.hnqc.ironhand.spider.distributed.message.ThreadMessageManager;
 import com.hnqc.ironhand.spider.distributed.pipeline.MappedPageModelPipeline;
 import com.hnqc.ironhand.spider.distributed.pipeline.ModelPipeline;
-import com.hnqc.ironhand.spider.distributed.processor.MappedModelPageProcessor;
+import com.hnqc.ironhand.spider.processor.ExtractorPageProcessor;
 import com.hnqc.ironhand.spider.downloader.HttpClientDownloader;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,8 +12,6 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 分布式爬虫测试
@@ -58,11 +54,11 @@ public class DsSpiderTest {
     public void testProcessor() {
         HttpClientDownloader downloader = new HttpClientDownloader();
         Page page = downloader.download(new Request("https://github.com/zidoshare/bone"), task);
-        MappedModelPageProcessor processor = new MappedModelPageProcessor(task.getSite(),
-                new PageModelExtractor(def));
+        ExtractorPageProcessor processor = new ExtractorPageProcessor(task.getSite(),
+                new ConfigurableModelExtractor(def));
         processor.process(page);
-        ResultItems resultItems = page.getResultItems();
-        Object github = resultItems.get("github");
+        ResultItem resultItem = page.getResultItem();
+        Object github = resultItem.get("github");
         if (github instanceof Map) {
             Map<String, Object> map = (Map<String, Object>) github;
             Assert.assertEquals("bone", map.get("name"));
@@ -74,30 +70,14 @@ public class DsSpiderTest {
     public void testModelPipeline() {
         HttpClientDownloader downloader = new HttpClientDownloader();
         Page page = downloader.download(new Request("https://github.com/zidoshare/bone"), task);
-        MappedModelPageProcessor processor = new MappedModelPageProcessor(task.getSite(),
-                new PageModelExtractor(def));
+        ExtractorPageProcessor processor = new ExtractorPageProcessor(task.getSite(),
+                new ConfigurableModelExtractor(def));
         processor.process(page);
         MappedPageModelPipeline mappedPipeline = new MappedPageModelPipeline();
         ModelPipeline pipeline = new ModelPipeline();
         pipeline.putPageModelPipeline("github", mappedPipeline);
-        pipeline.process(page.getResultItems(), task);
+        pipeline.process(page.getResultItem(), task);
         List<Map<String, Object>> collected = mappedPipeline.getCollected();
         System.out.println(collected.size());
-    }
-
-    @Test
-    public void testAll() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(3);
-        DsSpider.Holder holder = DsSpider.builder().pipeline(new MappedPageModelPipeline() {
-            @Override
-            public void process(Map<String, Object> t, Task task) {
-                super.process(t, task);
-                System.out.println(t.get("name"));
-                latch.countDown();
-            }
-        }).downloader(new AsyncWithMessageDownloader(new ThreadMessageManager())).build();
-        holder.addUrl("https://github.com/zidoshare/bone").run(task, def);
-
-        latch.await(30, TimeUnit.SECONDS);
     }
 }

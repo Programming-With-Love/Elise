@@ -1,6 +1,6 @@
 package com.hnqc.ironhand.spider.pipeline;
 
-import com.hnqc.ironhand.spider.ResultItems;
+import com.hnqc.ironhand.spider.ResultItem;
 import com.hnqc.ironhand.spider.Task;
 import com.hnqc.ironhand.spider.jdbc.JDBCHelper;
 
@@ -27,8 +27,8 @@ public class MysqlPipeline implements Pipeline {
     }
 
     @Override
-    public void process(ResultItems resultItems, Task task) {
-        Map<String, Object> all = resultItems.getAll();
+    public void process(ResultItem resultItem, Task task) {
+        Map<String, Object> all = resultItem.getAll();
         StringBuilder sql = new StringBuilder("insert into " + tableName + " (");
         if (generator != null) {
             sql.append("id");

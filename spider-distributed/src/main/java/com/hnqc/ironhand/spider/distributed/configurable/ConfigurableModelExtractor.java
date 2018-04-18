@@ -2,6 +2,7 @@ package com.hnqc.ironhand.spider.distributed.configurable;
 
 import com.hnqc.ironhand.spider.Page;
 import com.hnqc.ironhand.spider.distributed.selector.UrlFinderSelector;
+import com.hnqc.ironhand.spider.extractor.ModelExtractor;
 import com.hnqc.ironhand.spider.selector.Selector;
 import com.hnqc.ironhand.spider.selector.Selectors;
 import com.hnqc.ironhand.spider.utils.ValidateUtils;
@@ -21,7 +22,7 @@ import static com.hnqc.ironhand.spider.selector.Selectors.regex;
  * @author zido
  * @date 2018/04/12
  */
-public class PageModelExtractor {
+public class ConfigurableModelExtractor implements ModelExtractor {
 
     private List<UrlFinderSelector> targetUrlSelectors = new ArrayList<>();
     private List<UrlFinderSelector> helpUrlSelectors = new ArrayList<>();
@@ -30,12 +31,15 @@ public class PageModelExtractor {
 
     private List<Extractor> fieldExtractors;
 
+    private DefRootExtractor defRootExtractor;
+
     /**
      * 初始化基本数据
      *
      * @param defRootExtractor 抓取器描述
      */
-    public PageModelExtractor(DefRootExtractor defRootExtractor) {
+    public ConfigurableModelExtractor(DefRootExtractor defRootExtractor) {
+        this.defRootExtractor = defRootExtractor;
         //转化配置到具体类
         List<ConfigurableUrlFinder> targetUrlFinder = defRootExtractor.getTargetUrl();
         if (!ValidateUtils.isEmpty(targetUrlFinder)) {
@@ -65,13 +69,30 @@ public class PageModelExtractor {
                     defExtractor.getNullable(),
                     defExtractor.getMulti());
         }).collect(Collectors.toList());
+
     }
 
-    public Object extractPage(Page page) {
+    @Override
+    public Object extract(Page page) {
         if (multi()) {
             return extractPageForList(page);
         }
         return extractPageItem(page);
+    }
+
+    @Override
+    public List<String> extractLinks(Page page) {
+        List<String> links;
+        List<UrlFinderSelector> selectors = getHelpUrlSelectors();
+        if (selectors == null) {
+            links = page.getHtml().links().all();
+        } else {
+            links = new ArrayList<>();
+            for (UrlFinderSelector selector : selectors) {
+                links.addAll(page.getHtml().selectList(selector).all());
+            }
+        }
+        return links;
     }
 
     /**
@@ -93,7 +114,6 @@ public class PageModelExtractor {
      * 抓取页面内容，如果未抓取到/结果不匹配，返回empty list。
      *
      * @param page page
-     * @return result map
      */
     public List<Map<String, Object>> extractPageForList(Page page) {
         //不是目标链接直接返回
@@ -203,5 +223,9 @@ public class PageModelExtractor {
 
     public void setFieldExtractors(List<Extractor> fieldExtractors) {
         this.fieldExtractors = fieldExtractors;
+    }
+
+    public DefRootExtractor getDefRootExtractor() {
+        return defRootExtractor;
     }
 }

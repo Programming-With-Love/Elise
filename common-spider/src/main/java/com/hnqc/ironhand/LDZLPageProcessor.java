@@ -17,9 +17,4 @@ public class LDZLPageProcessor implements PageProcessor {
             page.setSkip(true);
         }
     }
-
-    @Override
-    public Site getSite() {
-        return new Site().setRetryTimes(3);
-    }
 }

@@ -1,13 +1,12 @@
 package com.hnqc.ironhand.spider.distributed.pipeline;
 
-import com.hnqc.ironhand.spider.ResultItems;
+import com.hnqc.ironhand.spider.ResultItem;
 import com.hnqc.ironhand.spider.Task;
 import com.hnqc.ironhand.spider.distributed.configurable.Extractor;
 import com.hnqc.ironhand.spider.pipeline.Pipeline;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,9 +37,9 @@ public class ModelPipeline implements Pipeline {
     }
 
     @Override
-    public void process(ResultItems resultItems, Task task) {
+    public void process(ResultItem resultItem, Task task) {
         for (Map.Entry<String, PageModelPipeline> pipelineEntry : pageModelPipelines.entrySet()) {
-            Object o = resultItems.get(pipelineEntry.getKey());
+            Object o = resultItem.get(pipelineEntry.getKey());
             if (o != null) {
                 Extractor extractor = extractorMap.get(pipelineEntry.getKey());
                 PageModelPipeline pageModelPipeline = pipelineEntry.getValue();

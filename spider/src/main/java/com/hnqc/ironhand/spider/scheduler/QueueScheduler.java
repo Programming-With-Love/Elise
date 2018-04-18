@@ -4,7 +4,6 @@ import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Task;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -13,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author zido
  * @date 2018/50/16
  */
-public class QueueScheduler extends DuplicateRemovedScheduler implements MonitorableScheduler {
+public class QueueScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler {
 
     private BlockingQueue<Request> queue = new LinkedBlockingQueue<Request>();
 

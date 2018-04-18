@@ -1,6 +1,5 @@
 package com.hnqc.ironhand.spider;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.Map;
  * @author zido
  * @date 2018/29/12
  */
-public class ResultItems {
+public class ResultItem {
     private Map<String, Object> fields = new LinkedHashMap<>();
 
     private Request request;
@@ -30,7 +29,7 @@ public class ResultItems {
         return fields;
     }
 
-    public <T> ResultItems put(String key, T value) {
+    public <T> ResultItem put(String key, T value) {
         fields.put(key, value);
         return this;
     }
@@ -51,7 +50,7 @@ public class ResultItems {
         this.skip = skip;
     }
 
-    public List<ResultItems> getListFromResultItems() {
-        return (List<ResultItems>) fields.get("__list__");
+    public List<ResultItem> getListFromResultItems() {
+        return (List<ResultItem>) fields.get("__list__");
     }
 }

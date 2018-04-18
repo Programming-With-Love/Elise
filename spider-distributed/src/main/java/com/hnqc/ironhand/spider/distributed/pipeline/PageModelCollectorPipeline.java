@@ -1,11 +1,8 @@
 package com.hnqc.ironhand.spider.distributed.pipeline;
 
-import com.hnqc.ironhand.spider.ResultItems;
+import com.hnqc.ironhand.spider.ResultItem;
 import com.hnqc.ironhand.spider.Task;
-import com.hnqc.ironhand.spider.distributed.configurable.DefExtractor;
-import com.hnqc.ironhand.spider.distributed.configurable.DefRootExtractor;
-import com.hnqc.ironhand.spider.distributed.configurable.Extractor;
-import com.hnqc.ironhand.spider.distributed.configurable.Transfer;
+import com.hnqc.ironhand.spider.distributed.configurable.*;
 import com.hnqc.ironhand.spider.pipeline.CollectorPipeline;
 
 import java.util.ArrayList;
@@ -22,11 +19,11 @@ public class PageModelCollectorPipeline<T> implements CollectorPipeline<T> {
 
     private final CollectorPageModelPipeline<T> pipeline;
 
-    private DefRootExtractor extractor;
+    private ConfigurableModelExtractor extractor;
 
     private Transfer transfer = new DefaultTransfer();
 
-    public PageModelCollectorPipeline(DefRootExtractor extractor, CollectorPageModelPipeline<T> pipeline) {
+    public PageModelCollectorPipeline(ConfigurableModelExtractor extractor, CollectorPageModelPipeline<T> pipeline) {
         this.extractor = extractor;
         this.pipeline = pipeline;
     }
@@ -62,14 +59,14 @@ public class PageModelCollectorPipeline<T> implements CollectorPipeline<T> {
     }
 
     @Override
-    public void process(ResultItems resultItems, Task task) {
-        Object o = resultItems.get(extractor.getName());
+    public void process(ResultItem resultItem, Task task) {
+        Object o = resultItem.get(extractor.getModelExtractor().getName());
         if (o != null) {
-            if (extractor == null || !extractor.getMulti()) {
-                pipeline.process((T) transfer.toObj(resultItems.getAll()), task);
+            if (extractor == null || !extractor.getModelExtractor().getMulti()) {
+                pipeline.process((T) transfer.toObj(resultItem.getAll()), task);
             } else {
-                ArrayList<ResultItems> list = (ArrayList<ResultItems>) o;
-                for (ResultItems items : list) {
+                ArrayList<ResultItem> list = (ArrayList<ResultItem>) o;
+                for (ResultItem items : list) {
                     pipeline.process((T) transfer.toObj(items.getAll()), task);
                 }
             }

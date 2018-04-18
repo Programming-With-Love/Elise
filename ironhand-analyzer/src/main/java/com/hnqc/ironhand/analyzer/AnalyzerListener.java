@@ -2,8 +2,7 @@ package com.hnqc.ironhand.analyzer;
 
 import com.hnqc.ironhand.common.pipelines.SavedPipeline;
 import com.hnqc.ironhand.common.pojo.Seed;
-import com.hnqc.ironhand.spider.distributed.downloader.AsyncWithMessageDownloader;
-import com.hnqc.ironhand.spider.distributed.DsSpiderImpl;
+import com.hnqc.ironhand.spider.distributed.downloader.MessageDownloader;
 import com.hnqc.ironhand.spider.distributed.scheduler.AbstractDistributedScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,18 +20,11 @@ public class AnalyzerListener {
     private String topic = "analyzer";
     private SavedPipeline savedPipeline;
     private AbstractDistributedScheduler scheduler;
-    private AsyncWithMessageDownloader downloader;
+    private MessageDownloader downloader;
 
     @KafkaListener(topics = "#{__listener.topic}", groupId = "#{__listener.groupId}")
     public void listen(Seed seed) {
-        if (seed.getRequest() == null) {
-            //初始种子
-            DsSpiderImpl dsSpider = seed.getDsSpider();
-            dsSpider.addPipeline(savedPipeline);
-            dsSpider.setScheduler(scheduler);
-            dsSpider.setDownloader(downloader);
-            dsSpider.run();
-        }
+
     }
 
     public String getGroupId() {
@@ -58,7 +50,7 @@ public class AnalyzerListener {
 
 
     @Autowired
-    public void setDownloader(AsyncWithMessageDownloader downloader) {
+    public void setDownloader(MessageDownloader downloader) {
         this.downloader = downloader;
     }
 

@@ -3,7 +3,7 @@ package com.hnqc.ironhand.spider.distributed.message;
 import com.hnqc.ironhand.spider.Page;
 import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Task;
-import com.hnqc.ironhand.spider.distributed.configurable.DefRootExtractor;
+import com.hnqc.ironhand.spider.distributed.configurable.ConfigurableModelExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,7 @@ import java.util.Queue;
 import java.util.concurrent.*;
 
 /**
- * This message manager provides thread-level messaging that is implemented from {@link MessageManager}.
+ * This message manager provides thread-level messaging that is implemented from {@link CommunicationManager}.
  * <p>
  * This class is thread-safe. In addition to the efficiency issues,
  * you can rest assured that other concerns can be used with confidence.
@@ -26,9 +26,9 @@ import java.util.concurrent.*;
  * <p>
  * In order to achieve sharing, its message center is actually globally static.
  * <p>
- * it also provides additional string-based methods for sending messages,{@link #send(String, Task, Request, Page)}.
+ * it also provides additional string-based methods for sending messages,{@link #send(String, Task, Request, Page, ConfigurableModelExtractor)}.
  * the page can be null.
- * the method is to select the specific callback method by judging the type.
+ * the method is to select the specific onDownload method by judging the type.
  * <p>
  * Even if the internal download listener and analysis listener are all null,
  * it can still be used as a sending client to send messages.
@@ -36,7 +36,7 @@ import java.util.concurrent.*;
  * @author zido
  * @date 2018/04/16
  */
-public class ThreadMessageManager implements MessageManager {
+public class ThreadCommunicationManager implements CommunicationManager {
     public final static String TYPE_MESSAGE_DOWNLOAD = "download";
 
     public final static String TYPE_MESSAGE_ANALYZER = "analyzer";
@@ -73,7 +73,7 @@ public class ThreadMessageManager implements MessageManager {
     /**
      * logger
      */
-    private final static Logger logger = LoggerFactory.getLogger(ThreadMessageManager.class);
+    private final static Logger logger = LoggerFactory.getLogger(ThreadCommunicationManager.class);
 
     static {
         BALANCER_CONTAINER.put(TYPE_MESSAGE_DOWNLOAD, new SimpleLoadBalancer());
@@ -101,7 +101,7 @@ public class ThreadMessageManager implements MessageManager {
                     String type = (String) poll.get(KEY_TYPE);
                     Task task = (Task) poll.get(DATA_MESSAGE_TASK);
                     Request request = (Request) poll.get(DATA_MESSAGE_REQUEST);
-                    DefRootExtractor extractor = (DefRootExtractor) poll.get(DATA_MESSAGE_EXTRACTOR);
+                    ConfigurableModelExtractor extractor = (ConfigurableModelExtractor) poll.get(DATA_MESSAGE_EXTRACTOR);
                     if (TYPE_MESSAGE_ANALYZER.equals(type)) {
                         if (BALANCER_CONTAINER == null) {
                             QUEUE.offer(poll);
@@ -113,7 +113,7 @@ public class ThreadMessageManager implements MessageManager {
                         Page page = (Page) poll.get(DATA_MESSAGE_PAGE);
 
                         AnalyzerListener next = (AnalyzerListener) loadBalancer.getNext();
-                        childExecutor.execute(() -> next.callback(task, request, page, extractor));
+                        childExecutor.execute(() -> next.onProcess(task, request, page, extractor));
                     } else if (TYPE_MESSAGE_DOWNLOAD.equals(type)) {
                         if (BALANCER_CONTAINER == null) {
                             QUEUE.offer(poll);
@@ -122,7 +122,7 @@ public class ThreadMessageManager implements MessageManager {
                         }
                         LoadBalancer loadBalancer = BALANCER_CONTAINER.get(TYPE_MESSAGE_DOWNLOAD);
                         DownloadListener next = (DownloadListener) loadBalancer.getNext();
-                        childExecutor.execute(() -> next.callback(task, request, extractor));
+                        childExecutor.execute(() -> next.onDownload(task, request, extractor));
                     }
                 }
             }
@@ -139,7 +139,7 @@ public class ThreadMessageManager implements MessageManager {
      * @param request request
      * @param page    page
      */
-    public void send(String type, Task task, Request request, Page page, DefRootExtractor extractor) {
+    public void send(String type, Task task, Request request, Page page, ConfigurableModelExtractor extractor) {
         Map<String, Object> map = new HashMap<>(4);
         if (request != null) {
             map.put(DATA_MESSAGE_REQUEST, request);
@@ -168,12 +168,12 @@ public class ThreadMessageManager implements MessageManager {
     }
 
     @Override
-    public void downloadOver(Task task, Request request, Page page, DefRootExtractor extractor) {
+    public void process(Task task, Request request, Page page, ConfigurableModelExtractor extractor) {
         send(TYPE_MESSAGE_ANALYZER, task, request, page, extractor);
     }
 
     @Override
-    public void analyzerOver(Task task, Request request, DefRootExtractor extractor) {
+    public void download(Task task, Request request, ConfigurableModelExtractor extractor) {
         send(TYPE_MESSAGE_DOWNLOAD, task, request, null, extractor);
     }
 

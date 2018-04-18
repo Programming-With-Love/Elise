@@ -88,7 +88,6 @@ public class Spider implements Runnable, Task {
      */
     public Spider(PageProcessor pageProcessor) {
         this.pageProcessor = pageProcessor;
-        this.site = pageProcessor.getSite();
     }
 
     public Spider() {
@@ -341,9 +340,9 @@ public class Spider implements Runnable, Task {
         if (site.getAcceptStatCode().contains(page.getStatusCode())) {
             pageProcessor.process(page);
             extractAndAddRequests(page, spawnUrl);
-            if (!page.getResultItems().isSkip()) {
+            if (!page.getResultItem().isSkip()) {
                 for (Pipeline pipeline : pipelines) {
-                    pipeline.process(page.getResultItems(), this);
+                    pipeline.process(page.getResultItem(), this);
                 }
             }
         } else {

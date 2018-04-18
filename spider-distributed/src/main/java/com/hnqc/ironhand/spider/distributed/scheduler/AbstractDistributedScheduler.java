@@ -2,7 +2,7 @@ package com.hnqc.ironhand.spider.distributed.scheduler;
 
 import com.hnqc.ironhand.spider.Request;
 import com.hnqc.ironhand.spider.Task;
-import com.hnqc.ironhand.spider.scheduler.DuplicateRemovedScheduler;
+import com.hnqc.ironhand.spider.scheduler.AbstractDuplicateRemovedScheduler;
 import com.hnqc.ironhand.spider.scheduler.DuplicateRemover;
 import com.hnqc.ironhand.spider.scheduler.MonitorableScheduler;
 import com.hnqc.ironhand.spider.utils.ValidateUtils;
@@ -13,7 +13,7 @@ import com.hnqc.ironhand.spider.utils.ValidateUtils;
  * @author zido
  * @date 2018/40/12
  */
-public abstract class AbstractDistributedScheduler extends DuplicateRemovedScheduler implements MonitorableScheduler, DuplicateRemover {
+public abstract class AbstractDistributedScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler, DuplicateRemover {
 
     private static final String QUEUE_PREFIX = "queue_";
 

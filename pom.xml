@@ -17,7 +17,6 @@
         <module>spider</module>
         <module>ironhand-utils</module>
         <module>spider-distributed</module>
-        <module>common-spider</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

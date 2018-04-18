@@ -1,6 +1,6 @@
 package com.hnqc.ironhand.spider.pipeline;
 
-import com.hnqc.ironhand.spider.ResultItems;
+import com.hnqc.ironhand.spider.ResultItem;
 import com.hnqc.ironhand.spider.Task;
 
 /**
@@ -13,8 +13,8 @@ public interface Pipeline {
     /**
      * 结果处理
      *
-     * @param resultItems 结果集
+     * @param resultItem 结果集
      * @param task        任务
      */
-    void process(ResultItems resultItems, Task task);
+    void process(ResultItem resultItem, Task task);
 }

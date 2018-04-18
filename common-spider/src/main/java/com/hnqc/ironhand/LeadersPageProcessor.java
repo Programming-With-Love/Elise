@@ -17,9 +17,4 @@ public class LeadersPageProcessor implements PageProcessor {
             page.setSkip(true);
         }
     }
-
-    @Override
-    public Site getSite() {
-        return new Site().setRetryTimes(3);
-    }
 }
