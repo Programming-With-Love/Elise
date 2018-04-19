@@ -1,6 +1,7 @@
 package com.hnqc.ironhand.spider;
 
 import com.hnqc.ironhand.spider.selector.Html;
+import com.hnqc.ironhand.spider.selector.PlainText;
 import com.hnqc.ironhand.spider.selector.Selectable;
 import com.hnqc.ironhand.spider.utils.StatusCode;
 import com.hnqc.ironhand.spider.utils.UrlUtils;
@@ -18,15 +19,12 @@ import java.util.Map;
  */
 public class Page {
     private static final String HASH_SEP = "#";
-    private Request request;
-
-    private ResultItem resultItem = new ResultItem();
 
     private Html html;
 
     private String rawText;
 
-    private Selectable url;
+    private PlainText url;
 
     private Map<String, List<String>> headers;
 
@@ -47,27 +45,6 @@ public class Page {
         return page;
     }
 
-    public Page setSkip(boolean skip) {
-        resultItem.setSkip(skip);
-        return this;
-
-    }
-
-    public Page skip() {
-        resultItem.setSkip(true);
-        return this;
-    }
-
-    /**
-     * store extract results
-     *
-     * @param key   key
-     * @param field field
-     */
-    public void putField(String key, Object field) {
-        resultItem.put(key, field);
-    }
-
     /**
      * get html content of page
      *
@@ -75,7 +52,7 @@ public class Page {
      */
     public Html getHtml() {
         if (html == null) {
-            html = new Html(rawText, request.getUrl());
+            html = new Html(rawText, url.toString());
         }
         return html;
     }
@@ -94,30 +71,12 @@ public class Page {
      *
      * @return url of current page
      */
-    public Selectable getUrl() {
+    public PlainText getUrl() {
         return url;
     }
 
-    public void setUrl(Selectable url) {
+    public void setUrl(PlainText url) {
         this.url = url;
-    }
-
-    /**
-     * get request of current page
-     *
-     * @return request
-     */
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
-        this.resultItem.setRequest(request);
-    }
-
-    public ResultItem getResultItem() {
-        return resultItem;
     }
 
     public int getStatusCode() {
@@ -172,8 +131,6 @@ public class Page {
     @Override
     public String toString() {
         return "Page{" +
-                "request=" + request +
-                ", resultItem=" + resultItem +
                 ", html=" + html +
                 ", rawText='" + rawText + '\'' +
                 ", url=" + url +

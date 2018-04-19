@@ -1,42 +1,37 @@
 package com.hnqc.ironhand.spider.processor;
 
-import com.hnqc.ironhand.spider.ExtractorTask;
-import com.hnqc.ironhand.spider.Page;
-import com.hnqc.ironhand.spider.ResultItem;
-import com.hnqc.ironhand.spider.Task;
+import com.hnqc.ironhand.spider.*;
 import com.hnqc.ironhand.spider.extractor.ModelExtractor;
+import com.hnqc.ironhand.spider.scheduler.Scheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 /**
- * mapped model page processor
+ * model page processor with extractor,
+ * and Must ensure that task{@link Task} is ExtractorTask{@link ExtractorTask} subclass
  *
  * @author zido
  * @date 2018/04/12
  */
 public class ExtractorPageProcessor implements PageProcessor {
+    private Logger logger = LoggerFactory.getLogger(ExtractorPageProcessor.class);
+
     @Override
-    public ResultItem process(Task task, Page page) {
-        ResultItem item = new ResultItem();
+    public ResultItem process(Task task, Page page, RequestPutter putter) {
         if (!(task instanceof ExtractorTask)) {
+            logger.error("no extractor in task[id = {}] and stop this task", task.getId());
             return null;
         }
         ExtractorTask extractorTask = (ExtractorTask) task;
         ModelExtractor extractor = extractorTask.getModelExtractor();
         List<String> links = extractor.extractLinks(page);
-        Object result = extractor.extract(page);
-        if (result == null) {
-            return null;
-        }
-
-        //TODO page processor
-        page.putField(extractor.getModelExtractor().getName(), result);
         if (links != null) {
-            results.addAll(links);
+            for (String link : links) {
+                putter.pushRequest(task, new Request(link));
+            }
         }
-        if (page.getResultItem().getAll().size() == 0) {
-            page.getResultItem().setSkip(true);
-        }
-        return results;
+        return extractor.extract(page);
     }
 }

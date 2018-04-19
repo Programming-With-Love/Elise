@@ -3,6 +3,12 @@ package com.hnqc.ironhand.spider.selector;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Wrapping a string as selectable plain text
+ *
+ * @author zido
+ * @date 2018/04/19
+ */
 public class PlainText extends AbstractSelectable {
     protected List<String> sourceTexts;
 

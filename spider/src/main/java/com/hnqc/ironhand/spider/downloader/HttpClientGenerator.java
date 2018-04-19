@@ -50,9 +50,10 @@ public class HttpClientGenerator {
 
     private SSLConnectionSocketFactory buildSSLConnectionSocketFactory() {
         try {
+            // 优先绕过安全证书
             return new SSLConnectionSocketFactory(createIgnoreVerifySSL(), new String[]{"SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"},
                     null,
-                    new DefaultHostnameVerifier()); // 优先绕过安全证书
+                    new DefaultHostnameVerifier());
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
             logger.error("ssl connection fail", e);
         }

@@ -1,7 +1,6 @@
 package com.hnqc.ironhand.spider;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,7 +14,7 @@ public class ResultItem {
 
     private Request request;
 
-    private boolean skip;
+    private boolean skip = false;
 
     public <T> T get(String key) {
         Object o = fields.get(key);
@@ -46,11 +45,8 @@ public class ResultItem {
         return skip;
     }
 
-    public void setSkip(boolean skip) {
+    public ResultItem setSkip(boolean skip) {
         this.skip = skip;
-    }
-
-    public List<ResultItem> getListFromResultItems() {
-        return (List<ResultItem>) fields.get("__list__");
+        return this;
     }
 }

@@ -1,10 +1,8 @@
 package com.hnqc.ironhand.spider.processor;
 
-import com.hnqc.ironhand.spider.Page;
-import com.hnqc.ironhand.spider.ResultItem;
-import com.hnqc.ironhand.spider.Site;
-import com.hnqc.ironhand.spider.Task;
+import com.hnqc.ironhand.spider.*;
 import com.hnqc.ironhand.spider.extractor.ModelExtractor;
+import com.hnqc.ironhand.spider.scheduler.Scheduler;
 
 /**
  * the page processor
@@ -16,9 +14,10 @@ public interface PageProcessor {
     /**
      * process the page, extract urls to fetch, extract the data and store.
      *
-     * @param task task.
-     * @param page page.
+     * @param task      task.
+     * @param page      page.
+     * @param putter put request holder
      * @return results
      */
-    ResultItem process(Task task, Page page);
+    ResultItem process(Task task, Page page, RequestPutter putter);
 }

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DownLoadSender {
-    private KafkaTemplate<Integer, Object> template;
+
 
     public DownLoadSender(KafkaTemplate<Integer, Object> template) {
         this.template = template;
     }
 
     public void send(Seed message) {
-        template.send("download", message);
+
     }
 }

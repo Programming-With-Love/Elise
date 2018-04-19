@@ -14,7 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class QueueScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler {
 
-    private BlockingQueue<Request> queue = new LinkedBlockingQueue<Request>();
+    private BlockingQueue<Request> queue = new LinkedBlockingQueue<>();
 
     @Override
     public void pushWhenNoDuplicate(Request request, Task task) {

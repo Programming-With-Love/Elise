@@ -1,12 +1,16 @@
 package com.hnqc.ironhand.spider;
 
-import com.hnqc.ironhand.spider.downloader.AbstractDownloaderTaskAdapter;
-import com.hnqc.ironhand.spider.extractor.ModelExtractor;
 import com.hnqc.ironhand.spider.utils.StatusCode;
 import com.hnqc.ironhand.utils.IdWorker;
 
 import java.util.*;
 
+/**
+ * Website information configuration
+ *
+ * @author zido
+ * @date 2018/04/19
+ */
 public class Site {
 
     private String domain;
@@ -16,21 +20,21 @@ public class Site {
 
     private String charset;
 
-    private int sleepTime = 5000;
+    private int sleepTime = 100;
 
-    private int retryTimes = 0;
+    private int retryTimes = 3;
 
-    private int cycleRetryTimes = 0;
+    private int cycleRetryTimes = 3;
 
     private int retrySleepTime = 1000;
 
     private int timeOut = 5000;
 
-    private static final Set<Integer> DEFAULT_STATUS_CODE_SET = new HashSet<Integer>();
+    private static final Set<Integer> DEFAULT_STATUS_CODE_SET = new HashSet<>();
 
     private Set<Integer> acceptStatCode = DEFAULT_STATUS_CODE_SET;
 
-    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<>();
 
     private boolean useGzip = true;
 
@@ -162,7 +166,7 @@ public class Site {
     }
 
     public Task toTask() {
-        return new AbstractDownloaderTaskAdapter() {
+        return new Task() {
             @Override
             public Long getId() {
                 return IdWorker.nextId();

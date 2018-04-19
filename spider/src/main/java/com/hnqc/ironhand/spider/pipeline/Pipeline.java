@@ -14,7 +14,7 @@ public interface Pipeline {
      * 结果处理
      *
      * @param resultItem 结果集
-     * @param task        任务
+     * @param task       任务
      */
     void process(ResultItem resultItem, Task task);
 }

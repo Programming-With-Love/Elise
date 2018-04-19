@@ -15,8 +15,9 @@ public interface Scheduler {
      *
      * @param request request
      * @param task    task
+     * @return true if push successful or false if push failed.
      */
-    void push(Request request, Task task);
+    boolean push(Request request, Task task);
 
     /**
      * poll a request.
