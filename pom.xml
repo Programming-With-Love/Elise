@@ -10,11 +10,11 @@
     <version>0.0.1-SNAPSHOT</version>
     <description>ironhand分布式爬虫系统</description>
     <modules>
-        <module>ironhand-common</module>
+        <module>ironhand-extension</module>
         <module>ironhand-downloader</module>
         <module>ironhand-schedule</module>
         <module>ironhand-analyzer</module>
-        <module>spider</module>
+        <module>ironhand-core</module>
         <module>ironhand-utils</module>
     </modules>
     <properties>
@@ -49,7 +49,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.hnqc</groupId>
-                <artifactId>ironhand-common</artifactId>
+                <artifactId>ironhand-extension</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -74,7 +74,7 @@
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
-                <artifactId>spider</artifactId>
+                <artifactId>ironhand-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
@@ -82,10 +82,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>

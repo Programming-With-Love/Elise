@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>com.hnqc</groupId>
-            <artifactId>ironhand-common</artifactId>
+            <artifactId>ironhand-extension</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hnqc</groupId>
