@@ -19,14 +19,14 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class SimpleLoadBalancer implements LoadBalancer {
     private static Logger logger = LoggerFactory.getLogger(SimpleLoadBalancer.class);
-    private int current = 0;
+    private int current;
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
     private int lockTime = 2;
     private List<Object> list = new Vector<>();
 
     public SimpleLoadBalancer() {
-
+        current = 0;
     }
 
     public SimpleLoadBalancer(List objects) {
@@ -66,30 +66,27 @@ public class SimpleLoadBalancer implements LoadBalancer {
 
     @Override
     public boolean add(Object object) {
-        lock.lock();
-        boolean add = list.add(object);
-        if (add) {
-            condition.signalAll();
+        if (!list.isEmpty()) {
+            return list.add(object);
+        } else {
+            lock.lock();
+            boolean add = list.add(object);
+            if (add) {
+                condition.signal();
+            }
+            lock.unlock();
+            return add;
         }
-        lock.unlock();
-        return add;
     }
 
     @Override
     public boolean remove(Object object) {
-        return list.remove(object);
-    }
-
-    @Override
-    public void removeAndAdd(Object element, Object front) {
         lock.lock();
-        if (element != null) {
-            remove(element);
+        try {
+            return list.remove(object);
+        } finally {
+            lock.unlock();
         }
-        if (front != null) {
-            add(front);
-        }
-        lock.unlock();
     }
 
     @Override

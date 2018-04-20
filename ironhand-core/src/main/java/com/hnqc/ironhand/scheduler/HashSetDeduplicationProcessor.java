@@ -7,8 +7,16 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class HashSetDuplicateRemover implements DuplicateRemover {
-    private Set<String> urls = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+/**
+ * Remove duplicate task processor using hash set.
+ * <p>
+ * It is process isolation and thread-safe{@link ConcurrentHashMap}
+ *
+ * @author zido
+ * @date 2018/04/20
+ */
+public class HashSetDeduplicationProcessor implements DuplicationProcessor {
+    private Set<String> urls = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Override
     public boolean isDuplicate(Request request, Task task) {

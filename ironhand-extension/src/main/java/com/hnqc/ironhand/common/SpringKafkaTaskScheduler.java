@@ -1,12 +1,12 @@
 package com.hnqc.ironhand.common;
 
-import com.hnqc.ironhand.common.pojo.Seed;
+import com.hnqc.ironhand.scheduler.Seed;
 import com.hnqc.ironhand.Page;
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
-import com.hnqc.ironhand.message.CommunicationManager;
-import com.hnqc.ironhand.message.MonitorableContainer;
-import com.hnqc.ironhand.message.SimpleCommunicationManager;
+import com.hnqc.ironhand.message.TaskScheduler;
+import com.hnqc.ironhand.message.MonitorableScheduler;
+import com.hnqc.ironhand.message.SimpleTaskScheduler;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
@@ -31,44 +31,44 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zido
  * @date 2018/04/19
  */
-public class SpringKafkaCommunicationManager implements CommunicationManager {
+public class SpringKafkaTaskScheduler implements TaskScheduler {
     private KafkaTemplate<Integer, Seed> template;
 
-    private CommunicationManager communicationManager;
+    private TaskScheduler taskScheduler;
 
     private Status status = Status.Init;
 
     private Map<String, KafkaMessageListenerContainer<Integer, Seed>> container = new ConcurrentHashMap<>();
 
-    public SpringKafkaCommunicationManager() {
-        this(new SimpleCommunicationManager());
+    public SpringKafkaTaskScheduler() {
+        this(new SimpleTaskScheduler());
     }
 
-    public SpringKafkaCommunicationManager(CommunicationManager communicationManager) {
-        if (!(communicationManager instanceof MonitorableContainer)) {
+    public SpringKafkaTaskScheduler(TaskScheduler taskScheduler) {
+        if (!(taskScheduler instanceof MonitorableScheduler)) {
             throw new UnsupportedOperationException("unmonitorable manager is not supported");
         }
-        this.communicationManager = communicationManager;
+        this.taskScheduler = taskScheduler;
     }
 
     @Override
     public void registerAnalyzer(AnalyzerListener listener) {
-        communicationManager.registerAnalyzer(listener);
+        taskScheduler.registerAnalyzer(listener);
     }
 
     @Override
     public void registerDownloader(DownloadListener listener) {
-        communicationManager.registerDownloader(listener);
+        taskScheduler.registerDownloader(listener);
     }
 
     @Override
     public void removeAnalyzer(AnalyzerListener listener) {
-        communicationManager.removeAnalyzer(listener);
+        taskScheduler.removeAnalyzer(listener);
     }
 
     @Override
     public void removeDownloader(DownloadListener listener) {
-        communicationManager.removeDownloader(listener);
+        taskScheduler.removeDownloader(listener);
     }
 
     private KafkaMessageListenerContainer<Integer, Seed> runContainer(String type, MessageListener<Integer, Seed> listener) {
@@ -81,20 +81,20 @@ public class SpringKafkaCommunicationManager implements CommunicationManager {
     }
 
     @Override
-    public void start() {
+    public void listen() {
         this.status = Status.Init;
-        this.communicationManager.start();
-        MonitorableContainer monitorableContainer = (MonitorableContainer) communicationManager;
-        if (monitorableContainer.size(TYPE_MESSAGE_DOWNLOAD) > 0 && this.container.get(TYPE_MESSAGE_DOWNLOAD) == null) {
+        this.taskScheduler.listen();
+        MonitorableScheduler monitorableScheduler = (MonitorableScheduler) taskScheduler;
+        if (monitorableScheduler.clientSize(TYPE_MESSAGE_DOWNLOAD) > 0 && this.container.get(TYPE_MESSAGE_DOWNLOAD) == null) {
             this.container.put(TYPE_MESSAGE_DOWNLOAD, runContainer(TYPE_MESSAGE_DOWNLOAD, message -> {
                 Seed seed = message.value();
-                communicationManager.download(seed.getTask(), seed.getRequest());
+                taskScheduler.download(seed.getTask(), seed.getRequest());
             }));
         }
-        if (monitorableContainer.size(TYPE_MESSAGE_ANALYZER) > 0 && this.container.get(TYPE_MESSAGE_ANALYZER) == null) {
+        if (monitorableScheduler.clientSize(TYPE_MESSAGE_ANALYZER) > 0 && this.container.get(TYPE_MESSAGE_ANALYZER) == null) {
             this.container.put(TYPE_MESSAGE_ANALYZER, runContainer(TYPE_MESSAGE_ANALYZER, message -> {
                 Seed seed = message.value();
-                communicationManager.process(seed.getTask(), seed.getRequest(), seed.getPage());
+                taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
             }));
         }
         if (this.template == null) {
@@ -121,7 +121,7 @@ public class SpringKafkaCommunicationManager implements CommunicationManager {
 
         KafkaMessageListenerContainer<Integer, Seed> downloaderListenerContainer = this.container.get(TYPE_MESSAGE_DOWNLOAD);
         downloaderListenerContainer.stop();
-        this.communicationManager.stop();
+        this.taskScheduler.stop();
         this.status = Status.Stopped;
     }
 

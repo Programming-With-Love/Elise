@@ -23,10 +23,10 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import java.util.Map;
 
 /**
- * @author code4crafter@gmail.com
- * Date: 17/3/18
- * Time: 11:28
- * @since 0.7.0
+ * Http Uri Request Converter
+ *
+ * @author zido
+ * @date 2018/04/20
  */
 public class HttpUriRequestConverter {
 

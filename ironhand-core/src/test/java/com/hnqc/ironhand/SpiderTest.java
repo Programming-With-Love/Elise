@@ -2,10 +2,9 @@ package com.hnqc.ironhand;
 
 import com.hnqc.ironhand.downloader.HttpClientDownloader;
 import com.hnqc.ironhand.extractor.ModelExtractor;
-import com.hnqc.ironhand.message.ThreadCommunicationManager;
+import com.hnqc.ironhand.message.ThreadTaskScheduler;
 import com.hnqc.ironhand.pipeline.ConsolePipeline;
 import com.hnqc.ironhand.processor.ExtractorPageProcessor;
-import com.hnqc.ironhand.scheduler.QueueScheduler;
 import com.hnqc.ironhand.selector.Selectable;
 import com.hnqc.ironhand.utils.IdWorker;
 import org.junit.Assert;
@@ -25,10 +24,9 @@ public class SpiderTest {
     @Test
     public void testRun() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(6);
-        Spider spider = new Spider(new ThreadCommunicationManager(),
+        Spider spider = new Spider(new ThreadTaskScheduler(),
                 new ExtractorPageProcessor(),
                 new HttpClientDownloader(),
-                new QueueScheduler(),
                 new ConsolePipeline() {
                     @Override
                     public void process(ResultItem resultItem, Task task) {

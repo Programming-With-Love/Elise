@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 请求体描述
+ * http request body,
  *
  * @author zido
  * @date 2018/35/12

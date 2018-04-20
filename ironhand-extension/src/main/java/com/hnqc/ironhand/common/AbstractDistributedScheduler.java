@@ -1,22 +1,31 @@
-package com.hnqc.ironhand.scheduler;
+package com.hnqc.ironhand.common;
 
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
+import com.hnqc.ironhand.message.AbstractDuplicateRemovedScheduler;
+import com.hnqc.ironhand.scheduler.DuplicationProcessor;
+import com.hnqc.ironhand.scheduler.MonitorableScheduler;
 import com.hnqc.ironhand.utils.ValidateUtils;
 
 /**
- * 基于redis的分布式任务调度实现
+ * Simple distributed task scheduling abstract class
  *
  * @author zido
  * @date 2018/40/12
  */
-public abstract class AbstractDistributedScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler, DuplicateRemover {
+public abstract class AbstractDistributedScheduler extends AbstractDuplicateRemovedScheduler
+        implements MonitorableScheduler, DuplicationProcessor {
 
     private static final String QUEUE_PREFIX = "queue_";
 
     private static final String SET_PREFIX = "set_";
 
     private static final String ITEM_PREFIX = "item_";
+
+    public AbstractDistributedScheduler(DuplicationProcessor duplicationProcessor) {
+        super(duplicationProcessor);
+    }
+
 
     protected boolean checkForAdditionalInfo(Request request) {
         if (request == null) {
@@ -36,7 +45,6 @@ public abstract class AbstractDistributedScheduler extends AbstractDuplicateRemo
         }
 
         return request.getExtras() != null && !request.getExtras().isEmpty();
-
     }
 
     protected String getSetKey(Task task) {

@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.common.pojo;
+package com.hnqc.ironhand.scheduler;
 
 import com.hnqc.ironhand.Page;
 import com.hnqc.ironhand.Request;
@@ -14,6 +14,16 @@ public class Seed {
     private Task task;
     private Request request;
     private Page page;
+
+    public Seed(Task task, Request request, Page page) {
+        this.task = task;
+        this.request = request;
+        this.page = page;
+    }
+
+    public Seed() {
+
+    }
 
     public Task getTask() {
         return task;

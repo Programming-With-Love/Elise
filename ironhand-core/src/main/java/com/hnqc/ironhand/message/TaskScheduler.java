@@ -17,10 +17,10 @@ import com.hnqc.ironhand.Task;
  * @author zido
  * @date 2018/04/17
  */
-public interface CommunicationManager {
-    String TYPE_MESSAGE_DOWNLOAD = "download";
+public interface TaskScheduler {
+    String TYPE_MESSAGE_DOWNLOAD = "__download__";
 
-    String TYPE_MESSAGE_ANALYZER = "analyzer";
+    String TYPE_MESSAGE_ANALYZER = "__analyzer__";
 
     /**
      * analyzer listener,this interface should called by download service.
@@ -90,15 +90,13 @@ public interface CommunicationManager {
     void removeDownloader(DownloadListener downloadListener);
 
     /**
-     * start to listen and resolve messages
-     */
-    void start();
-
-    /**
      * If the download client download is completed,
      * this method can be called to send the download completion message and pass the download page to the analysis client.
      * Next, please rest assured that the task scheduling to the manager,
-     * manager will select the appropriate scheduling program and asynchronous onDownload onDownload to other clients (of course, may also be yourself, if you are also an analysis client)
+     * <p>
+     * manager will select the appropriate scheduling program
+     * and call onDownload{@link DownloadListener} to other clients
+     * (of course, may also be yourself, if you are also an analysis client)
      *
      * @param task    the task information
      * @param request the request
@@ -113,40 +111,4 @@ public interface CommunicationManager {
      * @param request the request
      */
     void download(Task task, Request request);
-
-    void stop();
-
-    /**
-     * Get running status by spider.
-     *
-     * @return running status
-     * @see Status
-     * @since 0.4.1
-     */
-    Status getStatus();
-
-
-    enum Status {
-        Init(0), Running(1), Stopped(2);
-
-        private Status(int value) {
-            this.value = value;
-        }
-
-        private int value;
-
-        int getValue() {
-            return value;
-        }
-
-        public static Status fromValue(int value) {
-            for (Status status : Status.values()) {
-                if (status.getValue() == value) {
-                    return status;
-                }
-            }
-            //default value
-            return Init;
-        }
-    }
 }

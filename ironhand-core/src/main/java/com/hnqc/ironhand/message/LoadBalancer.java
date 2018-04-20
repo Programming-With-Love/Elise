@@ -33,14 +33,6 @@ public interface LoadBalancer {
     boolean remove(Object object);
 
     /**
-     * add and remove
-     *
-     * @param element The element you want to add to the container
-     * @param front   The element in the container you wish to delete
-     */
-    void removeAndAdd(Object element, Object front);
-
-    /**
      * return new empty load balancer
      *
      * @return load balancer
@@ -48,8 +40,8 @@ public interface LoadBalancer {
     LoadBalancer newClone();
 
     /**
-     * return size of list
-     * @return size
+     * return clientSize of list
+     * @return clientSize
      */
     int size();
 }

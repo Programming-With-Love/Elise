@@ -1,12 +1,10 @@
 package com.hnqc.ironhand;
 
 import com.hnqc.ironhand.downloader.Downloader;
-import com.hnqc.ironhand.message.CommunicationManager;
+import com.hnqc.ironhand.message.TaskScheduler;
 import com.hnqc.ironhand.pipeline.ConsolePipeline;
 import com.hnqc.ironhand.pipeline.Pipeline;
 import com.hnqc.ironhand.processor.PageProcessor;
-import com.hnqc.ironhand.scheduler.QueueScheduler;
-import com.hnqc.ironhand.scheduler.Scheduler;
 import com.hnqc.ironhand.thread.CountableThreadPool;
 import com.hnqc.ironhand.utils.UrlUtils;
 import com.hnqc.ironhand.utils.ValidateUtils;
@@ -23,14 +21,13 @@ import java.util.concurrent.ExecutorService;
  *
  * @author zido
  */
-public class Spider implements CommunicationManager.DownloadListener,
-        CommunicationManager.AnalyzerListener,
+public class Spider implements TaskScheduler.DownloadListener,
+        TaskScheduler.AnalyzerListener,
         RequestPutter,
         Runnable {
     private Downloader downloader;
     private List<Pipeline> pipelines = new ArrayList<>();
     private PageProcessor pageProcessor;
-    private Scheduler scheduler = new QueueScheduler();
     private static Logger logger = LoggerFactory.getLogger(Spider.class);
     private CountableThreadPool threadPool;
     private ExecutorService executorService;
@@ -39,23 +36,21 @@ public class Spider implements CommunicationManager.DownloadListener,
 
     private List<SpiderListener> spiderListeners;
 
-    private CommunicationManager manager;
+    private TaskScheduler manager;
 
     @Override
     public void pushRequest(Task task, Request request) {
-        if (scheduler.push(request, task)) {
-            try {
-                manager.download(task, request);
-            } catch (NullPointerException e) {
-                Site site = task.getSite();
-                if (site.getCycleRetryTimes() == 0) {
-                    logger.error("no downloader in container,will sleep {} seconds,please add downloader", site.getSleepTime());
-                    sleep(site.getSleepTime());
-                } else {
-                    logger.error("no downloader in container,will retry {} times,please add downloader", site.getRetrySleepTime());
-                    // for cycle retry
-                    doCycleRetry(task, request);
-                }
+        try {
+            manager.download(task, request);
+        } catch (NullPointerException e) {
+            Site site = task.getSite();
+            if (site.getCycleRetryTimes() == 0) {
+                logger.error("no downloader in container,will sleep {} seconds,please add downloader", site.getSleepTime());
+                sleep(site.getSleepTime());
+            } else {
+                logger.error("no downloader in container,will retry {} times,please add downloader", site.getRetrySleepTime());
+                // for cycle retry
+                doCycleRetry(task, request);
             }
         }
     }
@@ -71,21 +66,19 @@ public class Spider implements CommunicationManager.DownloadListener,
      *
      * @param pageProcessor pageProcessor
      */
-    public Spider(CommunicationManager manager,
+    public Spider(TaskScheduler manager,
                   PageProcessor pageProcessor,
                   Downloader downloader,
-                  Scheduler scheduler,
                   Pipeline... pipeline) {
         this.pageProcessor = pageProcessor;
         this.downloader = downloader;
-        this.scheduler = scheduler;
         if (pipeline != null) {
             this.pipelines.addAll(Arrays.asList(pipeline));
         }
         this.manager = manager;
     }
 
-    public Spider(CommunicationManager manager) {
+    public Spider(TaskScheduler manager) {
         this.manager = manager;
     }
 
@@ -151,8 +144,7 @@ public class Spider implements CommunicationManager.DownloadListener,
         if (pipelines.isEmpty()) {
             pipelines.add(new ConsolePipeline());
         }
-        manager.start();
-
+        manager.listen();
     }
 
     public Spider runAsync() {

@@ -16,17 +16,43 @@ public class Request implements Serializable {
     private static final long serialVersionUID = 2018040215121L;
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
 
+    /**
+     * url
+     */
     private String url;
+    /**
+     * request method,like GET/POST/PATCH/PUT/DELETE
+     */
     private String method;
+    /**
+     * Only the three verbs POST, PUT, and PATCH will include the request body.
+     * <p>
+     * If other methods are used, the request body will be ignored
+     */
     private HttpRequestBody requestBody;
-
+    /**
+     * Store additional information in extras.
+     */
     private Map<String, Object> extras;
+    /**
+     * cookies for current url, if not set use Site's cookies
+     */
+    private Map<String, String> cookies = new HashMap<>();
 
-    private Map<String, String> cookies = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<>();
 
-    private Map<String, String> headers = new HashMap<String, String>();
 
     private String charset;
+
+    /**
+     * Priority of the request.
+     * The bigger will be processed earlier.
+     */
+    private long priority;
+    /**
+     * When it is set to TRUE, the downloader will not try to parse response body to text.
+     */
+    private boolean binaryContent = false;
 
     public Request(Request request) {
         this.url = request.url;
@@ -35,6 +61,9 @@ public class Request implements Serializable {
         this.cookies = request.cookies;
         this.headers = request.headers;
         this.charset = request.charset;
+        this.requestBody = request.requestBody;
+        this.priority = request.priority;
+        this.binaryContent = request.binaryContent;
     }
 
     public Request() {
@@ -54,7 +83,7 @@ public class Request implements Serializable {
 
     public Request putExtra(String key, Object value) {
         if (extras == null) {
-            extras = new HashMap<>(16);
+            extras = new HashMap<>(3);
         }
         extras.put(key, value);
         return this;

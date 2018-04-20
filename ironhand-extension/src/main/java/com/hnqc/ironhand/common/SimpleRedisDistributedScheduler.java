@@ -6,8 +6,12 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
-import com.hnqc.ironhand.scheduler.AbstractDistributedScheduler;
+import com.hnqc.ironhand.scheduler.DuplicationProcessor;
 import com.hnqc.ironhand.utils.ValidateUtils;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.resource.DefaultClientResources;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.Assert;
 
@@ -19,25 +23,28 @@ import java.io.IOException;
  * @author zido
  * @date 2018/04/15
  */
-public class RedisTemplateScheduler extends AbstractDistributedScheduler {
-    private RedisTemplate<String, String> template;
+public class SimpleRedisDistributedScheduler extends AbstractDistributedScheduler {
+    private StatefulRedisConnection<String, String> connection;
     private final ObjectMapper objectMapper;
 
-    public RedisTemplateScheduler(RedisTemplate<String, String> template) {
+    public SimpleRedisDistributedScheduler(String url) {
+        RedisClient redisClient = RedisClient.create(url);
+        StatefulRedisConnection<String, String> connect = redisClient.connect();
         this(template, new ObjectMapper());
         this.objectMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.template = template;
-        setDuplicateRemover(this);
     }
 
-    public RedisTemplateScheduler(RedisTemplate<String, String> template, ObjectMapper objectMapper) {
+    public SimpleRedisDistributedScheduler(RedisTemplate<String, String> template, ObjectMapper objectMapper) {
+
         Assert.notNull(objectMapper, "'objectMapper' must not be null.");
         this.objectMapper = objectMapper;
     }
 
     @Override
     public boolean isDuplicate(Request request, Task task) {
+        RedisTemplate<String, String> template;
+
         return template.opsForSet().add(getSetKey(task), request.getUrl()) == 0;
     }
 
@@ -47,7 +54,7 @@ public class RedisTemplateScheduler extends AbstractDistributedScheduler {
     }
 
     @Override
-    public int getLeftRequestsCount(Task task) {
+    public int blockSize(Task task) {
         return template.opsForList().size(getQueueKey(task)).intValue();
     }
 

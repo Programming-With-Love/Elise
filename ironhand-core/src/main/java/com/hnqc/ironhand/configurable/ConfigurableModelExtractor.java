@@ -36,9 +36,9 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     private DefRootExtractor defRootExtractor;
 
     /**
-     * 初始化基本数据
+     * construct by {@link DefRootExtractor}
      *
-     * @param defRootExtractor 抓取器描述
+     * @param defRootExtractor def root extractor
      */
     public ConfigurableModelExtractor(DefRootExtractor defRootExtractor) {
         this.defRootExtractor = defRootExtractor;

@@ -6,14 +6,14 @@ package com.hnqc.ironhand.message;
  * @author zido
  * @date 2018/04/20
  */
-public interface MonitorableContainer {
+public interface MonitorableScheduler {
     /**
-     * get the container size by type
+     * get the container clientSize by type
      *
      * @param type type
-     * @return container size
+     * @return container clientSize
      */
-    int size(String type);
+    int clientSize(String type);
 
     /**
      * See how many messages are in the message container

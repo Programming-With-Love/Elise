@@ -1,7 +1,7 @@
 package com.hnqc.ironhand;
 
-import com.hnqc.ironhand.message.CommunicationManager;
-import com.hnqc.ironhand.message.ThreadCommunicationManager;
+import com.hnqc.ironhand.message.TaskScheduler;
+import com.hnqc.ironhand.message.ThreadTaskScheduler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,12 +10,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * CommunicationManagerTest
+ * TaskSchedulerTest
  *
  * @author zido
  * @date 2018/04/17
  */
-public class CommunicationManagerTest {
+public class TaskSchedulerTest {
     private Task task;
 
     @Before
@@ -26,7 +26,7 @@ public class CommunicationManagerTest {
     @Test
     public void testListen() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
-        CommunicationManager manager = new ThreadCommunicationManager();
+        TaskScheduler manager = new ThreadTaskScheduler();
         manager.registerAnalyzer((task, request, page) -> {
             Assert.assertEquals("www.baidu.com", request.getUrl());
             latch.countDown();
@@ -40,7 +40,7 @@ public class CommunicationManagerTest {
             Assert.assertEquals("www.1.com", request.getUrl());
             latch.countDown();
         });
-        manager.start();
+        manager.listen();
 
         manager.process(task, new Request("www.baidu.com"), new Page());
         manager.download(task, new Request("www.1.com"));

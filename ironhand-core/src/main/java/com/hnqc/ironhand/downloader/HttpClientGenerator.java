@@ -26,8 +26,10 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 
 /**
- * @author code4crafter@gmail.com <br>
- * @since 0.4.0
+ * Http Client Generator
+ *
+ * @author zido
+ * @date 2018/04/20
  */
 public class HttpClientGenerator {
 

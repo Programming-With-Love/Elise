@@ -10,7 +10,7 @@ import com.hnqc.ironhand.Task;
  */
 public interface MonitorableScheduler extends Scheduler {
 
-    int getLeftRequestsCount(Task task);
+    int blockSize(Task task);
 
     int getTotalRequestsCount(Task task);
 }

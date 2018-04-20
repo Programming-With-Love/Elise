@@ -5,7 +5,7 @@ import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
 
 /**
- * 下载器接口
+ * downloader interface
  *
  * @author zido
  * @date 2018/04/16

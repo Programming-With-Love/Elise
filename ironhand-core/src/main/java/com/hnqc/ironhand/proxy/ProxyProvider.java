@@ -4,9 +4,10 @@ import com.hnqc.ironhand.Page;
 import com.hnqc.ironhand.Task;
 
 /**
- * Proxy provider. <br>
- *     
- * @since 0.7.0
+ * Proxy provider.
+ *
+ * @author zido
+ * @date 2018/04/20
  */
 public interface ProxyProvider {
 
