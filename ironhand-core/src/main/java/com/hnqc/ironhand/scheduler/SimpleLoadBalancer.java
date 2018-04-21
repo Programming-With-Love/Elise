@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.message;
+package com.hnqc.ironhand.scheduler;
 
 import com.hnqc.ironhand.utils.ValidateUtils;
 import org.slf4j.Logger;
@@ -17,30 +17,30 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author zido
  * @date 2018/04/17
  */
-public class SimpleLoadBalancer implements LoadBalancer {
+public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
     private static Logger logger = LoggerFactory.getLogger(SimpleLoadBalancer.class);
     private int current;
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
     private int lockTime = 2;
-    private List<Object> list = new Vector<>();
+    private List<T> list = new Vector<>();
 
     public SimpleLoadBalancer() {
         current = 0;
     }
 
-    public SimpleLoadBalancer(List objects) {
+    public SimpleLoadBalancer(List<T> objects) {
         list.addAll(objects);
         current = 0;
     }
 
     /**
-     * if there is nothing, it will wait until an available object is returned or After {@link #lockTime} seconds
+     * if there is nothing, it will wait until an available object is returned
      *
      * @return object
      */
     @Override
-    public Object getNext() {
+    public T getNext() {
         lock.lock();
         try {
             if (ValidateUtils.isEmpty(list)) {
@@ -56,7 +56,7 @@ public class SimpleLoadBalancer implements LoadBalancer {
                 }
             }
             int index = current;
-            Object obj = list.get(index);
+            T obj = list.get(index);
             current = (current + 1) % list.size();
             return obj;
         } finally {
@@ -65,14 +65,14 @@ public class SimpleLoadBalancer implements LoadBalancer {
     }
 
     @Override
-    public boolean add(Object object) {
+    public boolean add(T object) {
         if (!list.isEmpty()) {
             return list.add(object);
         } else {
             lock.lock();
             boolean add = list.add(object);
             if (add) {
-                condition.signal();
+                condition.signalAll();
             }
             lock.unlock();
             return add;
@@ -80,7 +80,7 @@ public class SimpleLoadBalancer implements LoadBalancer {
     }
 
     @Override
-    public boolean remove(Object object) {
+    public boolean remove(T object) {
         lock.lock();
         try {
             return list.remove(object);
@@ -90,11 +90,11 @@ public class SimpleLoadBalancer implements LoadBalancer {
     }
 
     @Override
-    public synchronized LoadBalancer newClone() {
-        return new SimpleLoadBalancer();
+    public synchronized <V> LoadBalancer<V> newClone() {
+        return new SimpleLoadBalancer<V>().setLockTime(this.lockTime);
     }
 
-    public SimpleLoadBalancer setLockTime(int lockTime) {
+    public SimpleLoadBalancer<T> setLockTime(int lockTime) {
         this.lockTime = lockTime;
         return this;
     }

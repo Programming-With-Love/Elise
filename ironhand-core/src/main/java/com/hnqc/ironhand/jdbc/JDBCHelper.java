@@ -403,7 +403,6 @@ public class JDBCHelper {
             try {
                 conn.rollback();
             } catch (SQLException e1) {
-                // TODO Auto-generated catch block
                 throw new ExceptionInInitializerError(e1);
             }
             throw new ExceptionInInitializerError(e);

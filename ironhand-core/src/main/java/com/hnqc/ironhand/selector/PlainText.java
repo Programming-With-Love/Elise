@@ -12,6 +12,10 @@ import java.util.List;
 public class PlainText extends AbstractSelectable {
     protected List<String> sourceTexts;
 
+    public PlainText() {
+
+    }
+
     public PlainText(List<String> sourceTexts) {
         this.sourceTexts = sourceTexts;
     }

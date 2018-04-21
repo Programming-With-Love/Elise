@@ -1,5 +1,6 @@
-package com.hnqc.ironhand.scheduler;
+package com.hnqc.ironhand.common.pojo;
 
+import com.hnqc.ironhand.DistributedTask;
 import com.hnqc.ironhand.Page;
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
@@ -11,11 +12,11 @@ import com.hnqc.ironhand.Task;
  * @date 2018/04/16
  */
 public class Seed {
-    private Task task;
+    private DistributedTask task;
     private Request request;
     private Page page;
 
-    public Seed(Task task, Request request, Page page) {
+    public Seed(DistributedTask task, Request request, Page page) {
         this.task = task;
         this.request = request;
         this.page = page;
@@ -25,11 +26,11 @@ public class Seed {
 
     }
 
-    public Task getTask() {
+    public DistributedTask getTask() {
         return task;
     }
 
-    public Seed setTask(Task task) {
+    public Seed setTask(DistributedTask task) {
         this.task = task;
         return this;
     }

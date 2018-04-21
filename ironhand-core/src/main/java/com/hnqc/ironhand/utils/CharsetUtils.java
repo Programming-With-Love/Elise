@@ -55,7 +55,6 @@ public class CharsetUtils {
             }
         }
         logger.debug("Auto get charset: {}", charset);
-        // 3、todo use tools as cpdetector for content decode
         return charset;
     }
 

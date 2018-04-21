@@ -1,16 +1,39 @@
 package com.hnqc.ironhand.scheduler;
 
-import com.hnqc.ironhand.Task;
-
 /**
- * monitorable scheduler.
+ * Monitorable Manager
  *
  * @author zido
- * @date 2018/04/19
+ * @date 2018/04/20
  */
-public interface MonitorableScheduler extends Scheduler {
+public interface MonitorableScheduler {
+    /**
+     * get the downloaderSize by type
+     *
+     * @return downloaderSize
+     */
+    int downloaderSize();
 
-    int blockSize(Task task);
+    /**
+     * get the number of analyzer clients
+     *
+     * @return size
+     */
+    int analyzerSize();
 
-    int getTotalRequestsCount(Task task);
+    /**
+     * See how many messages are in the message container
+     *
+     * @return the size of message container
+     */
+    int blockSize();
+
+    /**
+     * Check if the message container is empty
+     *
+     * @return true/false
+     */
+    default boolean empty() {
+        return blockSize() == 0;
+    }
 }

@@ -47,7 +47,7 @@ public class Page {
      *
      * @return html
      */
-    public Html getHtml() {
+    public Html html() {
         if (html == null) {
             html = new Html(rawText, url.toString());
         }
@@ -57,7 +57,7 @@ public class Page {
     /**
      * @param html html
      * @deprecated since 0.4.0
-     * The html is parse just when first time of calling {@link #getHtml()}, so use {@link #setRawText(String)} instead.
+     * The html is parse just when first time of calling {@link #html()}, so use {@link #setRawText(String)} instead.
      */
     public void setHtml(Html html) {
         this.html = html;
@@ -72,8 +72,9 @@ public class Page {
         return url;
     }
 
-    public void setUrl(PlainText url) {
+    public Page setUrl(PlainText url) {
         this.url = url;
+        return this;
     }
 
     public int getStatusCode() {

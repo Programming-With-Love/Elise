@@ -24,7 +24,7 @@ public class ExtractorPageProcessor implements PageProcessor {
             return null;
         }
         ExtractorTask extractorTask = (ExtractorTask) task;
-        ModelExtractor extractor = extractorTask.getModelExtractor();
+        ModelExtractor extractor = extractorTask.modelExtractor();
         List<String> links = extractor.extractLinks(page);
         if (links != null) {
             for (String link : links) {

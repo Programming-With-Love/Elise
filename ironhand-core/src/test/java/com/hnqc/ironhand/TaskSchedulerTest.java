@@ -1,7 +1,7 @@
 package com.hnqc.ironhand;
 
-import com.hnqc.ironhand.message.TaskScheduler;
-import com.hnqc.ironhand.message.ThreadTaskScheduler;
+import com.hnqc.ironhand.scheduler.TaskScheduler;
+import com.hnqc.ironhand.scheduler.SimpleTaskScheduler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class TaskSchedulerTest {
     @Test
     public void testListen() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
-        TaskScheduler manager = new ThreadTaskScheduler();
+        TaskScheduler manager = new SimpleTaskScheduler();
         manager.registerAnalyzer((task, request, page) -> {
             Assert.assertEquals("www.baidu.com", request.getUrl());
             latch.countDown();
@@ -40,11 +40,10 @@ public class TaskSchedulerTest {
             Assert.assertEquals("www.1.com", request.getUrl());
             latch.countDown();
         });
-        manager.listen();
 
         manager.process(task, new Request("www.baidu.com"), new Page());
-        manager.download(task, new Request("www.1.com"));
-        manager.download(task, new Request("www.1.com"));
+        manager.pushRequest(task, new Request("www.1.com"));
+        manager.pushRequest(task, new Request("www.1.com"));
         latch.await(3, TimeUnit.SECONDS);
         Assert.assertEquals(0, latch.getCount());
     }

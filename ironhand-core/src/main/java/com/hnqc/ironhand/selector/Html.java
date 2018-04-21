@@ -9,6 +9,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Html def
+ *
+ * @author zido
+ * @date 2018/04/22
+ */
 public class Html extends HtmlNode {
     private Logger logger = LoggerFactory.getLogger(Html.class);
 
@@ -36,19 +42,19 @@ public class Html extends HtmlNode {
         this.document = document;
     }
 
-    public Document getDocument() {
+    public Document document() {
         return document;
     }
 
     @Override
     protected List<Element> getElements() {
-        return Collections.singletonList(getDocument());
+        return Collections.singletonList(document());
     }
 
     public String selectDocument(Selector selector) {
         if (selector instanceof ElementSelector) {
             ElementSelector elementSelector = (ElementSelector) selector;
-            return elementSelector.select(getDocument());
+            return elementSelector.select(document());
         }
         return selector.select(getFirstSourceText());
     }
@@ -56,7 +62,7 @@ public class Html extends HtmlNode {
     public List<String> selectDocumentForList(Selector selector) {
         if (selector instanceof ElementSelector) {
             ElementSelector elementSelector = (ElementSelector) selector;
-            return elementSelector.selectList(getDocument());
+            return elementSelector.selectList(document());
         }
         return selector.selectList(getFirstSourceText());
     }

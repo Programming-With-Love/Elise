@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.message;
+package com.hnqc.ironhand.scheduler;
 
 /**
  * load balancer.Responsible for task scheduling load balancing.
@@ -8,13 +8,13 @@ package com.hnqc.ironhand.message;
  * @author zido
  * @date 2018/04/17
  */
-public interface LoadBalancer {
+public interface LoadBalancer<T> {
     /**
      * Take out the next available task
      *
      * @return next task
      */
-    Object getNext();
+    T getNext();
 
     /**
      * add task
@@ -22,7 +22,7 @@ public interface LoadBalancer {
      * @param object task
      * @return true/false
      */
-    boolean add(Object object);
+    boolean add(T object);
 
     /**
      * remove task
@@ -30,18 +30,18 @@ public interface LoadBalancer {
      * @param object task
      * @return true/false
      */
-    boolean remove(Object object);
+    boolean remove(T object);
 
     /**
      * return new empty load balancer
      *
      * @return load balancer
      */
-    LoadBalancer newClone();
+    <V>LoadBalancer<V> newClone();
 
     /**
-     * return clientSize of list
-     * @return clientSize
+     * return downloaderSize of list
+     * @return downloaderSize
      */
     int size();
 }

@@ -4,7 +4,7 @@ import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
 
 /**
- * duplication processor,It is an extension of the scheduler{@link Scheduler}.
+ * duplication processor,It is an extension of the scheduler{@link TaskScheduler}.
  * Implementing this interface allows Task Scheduler to handle duplicate data
  *
  * @author zido
@@ -34,7 +34,7 @@ public interface DuplicationProcessor {
      * Get the number of all requests provided under the current task
      *
      * @param task task
-     * @return clientSize of all request under the current task
+     * @return downloaderSize of all request under the current task
      */
     int getTotalRequestsCount(Task task);
 }

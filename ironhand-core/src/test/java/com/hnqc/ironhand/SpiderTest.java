@@ -2,7 +2,7 @@ package com.hnqc.ironhand;
 
 import com.hnqc.ironhand.downloader.HttpClientDownloader;
 import com.hnqc.ironhand.extractor.ModelExtractor;
-import com.hnqc.ironhand.message.ThreadTaskScheduler;
+import com.hnqc.ironhand.scheduler.SimpleTaskScheduler;
 import com.hnqc.ironhand.pipeline.ConsolePipeline;
 import com.hnqc.ironhand.processor.ExtractorPageProcessor;
 import com.hnqc.ironhand.selector.Selectable;
@@ -24,7 +24,7 @@ public class SpiderTest {
     @Test
     public void testRun() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(6);
-        Spider spider = new Spider(new ThreadTaskScheduler(),
+        Spider spider = new Spider(new SimpleTaskScheduler(),
                 new ExtractorPageProcessor(),
                 new HttpClientDownloader(),
                 new ConsolePipeline() {
@@ -35,12 +35,12 @@ public class SpiderTest {
                     }
                 }).start().addUrl(new ExtractorTask() {
             @Override
-            public ModelExtractor getModelExtractor() {
+            public ModelExtractor modelExtractor() {
                 return new ModelExtractor() {
                     @Override
                     public ResultItem extract(Page page) {
                         String author = page.getUrl().regex("https://github\\.com/(\\w+)/.*").toString();
-                        Selectable name = page.getHtml().xpath("//h1[@class='public']/strong/a/text()");
+                        Selectable name = page.html().xpath("//h1[@class='public']/strong/a/text()");
                         return new ResultItem()
                                 .put("author", author)
                                 .put("name", name)
@@ -49,7 +49,7 @@ public class SpiderTest {
 
                     @Override
                     public List<String> extractLinks(Page page) {
-                        return page.getHtml().links().regex("(https://github\\.com/zidoshare/[\\w\\-]+)").all();
+                        return page.html().links().regex("(https://github\\.com/zidoshare/[\\w\\-]+)").all();
                     }
                 };
             }

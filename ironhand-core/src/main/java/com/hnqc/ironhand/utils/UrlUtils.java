@@ -47,7 +47,6 @@ public class UrlUtils {
         return requestList;
     }
     public static String fixIllegalCharacterInUrl(String url) {
-        //TODO more charator support
         return url.replace(" ", "%20").replaceAll("#+", "#");
     }
 

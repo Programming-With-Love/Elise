@@ -1,8 +1,7 @@
-package com.hnqc.ironhand.message;
+package com.hnqc.ironhand.scheduler;
 
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
-import com.hnqc.ironhand.scheduler.DuplicationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,7 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
 
 
     @Override
-    public void download(Task task, Request request) {
+    public void pushRequest(Task task, Request request) {
         logger.trace("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)

@@ -1,6 +1,6 @@
 package com.hnqc.ironhand.downloader.exceptions;
 
-import com.hnqc.ironhand.common.exceptions.AbstractNestedRuntimeException;
+import com.hnqc.ironhand.exceptions.AbstractNestedRuntimeException;
 
 public class DownloadException extends AbstractNestedRuntimeException {
     public DownloadException(String msg) {

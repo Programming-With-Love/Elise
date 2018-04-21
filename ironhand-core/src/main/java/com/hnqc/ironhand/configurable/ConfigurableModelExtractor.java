@@ -100,11 +100,11 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         List<String> links;
         List<UrlFinderSelector> selectors = getHelpUrlSelectors();
         if (selectors == null) {
-            links = page.getHtml().links().all();
+            links = page.html().links().all();
         } else {
             links = new ArrayList<>();
             for (UrlFinderSelector selector : selectors) {
-                links.addAll(page.getHtml().selectList(selector).all());
+                links.addAll(page.html().selectList(selector).all());
             }
         }
         return links;
@@ -176,7 +176,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         String value;
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
-                value = page.getHtml().selectDocument(fieldExtractor.getSelector());
+                value = page.html().selectDocument(fieldExtractor.getSelector());
                 break;
             case URL:
                 value = fieldExtractor.getSelector().select(page.getUrl().toString());
@@ -195,7 +195,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         List<String> value;
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
-                value = page.getHtml().selectDocumentForList(fieldExtractor.getSelector());
+                value = page.html().selectDocumentForList(fieldExtractor.getSelector());
                 break;
             case URL:
                 value = fieldExtractor.getSelector().selectList(page.getUrl().toString());

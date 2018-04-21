@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.message;
+package com.hnqc.ironhand.scheduler;
 
 import com.hnqc.ironhand.Page;
 import com.hnqc.ironhand.Request;
@@ -78,16 +78,16 @@ public interface TaskScheduler {
     /**
      * remove analyzer from container
      *
-     * @param analyzerListener analyzer listener
+     * @param listener analyzer listener
      */
-    void removeAnalyzer(AnalyzerListener analyzerListener);
+    void removeAnalyzer(AnalyzerListener listener);
 
     /**
      * remove downloader from container
      *
-     * @param downloadListener downloader listener
+     * @param listener downloader listener
      */
-    void removeDownloader(DownloadListener downloadListener);
+    void removeDownloader(DownloadListener listener);
 
     /**
      * If the download client download is completed,
@@ -110,5 +110,5 @@ public interface TaskScheduler {
      * @param task    the task information
      * @param request the request
      */
-    void download(Task task, Request request);
+    void pushRequest(Task task, Request request);
 }

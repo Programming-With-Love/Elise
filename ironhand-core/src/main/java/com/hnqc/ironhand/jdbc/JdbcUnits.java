@@ -57,7 +57,6 @@ public class JdbcUnits {
         try {
             conn.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -70,7 +69,6 @@ public class JdbcUnits {
         try {
             statement.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -83,7 +81,6 @@ public class JdbcUnits {
         try {
             rs.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

@@ -15,5 +15,5 @@ public interface ExtractorTask extends Task {
      *
      * @return extractors
      */
-    ModelExtractor getModelExtractor();
+    ModelExtractor modelExtractor();
 }

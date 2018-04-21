@@ -17,10 +17,14 @@ public class DistributedTask implements ExtractorTask {
     private Site site;
     private DefRootExtractor defExtractor;
 
+    public DistributedTask() {
+
+    }
+
     public DistributedTask(ExtractorTask task) {
         this.id = task.getId();
         this.site = task.getSite();
-        ModelExtractor modelExtractor = task.getModelExtractor();
+        ModelExtractor modelExtractor = task.modelExtractor();
         if (modelExtractor != null) {
             if (modelExtractor instanceof ConfigurableModelExtractor) {
                 this.defExtractor = ((ConfigurableModelExtractor) modelExtractor).getDefRootExtractor();
@@ -53,7 +57,7 @@ public class DistributedTask implements ExtractorTask {
     }
 
     @Override
-    public ModelExtractor getModelExtractor() {
+    public ModelExtractor modelExtractor() {
         return new ConfigurableModelExtractor(defExtractor);
     }
 

@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.common.exceptions;
+package com.hnqc.ironhand.exceptions;
 
 
 import com.hnqc.ironhand.utils.NestedRuntimeUtils;
@@ -7,7 +7,7 @@ import com.hnqc.ironhand.utils.NestedRuntimeUtils;
  * 包装异常类,规范化异常信息
  *
  * @author zido
- * @date 2018/45/12
+ * @date 2018/04/12
  */
 public abstract class AbstractNestedRuntimeException extends RuntimeException {
     public AbstractNestedRuntimeException(String msg) {

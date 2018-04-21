@@ -1,7 +1,7 @@
 package com.hnqc.ironhand;
 
 import com.hnqc.ironhand.downloader.Downloader;
-import com.hnqc.ironhand.message.TaskScheduler;
+import com.hnqc.ironhand.scheduler.TaskScheduler;
 import com.hnqc.ironhand.pipeline.ConsolePipeline;
 import com.hnqc.ironhand.pipeline.Pipeline;
 import com.hnqc.ironhand.processor.PageProcessor;
@@ -41,7 +41,7 @@ public class Spider implements TaskScheduler.DownloadListener,
     @Override
     public void pushRequest(Task task, Request request) {
         try {
-            manager.download(task, request);
+            manager.pushRequest(task, request);
         } catch (NullPointerException e) {
             Site site = task.getSite();
             if (site.getCycleRetryTimes() == 0) {
@@ -144,7 +144,6 @@ public class Spider implements TaskScheduler.DownloadListener,
         if (pipelines.isEmpty()) {
             pipelines.add(new ConsolePipeline());
         }
-        manager.listen();
     }
 
     public Spider runAsync() {
