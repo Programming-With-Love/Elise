@@ -6,28 +6,19 @@
     <parent>
         <groupId>com.hnqc</groupId>
         <artifactId>ironhand-build</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>ironhand-schedule</artifactId>
     <name>ironhand-schedule</name>
     <description>爬虫系统任务端</description>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.hnqc</groupId>
             <artifactId>ironhand-extension</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hnqc</groupId>
-            <artifactId>ironhand-utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <artifactId>ironhand-core</artifactId>
         </dependency>
     </dependencies>
 </project>

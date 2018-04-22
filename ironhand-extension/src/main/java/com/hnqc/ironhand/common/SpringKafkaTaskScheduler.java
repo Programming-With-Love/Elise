@@ -20,6 +20,8 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +74,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
                 taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
             });
         }
-        if(!this.analyzerContainer.isRunning()){
+        if (!this.analyzerContainer.isRunning()) {
             this.analyzerContainer.start();
         }
     }
@@ -86,7 +88,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
                 taskScheduler.pushRequest(seed.getTask(), seed.getRequest());
             });
         }
-        if(!this.downloaderContainer.isRunning()){
+        if (!this.downloaderContainer.isRunning()) {
             this.downloaderContainer.start();
         }
 
@@ -176,5 +178,14 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return props;
+    }
+
+    public void stop() {
+        if (this.analyzerContainer != null && this.analyzerContainer.isRunning()) {
+            this.analyzerContainer.stop();
+        }
+        if (this.downloaderContainer != null && this.downloaderContainer.isRunning()) {
+            this.downloaderContainer.stop();
+        }
     }
 }

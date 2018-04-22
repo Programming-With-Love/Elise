@@ -97,7 +97,11 @@ public class Spider implements TaskScheduler.DownloadListener,
                     if (!resultItem.isSkip()) {
                         resultItem.setRequest(request);
                         for (Pipeline pipeline : pipelines) {
-                            pipeline.process(resultItem, task);
+                            try {
+                                pipeline.process(resultItem, task);
+                            } catch (Exception e) {
+                                logger.error("处理发生错误", e);
+                            }
                         }
                     }
                 } else {
