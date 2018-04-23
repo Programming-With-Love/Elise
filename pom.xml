@@ -7,7 +7,7 @@
     <groupId>com.hnqc</groupId>
     <artifactId>ironhand-build</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-release</version>
     <description>ironhand分布式爬虫系统</description>
     <modules>
         <module>ironhand-core</module>
@@ -21,7 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-cloud.version>Dalston.RELEASE</spring-cloud.version>
-        <project.version>0.0.1-SNAPSHOT</project.version>
+        <project.version>1.0.0-release</project.version>
     </properties>
     <repositories>
         <repository>
