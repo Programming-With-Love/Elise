@@ -87,7 +87,8 @@ public abstract class AbstractSqlPipeline implements Pipeline {
         if (generator != null) {
             sql.append("id").append(",");
         }
-        Set<String> set = all.keySet();
+        Map<String, Object> item = (Map<String, Object>) all.get(tableName);
+        Set<String> set = item.keySet();
         if (set.size() > 0) {
             sql.append(String.join(",", set));
         }
@@ -103,7 +104,7 @@ public abstract class AbstractSqlPipeline implements Pipeline {
         }
         for (String key : set) {
             sql.append("?,");
-            objects[i++] = all.get(key);
+            objects[i++] = item.get(key);
         }
         sql = new StringBuilder(sql.substring(0, sql.length() - 1));
         sql.append(")");

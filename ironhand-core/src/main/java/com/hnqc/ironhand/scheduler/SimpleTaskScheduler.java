@@ -84,6 +84,16 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
                 }));
     }
 
+    public SimpleTaskScheduler(DuplicationProcessor duplicationProcessor) {
+        this(duplicationProcessor, new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                r -> {
+                    Thread thread = new Thread(r);
+                    thread.setName("thread child message manager");
+                    return thread;
+                }));
+    }
+
     public SimpleTaskScheduler(DuplicationProcessor duplicationProcessor, ThreadPoolExecutor childExecutor) {
         super(duplicationProcessor);
         this.childExecutor = childExecutor;

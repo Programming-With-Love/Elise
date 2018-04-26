@@ -43,8 +43,9 @@ public class DistributedTask implements ExtractorTask {
         return id;
     }
 
-    public void setId(Long id) {
+    public DistributedTask setId(Long id) {
         this.id = id;
+        return this;
     }
 
     @Override
@@ -52,8 +53,9 @@ public class DistributedTask implements ExtractorTask {
         return site;
     }
 
-    public void setSite(Site site) {
+    public DistributedTask setSite(Site site) {
         this.site = site;
+        return this;
     }
 
     @Override

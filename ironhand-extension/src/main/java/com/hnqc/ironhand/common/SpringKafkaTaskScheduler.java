@@ -4,9 +4,9 @@ import com.hnqc.ironhand.DistributedTask;
 import com.hnqc.ironhand.Page;
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Task;
+import com.hnqc.ironhand.common.pojo.SavedSeed;
 import com.hnqc.ironhand.common.pojo.Seed;
 import com.hnqc.ironhand.scheduler.*;
-import com.hnqc.ironhand.utils.IdWorker;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongDeserializer;
@@ -20,13 +20,9 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Spring Kafka Communication Manager
@@ -37,6 +33,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler {
     private String bootstrapServers;
     private String groupId = "ironhand";
+
+    private SavedPage.ReadListener readListener;
+    private SavedPage.SavedListener savedListener;
 
     private KafkaTemplate<Long, Seed> template;
 
@@ -65,13 +64,28 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         return this;
     }
 
+    public SpringKafkaTaskScheduler setReadListener(SavedPage.ReadListener readListener) {
+        this.readListener = readListener;
+        return this;
+    }
+
+    public SpringKafkaTaskScheduler setSavedListener(SavedPage.SavedListener savedListener) {
+        this.savedListener = savedListener;
+        return this;
+    }
+
     @Override
     public synchronized void registerAnalyzer(AnalyzerListener listener) {
         taskScheduler.registerAnalyzer(listener);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(TYPE_MESSAGE_ANALYZER, message -> {
-                Seed seed = message.value();
-                taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
+                if (readListener == null) {
+                    Seed seed = message.value();
+                    taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
+                } else {
+                    SavedSeed seed = (SavedSeed) message.value();
+                    taskScheduler.process(seed.getTask(), seed.getRequest(), SavedPage.resolvePage(seed.getSavedPage(), readListener));
+                }
             });
         }
         if (!this.analyzerContainer.isRunning()) {
@@ -116,17 +130,23 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         }
     }
 
-    private KafkaMessageListenerContainer<Long, Seed> runContainer(String type, MessageListener<Long, Seed> listener) {
-        ContainerProperties containerProps = new ContainerProperties(type);
+    private KafkaMessageListenerContainer<Long, Seed> runContainer(String topic, MessageListener<Long, Seed> listener) {
+        ContainerProperties containerProps = new ContainerProperties(topic);
         containerProps.setMessageListener(listener);
         KafkaMessageListenerContainer<Long, Seed> tmp = createContainer(containerProps);
-        tmp.setBeanName(type + "message-listener");
+        tmp.setBeanName(topic + "message-listener");
         return tmp;
     }
 
     @Override
     public void process(Task task, Request request, Page page) {
-        template.send(TYPE_MESSAGE_ANALYZER, new Seed().setTask((DistributedTask) task).setRequest(request).setPage(page));
+        if (this.savedListener == null) {
+            template.send(TYPE_MESSAGE_ANALYZER, new Seed().setTask((DistributedTask) task).setRequest(request).setPage(page));
+        } else {
+            SavedPage savedPage = SavedPage.resolvePage(page, savedListener);
+            template.send(TYPE_MESSAGE_ANALYZER, new SavedSeed((DistributedTask) task, request, savedPage));
+        }
+
     }
 
     @Override

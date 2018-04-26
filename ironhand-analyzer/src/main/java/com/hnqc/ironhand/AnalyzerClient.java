@@ -3,12 +3,16 @@ package com.hnqc.ironhand;
 import com.hnqc.ironhand.common.SimpleRedisDuplicationProcessor;
 import com.hnqc.ironhand.common.SpringKafkaTaskScheduler;
 import com.hnqc.ironhand.pipeline.AbstractSqlPipeline;
+import com.hnqc.ironhand.pipeline.ModelPipeline;
 import com.hnqc.ironhand.processor.ExtractorPageProcessor;
 import com.hnqc.ironhand.scheduler.SimpleTaskScheduler;
+import com.hnqc.ironhand.utils.IdWorker;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -28,15 +32,19 @@ public class AnalyzerClient {
     public AnalyzerClient() {
         Properties properties = new Properties();
         try {
-            properties.load(this.getClass().getResourceAsStream("config.properties"));
+            InputStream stream = this.getClass().getResourceAsStream("/config.properties");
+            if (stream == null) {
+                throw new RuntimeException("config.properties load failed");
+            }
+            properties.load(stream);
         } catch (IOException e) {
-            logger.error("config.properties load failed");
-            throw new RuntimeException("加载客户端配置信息失败");
+            throw new RuntimeException("加载客户端配置信息失败", e);
         }
         SpringKafkaTaskScheduler scheduler = new SpringKafkaTaskScheduler(
                 new SimpleTaskScheduler().setPoolSize(10),
                 new SimpleRedisDuplicationProcessor(properties.getProperty(REDIS_URL)))
-                .setBootstrapServers(properties.getProperty(KAFKA_SERVERS));
+                .setBootstrapServers(properties.getProperty(KAFKA_SERVERS))
+                .setReadListener(new OssReadLisener());
         spider = new Spider(
                 scheduler,
                 new ExtractorPageProcessor(),
@@ -50,7 +58,7 @@ public class AnalyzerClient {
                             logger.error("插入到数据库时发生异常，sql语句：" + sql, e);
                         }
                     }
-                });
+                }.setGenerator(IdWorker::nextId));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("停止kafka消息监听容器");
             scheduler.stop();

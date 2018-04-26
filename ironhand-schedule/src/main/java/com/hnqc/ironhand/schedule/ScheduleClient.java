@@ -7,6 +7,10 @@ import com.hnqc.ironhand.Task;
 import com.hnqc.ironhand.common.SimpleRedisDuplicationProcessor;
 import com.hnqc.ironhand.common.SpringKafkaTaskScheduler;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * ScheduleClient
  *
@@ -15,7 +19,6 @@ import com.hnqc.ironhand.common.SpringKafkaTaskScheduler;
  */
 public class ScheduleClient {
     private Spider spider;
-
     public ScheduleClient(String kafkaServers, String redisUrl) {
         this.spider = new Spider(new SpringKafkaTaskScheduler(new SimpleRedisDuplicationProcessor(redisUrl)).setBootstrapServers(kafkaServers));
     }

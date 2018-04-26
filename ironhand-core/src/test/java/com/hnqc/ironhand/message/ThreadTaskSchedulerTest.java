@@ -19,7 +19,7 @@ public class ThreadTaskSchedulerTest {
     @Test
     public void testListen() throws InterruptedException {
         DistributedTask distributedTask = new DistributedTask(1L, new Site(), null);
-        CountDownLatch latch = new CountDownLatch(3);
+        CountDownLatch latch = new CountDownLatch(2);
         SimpleTaskScheduler scheduler = new SimpleTaskScheduler();
         scheduler.registerAnalyzer((task, request, page) -> {
             Long id = task.getId();
@@ -39,6 +39,7 @@ public class ThreadTaskSchedulerTest {
         Request request = new Request();
         request.setUrl("http://www.baidu.com");
         scheduler.pushRequest(distributedTask, request);
+        //此请求将被过滤
         scheduler.pushRequest(distributedTask, request);
         Page page = new Page();
         page.setUrl(new PlainText("i'm test"));

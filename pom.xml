@@ -7,7 +7,7 @@
     <groupId>com.hnqc</groupId>
     <artifactId>ironhand-build</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-release</version>
+    <version>1.0.1-SNAPSHOT</version>
     <description>ironhand分布式爬虫系统</description>
     <modules>
         <module>ironhand-core</module>

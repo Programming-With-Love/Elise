@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ironhand-build</artifactId>
         <groupId>com.hnqc</groupId>
-        <version>1.0.0-release</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <description>通用模块</description>

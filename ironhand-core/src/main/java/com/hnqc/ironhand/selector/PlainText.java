@@ -56,7 +56,7 @@ public class PlainText extends AbstractSelectable {
 
 
     @Override
-    protected List<String> getSourceTexts() {
+    public List<String> getSourceTexts() {
         return sourceTexts;
     }
 }
