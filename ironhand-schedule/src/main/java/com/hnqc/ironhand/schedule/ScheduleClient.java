@@ -1,5 +1,6 @@
 package com.hnqc.ironhand.schedule;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hnqc.ironhand.DistributedTask;
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Spider;
@@ -19,6 +20,8 @@ import java.util.Properties;
  */
 public class ScheduleClient {
     private Spider spider;
+    private ObjectMapper mapper = new ObjectMapper();
+
     public ScheduleClient(String kafkaServers, String redisUrl) {
         this.spider = new Spider(new SpringKafkaTaskScheduler(new SimpleRedisDuplicationProcessor(redisUrl)).setBootstrapServers(kafkaServers));
     }
@@ -33,5 +36,14 @@ public class ScheduleClient {
 
     public void pushRequest(DistributedTask task, Request request) {
         spider.pushRequest(task, request);
+    }
+
+    public void pushFromJson(String json) {
+        try {
+            JsonRequest jsonRequest = mapper.readValue(json, JsonRequest.class);
+            pushRequest(jsonRequest.getTask(), jsonRequest.getRequest());
+        } catch (IOException e) {
+            throw new RuntimeException("read from json error", e);
+        }
     }
 }

@@ -144,6 +144,9 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
             template.send(TYPE_MESSAGE_ANALYZER, new Seed().setTask((DistributedTask) task).setRequest(request).setPage(page));
         } else {
             SavedPage savedPage = SavedPage.resolvePage(page, savedListener);
+            if (savedPage == null) {
+                return;
+            }
             template.send(TYPE_MESSAGE_ANALYZER, new SavedSeed((DistributedTask) task, request, savedPage));
         }
 

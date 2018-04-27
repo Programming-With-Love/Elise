@@ -104,7 +104,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         } else {
             links = new ArrayList<>();
             for (UrlFinderSelector selector : selectors) {
-                links.addAll(page.html().selectList(selector).all());
+                links.addAll(page.html().links().selectList(selector).all());
             }
         }
         return links;

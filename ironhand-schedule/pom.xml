@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.hnqc</groupId>
         <artifactId>ironhand-build</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1-release</version>
     </parent>
     <artifactId>ironhand-schedule</artifactId>
     <name>ironhand-schedule</name>

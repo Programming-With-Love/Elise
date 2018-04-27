@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ironhand-build</artifactId>
         <groupId>com.hnqc</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1-release</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,9 +41,9 @@
             <artifactId>log4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hnqc</groupId>
-            <artifactId>hnqc_common</artifactId>
-            <version>0.0.1</version>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>2.7.0</version>
         </dependency>
     </dependencies>
 </project>

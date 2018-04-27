@@ -21,6 +21,10 @@ public abstract class AbstractDownloader implements Downloader {
         return page.html();
     }
 
+    public Page downloadAsPage(String url) {
+        return download(new Request(url), new Site().toTask());
+    }
+
     protected void onSuccess(Request request) {
     }
 

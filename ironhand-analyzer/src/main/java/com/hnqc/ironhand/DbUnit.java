@@ -63,22 +63,18 @@ public class DbUnit {
     public Object insert(String sql, Object[] params) throws SQLException {
         ResultSet rs = null;
         Object result = null;
-        try {
-            Connection conn = getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql,
-                    PreparedStatement.RETURN_GENERATED_KEYS);
-            for (int i = 0; i < params.length; i++) {
-                preparedStatement.setObject(i + 1, params[i]);
-            }
-            preparedStatement.execute();
-            rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                result = rs.getObject(1);
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new SQLException(e);
+        Connection conn = getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(sql,
+                PreparedStatement.RETURN_GENERATED_KEYS);
+        for (int i = 0; i < params.length; i++) {
+            preparedStatement.setObject(i + 1, params[i]);
         }
+        preparedStatement.execute();
+        rs = preparedStatement.getGeneratedKeys();
+        if (rs.next()) {
+            result = rs.getObject(1);
+        }
+        return result;
     }
 
     private static Properties loadPropertyFile(String path) {

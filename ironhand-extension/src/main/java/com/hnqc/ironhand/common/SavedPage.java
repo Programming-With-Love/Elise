@@ -1,6 +1,7 @@
 package com.hnqc.ironhand.common;
 
 import com.hnqc.ironhand.Page;
+import com.hnqc.ironhand.selector.PlainText;
 
 /**
  * SavedPage
@@ -36,7 +37,7 @@ public class SavedPage {
          * @param url the url
          * @return the string
          */
-        String read(String url);
+        String read(String url, PlainText originUrl);
     }
 
     /**
@@ -48,6 +49,9 @@ public class SavedPage {
      */
     public static SavedPage resolvePage(Page page, SavedListener listener) {
         byte[] rawText = page.getBytes();
+        if (rawText == null) {
+            return null;
+        }
         page.setRawText(null);
         page.setBytes(null);
         SavedPage savedPage = new SavedPage();
@@ -64,9 +68,9 @@ public class SavedPage {
      * @return the page
      */
     public static Page resolvePage(SavedPage savedPage, ReadListener listener) {
-        String rawTest = listener.read(savedPage.url);
         Page page = savedPage.page;
-        page.setRawText(rawTest);
+        String rawText = listener.read(savedPage.url, page.getUrl());
+        page.setRawText(rawText);
         return page;
     }
 

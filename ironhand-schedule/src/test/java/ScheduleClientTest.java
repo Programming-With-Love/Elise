@@ -35,21 +35,49 @@ public class ScheduleClientTest {
         ScheduleClient client = new ScheduleClient(properties.getProperty(KAFKA_SERVERS), properties.getProperty(REDIS_URL));
         client.start();
 
+//        DefRootExtractor def = new DefRootExtractor();
+//        def.setName("github");
+//        def.addTargetUrl(new ConfigurableUrlFinder().setValue("(https://github\\.com/zidoshare/[\\w\\-]+)").setType(ConfigurableUrlFinder.Type.REGEX));
+//        def.addHelpUrl(new ConfigurableUrlFinder().setValue("https://github\\.com/zidoshare.*+").setType(ConfigurableUrlFinder.Type.REGEX));
+//        def.addChildren(new DefExtractor()
+//                .setName("author")
+//                .setType(ExpressionType.REGEX)
+//                .setSource(Extractor.Source.URL)
+//                .setValue("https://github\\.com/(\\w+)/.*"));
+//
+//        def.addChildren(new DefExtractor()
+//                .setName("name")
+//                .setValue("//h1[@class='public']/strong/a/text()")
+//                .setType(ExpressionType.XPATH));
+//        client.pushRequest(new DistributedTask(40L, new Site().setCycleRetryTimes(3), def), new Request("https://github.com/zidoshare"));
+//        Thread.sleep(10 * 1000);
+
+
         DefRootExtractor def = new DefRootExtractor();
-        def.setName("github");
-        def.addTargetUrl(new ConfigurableUrlFinder().setValue("(https://github\\.com/zidoshare/[\\w\\-]+)").setType(ConfigurableUrlFinder.Type.REGEX));
-        def.addHelpUrl(new ConfigurableUrlFinder().setValue("https://github\\.com/zidoshare.*+").setType(ConfigurableUrlFinder.Type.REGEX));
+        def.setName("spider_test_2.result");
+        def.addTargetUrl(new ConfigurableUrlFinder().setValue("http://ldzl\\.people\\.com\\.cn/dfzlk/front/personPage[0-9]+\\.htm$").setType(ConfigurableUrlFinder.Type.REGEX));
+        def.addHelpUrl(new ConfigurableUrlFinder().setValue("http://ldzl\\.people\\.com\\.cn/dfzlk/front/personPage[0-9]+\\.htm$").setType(ConfigurableUrlFinder.Type.REGEX));
         def.addChildren(new DefExtractor()
-                .setName("author")
-                .setType(ExpressionType.REGEX)
-                .setSource(Extractor.Source.URL)
-                .setValue("https://github\\.com/(\\w+)/.*"));
+                .setName("title")
+                .setType(ExpressionType.XPATH)
+                .setValue("//div[@class='fl p2j_text_center title_2j']/h2[1]/text()"));
 
         def.addChildren(new DefExtractor()
-                .setName("name")
-                .setValue("//h1[@class='public']/strong/a/text()")
+                .setName("content")
+                .setValue("//div[@class='fl p2j_text_center title_2j']/div[@class='p2j_text']/tidyText()")
                 .setType(ExpressionType.XPATH));
-        client.pushRequest(new DistributedTask(40L, new Site().setCycleRetryTimes(3), def), new Request("https://github.com/zidoshare"));
+        def.addChildren(new DefExtractor()
+                .setName("url")
+                .setValue(".*")
+                .setType(ExpressionType.REGEX)
+                .setSource(Extractor.Source.URL));
+        DistributedTask task = new DistributedTask(13L, new Site().setCycleRetryTimes(3), def);
+        client.pushRequest(task,
+                new Request("http://ldzl.people.com.cn/dfzlk/front/personIndex.htm"));
+        client.pushRequest(task,
+                new Request("http://ldzl.people.com.cn/dfzlk/front/fusheng.htm"));
+        client.pushRequest(task,
+                new Request("http://ldzl.people.com.cn/dfzlk/front/xian35.htm"));
         Thread.sleep(10 * 1000);
     }
 }
