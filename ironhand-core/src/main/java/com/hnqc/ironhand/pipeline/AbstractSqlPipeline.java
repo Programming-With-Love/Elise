@@ -4,6 +4,7 @@ import com.hnqc.ironhand.DistributedTask;
 import com.hnqc.ironhand.ResultItem;
 import com.hnqc.ironhand.Task;
 import com.hnqc.ironhand.configurable.DefRootExtractor;
+import com.hnqc.ironhand.utils.ValidateUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -80,7 +81,7 @@ public abstract class AbstractSqlPipeline implements Pipeline {
     public void process(ResultItem resultItem, Task task) {
         Map<String, Object> all = resultItem.getAll();
         String tableName;
-        if (this.table == null || (tableName = this.table.getTableName(task)) == null) {
+        if (this.table == null || ValidateUtils.isEmpty(tableName = this.table.getTableName(task))) {
             tableName = defaultTableName;
         }
         StringBuilder sql = new StringBuilder("insert into " + tableName + " (");

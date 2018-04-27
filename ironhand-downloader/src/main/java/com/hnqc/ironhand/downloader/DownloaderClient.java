@@ -1,9 +1,8 @@
-package com.hnqc.ironhand.downloader.exceptions;
+package com.hnqc.ironhand.downloader;
 
 import com.hnqc.ironhand.Spider;
 import com.hnqc.ironhand.common.SimpleRedisDuplicationProcessor;
 import com.hnqc.ironhand.common.SpringKafkaTaskScheduler;
-import com.hnqc.ironhand.downloader.HttpClientDownloader;
 import com.hnqc.ironhand.scheduler.NoDepuplicationProcessor;
 import com.hnqc.ironhand.scheduler.SimpleTaskScheduler;
 import org.slf4j.Logger;

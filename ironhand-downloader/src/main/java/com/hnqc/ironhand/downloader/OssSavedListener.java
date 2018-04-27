@@ -1,4 +1,4 @@
-package com.hnqc.ironhand.downloader.exceptions;
+package com.hnqc.ironhand.downloader;
 
 import com.aliyun.oss.OSSClient;
 import com.hnqc.ironhand.common.SavedPage;
