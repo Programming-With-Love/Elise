@@ -91,7 +91,7 @@ public class SpiderConfiguration {
 
 
         leader.setName("hnqc_core_member.member_spider");
-        leader.addTargetUrl(new ConfigurableUrlFinder().setValue("http://leaders.people.com.cn/n1/\\d+/\\d+/c\\d+-\\d+.html$")
+        leader.addTargetUrl(new ConfigurableUrlFinder().setValue("http://leaders\\.people\\.com\\.cn/n1/\\d+/\\d+/c\\d+-\\d+.html$")
                 .setType(ConfigurableUrlFinder.Type.REGEX));
         leader.addHelpUrl(new ConfigurableUrlFinder().setValue("http://leaders\\.people\\.com\\.cn/GB/\\d+/index\\d+\\.html")
                 .setType(ConfigurableUrlFinder.Type.REGEX));
@@ -116,10 +116,10 @@ public class SpiderConfiguration {
 
         rs.setName("hnqc_core_member.member_spider");
         rs.addTargetUrl(new ConfigurableUrlFinder()
-                .setValue("http://renshi.people.com.cn/n1/\\d+/\\d+/[a-z].+\\.html$")
+                .setValue("http://renshi\\.people\\.com\\.cn/n1/\\d+/\\d+/[a-z].+\\.html$")
                 .setType(ConfigurableUrlFinder.Type.REGEX));
         rs.addHelpUrl(new ConfigurableUrlFinder()
-                .setValue("http://renshi.people.com.cn/n1/\\d+/\\d+/[a-z].+\\.html$")
+                .setValue("http://renshi\\.people\\.com\\.cn/n1/\\d+/\\d+/[a-z].+\\.html$")
                 .setType(ConfigurableUrlFinder.Type.REGEX));
         rs.addChildren(new DefExtractor()
                 .setValue("//div[@class='text_c']/h1[1]/text()")
