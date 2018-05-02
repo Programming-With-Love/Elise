@@ -35,6 +35,11 @@ public class HtmlNode extends AbstractSelectable {
     }
 
     @Override
+    public Selectable links(List<LinkProperty> properties) {
+        return selectElements(new LinkSelector(properties));
+    }
+
+    @Override
     public Selectable xpath(String xpath) {
         XpathSelector xpathSelector = Selectors.xpath(xpath);
         return selectElements(xpathSelector);
@@ -128,7 +133,7 @@ public class HtmlNode extends AbstractSelectable {
     protected List<String> getSourceTexts() {
         List<String> sourceTexts = new ArrayList<>(getElements().size());
         for (Element element : getElements()) {
-            sourceTexts.add(element.toString());
+            sourceTexts.add(element.html());
         }
         return sourceTexts;
     }

@@ -7,10 +7,12 @@ import com.hnqc.ironhand.Spider;
 import com.hnqc.ironhand.Task;
 import com.hnqc.ironhand.common.SimpleRedisDuplicationProcessor;
 import com.hnqc.ironhand.common.SpringKafkaTaskScheduler;
+import com.hnqc.ironhand.scheduler.DuplicationProcessor;
+import com.hnqc.ironhand.scheduler.NoDepuplicationProcessor;
+import com.hnqc.ironhand.scheduler.SimpleTaskScheduler;
+import com.hnqc.ironhand.scheduler.TaskScheduler;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * ScheduleClient
@@ -21,9 +23,13 @@ import java.util.Properties;
 public class ScheduleClient {
     private Spider spider;
     private ObjectMapper mapper = new ObjectMapper();
+    private DuplicationProcessor duplicationProcessor;
+    private TaskScheduler scheduler;
 
     public ScheduleClient(String kafkaServers, String redisUrl) {
-        this.spider = new Spider(new SpringKafkaTaskScheduler(new SimpleRedisDuplicationProcessor(redisUrl)).setBootstrapServers(kafkaServers));
+        this.duplicationProcessor = new SimpleRedisDuplicationProcessor(redisUrl);
+        this.scheduler = new SpringKafkaTaskScheduler(new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(2), duplicationProcessor).setBootstrapServers(kafkaServers);
+        this.spider = new Spider(scheduler);
     }
 
     public void start() {
@@ -45,5 +51,9 @@ public class ScheduleClient {
         } catch (IOException e) {
             throw new RuntimeException("read from json error", e);
         }
+    }
+
+    public void clearDuplications(Task task) {
+        duplicationProcessor.resetDuplicateCheck(task);
     }
 }

@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This message manager provides thread-level messaging that is implemented from {@link TaskScheduler}.
@@ -41,6 +44,11 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
     protected final static int STAT_STOPPED = 2;
 
     private final ThreadPoolExecutor childExecutor;
+
+    private Lock taskLock = new ReentrantLock();
+    private Condition taskCondition = taskLock.newCondition();
+
+    private int emptySleepTime = 30000;
 
     private final ThreadPoolExecutor rootExecutor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new ThreadFactory() {
         @Override
@@ -114,6 +122,11 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         return false;
     }
 
+    public SimpleTaskScheduler setEmptySleepTime(int emptySleepTime) {
+        this.emptySleepTime = emptySleepTime;
+        return this;
+    }
+
     private static class Keeper {
         Task task;
         Request request;
@@ -157,9 +170,31 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
                         }
                         childExecutor.execute(() -> next.onDownload(poll.task, poll.request));
                     }
+                } else {
+                    waitTask();
                 }
             }
         });
+    }
+
+    private void waitTask() {
+        taskLock.lock();
+        try {
+            taskCondition.await(emptySleepTime, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            logger.warn("wait task - interrupted, error {}", e);
+        } finally {
+            taskLock.unlock();
+        }
+    }
+
+    private void signalTask() {
+        try {
+            taskLock.lock();
+            taskCondition.signalAll();
+        } finally {
+            taskLock.unlock();
+        }
     }
 
     public void stop() {
@@ -173,11 +208,13 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
     @Override
     public void process(Task task, Request request, Page page) {
         QUEUE.offer(new PageKeeper(task, request, page));
+        signalTask();
     }
 
     @Override
     protected void pushWhenNoDuplicate(Request request, Task task) {
         QUEUE.offer(new Keeper(task, request));
+        signalTask();
     }
 
     @Override

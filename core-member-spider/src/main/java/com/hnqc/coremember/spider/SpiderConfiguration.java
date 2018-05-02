@@ -48,15 +48,15 @@ public class SpiderConfiguration {
 
     @Scheduled(cron = "0 0 1 1 * ?")
     public void startSpider() {
-        client.pushRequest(new DistributedTask(513584385L, new Site(), ldzl), new Request("http://ldzl.people.com.cn/dfzlk/front/firstPage.htm"));
-        client.pushRequest(new DistributedTask(513584385L, new Site(), leader), new Request("http://leaders.people.com.cn/GB/70117/index.html"));
-        client.pushRequest(new DistributedTask(513584385L, new Site(), rs), new Request("http://renshi.people.com.cn"));
+        client.pushRequest(new DistributedTask(513584386L, new Site(), ldzl), new Request("http://ldzl.people.com.cn/dfzlk/front/firstPage.htm"));
+        client.pushRequest(new DistributedTask(513584386L, new Site(), leader), new Request("http://leaders.people.com.cn/GB/70117/index.html"));
+        client.pushRequest(new DistributedTask(513584386L, new Site(), rs), new Request("http://renshi.people.com.cn"));
     }
 
-//    @Autowired
-//    public void init(ScheduleClient client) {
-//        startSpider();
-//    }
+    @Autowired
+    public void init(ScheduleClient client) {
+        startSpider();
+    }
 
 
     private void initExtractor() {

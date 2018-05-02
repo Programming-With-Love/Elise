@@ -46,6 +46,11 @@ public class PlainText extends AbstractSelectable {
     }
 
     @Override
+    public Selectable links(List<LinkProperty> choosers) {
+        throw new UnsupportedOperationException("Links can not apply to plain text");
+    }
+
+    @Override
     public List<Selectable> nodes() {
         List<Selectable> nodes = new ArrayList<>();
         for (String s : getSourceTexts()) {

@@ -7,7 +7,7 @@
     <groupId>com.hnqc</groupId>
     <artifactId>ironhand-build</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1-release</version>
+    <version>1.0.2-SNAPSHOT</version>
     <description>ironhand分布式爬虫系统</description>
     <modules>
         <module>ironhand-core</module>
@@ -22,7 +22,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-cloud.version>Dalston.RELEASE</spring-cloud.version>
-        <project.version>1.0.1-release</project.version>
     </properties>
     <repositories>
         <repository>
@@ -54,27 +53,27 @@
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-extension</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-analyzer</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-downloader</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-schedule</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-core</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
 
             <dependency>

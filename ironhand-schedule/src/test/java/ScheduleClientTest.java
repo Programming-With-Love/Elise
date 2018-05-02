@@ -54,9 +54,8 @@ public class ScheduleClientTest {
 
 
         DefRootExtractor def = new DefRootExtractor();
-        def.setName("spider_test_2.result");
+        def.setName("test.renshi");
         def.addTargetUrl(new ConfigurableUrlFinder().setValue("http://ldzl\\.people\\.com\\.cn/dfzlk/front/personPage[0-9]+\\.htm$").setType(ConfigurableUrlFinder.Type.REGEX));
-        def.addHelpUrl(new ConfigurableUrlFinder().setValue("http://ldzl\\.people\\.com\\.cn/dfzlk/front/personPage[0-9]+\\.htm$").setType(ConfigurableUrlFinder.Type.REGEX));
         def.addChildren(new DefExtractor()
                 .setName("title")
                 .setType(ExpressionType.XPATH)
@@ -71,7 +70,8 @@ public class ScheduleClientTest {
                 .setValue(".*")
                 .setType(ExpressionType.REGEX)
                 .setSource(Extractor.Source.URL));
-        DistributedTask task = new DistributedTask(13L, new Site().setCycleRetryTimes(3), def);
+        DistributedTask task = new DistributedTask(1L, new Site().setCycleRetryTimes(3), def);
+        client.clearDuplications(task);
         client.pushRequest(task,
                 new Request("http://ldzl.people.com.cn/dfzlk/front/personIndex.htm"));
         client.pushRequest(task,

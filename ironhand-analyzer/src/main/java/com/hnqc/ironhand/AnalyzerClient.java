@@ -4,6 +4,7 @@ import com.hnqc.ironhand.common.SimpleRedisDuplicationProcessor;
 import com.hnqc.ironhand.common.SpringKafkaTaskScheduler;
 import com.hnqc.ironhand.pipeline.AbstractSqlPipeline;
 import com.hnqc.ironhand.processor.ExtractorPageProcessor;
+import com.hnqc.ironhand.scheduler.NoDepuplicationProcessor;
 import com.hnqc.ironhand.scheduler.SimpleTaskScheduler;
 import com.hnqc.ironhand.utils.IdWorker;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class AnalyzerClient {
             throw new RuntimeException("加载客户端配置信息失败", e);
         }
         SpringKafkaTaskScheduler scheduler = new SpringKafkaTaskScheduler(
-                new SimpleTaskScheduler().setPoolSize(10),
+                new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(10),
                 new SimpleRedisDuplicationProcessor(properties.getProperty(REDIS_URL)))
                 .setBootstrapServers(properties.getProperty(KAFKA_SERVERS))
                 .setReadListener(new OssReadListener());

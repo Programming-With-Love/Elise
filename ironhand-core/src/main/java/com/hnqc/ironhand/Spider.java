@@ -150,20 +150,9 @@ public class Spider implements TaskScheduler.DownloadListener,
         }
     }
 
-    public Spider runAsync() {
-        if (threadPool == null || threadPool.isShutdown()) {
-            if (executorService != null && !executorService.isShutdown()) {
-                threadPool = new CountableThreadPool(threadNum, executorService);
-            } else {
-                threadPool = new CountableThreadPool(threadNum);
-            }
-        }
-        threadPool.execute(this);
-        return this;
-    }
-
     public Spider start() {
-        return runAsync();
+        run();
+        return this;
     }
 
     public void stop() {

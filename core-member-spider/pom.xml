@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.hnqc</groupId>
             <artifactId>ironhand-schedule</artifactId>
-            <version>1.0.1-release</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>

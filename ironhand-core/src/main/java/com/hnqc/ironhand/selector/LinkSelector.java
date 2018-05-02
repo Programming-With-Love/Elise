@@ -5,6 +5,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,8 +16,21 @@ import java.util.List;
  */
 public class LinkSelector extends AbstractElementSelector {
     private static final String LIN_TARGET_TAG = "a";
-    private static final String ATTR_WITH_BASE = "abs:href";
+    private static final String ATTR_WITH_BASE = "abs:";
     private static final String ATTR = "href";
+
+    private List<LinkProperty> choosers = new ArrayList<>();
+
+    public LinkSelector(List<LinkProperty> choosers) {
+        this.choosers.add(new LinkProperty(LIN_TARGET_TAG, ATTR));
+        if (choosers != null) {
+            this.choosers.addAll(choosers);
+        }
+    }
+
+    public LinkSelector() {
+        this(null);
+    }
 
     @Override
     public Element selectElement(Element element) {
@@ -40,13 +54,15 @@ public class LinkSelector extends AbstractElementSelector {
 
     @Override
     public List<String> selectList(Element element) {
-        Elements elements = element.select(LIN_TARGET_TAG);
-        List<String> links = new ArrayList<>(elements.size());
-        for (Element element0 : elements) {
-            if (!ValidateUtils.isEmpty(element0.baseUri())) {
-                links.add(element0.attr(ATTR_WITH_BASE));
-            } else {
-                links.add(element0.attr(ATTR));
+        List<String> links = new ArrayList<>(20);
+        for (LinkProperty chooser : choosers) {
+            Elements elements = element.select(chooser.getTag());
+            for (Element element0 : elements) {
+                if (!ValidateUtils.isEmpty(element0.baseUri())) {
+                    links.add(element0.attr(ATTR_WITH_BASE + chooser.getAttr()));
+                } else {
+                    links.add(element0.attr(chooser.getAttr()));
+                }
             }
         }
         return links;

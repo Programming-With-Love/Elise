@@ -11,6 +11,7 @@ import java.util.List;
 public interface Selectable {
     /**
      * xpath选择器
+     *
      * @param xpath xpath路径
      * @return 匹配出的内容
      */
@@ -21,6 +22,8 @@ public interface Selectable {
     Selectable css(String selector, String attrName);
 
     Selectable links();
+
+    Selectable links(List<LinkProperty> choosers);
 
     Selectable regex(String regex);
 

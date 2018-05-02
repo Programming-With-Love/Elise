@@ -45,7 +45,7 @@ public class DownloaderClient {
         try {
             proxyReader = new ProxyReader(getClass().getResourceAsStream("/proxy.json"));
         } catch (IOException e) {
-            throw new RuntimeException("read proxies error", e);
+            proxyReader = new ProxyReader();
         }
 
         initClient(properties.getProperty(KAFKA_SERVERS), properties.getProperty(REDIS_URL), proxyReader.getProxies());

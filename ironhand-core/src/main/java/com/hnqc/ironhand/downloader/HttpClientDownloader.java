@@ -82,6 +82,11 @@ public class HttpClientDownloader extends AbstractDownloader {
             if (httpResponse != null) {
                 //ensure the connection is released back to pool
                 EntityUtils.consumeQuietly(httpResponse.getEntity());
+                try {
+                    httpResponse.close();
+                } catch (IOException e) {
+                    logger.error("http response close failed",e);
+                }
             }
             if (proxyProvider != null && proxy != null) {
                 proxyProvider.returnProxy(proxy, page, task);

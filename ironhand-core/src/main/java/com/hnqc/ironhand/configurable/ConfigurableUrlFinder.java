@@ -1,5 +1,12 @@
 package com.hnqc.ironhand.configurable;
 
+import com.hnqc.ironhand.selector.LinkProperty;
+import com.hnqc.ironhand.selector.LinkSelector;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 配置url发现规则
  *
@@ -30,6 +37,8 @@ public class ConfigurableUrlFinder {
      */
     private String sourceRegion;
 
+    private List<LinkProperty> linkProperties = new ArrayList<>();
+
     public String getValue() {
         return value;
     }
@@ -54,6 +63,20 @@ public class ConfigurableUrlFinder {
 
     public ConfigurableUrlFinder setSourceRegion(String sourceRegion) {
         this.sourceRegion = sourceRegion;
+        return this;
+    }
+
+    public List<LinkProperty> getLinkProperties() {
+        return linkProperties;
+    }
+
+    public ConfigurableUrlFinder setLinkProperties(List<LinkProperty> linkProperties) {
+        this.linkProperties = linkProperties;
+        return this;
+    }
+
+    public ConfigurableUrlFinder addLinkProperty(LinkProperty... property) {
+        this.linkProperties.addAll(Arrays.asList(property));
         return this;
     }
 }

@@ -4,6 +4,7 @@ import com.hnqc.ironhand.configurable.ConfigurableUrlFinder;
 import com.hnqc.ironhand.utils.ValidateUtils;
 import org.jsoup.nodes.Element;
 
+import javax.lang.model.util.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +14,15 @@ import java.util.List;
  * @author zido
  * @date 2018/04/13
  */
-public class UrlFinderSelector implements ElementSelector, Selector {
-    private static final String EMPTY_URL_PATTERN = "http://.*";
+public class UrlFinderSelector extends AbstractElementSelector implements ElementSelector, Selector {
+    private static final String EMPTY_URL_PATTERN = "https?://.*";
     private Selector targetSelector;
     private Selector regionSelector;
+    private List<LinkProperty> linkProperties;
 
     public UrlFinderSelector(ConfigurableUrlFinder urlFinder) {
         this(urlFinder.getValue(), urlFinder.getType(), urlFinder.getSourceRegion());
+        this.setLinkProperties(urlFinder.getLinkProperties());
     }
 
     public UrlFinderSelector(String target) {
@@ -80,6 +83,21 @@ public class UrlFinderSelector implements ElementSelector, Selector {
     }
 
     @Override
+    public Element selectElement(Element element) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Element> selectElements(Element element) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isText() {
+        return true;
+    }
+
+    @Override
     public String select(Element element) {
         if (regionSelector instanceof AbstractElementSelector) {
             AbstractElementSelector elementSelector = (AbstractElementSelector) regionSelector;
@@ -101,20 +119,22 @@ public class UrlFinderSelector implements ElementSelector, Selector {
 
     @Override
     public List<String> selectList(Element element) {
-        List<String> regions;
+        List<Element> regions;
         if (regionSelector instanceof AbstractElementSelector) {
-            List<String> result = new ArrayList<>();
             AbstractElementSelector elementSelector = (AbstractElementSelector) regionSelector;
-            regions = elementSelector.selectList(element);
-            for (String region : regions) {
-                List<String> childResults = targetSelector.selectList(region);
-                if (!ValidateUtils.isEmpty(result)) {
-                    result.addAll(childResults);
-                }
-            }
-            return result;
+            regions = elementSelector.selectElements(element);
+            return new HtmlNode(regions).links(getLinkProperties()).selectList(targetSelector).all();
         } else {
             return selectList(element.toString());
         }
+    }
+
+    public List<LinkProperty> getLinkProperties() {
+        return linkProperties;
+    }
+
+    public UrlFinderSelector setLinkProperties(List<LinkProperty> linkProperties) {
+        this.linkProperties = linkProperties;
+        return this;
     }
 }

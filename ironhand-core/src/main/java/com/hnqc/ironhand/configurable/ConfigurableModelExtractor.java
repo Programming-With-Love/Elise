@@ -1,21 +1,22 @@
 package com.hnqc.ironhand.configurable;
 
-import com.hnqc.ironhand.selector.Selector;
-import com.hnqc.ironhand.selector.Selectors;
 import com.hnqc.ironhand.Page;
 import com.hnqc.ironhand.ResultItem;
-import com.hnqc.ironhand.selector.UrlFinderSelector;
 import com.hnqc.ironhand.extractor.ModelExtractor;
+import com.hnqc.ironhand.selector.Selector;
+import com.hnqc.ironhand.selector.Selectors;
+import com.hnqc.ironhand.selector.UrlFinderSelector;
 import com.hnqc.ironhand.utils.ValidateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.hnqc.ironhand.selector.Selectors.css;
-import static com.hnqc.ironhand.selector.Selectors.regex;
 
 /**
  * configurable Page model extractor
@@ -34,6 +35,10 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     private List<Extractor> fieldExtractors;
 
     private DefRootExtractor defRootExtractor;
+
+    private static final String PT = "http";
+
+    private static Logger logger = LoggerFactory.getLogger(ConfigurableModelExtractor.class);
 
     /**
      * construct by {@link DefRootExtractor}
@@ -98,14 +103,35 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     @Override
     public List<String> extractLinks(Page page) {
         List<String> links;
-        List<UrlFinderSelector> selectors = getHelpUrlSelectors();
-        if (selectors == null) {
-            links = page.html().links().all();
+
+        List<UrlFinderSelector> selectors = new ArrayList<>();
+        if (this.targetUrlSelectors != null) {
+            selectors.addAll(targetUrlSelectors);
+        }
+        if (this.helpUrlSelectors != null) {
+            selectors.addAll(helpUrlSelectors);
+        }
+        if (ValidateUtils.isEmpty(selectors)) {
+            return new ArrayList<>(0);
         } else {
             links = new ArrayList<>();
             for (UrlFinderSelector selector : selectors) {
-                links.addAll(page.html().links().selectList(selector).all());
+                links.addAll(page.html().selectList(selector).all());
             }
+            //兜底链接处理
+            links = links.stream().map(link -> {
+                link = link.replace("&amp;", "&");
+                if (link.startsWith(PT)) {
+                    //已经是绝对路径的，不再处理
+                    return link;
+                }
+                try {
+                    return new URL(new URL(page.getUrl().toString()), link).toString();
+                } catch (MalformedURLException e) {
+                    logger.error("兜底链接处理失败,base:[{}],spec:[{}]", page.getUrl().toString(), link);
+                }
+                return link;
+            }).collect(Collectors.toList());
         }
         return links;
     }
@@ -116,7 +142,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
      * @param page page
      * @return result map
      */
-    public Map<String, Object> extractPageItem(Page page) {
+    private Map<String, Object> extractPageItem(Page page) {
         //不是目标链接直接返回
         if (targetUrlSelectors
                 .stream()
@@ -135,7 +161,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
      *
      * @param page page
      */
-    public List<Map<String, Object>> extractPageForList(Page page) {
+    private List<Map<String, Object>> extractPageForList(Page page) {
         //不是目标链接直接返回
         if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> page.getUrl()
                 .select(urlFinderSelector).match())) {
