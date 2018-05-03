@@ -17,6 +17,7 @@ public class Site {
     private String userAgent;
     private Map<String, String> defaultCookies = new LinkedHashMap<>();
     private Map<String, Map<String, String>> cookies = new HashMap<>();
+    private Map<String, Object> extras = new HashMap<>();
 
     private String charset;
 
@@ -177,6 +178,24 @@ public class Site {
                 return Site.this;
             }
         };
+    }
+
+    public Site putExtra(String key, Object value) {
+        this.extras.put(key, value);
+        return this;
+    }
+
+    public Map<String, Object> getExtras() {
+        return this.extras;
+    }
+
+    public Site setExtras(Map<String, Object> extras) {
+        this.extras = extras;
+        return this;
+    }
+
+    public Object getExtra(String key) {
+        return this.extras.get(key);
     }
 
     @Override

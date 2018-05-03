@@ -1,6 +1,7 @@
 package com.hnqc.ironhand.utils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -98,5 +99,9 @@ public class ValidateUtils {
             }
         }
         return false;
+    }
+
+    public static boolean isEmpty(Map cookies) {
+        return cookies == null || cookies.size() == 0;
     }
 }

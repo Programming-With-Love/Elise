@@ -1,6 +1,7 @@
 package com.hnqc.ironhand.downloader;
 
 import com.hnqc.ironhand.Spider;
+import com.hnqc.ironhand.common.AutoSwitchDownloader;
 import com.hnqc.ironhand.common.SimpleRedisDuplicationProcessor;
 import com.hnqc.ironhand.common.SpringKafkaTaskScheduler;
 import com.hnqc.ironhand.proxy.Proxy;
@@ -65,7 +66,7 @@ public class DownloaderClient {
         }
         logger.info("connect to kafka {}", redisUrl);
 
-        HttpClientDownloader downloader = new HttpClientDownloader();
+        AutoSwitchDownloader downloader = new AutoSwitchDownloader();
         if (!ValidateUtils.isEmpty(proxies)) {
             downloader.setProxyProvider(new SimpleProxyProvider(proxies));
         }
