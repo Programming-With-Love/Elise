@@ -1,4 +1,4 @@
-package com.hnqc.coremember.spider;
+package site.zido.elise.spider;
 
 import org.springframework.context.annotation.Configuration;
 

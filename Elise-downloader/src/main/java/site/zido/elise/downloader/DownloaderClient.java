@@ -27,8 +27,18 @@ public class DownloaderClient {
     private Spider spider;
     private Logger logger = LoggerFactory.getLogger(DownloaderClient.class);
 
-    private final static String REDIS_URL = "redisUrl";
-    private final static String KAFKA_SERVERS = "kafkaServers";
+    private String kafkaServers;
+    private String redisUrl;
+    private List<Proxy> proxies;
+    private String groupId;
+    private String topicAnalyzer;
+    private String topicDownloader;
+
+    private String endPoint;
+    private String accessKeyId;
+    private String accessKeySecret;
+    private String bucketName;
+    private String urlHead;
 
     public DownloaderClient() {
         Properties properties = new Properties();
@@ -49,19 +59,20 @@ public class DownloaderClient {
             proxyReader = new ProxyReader();
         }
 
-        initClient(properties.getProperty(KAFKA_SERVERS),
-                properties.getProperty(REDIS_URL),
-                proxyReader.getProxies(),
-                properties.getProperty("groupId"),
-                properties.getProperty("topicAnalyzer"),
-                properties.getProperty("topicDownloader"));
+        this.kafkaServers = properties.getProperty("kafkaServers");
+        this.redisUrl = properties.getProperty("redisUrl");
+        this.proxies = proxyReader.getProxies();
+        this.groupId = properties.getProperty("groupId");
+        this.topicAnalyzer = properties.getProperty("topicAnalyzer");
+        this.topicDownloader = properties.getProperty("topicDownloader");
+        this.endPoint = properties.getProperty("endPoint");
+        this.accessKeyId = properties.getProperty("accessKeyId");
+        this.accessKeySecret = properties.getProperty("accessKeySecret");
+        this.bucketName = properties.getProperty("bucketName");
+        this.urlHead = properties.getProperty("urlHead");
     }
 
-    public DownloaderClient(String kafkaServers, String redisUrl, List<Proxy> proxies, String groupId, String topicAnalyzer, String topicDownloader) {
-        initClient(kafkaServers, redisUrl, proxies, groupId, topicAnalyzer, topicDownloader);
-    }
-
-    private void initClient(String kafkaServers, String redisUrl, List<Proxy> proxies, String groupId, String topicAnalyzer, String topicDownloader) {
+    private void initClient() {
         if (ValidateUtils.isEmpty(kafkaServers)) {
             throw new IllegalArgumentException("kafka servers can't be empty");
         }
@@ -84,13 +95,14 @@ public class DownloaderClient {
                         .setTopicDownload(topicDownloader)
                         .setGroupId(groupId)
                         .setBootstrapServers(kafkaServers)
-                        .setSavedListener(new OssSavedListener()),
+                        .setSavedListener(new OssSavedListener(endPoint, accessKeyId, accessKeySecret, bucketName, urlHead)),
                 null,
                 downloader
         );
     }
 
     public void start() {
+        initClient();
         logger.info("downloader client start");
         this.spider.start();
     }
