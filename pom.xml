@@ -5,17 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hnqc</groupId>
-    <artifactId>ironhand-build</artifactId>
+    <artifactId>Elise-build</artifactId>
     <packaging>pom</packaging>
     <version>1.0.3-release</version>
-    <description>ironhand分布式爬虫系统</description>
+    <description>Elise分布式爬虫系统</description>
     <modules>
-        <module>ironhand-core</module>
-        <module>ironhand-extension</module>
-        <module>ironhand-schedule</module>
-        <module>ironhand-analyzer</module>
-        <module>ironhand-downloader</module>
-        <module>core-member-spider</module>
+        <module>Elise-core</module>
+        <module>Elise-distributed</module>
+        <module>Elise-schedule</module>
+        <module>Elise-analyzer</module>
+        <module>Elise-downloader</module>
+        <module>spider-example</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,27 +52,27 @@
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
-                <artifactId>ironhand-extension</artifactId>
+                <artifactId>Elise-distributed</artifactId>
                 <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
-                <artifactId>ironhand-analyzer</artifactId>
+                <artifactId>Elise-analyzer</artifactId>
                 <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
-                <artifactId>ironhand-downloader</artifactId>
+                <artifactId>Elise-downloader</artifactId>
                 <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
-                <artifactId>ironhand-schedule</artifactId>
+                <artifactId>Elise-schedule</artifactId>
                 <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
-                <artifactId>ironhand-core</artifactId>
+                <artifactId>Elise-core</artifactId>
                 <version>1.0.3-release</version>
             </dependency>
 
