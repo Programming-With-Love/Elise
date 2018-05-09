@@ -49,14 +49,19 @@ public class DownloaderClient {
             proxyReader = new ProxyReader();
         }
 
-        initClient(properties.getProperty(KAFKA_SERVERS), properties.getProperty(REDIS_URL), proxyReader.getProxies());
+        initClient(properties.getProperty(KAFKA_SERVERS),
+                properties.getProperty(REDIS_URL),
+                proxyReader.getProxies(),
+                properties.getProperty("groupId"),
+                properties.getProperty("topicAnalyzer"),
+                properties.getProperty("topicDownloader"));
     }
 
-    public DownloaderClient(String kafkaServers, String redisUrl, List<Proxy> proxies) {
-        initClient(kafkaServers, redisUrl, proxies);
+    public DownloaderClient(String kafkaServers, String redisUrl, List<Proxy> proxies, String groupId, String topicAnalyzer, String topicDownloader) {
+        initClient(kafkaServers, redisUrl, proxies, groupId, topicAnalyzer, topicDownloader);
     }
 
-    private void initClient(String kafkaServers, String redisUrl, List<Proxy> proxies) {
+    private void initClient(String kafkaServers, String redisUrl, List<Proxy> proxies, String groupId, String topicAnalyzer, String topicDownloader) {
         if (ValidateUtils.isEmpty(kafkaServers)) {
             throw new IllegalArgumentException("kafka servers can't be empty");
         }
@@ -75,6 +80,9 @@ public class DownloaderClient {
                 new SpringKafkaTaskScheduler(
                         new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(10),
                         new SimpleRedisDuplicationProcessor(redisUrl))
+                        .setTopicAnalyzer(topicAnalyzer)
+                        .setTopicDownload(topicDownloader)
+                        .setGroupId(groupId)
                         .setBootstrapServers(kafkaServers)
                         .setSavedListener(new OssSavedListener()),
                 null,

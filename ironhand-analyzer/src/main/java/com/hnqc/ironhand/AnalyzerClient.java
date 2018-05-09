@@ -43,7 +43,10 @@ public class AnalyzerClient {
                 new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(10),
                 new SimpleRedisDuplicationProcessor(properties.getProperty(REDIS_URL)))
                 .setBootstrapServers(properties.getProperty(KAFKA_SERVERS))
-                .setReadListener(new OssReadListener());
+                .setReadListener(new OssReadListener())
+                .setGroupId(properties.getProperty("groupId"))
+                .setTopicAnalyzer(properties.getProperty("topicAnalyzer"))
+                .setTopicDownload(properties.getProperty("topicDownloader"));
         spider = new Spider(
                 scheduler,
                 new ExtractorPageProcessor(),

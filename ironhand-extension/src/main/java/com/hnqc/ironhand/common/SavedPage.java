@@ -48,14 +48,18 @@ public class SavedPage {
      * @return the saved page
      */
     public static SavedPage resolvePage(Page page, SavedListener listener) {
-        byte[] rawText = page.getBytes();
-        if (rawText == null) {
-            return null;
+        byte[] bytes = page.getBytes();
+        if (bytes == null) {
+            String rawText = page.getRawText();
+            if(rawText == null){
+                return null;
+            }
+            bytes = rawText.getBytes();
         }
         page.setRawText(null);
         page.setBytes(null);
         SavedPage savedPage = new SavedPage();
-        savedPage.url = listener.onSave(rawText);
+        savedPage.url = listener.onSave(bytes);
         savedPage.page = page;
         return savedPage;
     }

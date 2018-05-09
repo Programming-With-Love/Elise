@@ -26,9 +26,13 @@ public class ScheduleClient {
     private DuplicationProcessor duplicationProcessor;
     private TaskScheduler scheduler;
 
-    public ScheduleClient(String kafkaServers, String redisUrl) {
+    public ScheduleClient(String kafkaServers, String redisUrl, String groupId, String topicAnalyzer, String topicDownloader) {
         this.duplicationProcessor = new SimpleRedisDuplicationProcessor(redisUrl);
-        this.scheduler = new SpringKafkaTaskScheduler(new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(2), duplicationProcessor).setBootstrapServers(kafkaServers);
+        this.scheduler = new SpringKafkaTaskScheduler(new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(2), duplicationProcessor)
+                .setBootstrapServers(kafkaServers)
+                .setGroupId(groupId)
+                .setTopicDownload(topicDownloader)
+                .setTopicAnalyzer(topicAnalyzer);
         this.spider = new Spider(scheduler);
     }
 

@@ -4,26 +4,20 @@ import com.hnqc.coremember.spider.service.MemberService;
 import com.hnqc.ironhand.DistributedTask;
 import com.hnqc.ironhand.Request;
 import com.hnqc.ironhand.Site;
-import com.hnqc.ironhand.Task;
 import com.hnqc.ironhand.configurable.*;
 import com.hnqc.ironhand.schedule.ScheduleClient;
 import com.hnqc.ironhand.selector.LinkProperty;
 import com.hnqc.ironhand.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * SpiderConfiguration
@@ -32,12 +26,41 @@ import java.util.concurrent.CountDownLatch;
  * @date 2018/04/27
  */
 @Configuration
-@ConfigurationProperties
 public class SpiderConfiguration {
-    @Value("${redisUrl}")
-    private String redisServer;
-    @Value("${kafkaServers}")
-    private String kafkaServer;
+    @ConfigurationProperties
+    public class Props {
+        private String redisServer;
+        private String kafkaServers;
+        private String groupId;
+        private String topicAnalyzer;
+        private String topicDownloader;
+
+        public Props setRedisServer(String redisServer) {
+            this.redisServer = redisServer;
+            return this;
+        }
+
+        public Props setKafkaServers(String kafkaServers) {
+            this.kafkaServers = kafkaServers;
+            return this;
+        }
+
+        public Props setGroupId(String groupId) {
+            this.groupId = groupId;
+            return this;
+        }
+
+        public Props setTopicAnalyzer(String topicAnalyzer) {
+            this.topicAnalyzer = topicAnalyzer;
+            return this;
+        }
+
+        public Props setTopicDownloader(String topicDownloader) {
+            this.topicDownloader = topicDownloader;
+            return this;
+        }
+    }
+
     private ScheduleClient client;
     private DefRootExtractor ldzl;
     private DefRootExtractor leader;
@@ -56,8 +79,14 @@ public class SpiderConfiguration {
     }
 
     @Bean
-    public ScheduleClient spider() {
-        client = new ScheduleClient(kafkaServer, redisServer);
+    public Props props() {
+        return new Props();
+    }
+
+    @Bean
+    @Autowired
+    public ScheduleClient spider(Props props) {
+        client = new ScheduleClient(props.kafkaServers, props.redisServer, props.groupId, props.topicAnalyzer, props.topicDownloader);
         client.start();
         return client;
     }
@@ -109,7 +138,7 @@ public class SpiderConfiguration {
             e.printStackTrace();
         }
         DefRootExtractor def = new DefRootExtractor();
-        def.addHelpUrl(new ConfigurableUrlFinder().setType(ConfigurableUrlFinder.Type.REGEX).setSourceRegion("//li[@id='sogou_vr_11002301_box_0'").setValue(".*"));
+        def.addHelpUrl(new ConfigurableUrlFinder().setType(ConfigurableUrlFinder.Type.REGEX).setSourceRegion("//li[@id='sogou_vr_11002301_box_0']").setValue(".*"));
         def.addHelpUrl(new ConfigurableUrlFinder().setValue(".*").setSourceRegion("//div[@class='weui_media_bd']/html()").addLinkProperty(new LinkProperty("h4", "hrefs")));
         def.addTargetUrl(new ConfigurableUrlFinder().setValue("http://mp\\.weixin\\.qq\\.com/s.*"));
         def.setName("hnqc_community.crawl_content");
@@ -123,22 +152,28 @@ public class SpiderConfiguration {
         def.addChildren(new DefExtractor()
                 .setName("source")
                 .setType(ExpressionType.XPATH)
-                .setValue("//a[@id='post-user']/text()")
+                .setValue("//a[@id='profileBt']/text()")
                 .setNullable(false));
 
         def.addChildren(new DefExtractor()
-                .setName("textAndUrl")
+                .setName("text_and_url")
                 .setType(ExpressionType.XPATH)
                 .setValue("//div[@class='rich_media_content']/html()")
                 .setNullable(false));
         for (String keyword : keywords) {
-            client.pushRequest(new DistributedTask(IdWorker.nextId(), new Site().putExtra("downloadMode", "htmlUnit"), def), new Request("http://weixin.sogou.com/weixin?type=1&s_from=input&query=" + keyword));
+            client.pushRequest(new DistributedTask(IdWorker.nextId(), new Site().setSleepTime(3000).putExtra("downloadMode", "htmlUnit"), def), new Request("http://weixin.sogou.com/weixin?type=1&s_from=input&query=" + keyword));
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Autowired
     public void init(ScheduleClient client) {
-        startHandleCoreData();
+//        startHandleCoreData();
+        startSpider2();
     }
 
 

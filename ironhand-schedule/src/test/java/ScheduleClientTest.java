@@ -32,7 +32,7 @@ public class ScheduleClientTest {
         } catch (IOException e) {
             throw new RuntimeException("加载客户端配置信息失败", e);
         }
-        ScheduleClient client = new ScheduleClient(properties.getProperty(KAFKA_SERVERS), properties.getProperty(REDIS_URL));
+        ScheduleClient client = new ScheduleClient(properties.getProperty(KAFKA_SERVERS), properties.getProperty(REDIS_URL), "ironhand", "analyzer-dev", "downloader-dev");
         client.start();
 
 //        DefRootExtractor def = new DefRootExtractor();

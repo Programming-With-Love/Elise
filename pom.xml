@@ -7,7 +7,7 @@
     <groupId>com.hnqc</groupId>
     <artifactId>ironhand-build</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2-release</version>
+    <version>1.0.3-release</version>
     <description>ironhand分布式爬虫系统</description>
     <modules>
         <module>ironhand-core</module>
@@ -53,27 +53,27 @@
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-extension</artifactId>
-                <version>1.0.2-release</version>
+                <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-analyzer</artifactId>
-                <version>1.0.2-release</version>
+                <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-downloader</artifactId>
-                <version>1.0.2-release</version>
+                <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-schedule</artifactId>
-                <version>1.0.2-release</version>
+                <version>1.0.3-release</version>
             </dependency>
             <dependency>
                 <groupId>com.hnqc</groupId>
                 <artifactId>ironhand-core</artifactId>
-                <version>1.0.2-release</version>
+                <version>1.0.3-release</version>
             </dependency>
 
             <dependency>

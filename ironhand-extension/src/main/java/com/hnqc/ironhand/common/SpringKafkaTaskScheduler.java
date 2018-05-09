@@ -33,6 +33,8 @@ import java.util.Map;
 public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler {
     private String bootstrapServers;
     private String groupId = "ironhand";
+    private String topicAnalyzer = TYPE_MESSAGE_ANALYZER;
+    private String topicDownload = TYPE_MESSAGE_DOWNLOAD;
 
     private SavedPage.ReadListener readListener;
     private SavedPage.SavedListener savedListener;
@@ -74,11 +76,21 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         return this;
     }
 
+    public SpringKafkaTaskScheduler setTopicAnalyzer(String topicAnalyzer) {
+        this.topicAnalyzer = topicAnalyzer;
+        return this;
+    }
+
+    public SpringKafkaTaskScheduler setTopicDownload(String topicDownload) {
+        this.topicDownload = topicDownload;
+        return this;
+    }
+
     @Override
     public synchronized void registerAnalyzer(AnalyzerListener listener) {
         taskScheduler.registerAnalyzer(listener);
         if (this.analyzerContainer == null) {
-            this.analyzerContainer = runContainer(TYPE_MESSAGE_ANALYZER, message -> {
+            this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 if (readListener == null) {
                     Seed seed = message.value();
                     taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
@@ -97,7 +109,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     public synchronized void registerDownloader(DownloadListener listener) {
         taskScheduler.registerDownloader(listener);
         if (this.downloaderContainer == null) {
-            this.downloaderContainer = runContainer(TYPE_MESSAGE_DOWNLOAD, message -> {
+            this.downloaderContainer = runContainer(topicDownload, message -> {
                 Seed seed = message.value();
                 taskScheduler.pushRequest(seed.getTask(), seed.getRequest());
             });
@@ -141,20 +153,20 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     @Override
     public void process(Task task, Request request, Page page) {
         if (this.savedListener == null) {
-            template.send(TYPE_MESSAGE_ANALYZER, new Seed().setTask((DistributedTask) task).setRequest(request).setPage(page));
+            template.send(topicAnalyzer, new Seed().setTask((DistributedTask) task).setRequest(request).setPage(page));
         } else {
             SavedPage savedPage = SavedPage.resolvePage(page, savedListener);
             if (savedPage == null) {
                 return;
             }
-            template.send(TYPE_MESSAGE_ANALYZER, new SavedSeed((DistributedTask) task, request, savedPage));
+            template.send(topicAnalyzer, new SavedSeed((DistributedTask) task, request, savedPage));
         }
 
     }
 
     @Override
     protected void pushWhenNoDuplicate(Request request, Task task) {
-        template.send(TYPE_MESSAGE_DOWNLOAD, new Seed().setTask((DistributedTask) task).setRequest(request));
+        template.send(topicDownload, new Seed().setTask((DistributedTask) task).setRequest(request));
     }
 
     private KafkaMessageListenerContainer<Long, Seed> createContainer(

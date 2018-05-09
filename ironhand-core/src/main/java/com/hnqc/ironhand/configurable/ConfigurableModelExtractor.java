@@ -104,18 +104,11 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     public List<String> extractLinks(Page page) {
         List<String> links;
 
-        List<UrlFinderSelector> selectors = new ArrayList<>();
-        if (this.targetUrlSelectors != null) {
-            selectors.addAll(targetUrlSelectors);
-        }
-        if (this.helpUrlSelectors != null) {
-            selectors.addAll(helpUrlSelectors);
-        }
-        if (ValidateUtils.isEmpty(selectors)) {
+        if (ValidateUtils.isEmpty(helpUrlSelectors)) {
             return new ArrayList<>(0);
         } else {
             links = new ArrayList<>();
-            for (UrlFinderSelector selector : selectors) {
+            for (UrlFinderSelector selector : helpUrlSelectors) {
                 links.addAll(page.html().selectList(selector).all());
             }
             //兜底链接处理
