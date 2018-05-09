@@ -74,8 +74,9 @@ Elise-distributed模块提供了一些分布式扩展，例如基于spring-kafka
 |:----:|:---:|:----:|
 |Elise-core|基本爬虫框架，支持手动编码/xpath/css/regex等多种抓取方式，支持单线程/多线程组合抓取|基本完成|
 |Elise-distributed|爬虫基本框架之上提供了分布式支持，主要提供了基于kafka的任务调度器和基于redis的url去重管理器|基本完成|
-|Elise-downloader|分布式爬虫下载客户端，能够在服务器上直接部署|暂未开始|
-|Elise-analyzer|分布式爬虫分析客户端，用于从页面中抓取需要的信息，能够在服务器上直接部署|暂未开始|
-|Elise-schedule|分布式爬虫任务发送端，能够在服务器上直接部署|暂未开始|
+|Elise-schedule|分布式爬虫任务发送端依赖|直接附着在启动项目上，使用kafka与其他部件交流|
+|Elise-downloader|分布式爬虫下载客户端，能够在服务器上直接部署|使用kafka与其他部件交流，使用oss转储页面|
+|Elise-analyzer|分布式爬虫分析客户端，用于从页面中抓取需要的信息，能够在服务器上直接部署|使用kafka与其他部件交流，使用mysql存储结果|
+|spider-example|作为示例，能够在服务器上直接部署|依赖于schedule|
 |...|更多想法，欢迎讨论|随时在线～|
 
