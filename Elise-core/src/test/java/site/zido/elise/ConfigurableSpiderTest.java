@@ -3,11 +3,11 @@ package site.zido.elise;
 import site.zido.elise.configurable.*;
 import site.zido.elise.downloader.HttpClientDownloader;
 import site.zido.elise.pipeline.MappedPageModelPipeline;
-import com.hnqc.ironhand.pipeline.ModelPipeline;
-import com.hnqc.ironhand.processor.ExtractorPageProcessor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import site.zido.elise.pipeline.ModelPipeline;
+import site.zido.elise.processor.ExtractorPageProcessor;
 
 import java.util.List;
 import java.util.Map;
