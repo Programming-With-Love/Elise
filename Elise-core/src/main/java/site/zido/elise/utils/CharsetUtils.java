@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
  * 字符集工具类
  *
  * @author zido
- * @date 2018/43/12
  */
 public class CharsetUtils {
     private CharsetUtils() {

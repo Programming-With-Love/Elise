@@ -11,7 +11,6 @@ import java.util.List;
  * xpath选择器，基于xsoup
  *
  * @author zido
- * @date 2018/52/13
  */
 public class XpathSelector extends AbstractElementSelector {
     private XPathEvaluator xPathEvaluator;

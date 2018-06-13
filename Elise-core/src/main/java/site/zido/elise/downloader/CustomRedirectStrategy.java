@@ -21,7 +21,6 @@ import java.net.URI;
  * 上述代码在post/redirect/post这种情况下不会传递原有请求的数据信息。
  *
  * @author zido
- * @date 2018/04/12
  */
 public class CustomRedirectStrategy extends LaxRedirectStrategy {
     private Logger logger = LoggerFactory.getLogger(getClass());

@@ -7,7 +7,6 @@ import org.apache.http.client.protocol.HttpClientContext;
  * Http Client Request Context
  *
  * @author zido
- * @date 2018/04/20
  */
 public class HttpClientRequestContext {
 

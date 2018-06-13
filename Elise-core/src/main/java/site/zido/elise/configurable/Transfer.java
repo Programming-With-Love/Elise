@@ -6,7 +6,6 @@ import java.util.Map;
  * Transfer
  *
  * @author zido
- * @date 2018/04/12
  */
 public interface Transfer<T> {
     /**

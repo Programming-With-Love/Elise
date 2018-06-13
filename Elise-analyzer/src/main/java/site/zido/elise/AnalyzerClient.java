@@ -19,7 +19,6 @@ import java.util.Properties;
  * AnalyzerClient
  *
  * @author zido
- * @date 2018/04/22
  */
 public class AnalyzerClient {
     private final Spider spider;

@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
  * ConfigurableUrlFinderTest
  *
  * @author zido
- * @date 2018/05/07
  */
 public class ConfigurableUrlFinderTest {
     @Test

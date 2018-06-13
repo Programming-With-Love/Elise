@@ -7,7 +7,6 @@ import site.zido.elise.Task;
  * 结果输出处理器
  *
  * @author zido
- * @date 2018/04/12
  */
 public interface Pipeline {
     /**

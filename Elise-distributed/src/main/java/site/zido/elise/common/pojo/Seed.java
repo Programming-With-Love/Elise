@@ -9,7 +9,6 @@ import site.zido.elise.Task;
  * 种子，信息载体
  *
  * @author zido
- * @date 2018/04/16
  */
 public class Seed {
     private DistributedTask task;

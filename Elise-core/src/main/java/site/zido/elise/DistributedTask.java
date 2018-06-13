@@ -10,7 +10,6 @@ import site.zido.elise.extractor.ModelExtractor;
  * 用作信息载体，仅携带必要信息
  *
  * @author zido
- * @date 2018/04/16
  */
 public class DistributedTask implements ExtractorTask {
     private Long id;

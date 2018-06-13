@@ -18,7 +18,6 @@ import java.io.IOException;
  * ScheduleClient
  *
  * @author zido
- * @date 2018/04/23
  */
 public class ScheduleClient {
     private Spider spider;

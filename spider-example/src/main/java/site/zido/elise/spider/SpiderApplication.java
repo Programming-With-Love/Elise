@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * SpiderApplication
  *
  * @author zido
- * @date 2018/04/27
  */
 @SpringBootApplication
 @EnableScheduling

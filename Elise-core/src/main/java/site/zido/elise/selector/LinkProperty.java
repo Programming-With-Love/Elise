@@ -4,7 +4,6 @@ package site.zido.elise.selector;
  * LinkProperty
  *
  * @author zido
- * @date 2018/05/02
  */
 public class LinkProperty {
     private String tag;

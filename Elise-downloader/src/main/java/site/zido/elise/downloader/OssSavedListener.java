@@ -12,7 +12,6 @@ import java.util.Date;
  * 使用oss转存页面
  *
  * @author zido
- * @date 2018/04/27
  */
 public class OssSavedListener implements SavedPage.SavedListener {
 

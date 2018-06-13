@@ -18,7 +18,6 @@ import java.util.List;
  * SpiderConfiguration
  *
  * @author zido
- * @date 2018/04/27
  */
 @Configuration
 public class SpiderConfiguration {

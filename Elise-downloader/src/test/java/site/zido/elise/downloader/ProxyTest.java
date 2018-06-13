@@ -13,7 +13,6 @@ import java.util.List;
  * ProxyTest
  *
  * @author zido
- * @date 2018/04/28
  */
 public class ProxyTest {
     @Test

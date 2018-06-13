@@ -12,7 +12,6 @@ import java.util.List;
  * 链接选择器
  *
  * @author zido
- * @date 2018/56/13
  */
 public class LinkSelector extends AbstractElementSelector {
     private static final String LIN_TARGET_TAG = "a";

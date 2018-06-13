@@ -6,7 +6,6 @@ import java.util.List;
  * 选择接口
  *
  * @author zido
- * @date 2018/26/13
  */
 public interface Selectable {
     /**

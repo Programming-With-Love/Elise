@@ -12,7 +12,6 @@ import java.util.List;
  * and Must ensure that task{@link Task} is ExtractorTask{@link ExtractorTask} subclass
  *
  * @author zido
- * @date 2018/04/12
  */
 public class ExtractorPageProcessor implements PageProcessor {
     private Logger logger = LoggerFactory.getLogger(ExtractorPageProcessor.class);

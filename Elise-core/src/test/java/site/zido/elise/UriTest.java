@@ -9,7 +9,6 @@ import java.net.URL;
  * UriTest
  *
  * @author zido
- * @date 2018/05/02
  */
 public class UriTest {
     @Test

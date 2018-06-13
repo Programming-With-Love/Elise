@@ -29,7 +29,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * it can still be used as a sending client to send messages.
  *
  * @author zido
- * @date 2018/04/16
  */
 public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler {
     private LoadBalancer<DownloadListener> downloadListenerLoadBalancer;

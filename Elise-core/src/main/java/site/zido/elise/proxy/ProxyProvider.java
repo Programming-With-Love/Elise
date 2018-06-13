@@ -7,7 +7,6 @@ import site.zido.elise.Task;
  * Proxy provider.
  *
  * @author zido
- * @date 2018/04/20
  */
 public interface ProxyProvider {
 

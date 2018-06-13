@@ -6,14 +6,12 @@ import site.zido.elise.selector.Selector;
  * 内容抓取器
  *
  * @author zido
- * @date 2018/04/12
  */
 public class Extractor {
     /**
      * 抽取范围
      *
      * @author zido
-     * @date 2018/30/12
      */
     public enum Source {
         /**

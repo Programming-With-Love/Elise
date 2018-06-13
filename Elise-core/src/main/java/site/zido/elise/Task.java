@@ -4,7 +4,6 @@ package site.zido.elise;
  * Task interface
  *
  * @author zido
- * @date 2018/04/18
  */
 public interface Task {
     /**

@@ -4,7 +4,6 @@ package site.zido.elise.utils;
  * http状态码
  *
  * @author zido
- * @date 2018/45/12
  */
 public class StatusCode {
     private StatusCode() {

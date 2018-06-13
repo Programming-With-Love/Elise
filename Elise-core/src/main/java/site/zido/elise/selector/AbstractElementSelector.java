@@ -10,7 +10,6 @@ import java.util.List;
  * 抽象dom节点选择器
  *
  * @author zido
- * @date 2018/42/12
  */
 public abstract class AbstractElementSelector implements Selector, ElementSelector {
     @Override

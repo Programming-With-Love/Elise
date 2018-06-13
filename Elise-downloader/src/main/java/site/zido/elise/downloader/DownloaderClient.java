@@ -21,7 +21,6 @@ import java.util.Properties;
  * DownloaderClient
  *
  * @author zido
- * @date 2018/04/23
  */
 public class DownloaderClient {
     private Spider spider;

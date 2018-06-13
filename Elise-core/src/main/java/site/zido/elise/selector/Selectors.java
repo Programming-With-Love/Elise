@@ -4,7 +4,6 @@ package site.zido.elise.selector;
  * Create selector tool
  *
  * @author zido
- * @date 2018/04/19
  */
 public class Selectors {
     public static CssSelector css(String selector) {

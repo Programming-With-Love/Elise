@@ -15,7 +15,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * Simple Load Balancer.
  *
  * @author zido
- * @date 2018/04/17
  */
 public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
     private static Logger logger = LoggerFactory.getLogger(SimpleLoadBalancer.class);

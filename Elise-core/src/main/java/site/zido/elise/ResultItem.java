@@ -7,7 +7,6 @@ import java.util.Map;
  * 结果集
  *
  * @author zido
- * @date 2018/29/12
  */
 public class ResultItem {
     private Map<String, Object> fields = new LinkedHashMap<>();

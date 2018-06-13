@@ -11,7 +11,6 @@ import java.util.ListIterator;
  * html节点
  *
  * @author zido
- * @date 2018/57/13
  */
 public class HtmlNode extends AbstractSelectable {
 

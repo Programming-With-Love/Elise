@@ -13,7 +13,6 @@ import java.util.Map;
  * page model 集合处理
  *
  * @author zido
- * @date 2018/04/12
  */
 public class PageModelCollectorPipeline<T> implements CollectorPipeline<T> {
 
@@ -36,7 +35,6 @@ public class PageModelCollectorPipeline<T> implements CollectorPipeline<T> {
      * 默认转换器，仅转换map->map(其实相当于什么事都没做)，只是喂了兼容以及增加可扩展性
      *
      * @author zido
-     * @date 2018/04/12
      */
     public static class DefaultTransfer implements Transfer<Object> {
         @Override

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  * ConfigurableModelExtractorTest
  *
  * @author zido
- * @date 2018/05/02
  */
 public class ConfigurableModelExtractorTest {
     private String html = null;

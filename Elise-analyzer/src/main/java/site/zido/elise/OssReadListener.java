@@ -9,7 +9,6 @@ import site.zido.elise.selector.PlainText;
  * OssReadListener
  *
  * @author zido
- * @date 2018/04/27
  */
 public class OssReadListener implements SavedPage.ReadListener {
     private HttpClientDownloader clientDownloader = new HttpClientDownloader();

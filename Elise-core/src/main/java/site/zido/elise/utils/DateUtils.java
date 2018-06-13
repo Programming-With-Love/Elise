@@ -10,7 +10,6 @@ import java.util.Locale;
  * 时间日期工具类
  *
  * @author zido
- * @date 2018 /04/25
  * @since 2017 /6/6 0006
  */
 public class DateUtils {

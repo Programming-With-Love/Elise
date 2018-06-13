@@ -4,7 +4,6 @@ package site.zido.elise.configurable;
  * 抽取器类型
  *
  * @author zido
- * @date 2018/27/12
  */
 public enum ExpressionType {
     /**

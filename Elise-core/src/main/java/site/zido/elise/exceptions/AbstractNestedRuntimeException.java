@@ -7,7 +7,6 @@ import site.zido.elise.utils.NestedRuntimeUtils;
  * 包装异常类,规范化异常信息
  *
  * @author zido
- * @date 2018/04/12
  */
 public abstract class AbstractNestedRuntimeException extends RuntimeException {
     public AbstractNestedRuntimeException(String msg) {

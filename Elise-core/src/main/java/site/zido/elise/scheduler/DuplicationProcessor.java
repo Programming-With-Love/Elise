@@ -8,7 +8,6 @@ import site.zido.elise.Task;
  * Implementing this interface allows Task Scheduler to handle duplicate data
  *
  * @author zido
- * @date 2018/04/20
  */
 public interface DuplicationProcessor {
 

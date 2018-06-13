@@ -10,7 +10,6 @@ import java.util.List;
  * MemberServiceTest
  *
  * @author zido
- * @date 2018/05/04
  */
 public class MemberServiceTest {
     @Test

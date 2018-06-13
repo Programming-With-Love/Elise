@@ -9,7 +9,6 @@ import site.zido.elise.Task;
  * the page processor
  *
  * @author zido
- * @date 2018/04/18
  */
 public interface PageProcessor {
     /**

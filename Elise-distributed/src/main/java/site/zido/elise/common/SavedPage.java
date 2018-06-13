@@ -7,7 +7,6 @@ import site.zido.elise.selector.PlainText;
  * SavedPage
  *
  * @author zido
- * @date 2018 /04/27
  */
 public class SavedPage {
     private String url;

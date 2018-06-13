@@ -6,7 +6,6 @@ package site.zido.elise.scheduler;
  * Generally used for thread level, process level and distributed level.
  *
  * @author zido
- * @date 2018/04/17
  */
 public interface LoadBalancer<T> {
     /**

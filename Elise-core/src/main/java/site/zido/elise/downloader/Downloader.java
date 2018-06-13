@@ -8,7 +8,6 @@ import site.zido.elise.Task;
  * downloader interface
  *
  * @author zido
- * @date 2018/04/16
  */
 public interface Downloader {
     /**

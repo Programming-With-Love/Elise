@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  * Abstract Duplicate Removed Scheduler
  *
  * @author zido
- * @date 2018/43/12
  */
 public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler {
     protected Logger logger = LoggerFactory.getLogger(getClass());

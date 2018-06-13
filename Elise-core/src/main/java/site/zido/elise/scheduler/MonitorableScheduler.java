@@ -4,7 +4,6 @@ package site.zido.elise.scheduler;
  * Monitorable Manager
  *
  * @author zido
- * @date 2018/04/20
  */
 public interface MonitorableScheduler {
     /**

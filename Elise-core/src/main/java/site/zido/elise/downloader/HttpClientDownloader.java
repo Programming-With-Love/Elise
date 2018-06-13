@@ -27,7 +27,6 @@ import java.util.Map;
  * Downloader using http client framework
  *
  * @author zido
- * @date 2018/04/18
  */
 public class HttpClientDownloader extends AbstractDownloader {
     private Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);

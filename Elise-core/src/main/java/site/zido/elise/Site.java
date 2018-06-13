@@ -9,7 +9,6 @@ import java.util.*;
  * Website information configuration
  *
  * @author zido
- * @date 2018/04/19
  */
 public class Site {
 

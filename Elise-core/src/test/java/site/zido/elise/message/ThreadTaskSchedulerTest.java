@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
  * ThreadTaskSchedulerTest
  *
  * @author zido
- * @date 2018/04/20
  */
 public class ThreadTaskSchedulerTest {
     @Test

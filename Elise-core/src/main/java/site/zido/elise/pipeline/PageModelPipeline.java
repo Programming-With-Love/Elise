@@ -6,7 +6,6 @@ import site.zido.elise.Task;
  * Implements PageModelPipeline to persistent your page model.
  *
  * @author zido
- * @date 2018/04/12
  */
 public interface PageModelPipeline<T> {
 

@@ -10,7 +10,6 @@ import java.util.Map;
  * map集合 page model处理类
  *
  * @author zido
- * @date 2018/04/12
  */
 public class MappedPageModelPipeline implements CollectorPageModelPipeline<Map<String, Object>> {
     private List<Map<String, Object>> collected = new ArrayList<>();

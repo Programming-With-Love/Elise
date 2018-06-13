@@ -28,7 +28,6 @@ import java.util.Map;
  * Spring Kafka Communication Manager
  *
  * @author zido
- * @date 2018/04/19
  */
 public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler {
     private String bootstrapServers;

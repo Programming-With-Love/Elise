@@ -12,7 +12,6 @@ import java.util.Map;
  * pipeline汇总
  *
  * @author zido
- * @date 2018/04/12
  */
 public class ModelPipeline implements Pipeline {
     /**

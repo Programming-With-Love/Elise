@@ -11,7 +11,6 @@ import org.junit.Test;
  * RedisDuplicationProcessorTest
  *
  * @author zido
- * @date 2018/04/22
  */
 public class RedisDuplicationProcessorTest {
     @Test

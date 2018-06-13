@@ -16,7 +16,6 @@ import java.util.Map;
  * 分布式爬虫测试
  *
  * @author zido
- * @date 2018/04/16
  */
 public class ConfigurableSpiderTest {
     private Task task;

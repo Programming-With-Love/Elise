@@ -14,7 +14,6 @@ import io.lettuce.core.api.StatefulRedisConnection;
  * Redis-based distributed task scheduling,
  *
  * @author zido
- * @date 2018/04/15
  */
 public class SimpleRedisDuplicationProcessor implements DuplicationProcessor {
     private StatefulRedisConnection<String, String> connection;

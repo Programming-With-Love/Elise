@@ -9,7 +9,6 @@ import java.util.List;
  * model extractor
  *
  * @author zido
- * @date 2018/04/18
  */
 public interface ModelExtractor {
     ResultItem extract(Page page);

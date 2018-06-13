@@ -19,7 +19,6 @@ import java.util.Properties;
  * DbUnit
  *
  * @author zido
- * @date 2018/04/23
  */
 public class DbUnit {
     private static Logger logger = LoggerFactory.getLogger(DbUnit.class);

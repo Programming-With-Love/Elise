@@ -13,7 +13,6 @@ import java.util.Set;
  * Abstract Sql Pipeline
  *
  * @author zido
- * @date 2018/04/20
  */
 public abstract class AbstractSqlPipeline implements Pipeline {
     private String defaultTableName = "elise_result";

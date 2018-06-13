@@ -12,7 +12,6 @@ import java.util.Map;
  * 下载的页面对象
  *
  * @author zido
- * @date 2018/33/12
  */
 public class Page {
     private static final String HASH_SEP = "#";

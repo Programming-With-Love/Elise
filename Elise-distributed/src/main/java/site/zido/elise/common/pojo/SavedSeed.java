@@ -8,7 +8,6 @@ import site.zido.elise.common.SavedPage;
  * SavedSeed
  *
  * @author zido
- * @date 2018/04/27
  */
 public class SavedSeed extends Seed {
     private SavedPage savedPage;

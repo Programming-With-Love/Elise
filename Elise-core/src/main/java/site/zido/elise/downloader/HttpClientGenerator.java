@@ -29,7 +29,6 @@ import java.util.Map;
  * Http Client Generator
  *
  * @author zido
- * @date 2018/04/20
  */
 public class HttpClientGenerator {
 

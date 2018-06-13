@@ -9,7 +9,6 @@ import site.zido.elise.selector.Html;
  * abstract downloader,which support charset
  *
  * @author zido
- * @date 2018/41/12
  */
 public abstract class AbstractDownloader implements Downloader {
     public Html download(String url) {

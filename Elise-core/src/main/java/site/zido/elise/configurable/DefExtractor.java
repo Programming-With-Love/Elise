@@ -13,7 +13,6 @@ import site.zido.elise.selector.Selector;
  * 可做为单独的每条属性配置，此时{@link #name} 为字段名 <br>
  *
  * @author zido
- * @date 2018/28/12
  */
 public class DefExtractor {
     /**

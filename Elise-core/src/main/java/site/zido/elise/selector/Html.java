@@ -13,7 +13,6 @@ import java.util.List;
  * Html def
  *
  * @author zido
- * @date 2018/04/22
  */
 public class Html extends HtmlNode {
     private Logger logger = LoggerFactory.getLogger(Html.class);

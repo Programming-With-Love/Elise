@@ -12,7 +12,6 @@ import java.util.List;
  * UrlFinderSelector
  *
  * @author zido
- * @date 2018/04/13
  */
 public class UrlFinderSelector extends AbstractElementSelector implements ElementSelector, Selector {
     private static final String EMPTY_URL_PATTERN = "https?://.*";

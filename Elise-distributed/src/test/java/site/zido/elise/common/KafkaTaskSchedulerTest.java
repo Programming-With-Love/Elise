@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
  * KafkaTaskSchedulerTest
  *
  * @author zido
- * @date 2018/04/21
  */
 public class KafkaTaskSchedulerTest {
     private static Logger logger = LoggerFactory.getLogger(KafkaTaskSchedulerTest.class);

@@ -15,7 +15,6 @@ import site.zido.elise.Task;
  * {@link #registerDownloader(DownloadListener)}
  *
  * @author zido
- * @date 2018/04/17
  */
 public interface TaskScheduler {
     String TYPE_MESSAGE_DOWNLOAD = "__download__";
@@ -28,7 +27,6 @@ public interface TaskScheduler {
      * all downloaded page should be submitted to the analysis module for analysis.
      *
      * @author zido
-     * @date 2018/04/17
      */
     interface AnalyzerListener {
         /**
@@ -47,7 +45,6 @@ public interface TaskScheduler {
      * download listener.
      *
      * @author zido
-     * @date 2018/59/17
      */
     interface DownloadListener {
         /**

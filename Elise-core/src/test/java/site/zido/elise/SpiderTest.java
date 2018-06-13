@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
  * SpiderTest
  *
  * @author zido
- * @date 2018/04/19
  */
 public class SpiderTest {
     @Test

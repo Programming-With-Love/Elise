@@ -13,7 +13,6 @@ import java.util.List;
  * ProxyReader
  *
  * @author zido
- * @date 2018/04/28
  */
 public class ProxyReader {
     private List<Proxy> proxies;

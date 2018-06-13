@@ -14,7 +14,6 @@ import java.util.Map;
  * http request body,
  *
  * @author zido
- * @date 2018/35/12
  */
 public class HttpRequestBody implements Serializable {
     private static final long serialVersionUID = 2018040215121L;

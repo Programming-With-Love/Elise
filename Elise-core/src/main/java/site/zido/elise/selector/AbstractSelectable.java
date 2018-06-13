@@ -9,7 +9,6 @@ import java.util.List;
  * 抽象可被选择的文档描述
  *
  * @author zido
- * @date 2018/42/12
  */
 public abstract class AbstractSelectable implements Selectable {
     protected abstract List<String> getSourceTexts();

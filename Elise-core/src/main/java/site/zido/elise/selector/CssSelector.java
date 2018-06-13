@@ -13,7 +13,6 @@ import java.util.List;
  * css选择器
  *
  * @author zido
- * @date 2018/05/12
  */
 public class CssSelector extends AbstractElementSelector {
     public static final String INNER_HTML = "innerHtml";

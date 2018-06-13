@@ -11,7 +11,6 @@ import java.util.List;
  * 配置url发现规则
  *
  * @author zido
- * @date 2018/04/12
  */
 public class ConfigurableUrlFinder {
 

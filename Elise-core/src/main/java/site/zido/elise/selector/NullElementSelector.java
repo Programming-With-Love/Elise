@@ -9,7 +9,6 @@ import java.util.List;
  * 原样返回，无动作selector
  *
  * @author zido
- * @date 2018/04/12
  */
 public class NullElementSelector extends AbstractElementSelector {
     @Override

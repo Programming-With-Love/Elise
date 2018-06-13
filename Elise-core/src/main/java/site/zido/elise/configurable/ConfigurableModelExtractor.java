@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  * configurable Page model extractor
  *
  * @author zido
- * @date 2018/04/12
  */
 public class ConfigurableModelExtractor implements ModelExtractor {
 

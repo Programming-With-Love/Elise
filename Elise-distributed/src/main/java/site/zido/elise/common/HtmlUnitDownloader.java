@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
  * HtmlUnitDownloader
  *
  * @author zido
- * @date 2018/05/03
  */
 public class HtmlUnitDownloader extends AbstractDownloader {
     private ProxyProvider proxyProvider;
