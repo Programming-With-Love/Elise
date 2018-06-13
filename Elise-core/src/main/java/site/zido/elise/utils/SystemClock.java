@@ -29,20 +29,12 @@ public class SystemClock {
     }
 
     private void scheduleClockUpdating() {
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable runnable) {
-                Thread thread = new Thread(runnable, "System Clock");
-                thread.setDaemon(true);
-                return thread;
-            }
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+            Thread thread = new Thread(runnable, "System Clock");
+            thread.setDaemon(true);
+            return thread;
         });
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                now.set(System.currentTimeMillis());
-            }
-        }, period, period, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> now.set(System.currentTimeMillis()), period, period, TimeUnit.MILLISECONDS);
     }
 
     private long currentTimeMillis() {

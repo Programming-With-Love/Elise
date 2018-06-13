@@ -2,10 +2,10 @@ package site.zido.elise.downloader;
 
 import com.aliyun.oss.OSSClient;
 import site.zido.elise.common.SavedPage;
-import site.zido.elise.utils.DateUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -21,17 +21,17 @@ public class OssSavedListener implements SavedPage.SavedListener {
 
     public OssSavedListener(String endPoint,
                             String accessKeyId,
-                            String AccessKeySecret,
+                            String accessKeySecret,
                             String bucketName,
                             String urlHead) {
         this.bucketName = bucketName;
         this.urlHead = urlHead;
-        ossClient = new OSSClient(endPoint, accessKeyId, AccessKeySecret);
+        ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
     }
 
     @Override
     public String onSave(byte[] rawText) {
-        String day = DateUtils.format(new Date(), "yyyyMMdd");
+        String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
         String key = "html/" + day + "/" + System.currentTimeMillis()
                 + String.valueOf(Math.random()).substring(2, 7) + ".html";
         ossClient.putObject(this.bucketName, key, new BufferedInputStream(new ByteArrayInputStream(rawText)));

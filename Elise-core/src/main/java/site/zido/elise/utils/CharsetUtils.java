@@ -21,7 +21,7 @@ public class CharsetUtils {
 
     private static Logger logger = LoggerFactory.getLogger(CharsetUtils.class);
 
-    public static String detectCharset(String contentType, byte[] contentBytes) throws IOException {
+    public static String detectCharset(String contentType, byte[] contentBytes) {
         String charset;
         // charset
         // 1、encoding in http header Content-Type
