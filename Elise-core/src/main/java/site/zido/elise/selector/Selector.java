@@ -9,7 +9,19 @@ import java.util.List;
  */
 public interface Selector {
 
+    /**
+     * Select string.
+     *
+     * @param text the text
+     * @return the string
+     */
     String select(String text);
 
+    /**
+     * Select list list.
+     *
+     * @param text the text
+     * @return the list
+     */
     List<String> selectList(String text);
 }

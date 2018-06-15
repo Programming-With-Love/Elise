@@ -5,6 +5,11 @@ import site.zido.elise.Task;
 
 import java.util.Map;
 
+/**
+ * The type Console pipeline.
+ *
+ * @author zido
+ */
 public class ConsolePipeline implements Pipeline {
     @Override
     public void process(ResultItem resultItem, Task task) {

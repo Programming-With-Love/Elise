@@ -1,14 +1,13 @@
 package site.zido.elise.utils;
 
 import java.sql.Timestamp;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 通过内存缓存当前时间，高并发情况下性能显著提升性能（空间换取时间）。
+ *
+ * @author zido
  */
 public class SystemClock {
     private final long period;
@@ -21,6 +20,9 @@ public class SystemClock {
     }
 
     private static class InstanceHolder {
+        /**
+         * The Instance.
+         */
         static final SystemClock INSTANCE = new SystemClock(1);
     }
 
@@ -29,11 +31,13 @@ public class SystemClock {
     }
 
     private void scheduleClockUpdating() {
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable, "System Clock");
-            thread.setDaemon(true);
-            return thread;
-        });
+
+        ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1,
+                r -> {
+                    Thread thread = new Thread("System Clock");
+                    thread.setDaemon(true);
+                    return thread;
+                });
         scheduler.scheduleAtFixedRate(() -> now.set(System.currentTimeMillis()), period, period, TimeUnit.MILLISECONDS);
     }
 
@@ -41,12 +45,13 @@ public class SystemClock {
         return now.get();
     }
 
+    /**
+     * Now long.
+     *
+     * @return the long
+     */
     public static long now() {
         return instance().currentTimeMillis();
-    }
-
-    public static String nowDate() {
-        return new Timestamp(instance().currentTimeMillis()).toString();
     }
 
 }

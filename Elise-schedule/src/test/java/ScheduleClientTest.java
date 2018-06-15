@@ -68,7 +68,7 @@ public class ScheduleClientTest {
                 .setName("url")
                 .setValue(".*")
                 .setType(ExpressionType.REGEX)
-                .setSource(Extractor.Source.URL));
+                .setSource(Source.URL));
         DistributedTask task = new DistributedTask(1L, new Site().setCycleRetryTimes(3), def);
         client.clearDuplications(task);
         client.pushRequest(task,

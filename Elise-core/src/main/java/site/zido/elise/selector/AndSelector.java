@@ -6,13 +6,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The type And selector.
+ *
+ * @author zido
+ */
 public class AndSelector implements Selector {
     private List<Selector> selectors = new ArrayList<>();
 
+    /**
+     * Instantiates a new And selector.
+     *
+     * @param selectors the selectors
+     */
     public AndSelector(List<Selector> selectors) {
         this.selectors = selectors;
     }
 
+    /**
+     * Instantiates a new And selector.
+     *
+     * @param selectors the selectors
+     */
     public AndSelector(Selector... selectors) {
         this.selectors.addAll(Arrays.asList(selectors));
     }

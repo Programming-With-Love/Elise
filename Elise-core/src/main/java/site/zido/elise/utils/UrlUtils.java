@@ -11,13 +11,20 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The type Url utils.
+ *
+ * @author zido
+ */
 public class UrlUtils {
+    private final static String QUERY_START_CHARACTER = "?";
+
     /**
      * 规范url
      *
      * @param url   url
      * @param refer refer
-     * @return 规范化后的url
+     * @return 规范化后的url string
      */
     public static String canonicalizeUrl(String url, String refer) {
         URL base;
@@ -30,7 +37,7 @@ public class UrlUtils {
                 return abs.toExternalForm();
             }
             // workaround: java resolves '//path/file + ?foo' to '//path/?foo', not '//path/file?foo' as desired
-            if (url.startsWith("?")) {
+            if (url.startsWith(QUERY_START_CHARACTER)) {
                 url = base.getPath() + url;
             }
             URL abs = new URL(base, url);
@@ -39,6 +46,13 @@ public class UrlUtils {
             return "";
         }
     }
+
+    /**
+     * Convert to requests list.
+     *
+     * @param urls the urls
+     * @return the list
+     */
     public static List<Request> convertToRequests(Collection<String> urls) {
         List<Request> requestList = new ArrayList<Request>(urls.size());
         for (String url : urls) {
@@ -46,16 +60,35 @@ public class UrlUtils {
         }
         return requestList;
     }
+
+    /**
+     * Fix illegal character in url string.
+     *
+     * @param url the url
+     * @return the string
+     */
     public static String fixIllegalCharacterInUrl(String url) {
         return url.replace(" ", "%20").replaceAll("#+", "#");
     }
 
     private static Pattern patternForProtocal = Pattern.compile("[\\w]+://");
 
+    /**
+     * Remove protocol string.
+     *
+     * @param url the url
+     * @return the string
+     */
     public static String removeProtocol(String url) {
         return patternForProtocal.matcher(url).replaceAll("");
     }
 
+    /**
+     * Gets domain.
+     *
+     * @param url the url
+     * @return the domain
+     */
     public static String getDomain(String url) {
         String domain = removeProtocol(url);
         int i = domain.indexOf("/", 1);
@@ -65,6 +98,12 @@ public class UrlUtils {
         return removePort(domain);
     }
 
+    /**
+     * Remove port string.
+     *
+     * @param domain the domain
+     * @return the string
+     */
     public static String removePort(String domain) {
         int portIndex = domain.indexOf(":");
         if (portIndex != -1) {
@@ -76,6 +115,12 @@ public class UrlUtils {
 
     private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * Gets charset.
+     *
+     * @param contentType the content type
+     * @return the charset
+     */
     public static String getCharset(String contentType) {
         Matcher matcher = PATTERN_FOR_CHARSET.matcher(contentType);
         if (matcher.find()) {

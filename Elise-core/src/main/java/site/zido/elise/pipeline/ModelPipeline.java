@@ -2,7 +2,7 @@ package site.zido.elise.pipeline;
 
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
-import site.zido.elise.configurable.Extractor;
+import site.zido.elise.configurable.DefExtractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,36 +17,36 @@ public class ModelPipeline implements Pipeline {
     /**
      *
      */
-    private Map<String, PageModelPipeline> pageModelPipelines = new HashMap<>();
-    private Map<String, Extractor> extractorMap = new HashMap<>();
+    private Map<String, PageModelPipeline<Object>> pageModelPipelines = new HashMap<>();
+    private Map<String, DefExtractor> extractorMap = new HashMap<>();
 
     public ModelPipeline putPageModelPipeline(String name,
-                                              PageModelPipeline pageModelPipeline,
-                                              Extractor extractor) {
+                                              PageModelPipeline<Object> pageModelPipeline,
+                                              DefExtractor extractor) {
         pageModelPipelines.put(name, pageModelPipeline);
         extractorMap.put(name, extractor);
         return this;
     }
 
     public ModelPipeline putPageModelPipeline(String name,
-                                              PageModelPipeline pageModelPipeline) {
+                                              PageModelPipeline<Object> pageModelPipeline) {
         pageModelPipelines.put(name, pageModelPipeline);
         return this;
     }
 
     @Override
     public void process(ResultItem resultItem, Task task) {
-        for (Map.Entry<String, PageModelPipeline> pipelineEntry : pageModelPipelines.entrySet()) {
+        for (Map.Entry<String, PageModelPipeline<Object>> pipelineEntry : pageModelPipelines.entrySet()) {
             Object o = resultItem.get(pipelineEntry.getKey());
             if (o != null) {
-                Extractor extractor = extractorMap.get(pipelineEntry.getKey());
-                PageModelPipeline pageModelPipeline = pipelineEntry.getValue();
+                DefExtractor extractor = extractorMap.get(pipelineEntry.getKey());
+                PageModelPipeline<Object> pageModelPipeline = pipelineEntry.getValue();
                 if (extractor == null || !extractor.getMulti()) {
                     pageModelPipeline.process(o, task);
                 } else {
                     ArrayList<Object> list = (ArrayList<Object>) o;
                     for (Object items : list) {
-                        pageModelPipeline.process(o, task);
+                        pageModelPipeline.process(items, task);
                     }
                 }
             }

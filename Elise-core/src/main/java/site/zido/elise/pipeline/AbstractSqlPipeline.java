@@ -37,7 +37,7 @@ public abstract class AbstractSqlPipeline implements Pipeline {
          * @return 表名
          */
         default String getTableName(Task task) {
-            if (task != null && task instanceof DistributedTask) {
+            if (task instanceof DistributedTask) {
                 DefRootExtractor defExtractor = ((DistributedTask) task).getDefExtractor();
                 return defExtractor.getName();
             }

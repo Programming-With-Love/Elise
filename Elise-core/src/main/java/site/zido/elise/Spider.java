@@ -1,20 +1,18 @@
 package site.zido.elise;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.scheduler.TaskScheduler;
 import site.zido.elise.pipeline.ConsolePipeline;
 import site.zido.elise.pipeline.Pipeline;
 import site.zido.elise.processor.PageProcessor;
-import site.zido.elise.thread.CountableThreadPool;
+import site.zido.elise.scheduler.TaskScheduler;
 import site.zido.elise.utils.UrlUtils;
 import site.zido.elise.utils.ValidateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * site.zido.elise.spider
@@ -29,8 +27,6 @@ public class Spider implements TaskScheduler.DownloadListener,
     private List<Pipeline> pipelines = new ArrayList<>();
     private PageProcessor pageProcessor;
     private static Logger logger = LoggerFactory.getLogger(Spider.class);
-    private CountableThreadPool threadPool;
-    private ExecutorService executorService;
 
     private int threadNum = 1;
 
@@ -80,11 +76,6 @@ public class Spider implements TaskScheduler.DownloadListener,
 
     public Spider(TaskScheduler manager) {
         this.manager = manager;
-    }
-
-    public Spider setExecuterService(ExecutorService executorService) {
-        this.executorService = executorService;
-        return this;
     }
 
     @Override

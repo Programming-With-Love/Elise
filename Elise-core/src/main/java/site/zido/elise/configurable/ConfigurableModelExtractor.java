@@ -29,9 +29,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
 
     private List<UrlFinderSelector> helpUrlSelectors = new ArrayList<>();
 
-    private Extractor modelExtractor;
-
-    private List<Extractor> fieldExtractors;
+    private Selector selector;
 
     private DefRootExtractor defRootExtractor;
 
@@ -46,6 +44,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
      */
     public ConfigurableModelExtractor(DefRootExtractor defRootExtractor) {
         this.defRootExtractor = defRootExtractor;
+        selector = defRootExtractor.compileSelector();
         //转化配置到具体类
         List<ConfigurableUrlFinder> targetUrlFinder = defRootExtractor.getTargetUrl();
         if (!ValidateUtils.isEmpty(targetUrlFinder)) {
@@ -61,20 +60,6 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                 this.helpUrlSelectors.add(urlFinderSelector);
             }
         }
-        modelExtractor = new Extractor(defRootExtractor.getName(),
-                Selectors.xpath(defRootExtractor.getValue()),
-                defRootExtractor.getSource(),
-                defRootExtractor.getNullable(),
-                defRootExtractor.getMulti());
-        this.fieldExtractors = defRootExtractor.getChildren().stream().map(defExtractor -> {
-            Extractor.Source source = defExtractor.getSource();
-            Selector selector = defExtractor.compileSelector();
-            return new Extractor(defExtractor.getName(),
-                    selector,
-                    source,
-                    defExtractor.getNullable(),
-                    defExtractor.getMulti());
-        }).collect(Collectors.toList());
 
     }
 
@@ -86,15 +71,13 @@ public class ConfigurableModelExtractor implements ModelExtractor {
             if (list == null || list.size() == 0) {
                 resultItem.setSkip(true);
             }
-            {
-                resultItem.put(modelExtractor.getName(), list);
-            }
+            resultItem.put(defRootExtractor.getName(), list);
         } else {
             Map<String, Object> obj = extractPageItem(page);
             if (obj == null || obj.size() == 0) {
                 resultItem.setSkip(true);
             }
-            resultItem.put(modelExtractor.getName(), obj);
+            resultItem.put(defRootExtractor.getName(), obj);
         }
         return resultItem;
     }
@@ -144,7 +127,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                                 .match())) {
             return null;
         }
-        String html = modelExtractor.getSelector().select(page.getRawText());
+        String html = selector.select(page.getRawText());
         return processSingle(page, html);
     }
 
@@ -160,7 +143,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
             return null;
         }
         List<Map<String, Object>> results = new ArrayList<>();
-        List<String> list = modelExtractor.getSelector().selectList(page.getRawText());
+        List<String> list = selector.selectList(page.getRawText());
         for (String html : list) {
             Map<String, Object> result = processSingle(page, html);
             if (result != null) {
@@ -171,8 +154,8 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     private Map<String, Object> processSingle(Page page, String html) {
-        Map<String, Object> map = new HashMap<>(fieldExtractors.size());
-        for (Extractor fieldExtractor : fieldExtractors) {
+        Map<String, Object> map = new HashMap<>(defRootExtractor.getChildren().size());
+        for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
             if (!fieldExtractor.getMulti()) {
                 String result = processField(fieldExtractor, page, html);
                 if (result == null && !fieldExtractor.getNullable()) {
@@ -190,78 +173,47 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return map;
     }
 
-    private String processField(Extractor fieldExtractor, Page page, String html) {
+    private String processField(DefExtractor fieldExtractor, Page page, String html) {
         String value;
+        Selector selector = fieldExtractor.compileSelector();
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
-                value = page.html().selectDocument(fieldExtractor.getSelector());
+                value = page.html().selectDocument(selector);
                 break;
             case URL:
-                value = fieldExtractor.getSelector().select(page.getUrl().toString());
+                value = page.getUrl().select(selector).toString();
                 break;
             case RAW_TEXT:
-                value = fieldExtractor.getSelector().select(page.getRawText());
+                value = selector.select(page.getRawText());
                 break;
             case SELECTED_HTML:
             default:
-                value = fieldExtractor.getSelector().select(html);
+                value = selector.select(html);
         }
         return value;
     }
 
-    private List<String> processFieldForList(Extractor fieldExtractor, Page page, String html) {
+    private List<String> processFieldForList(DefExtractor fieldExtractor, Page page, String html) {
         List<String> value;
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
-                value = page.html().selectDocumentForList(fieldExtractor.getSelector());
+                value = page.html().selectDocumentForList(selector);
                 break;
             case URL:
-                value = fieldExtractor.getSelector().selectList(page.getUrl().toString());
+                value = page.getUrl().selectList(selector).all();
                 break;
             case RAW_TEXT:
-                value = fieldExtractor.getSelector().selectList(page.getRawText());
+                value = selector.selectList(page.getRawText());
                 break;
             case SELECTED_HTML:
             default:
-                value = fieldExtractor.getSelector().selectList(html);
+                value = selector.selectList(html);
         }
         return value;
     }
 
-    public boolean multi() {
-        return modelExtractor.getMulti();
-    }
-
-    public List<UrlFinderSelector> getTargetUrlSelectors() {
-        return targetUrlSelectors;
-    }
-
-    public void setTargetUrlSelectors(List<UrlFinderSelector> targetUrlSelectors) {
-        this.targetUrlSelectors = targetUrlSelectors;
-    }
-
-    public List<UrlFinderSelector> getHelpUrlSelectors() {
-        return helpUrlSelectors;
-    }
-
-    public void setHelpUrlSelectors(List<UrlFinderSelector> helpUrlSelectors) {
-        this.helpUrlSelectors = helpUrlSelectors;
-    }
-
-    public Extractor getModelExtractor() {
-        return modelExtractor;
-    }
-
-    public void setModelExtractor(Extractor modelExtractor) {
-        this.modelExtractor = modelExtractor;
-    }
-
-    public List<Extractor> getFieldExtractors() {
-        return fieldExtractors;
-    }
-
-    public void setFieldExtractors(List<Extractor> fieldExtractors) {
-        this.fieldExtractors = fieldExtractors;
+    private boolean multi() {
+        return defRootExtractor.getMulti();
     }
 
     public DefRootExtractor getDefRootExtractor() {

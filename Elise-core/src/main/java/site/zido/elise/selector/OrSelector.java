@@ -4,13 +4,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The type Or selector.
+ *
+ * @author zido
+ */
 public class OrSelector implements Selector {
     private List<Selector> selectors = new ArrayList<Selector>();
 
+    /**
+     * Instantiates a new Or selector.
+     *
+     * @param selectors the selectors
+     */
     public OrSelector(Selector... selectors) {
         Collections.addAll(this.selectors, selectors);
     }
 
+    /**
+     * Instantiates a new Or selector.
+     *
+     * @param selectors the selectors
+     */
     public OrSelector(List<Selector> selectors) {
         this.selectors = selectors;
     }

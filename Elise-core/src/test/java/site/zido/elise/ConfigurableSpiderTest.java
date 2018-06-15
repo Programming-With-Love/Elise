@@ -2,14 +2,11 @@ package site.zido.elise;
 
 import site.zido.elise.configurable.*;
 import site.zido.elise.downloader.HttpClientDownloader;
-import site.zido.elise.pipeline.MappedPageModelPipeline;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import site.zido.elise.pipeline.ModelPipeline;
 import site.zido.elise.processor.ExtractorPageProcessor;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +32,7 @@ public class ConfigurableSpiderTest {
                 .setNullable(false));
         def.addChildren(new DefExtractor().setName("author")
                 .setType(ExpressionType.REGEX)
-                .setSource(Extractor.Source.URL)
+                .setSource(Source.URL)
                 .setValue("https://github\\.com/(\\w+)/.*")
                 .setNullable(false));
         def.addChildren(new DefExtractor().setName("readme")
@@ -58,19 +55,5 @@ public class ConfigurableSpiderTest {
             Assert.assertEquals("bone", map.get("name"));
             Assert.assertEquals("zidoshare", map.get("author"));
         }
-    }
-
-    @Test
-    public void testModelPipeline() {
-        HttpClientDownloader downloader = new HttpClientDownloader();
-        Page page = downloader.download(new Request("https://github.com/zidoshare/bone"), task);
-        ExtractorPageProcessor processor = new ExtractorPageProcessor();
-        ResultItem resultItem = processor.process(task, page, (task, request) -> System.out.println(request.getUrl()));
-        MappedPageModelPipeline mappedPipeline = new MappedPageModelPipeline();
-        ModelPipeline pipeline = new ModelPipeline();
-        pipeline.putPageModelPipeline("github", mappedPipeline);
-        pipeline.process(resultItem, task);
-        List<Map<String, Object>> collected = mappedPipeline.getCollected();
-        Assert.assertEquals(1, collected.size());
     }
 }

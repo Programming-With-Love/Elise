@@ -36,6 +36,10 @@ public class HttpClientGenerator {
 
     private PoolingHttpClientConnectionManager connectionManager;
 
+    private static final String ACCEPT_ENCODING = "Accept-Encoding";
+
+    private static final String GZIP = "gzip";
+
     public HttpClientGenerator() {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -101,8 +105,8 @@ public class HttpClientGenerator {
         }
         if (site.isUseGzip()) {
             httpClientBuilder.addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
-                if (!request.containsHeader("Accept-Encoding")) {
-                    request.addHeader("Accept-Encoding", "gzip");
+                if (!request.containsHeader(ACCEPT_ENCODING)) {
+                    request.addHeader(ACCEPT_ENCODING, GZIP);
                 }
             });
         }

@@ -11,7 +11,19 @@ import java.util.List;
  */
 public interface ElementSelector {
 
+    /**
+     * Select string.
+     *
+     * @param element the element
+     * @return the string
+     */
     String select(Element element);
 
+    /**
+     * Select list list.
+     *
+     * @param element the element
+     * @return the list
+     */
     List<String> selectList(Element element);
 }

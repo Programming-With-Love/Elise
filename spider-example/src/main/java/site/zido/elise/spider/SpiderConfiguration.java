@@ -112,7 +112,7 @@ public class SpiderConfiguration {
                 .setName("url")
                 .setType(ExpressionType.REGEX)
                 .setValue(".*")
-                .setSource(Extractor.Source.URL)
+                .setSource(Source.URL)
                 .setNullable(true));
     }
 }

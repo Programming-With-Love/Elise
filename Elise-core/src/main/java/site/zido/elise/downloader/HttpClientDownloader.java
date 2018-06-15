@@ -84,7 +84,7 @@ public class HttpClientDownloader extends AbstractDownloader {
                 try {
                     httpResponse.close();
                 } catch (IOException e) {
-                    logger.error("http response close failed",e);
+                    logger.error("http response close failed", e);
                 }
             }
             if (proxyProvider != null && proxy != null) {
@@ -93,7 +93,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
     }
 
-    protected Page handleResponse(Request request, String charset, HttpResponse httpResponse) throws IOException {
+    private Page handleResponse(Request request, String charset, HttpResponse httpResponse) throws IOException {
         byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         Page page = new Page();
@@ -121,7 +121,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         return results;
     }
 
-    private String getHtmlCharset(String contentType, byte[] contentBytes) throws IOException {
+    private String getHtmlCharset(String contentType, byte[] contentBytes) {
         String charset = CharsetUtils.detectCharset(contentType, contentBytes);
         if (charset == null) {
             charset = Charset.defaultCharset().name();
@@ -141,6 +141,10 @@ public class HttpClientDownloader extends AbstractDownloader {
 
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
         this.httpUriRequestConverter = httpUriRequestConverter;
+    }
+
+    public void setResponseHeader(boolean responseHeader) {
+        this.responseHeader = responseHeader;
     }
 
     public void setProxyProvider(ProxyProvider proxyProvider) {

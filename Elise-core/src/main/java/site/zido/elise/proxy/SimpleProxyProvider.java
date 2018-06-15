@@ -31,16 +31,13 @@ public class SimpleProxyProvider implements ProxyProvider {
     }
 
     public static SimpleProxyProvider from(Proxy... proxies) {
-        List<Proxy> proxiesTemp = new ArrayList<Proxy>(proxies.length);
-        for (Proxy proxy : proxies) {
-            proxiesTemp.add(proxy);
-        }
+        List<Proxy> proxiesTemp = new ArrayList<>(proxies.length);
+        Collections.addAll(proxiesTemp, proxies);
         return new SimpleProxyProvider(Collections.unmodifiableList(proxiesTemp));
     }
 
     @Override
     public void returnProxy(Proxy proxy, Page page, Task task) {
-        //Donothing
     }
 
     @Override

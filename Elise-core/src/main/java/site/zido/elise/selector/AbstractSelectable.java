@@ -11,8 +11,21 @@ import java.util.List;
  * @author zido
  */
 public abstract class AbstractSelectable implements Selectable {
+
+    /**
+     * Gets source texts.
+     *
+     * @return the source texts
+     */
     protected abstract List<String> getSourceTexts();
 
+    /**
+     * Select selectable.
+     *
+     * @param selector the selector
+     * @param strings  the strings
+     * @return the selectable
+     */
     protected Selectable select(Selector selector, List<String> strings) {
         List<String> results = new ArrayList<>();
         for (String string : strings) {
@@ -24,6 +37,13 @@ public abstract class AbstractSelectable implements Selectable {
         return new PlainText(results);
     }
 
+    /**
+     * Select list selectable.
+     *
+     * @param selector the selector
+     * @param strings  the strings
+     * @return the selectable
+     */
     protected Selectable selectList(Selector selector, List<String> strings) {
         List<String> results = new ArrayList<>();
         for (String string : strings) {
@@ -58,6 +78,11 @@ public abstract class AbstractSelectable implements Selectable {
         return selectList(selector, getSourceTexts());
     }
 
+    /**
+     * Gets first source text.
+     *
+     * @return the first source text
+     */
     public String getFirstSourceText() {
         List<String> sourceTexts = getSourceTexts();
         if (ValidateUtils.isEmpty(sourceTexts)) {

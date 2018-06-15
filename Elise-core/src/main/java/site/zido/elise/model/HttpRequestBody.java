@@ -21,7 +21,7 @@ public class HttpRequestBody implements Serializable {
     /**
      * content类型
      */
-    public static enum ContentType {
+    public enum ContentType {
         /**
          * json
          */

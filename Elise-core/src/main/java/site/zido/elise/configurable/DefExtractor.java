@@ -40,7 +40,7 @@ public class DefExtractor {
     /**
      * 选择抽取范围
      */
-    private Extractor.Source source = Extractor.Source.RAW_HTML;
+    private Source source = Source.RAW_HTML;
 
 
     public String getName() {
@@ -88,11 +88,11 @@ public class DefExtractor {
         return this;
     }
 
-    public Extractor.Source getSource() {
+    public Source getSource() {
         return source;
     }
 
-    public DefExtractor setSource(Extractor.Source source) {
+    public DefExtractor setSource(Source source) {
         this.source = source;
         return this;
     }

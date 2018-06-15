@@ -72,7 +72,7 @@ public class IdWorker {
         StringBuilder mpid = new StringBuilder();
         mpid.append(dataCenterId);
         String name = ManagementFactory.getRuntimeMXBean().getName();
-        if (name != null && "".equals(name)) {
+        if ("".equals(name)) {
             // GET jvmPid
             mpid.append(name.split("@")[0]);
         }
@@ -107,9 +107,10 @@ public class IdWorker {
 
     public synchronized long next() {
         long timeStamp = timeGen();
+        int maxOffset = 5;
         if (timeStamp < lastTimestamp) {
             long offset = lastTimestamp - timeStamp;
-            if (offset <= 5) {
+            if (offset <= maxOffset) {
                 try {
                     wait(offset << 1);
                     timeStamp = timeGen();
@@ -142,8 +143,9 @@ public class IdWorker {
         long twEpoch = 1288834974657L;
         return ((timeStamp - twEpoch)) << timestampLeftShift
                 | (dataCenterId << dataCenterIdShift)
-                | (workerId << sequenceBits)        //机器ID向左移12位
+                | (workerId << sequenceBits)
                 | sequence;
+        //机器ID向左移12位
     }
 
     /**

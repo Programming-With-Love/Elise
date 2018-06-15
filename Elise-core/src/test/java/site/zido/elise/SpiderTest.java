@@ -104,7 +104,7 @@ public class SpiderTest {
                 .setName("url")
                 .setType(ExpressionType.REGEX)
                 .setValue("(.*\\.com.cn).*")
-                .setSource(Extractor.Source.URL)
+                .setSource(Source.URL)
                 .setNullable(true));
 
         CountDownLatch latch = new CountDownLatch(20);

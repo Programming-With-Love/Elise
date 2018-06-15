@@ -14,8 +14,8 @@ public interface PageProcessor {
     /**
      * process the page, extract urls to fetch, extract the data and store.
      *
-     * @param task      task.
-     * @param page      page.
+     * @param task   task.
+     * @param page   page.
      * @param putter put request holder
      * @return results
      */
