@@ -19,32 +19,16 @@ import java.io.IOException;
  *
  * @author zido
  */
-public class ScheduleClient {
-    private Spider spider;
+public class ScheduleClient extends Spider {
     private ObjectMapper mapper = new ObjectMapper();
-    private DuplicationProcessor duplicationProcessor;
     private TaskScheduler scheduler;
 
     public ScheduleClient(String kafkaServers, String redisUrl, String groupId, String topicAnalyzer, String topicDownloader) {
-        this.duplicationProcessor = new SimpleRedisDuplicationProcessor(redisUrl);
-        this.scheduler = new SpringKafkaTaskScheduler(new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(2), duplicationProcessor)
+        super(new SpringKafkaTaskScheduler(new SimpleTaskScheduler(new NoDepuplicationProcessor()).setPoolSize(2),new SimpleRedisDuplicationProcessor(redisUrl))
                 .setBootstrapServers(kafkaServers)
                 .setGroupId(groupId)
                 .setTopicDownload(topicDownloader)
-                .setTopicAnalyzer(topicAnalyzer);
-        this.spider = new Spider(scheduler);
-    }
-
-    public void start() {
-        spider.start();
-    }
-
-    public void stop() {
-        spider.stop();
-    }
-
-    public void pushRequest(DistributedTask task, Request request) {
-        spider.pushRequest(task, request);
+                .setTopicAnalyzer(topicAnalyzer));
     }
 
     public void pushFromJson(String json) {
@@ -54,9 +38,5 @@ public class ScheduleClient {
         } catch (IOException e) {
             throw new RuntimeException("read from json error", e);
         }
-    }
-
-    public void clearDuplications(Task task) {
-        duplicationProcessor.resetDuplicateCheck(task);
     }
 }

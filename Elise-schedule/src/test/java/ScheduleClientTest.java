@@ -70,7 +70,6 @@ public class ScheduleClientTest {
                 .setType(ExpressionType.REGEX)
                 .setSource(Source.URL));
         DistributedTask task = new DistributedTask(1L, new Site().setCycleRetryTimes(3), def);
-        client.clearDuplications(task);
         client.pushRequest(task,
                 new Request("http://ldzl.people.com.cn/dfzlk/front/personIndex.htm"));
         client.pushRequest(task,

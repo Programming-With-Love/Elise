@@ -1,11 +1,9 @@
-package site.zido.elise.common;
+package site.zido.elise.downloader;
 
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
 import site.zido.elise.Task;
-import site.zido.elise.downloader.AbstractDownloader;
-import site.zido.elise.downloader.HttpClientDownloader;
 import site.zido.elise.proxy.ProxyProvider;
 
 /**

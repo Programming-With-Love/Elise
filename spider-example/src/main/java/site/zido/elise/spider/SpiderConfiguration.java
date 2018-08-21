@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import site.zido.elise.DistributedTask;
-import site.zido.elise.Request;
 import site.zido.elise.Site;
 import site.zido.elise.configurable.*;
 import site.zido.elise.schedule.ScheduleClient;
+import site.zido.elise.utils.IdWorker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +81,8 @@ public class SpiderConfiguration {
 
     @Scheduled(cron = "0 0 1 1 * ?")
     public void startSpider() {
-        client.pushRequest(new DistributedTask(513584386L, new Site(), rs), new Request("http://renshi.people.com.cn"));
+        DistributedTask task = new DistributedTask(IdWorker.nextId(), new Site(), rs);
+        client.addUrl(task, "http://renshi.people.com.cn");//如果需要利用爬虫自己的去重处理，可将task存储下来
     }
 
     private void initExtractor() {

@@ -1,7 +1,6 @@
 package site.zido.elise.downloader;
 
 import site.zido.elise.Spider;
-import site.zido.elise.common.AutoSwitchDownloader;
 import site.zido.elise.common.SimpleRedisDuplicationProcessor;
 import site.zido.elise.common.SpringKafkaTaskScheduler;
 import site.zido.elise.proxy.Proxy;

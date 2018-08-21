@@ -8,19 +8,15 @@ import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
 import site.zido.elise.configurable.ConfigurableUrlFinder;
-import site.zido.elise.proxy.Proxy;
+import site.zido.elise.downloader.AutoSwitchDownloader;
+import site.zido.elise.downloader.HtmlUnitDownloader;
 import site.zido.elise.selector.LinkProperty;
-import site.zido.elise.selector.PlainText;
 import site.zido.elise.selector.UrlFinderSelector;
-import site.zido.elise.utils.ValidateUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
 
 /**

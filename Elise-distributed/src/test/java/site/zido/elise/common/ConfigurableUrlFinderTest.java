@@ -8,7 +8,7 @@ import site.zido.elise.configurable.ConfigurableUrlFinder;
 import site.zido.elise.configurable.DefExtractor;
 import site.zido.elise.configurable.DefRootExtractor;
 import site.zido.elise.configurable.ExpressionType;
-import site.zido.elise.downloader.HttpClientDownloader;
+import site.zido.elise.downloader.HtmlUnitDownloader;
 import site.zido.elise.pipeline.AbstractSqlPipeline;
 import site.zido.elise.processor.ExtractorPageProcessor;
 import site.zido.elise.scheduler.SimpleTaskScheduler;

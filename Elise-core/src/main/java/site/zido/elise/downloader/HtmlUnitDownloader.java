@@ -1,4 +1,4 @@
-package site.zido.elise.common;
+package site.zido.elise.downloader;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -7,7 +7,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
-import site.zido.elise.downloader.AbstractDownloader;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
 import site.zido.elise.selector.PlainText;
