@@ -15,16 +15,15 @@ Elise-distributed模块提供了一些分布式扩展，例如基于spring-kafka
 
 下面是一个较为详细的使用展示
 ```java
-    public class RunnerTest{
+public class SpiderTest{
     public static void main(String[] args){
-      new Spider(new SimpleTaskScheduler(),//基于内存的多线程异步任务调度器,
-                // 自动采用基于hash的url去重处理
-                new ExtractorPageProcessor(),// 使用可配置的页面处理器,
-                // 使用这个处理器的好处是可以为每个任务定义不同的规则
+        Spider.builder(new SimpleTaskScheduler())//基于内存的多线程异步任务调度器, 自动采用基于hash的url去重处理
+                .setPageProcessor(new ExtractorPageProcessor())// 使用可配置的页面处理器,使用这个处理器的好处是可以为每个任务定义不同的规则
                 // 你也可以自定义处理器，如果你没有为每个url设置不同规则的必要的话
-                new HttpClientDownloader(),// 使用httpClient下载器
-                new ConsolePipeline()//控制台打印爬取结果
-        ).start()// 爬虫异步准备执行
+                .setDownloader(new HttpClientDownloader())//使用httpClient下载器
+                .addPipeline(new ConsolePipeline())//结果直接输出到控制台
+                .build()
+                .start()//让爬虫开始异步执行
                 .addUrl(new ExtractorTask() {//发送一个任务
                     @Override
                     public ModelExtractor modelExtractor() {//为任务单独定制规则，需要重写ExtractorTask类
@@ -63,7 +62,7 @@ Elise-distributed模块提供了一些分布式扩展，例如基于spring-kafka
                                 .setCycleRetryTimes(3);// 当下载成功但是处理出问题会重试3次
                     }
                 }, "https://github.com/zidoshare");//添加url
-    }
+        }
     }
 ```
 
@@ -74,9 +73,5 @@ Elise-distributed模块提供了一些分布式扩展，例如基于spring-kafka
 |:----:|:---:|:----:|
 |Elise-core|基本爬虫框架，支持手动编码/xpath/css/regex等多种抓取方式，支持单线程/多线程组合抓取|基本完成|
 |Elise-distributed|爬虫基本框架之上提供了分布式支持，主要提供了基于kafka的任务调度器和基于redis的url去重管理器|基本完成|
-|Elise-schedule|分布式爬虫任务发送端依赖|直接附着在启动项目上，使用kafka与其他部件交流|
-|Elise-downloader|分布式爬虫下载客户端，能够在服务器上直接部署|使用kafka与其他部件交流，使用oss转储页面|
-|Elise-analyzer|分布式爬虫分析客户端，用于从页面中抓取需要的信息，能够在服务器上直接部署|使用kafka与其他部件交流，使用mysql存储结果|
-|spider-example|作为示例，能够在服务器上直接部署|依赖于schedule|
 |...|更多想法，欢迎讨论|随时在线～|
 
