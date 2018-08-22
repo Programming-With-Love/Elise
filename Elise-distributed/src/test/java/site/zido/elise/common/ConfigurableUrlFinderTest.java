@@ -31,13 +31,16 @@ public class ConfigurableUrlFinderTest {
     @Test
     public void testFindInRegion() throws UnsupportedEncodingException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(30);
-        Spider spider = new Spider(new SimpleTaskScheduler(), new ExtractorPageProcessor(), new HtmlUnitDownloader(), new AbstractSqlPipeline() {
-            @Override
-            public void onInsert(String sql, Object[] object) {
-                System.out.println(sql + Arrays.toString(object));
-                latch.countDown();
-            }
-        });
+        Spider spider = Spider.builder(new SimpleTaskScheduler())
+                .setPageProcessor(new ExtractorPageProcessor())
+                .setDownloader(new HtmlUnitDownloader())
+                .addPipeline(new AbstractSqlPipeline() {
+                    @Override
+                    public void onInsert(String sql, Object[] object) {
+                        System.out.println(sql + Arrays.toString(object));
+                        latch.countDown();
+                    }
+                }).build();
         String keyword = URLEncoder.encode("注册会计师", "utf-8");
         DefRootExtractor def = new DefRootExtractor();
         def.addHelpUrl(new ConfigurableUrlFinder().setType(ConfigurableUrlFinder.Type.REGEX).setSourceRegion("//li[@id='sogou_vr_11002301_box_0']").setValue(".*"));

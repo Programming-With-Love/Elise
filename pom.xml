@@ -2,20 +2,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <groupId>site.zido</groupId>
     <artifactId>Elise-build</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0-release</version>
     <description>Elise分布式爬虫系统</description>
+    <url>https://github.com/zidoshare/Elise</url>
+    <modelVersion>4.0.0</modelVersion>
+    <scm>
+        <connection>scm:git@github.com:zidoshare/Elise.git</connection>
+        <developerConnection>scm:git@github.com:zidoshare/Elise.git</developerConnection>
+        <url>git@github.com:zidoshare/Elise.git</url>
+        <tag>Elise-parent-1.0.0</tag>
+    </scm>
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License, Version 3</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>zido</id>
+            <name>zido</name>
+            <email>wuhongxu1208@gmail.com</email>
+            <url>http://zido.site</url>
+        </developer>
+    </developers>
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/zidoshare/Elise/issues</url>
+    </issueManagement>
     <modules>
         <module>Elise-core</module>
         <module>Elise-distributed</module>
-        <module>Elise-schedule</module>
-        <module>Elise-analyzer</module>
-        <module>Elise-downloader</module>
-        <module>spider-example</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,7 +63,7 @@
             <dependency>
                 <groupId>site.zido</groupId>
                 <artifactId>Elise-distributed</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0-release</version>
             </dependency>
             <dependency>
                 <groupId>site.zido</groupId>
@@ -57,7 +83,7 @@
             <dependency>
                 <groupId>site.zido</groupId>
                 <artifactId>Elise-core</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0-release</version>
             </dependency>
 
             <dependency>
@@ -185,6 +211,75 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>

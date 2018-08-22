@@ -26,14 +26,13 @@ public class SpiderTest {
     @Test
     public void testRun() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(6);
-        Spider spider = new Spider(new SimpleTaskScheduler(),//基于内存的多线程异步任务调度器,
-                // 自动采用基于hash的url去重处理
-                new ExtractorPageProcessor(),// 使用可配置的页面处理器,
-                // 使用这个处理器的好处是可以为每个任务定义不同的规则
+        Spider spider = Spider.builder(new SimpleTaskScheduler())//基于内存的多线程异步任务调度器, 自动采用基于hash的url去重处理
+                .setPageProcessor(new ExtractorPageProcessor())// 使用可配置的页面处理器,使用这个处理器的好处是可以为每个任务定义不同的规则
                 // 你也可以自定义处理器，如果你没有为每个url设置不同规则的必要的话
-                new HttpClientDownloader(),// 使用httpClient下载器
-                new ConsolePipeline()//控制台打印爬取结果
-        ).start()// 爬虫异步准备执行
+                .setDownloader(new HttpClientDownloader())//使用httpClient下载器
+                .addPipeline(new ConsolePipeline())//结果直接输出到控制台
+                .build()
+                .start()//让爬虫开始异步执行
                 .addUrl(new ExtractorTask() {//发送一个任务
                     @Override
                     public ModelExtractor modelExtractor() {//为任务单独定制规则，需要重写ExtractorTask类
@@ -108,16 +107,20 @@ public class SpiderTest {
                 .setNullable(true));
 
         CountDownLatch latch = new CountDownLatch(20);
-        new Spider(new SimpleTaskScheduler(),
-                new ExtractorPageProcessor(),
-                new HttpClientDownloader(),
+        Spider.builder(new SimpleTaskScheduler())
+                .setPageProcessor(new ExtractorPageProcessor())
+                .setDownloader(new HttpClientDownloader())
+                .addPipeline(
                 new AbstractSqlPipeline() {
                     @Override
                     public void onInsert(String sql, Object[] object) {
                         System.out.println("sql = [" + sql + "], object = [" + Arrays.toString(object) + "]");
                         latch.countDown();
                     }
-                }).start().addUrl(new DistributedTask(IdWorker.nextId(), new Site(), def), "http://ldzl.people.com.cn/dfzlk/front/firstPage.htm");
+                })
+                .build()
+                .start()
+                .addUrl(new DistributedTask(IdWorker.nextId(), new Site(), def), "http://ldzl.people.com.cn/dfzlk/front/firstPage.htm");
         latch.await(60, TimeUnit.SECONDS);
     }
 }

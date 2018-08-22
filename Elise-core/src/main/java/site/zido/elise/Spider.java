@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * site.zido.elise.spider
+ * the main spider
  *
  * @author zido
  */
@@ -53,23 +53,6 @@ public class Spider implements RequestPutter{
         for (Request r : request) {
             pushRequest(task, r);
         }
-    }
-
-    /**
-     * create a spider with pageProcessor.
-     *
-     * @param pageProcessor pageProcessor
-     */
-    public Spider(TaskScheduler manager,
-                  PageProcessor pageProcessor,
-                  Downloader downloader,
-                  Pipeline... pipeline) {
-        this.pageProcessor = pageProcessor;
-        this.downloader = downloader;
-        if (pipeline != null) {
-            this.pipelines.addAll(Arrays.asList(pipeline));
-        }
-        this.manager = manager;
     }
 
     public Spider(TaskScheduler manager) {

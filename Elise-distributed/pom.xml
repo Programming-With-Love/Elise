@@ -5,11 +5,15 @@
     <parent>
         <artifactId>Elise-build</artifactId>
         <groupId>site.zido</groupId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0-release</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
     <description>通用模块</description>
     <artifactId>Elise-distributed</artifactId>
+    <name>Elise-distributed</name>
+    <packaging>jar</packaging>
+
     <dependencies>
         <!-- 日志引入 -->
         <dependency>

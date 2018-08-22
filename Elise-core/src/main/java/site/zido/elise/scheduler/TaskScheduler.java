@@ -51,7 +51,7 @@ public interface TaskScheduler {
          * message listener.
          *
          * @param task    the task {@link Task}
-         *                Use {@link Task more to provide a better messaging mechanism,
+         *                Use {@link Task} more to provide a better messaging mechanism,
          *                significantly reducing the amount of data.
          * @param request request container
          */

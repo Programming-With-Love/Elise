@@ -31,11 +31,6 @@ public interface LoadBalancer<T> {
      */
     boolean remove(T object);
 
-    /**
-     * return new empty load balancer
-     *
-     * @return load balancer
-     */
     <V>LoadBalancer<V> newClone();
 
     /**
