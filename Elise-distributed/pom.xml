@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Elise-build</artifactId>
         <groupId>site.zido</groupId>
-        <version>0.1.0-release</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

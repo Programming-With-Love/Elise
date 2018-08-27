@@ -43,14 +43,14 @@ public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
         lock.lock();
         try {
             if (ValidateUtils.isEmpty(list)) {
-                logger.warn("Balancer has not been available,waiting {} seconds", lockTime);
+                logger.debug("Balancer has not been available,waiting {} seconds", lockTime);
                 try {
                     boolean await = condition.await(lockTime, TimeUnit.SECONDS);
                     if (!await) {
                         return null;
                     }
                 } catch (InterruptedException e) {
-                    logger.warn("Balancer has not been available for {} seconds ", lockTime);
+                    logger.warn("Balancer wait error");
                     return null;
                 }
             }
