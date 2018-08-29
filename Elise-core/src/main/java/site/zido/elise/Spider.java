@@ -59,7 +59,7 @@ public class Spider implements RequestPutter{
         this.manager = manager;
     }
 
-    private class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
+    class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
 
         @Override
         public void onDownload(Task task, Request request) {
