@@ -2,7 +2,7 @@
 
 ## 简介
 
-Elise是使用httpclient+jsoup/xsoup封装，由Elise-core模块提供高度可扩展的爬虫框架，支持同步/异步运行，多线程下载，多线程分析等强大的功能
+Elise是使用httpclient+jsoup/xsoup封装，由Elise-core模块提供高度可扩展的爬虫框架，支持同步/异步运行，多线程下载,html解析抽取等功能
 Elise-distributed模块提供了一些分布式扩展，例如基于spring-kafka的消息管理器，基于lettuce封装的使用redis作为远程数据库的url去重管理器。
 它完全基于Elise-core扩展，完全不改变任何使用方式。
 
