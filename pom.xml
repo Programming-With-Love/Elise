@@ -11,7 +11,7 @@
     <groupId>site.zido</groupId>
     <artifactId>Elise-build</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0-release</version>
+    <version>0.1.1-SNAPSHOT</version>
     <description>Elise分布式爬虫系统</description>
     <url>https://github.com/zidoshare/Elise</url>
     <modelVersion>4.0.0</modelVersion>
@@ -63,7 +63,7 @@
             <dependency>
                 <groupId>site.zido</groupId>
                 <artifactId>Elise-distributed</artifactId>
-                <version>0.1.0-release</version>
+                <version>0.1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>site.zido</groupId>
@@ -83,7 +83,7 @@
             <dependency>
                 <groupId>site.zido</groupId>
                 <artifactId>Elise-core</artifactId>
-                <version>0.1.0-release</version>
+                <version>0.1.1-SNAPSHOT</version>
             </dependency>
 
             <dependency>
