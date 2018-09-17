@@ -4,6 +4,8 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
@@ -29,13 +31,16 @@ public class HtmlUnitDownloader extends AbstractDownloader {
     private static final Logger logger = LoggerFactory.getLogger(HtmlUnitDownloader.class);
 
     @Override
-    public Page download(Request request, Task task) {
+    public synchronized Page download(Request request, Task task) {
         WebClient webClient = null;
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         Page page = Page.fail();
         try {
             if (proxy != null) {
                 webClient = new WebClient(BrowserVersion.CHROME, proxy.getHost(), proxy.getPort());
+                if(!ValidateUtils.isEmpty(proxy.getUsername()) && !ValidateUtils.isEmpty(proxy.getPassword())) {
+                    webClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxy.getUsername(), proxy.getPassword()));
+                }
             } else {
                 webClient = new WebClient(BrowserVersion.CHROME);
             }
@@ -48,7 +53,9 @@ public class HtmlUnitDownloader extends AbstractDownloader {
                 webRequest.setCharset(Charset.forName(charset));
             }
             HtmlPage htmlPage = webClient.getPage(webRequest);
+            int statusCode = htmlPage.getWebResponse().getStatusCode();
             page = new Page();
+            page.setStatusCode(statusCode);
             page.setUrl(new PlainText(request.getUrl()));
             page.setRawText(htmlPage.asXml());
             page.setDownloadSuccess(true);
