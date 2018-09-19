@@ -90,7 +90,7 @@ public interface TaskScheduler {
      * <p>
      * manager will select the appropriate scheduling program
      * and call onDownload{@link DownloadListener} to other clients
-     * (of course, may also be yourself, if you are also an analysis client)
+     * (of course, may to call yourself also, if you are also an analysis client)
      *
      * @param task    the task information
      * @param request the request

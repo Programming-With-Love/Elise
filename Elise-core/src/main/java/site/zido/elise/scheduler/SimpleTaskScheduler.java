@@ -57,6 +57,9 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
      */
     private final static Logger logger = LoggerFactory.getLogger(SimpleTaskScheduler.class);
 
+    public SimpleTaskScheduler() {
+        this(new HashSetDeduplicationProcessor());
+    }
 
     public SimpleTaskScheduler(DuplicationProcessor duplicationProcessor) {
         super(duplicationProcessor);
@@ -108,16 +111,20 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
             Keeper poll = QUEUE.poll();
             if (poll != null) {
                 if (poll instanceof PageKeeper) {
-                    AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
-                    if (next == null) {
-                        QUEUE.offer(poll);
+                    AnalyzerListener next = null;
+                    try {
+                        next = analyzerListenerLoadBalancer.getNext();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                         continue;
                     }
                     next.onProcess(poll.task, poll.request, ((PageKeeper) poll).page);
                 } else {
-                    DownloadListener next = downloadListenerLoadBalancer.getNext();
-                    if (next == null) {
-                        QUEUE.offer(poll);
+                    DownloadListener next = null;
+                    try {
+                        next = downloadListenerLoadBalancer.getNext();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                         continue;
                     }
                     next.onDownload(poll.task, poll.request);
@@ -160,7 +167,7 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         if (stat.compareAndSet(STAT_RUNNING, STAT_STOPPED)) {
             logger.info("message listener stop success!");
         } else {
-            logger.info("message listener stop fail!");
+            logger.error("message listener stop fail!");
         }
     }
 
@@ -213,10 +220,6 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         downloadListenerLoadBalancer.remove(listener);
     }
 
-    public SimpleTaskScheduler setPoolSize(int poolSize) {
-        return this;
-    }
-
     public SimpleTaskScheduler setDownloadListenerLoadBalancer(LoadBalancer<DownloadListener> downloadListenerLoadBalancer) {
         this.downloadListenerLoadBalancer = downloadListenerLoadBalancer;
         return this;
@@ -227,7 +230,4 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         return this;
     }
 
-    public SimpleTaskScheduler() {
-        this(new HashSetDeduplicationProcessor());
-    }
 }

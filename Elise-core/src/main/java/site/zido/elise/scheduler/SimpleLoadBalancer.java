@@ -39,20 +39,12 @@ public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
      * @return object
      */
     @Override
-    public T getNext() {
+    public T getNext() throws InterruptedException {
         lock.lock();
         try {
             if (ValidateUtils.isEmpty(list)) {
                 logger.debug("Balancer has not been available,waiting {} seconds", lockTime);
-                try {
-                    boolean await = condition.await(lockTime, TimeUnit.SECONDS);
-                    if (!await) {
-                        return null;
-                    }
-                } catch (InterruptedException e) {
-                    logger.warn("Balancer wait error");
-                    return null;
-                }
+                condition.await();
             }
             int index = current;
             T obj = list.get(index);
