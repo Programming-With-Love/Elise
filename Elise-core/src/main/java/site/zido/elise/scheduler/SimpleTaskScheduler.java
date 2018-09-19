@@ -1,10 +1,10 @@
 package site.zido.elise.scheduler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -30,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author zido
  */
-public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler {
+public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler, Runnable {
     private LoadBalancer<DownloadListener> downloadListenerLoadBalancer;
     private LoadBalancer<AnalyzerListener> analyzerListenerLoadBalancer;
 
@@ -42,19 +42,12 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
 
     protected final static int STAT_STOPPED = 2;
 
-    private final ThreadPoolExecutor childExecutor;
-
     private Lock taskLock = new ReentrantLock();
     private Condition taskCondition = taskLock.newCondition();
 
     private int emptySleepTime = 30000;
 
-    private final ThreadPoolExecutor rootExecutor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            return new Thread(r);
-        }
-    });
+    private final Executor rootExecutor = Executors.newFixedThreadPool(1);
     /**
      * message queue
      */
@@ -65,45 +58,8 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
     private final static Logger logger = LoggerFactory.getLogger(SimpleTaskScheduler.class);
 
 
-    public SimpleTaskScheduler setPoolSize(int poolSize) {
-        this.childExecutor.setCorePoolSize(poolSize);
-        this.childExecutor.setMaximumPoolSize(poolSize);
-        return this;
-    }
-
-    public SimpleTaskScheduler setDownloadListenerLoadBalancer(LoadBalancer<DownloadListener> downloadListenerLoadBalancer) {
-        this.downloadListenerLoadBalancer = downloadListenerLoadBalancer;
-        return this;
-    }
-
-    public SimpleTaskScheduler setAnalyzerListenerLoadBalancer(LoadBalancer<AnalyzerListener> analyzerListenerLoadBalancer) {
-        this.analyzerListenerLoadBalancer = analyzerListenerLoadBalancer;
-        return this;
-    }
-
-    public SimpleTaskScheduler() {
-        this(new HashSetDeduplicationProcessor(), new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                r -> {
-                    Thread thread = new Thread(r);
-                    thread.setName("thread child message manager");
-                    return thread;
-                }));
-    }
-
     public SimpleTaskScheduler(DuplicationProcessor duplicationProcessor) {
-        this(duplicationProcessor, new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                r -> {
-                    Thread thread = new Thread(r);
-                    thread.setName("thread child message manager");
-                    return thread;
-                }));
-    }
-
-    public SimpleTaskScheduler(DuplicationProcessor duplicationProcessor, ThreadPoolExecutor childExecutor) {
         super(duplicationProcessor);
-        this.childExecutor = childExecutor;
         this.analyzerListenerLoadBalancer = new SimpleLoadBalancer<>();
         this.downloadListenerLoadBalancer = new SimpleLoadBalancer<>();
     }
@@ -145,35 +101,38 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         }
     }
 
+    @Override
+    public void run() {
+        logger.debug("thread listening...");
+        while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
+            Keeper poll = QUEUE.poll();
+            if (poll != null) {
+                if (poll instanceof PageKeeper) {
+                    AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
+                    if (next == null) {
+                        QUEUE.offer(poll);
+                        continue;
+                    }
+                    next.onProcess(poll.task, poll.request, ((PageKeeper) poll).page);
+                } else {
+                    DownloadListener next = downloadListenerLoadBalancer.getNext();
+                    if (next == null) {
+                        QUEUE.offer(poll);
+                        continue;
+                    }
+                    next.onDownload(poll.task, poll.request);
+                }
+            } else {
+                waitTask();
+            }
+        }
+    }
+
     private void start() {
         if (checkRunningStat()) {
             return;
         }
-        rootExecutor.execute(() -> {
-            logger.debug("thread listening...");
-            while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
-                Keeper poll = QUEUE.poll();
-                if (poll != null) {
-                    if (poll instanceof PageKeeper) {
-                        AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
-                        if (next == null) {
-                            QUEUE.offer(poll);
-                            continue;
-                        }
-                        childExecutor.execute(() -> next.onProcess(poll.task, poll.request, ((PageKeeper) poll).page));
-                    } else {
-                        DownloadListener next = downloadListenerLoadBalancer.getNext();
-                        if (next == null) {
-                            QUEUE.offer(poll);
-                            continue;
-                        }
-                        childExecutor.execute(() -> next.onDownload(poll.task, poll.request));
-                    }
-                } else {
-                    waitTask();
-                }
-            }
-        });
+        rootExecutor.execute(this);
     }
 
     private void waitTask() {
@@ -181,7 +140,8 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         try {
             taskCondition.await(emptySleepTime, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            logger.warn("wait task - interrupted, error {}", e);
+            //reset interrupt state
+            Thread.currentThread().interrupt();
         } finally {
             taskLock.unlock();
         }
@@ -190,7 +150,7 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
     private void signalTask() {
         try {
             taskLock.lock();
-            taskCondition.signalAll();
+            taskCondition.signal();
         } finally {
             taskLock.unlock();
         }
@@ -251,5 +211,23 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
     @Override
     public void removeDownloader(TaskScheduler.DownloadListener listener) {
         downloadListenerLoadBalancer.remove(listener);
+    }
+
+    public SimpleTaskScheduler setPoolSize(int poolSize) {
+        return this;
+    }
+
+    public SimpleTaskScheduler setDownloadListenerLoadBalancer(LoadBalancer<DownloadListener> downloadListenerLoadBalancer) {
+        this.downloadListenerLoadBalancer = downloadListenerLoadBalancer;
+        return this;
+    }
+
+    public SimpleTaskScheduler setAnalyzerListenerLoadBalancer(LoadBalancer<AnalyzerListener> analyzerListenerLoadBalancer) {
+        this.analyzerListenerLoadBalancer = analyzerListenerLoadBalancer;
+        return this;
+    }
+
+    public SimpleTaskScheduler() {
+        this(new HashSetDeduplicationProcessor());
     }
 }

@@ -32,8 +32,8 @@ import java.util.Map;
 public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler {
     private String bootstrapServers;
     private String groupId = "Elise";
-    private String topicAnalyzer = TYPE_MESSAGE_ANALYZER;
-    private String topicDownload = TYPE_MESSAGE_DOWNLOAD;
+    private String topicAnalyzer = "__analyzer__";
+    private String topicDownload = "__download__";
 
     private SavedPage.ReadListener readListener;
     private SavedPage.SavedListener savedListener;

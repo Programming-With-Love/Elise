@@ -31,7 +31,7 @@ public class HtmlUnitDownloader extends AbstractDownloader {
     private static final Logger logger = LoggerFactory.getLogger(HtmlUnitDownloader.class);
 
     @Override
-    public synchronized Page download(Request request, Task task) {
+    public Page download(Request request, Task task) {
         WebClient webClient = null;
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         Page page = Page.fail();

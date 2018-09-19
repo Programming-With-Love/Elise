@@ -17,9 +17,6 @@ import site.zido.elise.Task;
  * @author zido
  */
 public interface TaskScheduler {
-    String TYPE_MESSAGE_DOWNLOAD = "__download__";
-
-    String TYPE_MESSAGE_ANALYZER = "__analyzer__";
 
     /**
      * analyzer listener,this interface should called by download service.

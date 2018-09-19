@@ -1,9 +1,9 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.Request;
-import site.zido.elise.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.Request;
+import site.zido.elise.Task;
 
 /**
  * Abstract Duplicate Removed Scheduler
@@ -18,7 +18,6 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     public AbstractDuplicateRemovedScheduler(DuplicationProcessor duplicationProcessor) {
         this.duplicationProcessor = duplicationProcessor;
     }
-
 
     @Override
     public void pushRequest(Task task, Request request) {
