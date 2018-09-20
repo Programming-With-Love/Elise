@@ -1,4 +1,4 @@
-package site.zido.elise.common;
+package site.zido.elise.distributed;
 
 import site.zido.elise.DistributedTask;
 import site.zido.elise.Page;

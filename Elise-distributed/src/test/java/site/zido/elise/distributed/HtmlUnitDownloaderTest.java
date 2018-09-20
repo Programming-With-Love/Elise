@@ -1,4 +1,4 @@
-package site.zido.elise.common;
+package site.zido.elise.distributed;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;

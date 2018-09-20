@@ -6,12 +6,7 @@ import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 
-import java.util.Queue;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This message manager provides thread-level messaging that is implemented from {@link TaskScheduler}.
@@ -30,157 +25,54 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author zido
  */
-public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler, Runnable {
-    private LoadBalancer<DownloadListener> downloadListenerLoadBalancer;
-    private LoadBalancer<AnalyzerListener> analyzerListenerLoadBalancer;
-
-    protected AtomicInteger stat = new AtomicInteger(STAT_INIT);
-
-    protected final static int STAT_INIT = 0;
-
-    protected final static int STAT_RUNNING = 1;
-
-    protected final static int STAT_STOPPED = 2;
-
-    private Lock taskLock = new ReentrantLock();
-    private Condition taskCondition = taskLock.newCondition();
-
-    private int emptySleepTime = 30000;
-
-    private final Executor rootExecutor = Executors.newFixedThreadPool(1);
-    /**
-     * message queue
-     */
-    private final Queue<Keeper> QUEUE = new ConcurrentLinkedQueue<>();
+public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler {
     /**
      * logger
      */
     private final static Logger logger = LoggerFactory.getLogger(SimpleTaskScheduler.class);
 
+    protected LoadBalancer<DownloadListener> downloadListenerLoadBalancer;
+    protected LoadBalancer<AnalyzerListener> analyzerListenerLoadBalancer;
+
+    private int blockSize;
+
+    protected final Executor rootExecutor;
+
     public SimpleTaskScheduler() {
-        this(new HashSetDeduplicationProcessor());
+        this(1);
     }
 
-    public SimpleTaskScheduler(DuplicationProcessor duplicationProcessor) {
+    public SimpleTaskScheduler(int blockSize) {
+        this(blockSize, new HashSetDeduplicationProcessor());
+    }
+
+    public SimpleTaskScheduler(int blockSize, DuplicationProcessor duplicationProcessor) {
         super(duplicationProcessor);
+        if (blockSize < 1) {
+            throw new IllegalArgumentException("blockSize can't be less than 1");
+        }
         this.analyzerListenerLoadBalancer = new SimpleLoadBalancer<>();
         this.downloadListenerLoadBalancer = new SimpleLoadBalancer<>();
-    }
-
-    private boolean checkRunningStat() {
-        while (true) {
-            int statNow = stat.get();
-            if (statNow == STAT_RUNNING) {
-                return true;
-            }
-            if (stat.compareAndSet(statNow, STAT_RUNNING)) {
-                break;
-            }
-        }
-        return false;
-    }
-
-    public SimpleTaskScheduler setEmptySleepTime(int emptySleepTime) {
-        this.emptySleepTime = emptySleepTime;
-        return this;
-    }
-
-    private static class Keeper {
-        Task task;
-        Request request;
-
-        Keeper(Task task, Request request) {
-            this.task = task;
-            this.request = request;
-        }
-    }
-
-    private static class PageKeeper extends Keeper {
-        Page page;
-
-        PageKeeper(Task task, Request request, Page page) {
-            super(task, request);
-            this.page = page;
-        }
-    }
-
-    @Override
-    public void run() {
-        logger.debug("thread listening...");
-        while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
-            Keeper poll = QUEUE.poll();
-            if (poll != null) {
-                if (poll instanceof PageKeeper) {
-                    AnalyzerListener next = null;
-                    try {
-                        next = analyzerListenerLoadBalancer.getNext();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        continue;
-                    }
-                    next.onProcess(poll.task, poll.request, ((PageKeeper) poll).page);
-                } else {
-                    DownloadListener next = null;
-                    try {
-                        next = downloadListenerLoadBalancer.getNext();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        continue;
-                    }
-                    next.onDownload(poll.task, poll.request);
-                }
-            } else {
-                waitTask();
-            }
-        }
-    }
-
-    private void start() {
-        if (checkRunningStat()) {
-            return;
-        }
-        rootExecutor.execute(this);
-    }
-
-    private void waitTask() {
-        taskLock.lock();
-        try {
-            taskCondition.await(emptySleepTime, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            //reset interrupt state
-            Thread.currentThread().interrupt();
-        } finally {
-            taskLock.unlock();
-        }
-    }
-
-    private void signalTask() {
-        try {
-            taskLock.lock();
-            taskCondition.signal();
-        } finally {
-            taskLock.unlock();
-        }
-    }
-
-    public void stop() {
-        if (stat.compareAndSet(STAT_RUNNING, STAT_STOPPED)) {
-            logger.info("message listener stop success!");
-        } else {
-            logger.error("message listener stop fail!");
-        }
+        this.blockSize = blockSize;
+        rootExecutor = new ThreadPoolExecutor(blockSize, blockSize, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(blockSize),new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     @Override
     public void process(Task task, Request request, Page page) {
-        QUEUE.offer(new PageKeeper(task, request, page));
-        signalTask();
+        AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
+        if (next == null) {
+            throw new NullPointerException("no analyzer");
+        }
+        rootExecutor.execute(() -> next.onProcess(task, request, page));
     }
 
     @Override
     protected void pushWhenNoDuplicate(Request request, Task task) {
-        QUEUE.offer(new Keeper(task, request));
-        signalTask();
+        DownloadListener next = downloadListenerLoadBalancer.getNext();
+        if (next == null) {
+            throw new NullPointerException("no downloader");
+        }
+        rootExecutor.execute(() -> next.onDownload(task, request));
     }
 
     @Override
@@ -195,19 +87,17 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
 
     @Override
     public int blockSize() {
-        return QUEUE.size();
+        return blockSize;
     }
 
     @Override
     public void registerAnalyzer(TaskScheduler.AnalyzerListener listener) {
         analyzerListenerLoadBalancer.add(listener);
-        start();
     }
 
     @Override
     public void registerDownloader(TaskScheduler.DownloadListener listener) {
         downloadListenerLoadBalancer.add(listener);
-        start();
     }
 
     @Override

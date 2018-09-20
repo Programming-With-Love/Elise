@@ -1,8 +1,8 @@
-package site.zido.elise.common.pojo;
+package site.zido.elise.distributed.pojo;
 
 import site.zido.elise.DistributedTask;
 import site.zido.elise.Request;
-import site.zido.elise.common.SavedPage;
+import site.zido.elise.distributed.SavedPage;
 
 /**
  * SavedSeed

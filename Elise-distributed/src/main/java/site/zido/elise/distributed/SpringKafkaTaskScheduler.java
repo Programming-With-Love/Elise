@@ -1,11 +1,12 @@
-package site.zido.elise.common;
+package site.zido.elise.distributed;
 
 import site.zido.elise.DistributedTask;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
-import site.zido.elise.common.pojo.SavedSeed;
-import site.zido.elise.common.pojo.Seed;
+import site.zido.elise.distributed.pojo.SavedSeed;
+import site.zido.elise.distributed.pojo.Seed;
+import site.zido.elise.distributed.scheduler.BlockWaitScheduler;
 import site.zido.elise.scheduler.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -45,13 +46,12 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     private KafkaMessageListenerContainer<Long, Seed> analyzerContainer;
     private KafkaMessageListenerContainer<Long, Seed> downloaderContainer;
 
-    public SpringKafkaTaskScheduler(TaskScheduler scheduler, DuplicationProcessor duplicationProcessor) {
+    public SpringKafkaTaskScheduler(int blockSize, DuplicationProcessor duplicationProcessor) {
         super(duplicationProcessor);
-        this.taskScheduler = scheduler;
+        this.taskScheduler = new BlockWaitScheduler(blockSize);
     }
-
-    public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor) {
-        this(new SimpleTaskScheduler(), duplicationProcessor);
+    public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor){
+        this(1,duplicationProcessor);
     }
 
     public SpringKafkaTaskScheduler setBootstrapServers(String bootstrapServers) {
@@ -195,7 +195,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "site.zido.elise.common.pojo");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "site.zido.elise.distributed.pojo");
         return props;
     }
 

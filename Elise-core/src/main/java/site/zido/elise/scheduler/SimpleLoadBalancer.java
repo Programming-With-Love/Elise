@@ -21,7 +21,6 @@ public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
     private int current;
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
-    private int lockTime = 2;
     private List<T> list = new Vector<>();
 
     public SimpleLoadBalancer() {
@@ -39,12 +38,11 @@ public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
      * @return object
      */
     @Override
-    public T getNext() throws InterruptedException {
+    public T getNext() {
         lock.lock();
         try {
             if (ValidateUtils.isEmpty(list)) {
-                logger.debug("Balancer has not been available,waiting {} seconds", lockTime);
-                condition.await();
+                return null;
             }
             int index = current;
             T obj = list.get(index);
@@ -82,12 +80,7 @@ public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
 
     @Override
     public synchronized <V> LoadBalancer<V> newClone() {
-        return new SimpleLoadBalancer<V>().setLockTime(this.lockTime);
-    }
-
-    public SimpleLoadBalancer<T> setLockTime(int lockTime) {
-        this.lockTime = lockTime;
-        return this;
+        return new SimpleLoadBalancer<V>();
     }
 
     @Override

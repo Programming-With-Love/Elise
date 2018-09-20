@@ -1,4 +1,4 @@
-package site.zido.elise.common;
+package site.zido.elise.distributed;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;

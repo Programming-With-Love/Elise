@@ -13,7 +13,7 @@ public interface LoadBalancer<T> {
      *
      * @return next task
      */
-    T getNext() throws InterruptedException;
+    T getNext();
 
     /**
      * add task

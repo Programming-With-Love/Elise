@@ -69,7 +69,6 @@ public class Spider implements RequestPutter{
             }
             Page page = downloader.download(request, task);
             manager.process(task, request, page);
-
         }
 
         @Override

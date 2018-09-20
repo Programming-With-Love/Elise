@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class SimpleTaskSchedulerTest {
@@ -56,7 +58,7 @@ public class SimpleTaskSchedulerTest {
     }
     @Test
     public void testWithoutDuplication() throws InterruptedException {
-        SimpleTaskScheduler manager = new SimpleTaskScheduler(new DuplicationProcessor() {
+        SimpleTaskScheduler manager = new SimpleTaskScheduler(1,new DuplicationProcessor() {
             @Override
             public boolean isDuplicate(Request request, Task task) {
                 return false;

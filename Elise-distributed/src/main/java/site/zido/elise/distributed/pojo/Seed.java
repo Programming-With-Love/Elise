@@ -1,9 +1,8 @@
-package site.zido.elise.common.pojo;
+package site.zido.elise.distributed.pojo;
 
 import site.zido.elise.DistributedTask;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
-import site.zido.elise.Task;
 
 /**
  * 种子，信息载体

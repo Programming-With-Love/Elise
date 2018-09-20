@@ -1,4 +1,4 @@
-package site.zido.elise.common.utils;
+package site.zido.elise.distributed.utils;
 
 import site.zido.elise.utils.IdWorker;
 import org.junit.Assert;
