@@ -43,17 +43,4 @@ public class ConfigurableSpiderTest {
         task = new DistributedTask(123L, site, def);
     }
 
-    @Test
-    public void testProcessor() {
-        HttpClientDownloader downloader = new HttpClientDownloader();
-        Page page = downloader.download(new Request("https://github.com/zidoshare/bone"), task);
-        ExtractorPageProcessor processor = new ExtractorPageProcessor();
-        ResultItem resultItem = processor.process(task, page, (task, request) -> System.out.println(request.getUrl()));
-        Object github = resultItem.get("github");
-        if (github instanceof Map) {
-            Map<String, Object> map = (Map<String, Object>) github;
-            Assert.assertEquals("bone", map.get("name"));
-            Assert.assertEquals("zidoshare", map.get("author"));
-        }
-    }
 }

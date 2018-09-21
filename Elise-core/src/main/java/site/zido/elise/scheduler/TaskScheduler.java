@@ -104,5 +104,5 @@ public interface TaskScheduler {
      * @param task    the task information
      * @param request the request
      */
-    void pushRequest(Task task, Request request);
+    boolean pushRequest(Task task, Request request);
 }

@@ -34,19 +34,7 @@ public class Spider implements RequestPutter{
 
     @Override
     public void pushRequest(Task task, Request request) {
-        try {
-            manager.pushRequest(task, request);
-        } catch (NullPointerException e) {
-            Site site = task.getSite();
-            if (site.getCycleRetryTimes() == 0) {
-                logger.error("no downloader in container,will sleep {} seconds,please add downloader", site.getSleepTime());
-                sleep(site.getSleepTime());
-            } else {
-                logger.error("no downloader in container,will retry {} times,please add downloader", site.getRetrySleepTime());
-                // for cycle retry
-                doCycleRetry(task, request);
-            }
-        }
+        manager.pushRequest(task, request);
     }
 
     private void pushRequest(Task task, List<Request> request) {
@@ -75,7 +63,7 @@ public class Spider implements RequestPutter{
         public void onProcess(Task task, Request request, Page page) {
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
-                ResultItem resultItem = pageProcessor.process(task, page, Spider.this);
+                ResultItem resultItem = pageProcessor.process(task, page, manager);
                 if (resultItem != null) {
                     if (site.getAcceptStatCode().contains(page.getStatusCode())) {
                         if (!resultItem.isSkip()) {

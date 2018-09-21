@@ -20,14 +20,16 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     }
 
     @Override
-    public void pushRequest(Task task, Request request) {
+    public boolean pushRequest(Task task, Request request) {
         logger.trace("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
                 || !duplicationProcessor.isDuplicate(request, task)) {
             logger.debug("push to queue {}", request.getUrl());
             pushWhenNoDuplicate(request, task);
+            return true;
         }
+        return false;
     }
 
     private boolean shouldReserved(Request request) {

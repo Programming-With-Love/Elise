@@ -36,7 +36,7 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
 
     private int blockSize;
 
-    protected final Executor rootExecutor;
+    protected final ExecutorService rootExecutor;
 
     public SimpleTaskScheduler() {
         this(1);
