@@ -1,13 +1,7 @@
 package site.zido.elise;
 
 import site.zido.elise.configurable.*;
-import site.zido.elise.downloader.HttpClientDownloader;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
-import site.zido.elise.processor.ExtractorPageProcessor;
-
-import java.util.Map;
 
 /**
  * 分布式爬虫测试
@@ -26,21 +20,21 @@ public class ConfigurableSpiderTest {
                 new ConfigurableUrlFinder().setValue("https://github\\.com/explore/*"));
         def.addTargetUrl(new ConfigurableUrlFinder().setValue("https://github\\.com/\\w+/\\w+"));
 
-        def.addChildren(new DefExtractor().setName("name")
+        def.addChildren(new DefExtractor("name")
                 .setType(ExpressionType.XPATH)
                 .setValue("//h1[@class='public']/strong/a/text()")
                 .setNullable(false));
-        def.addChildren(new DefExtractor().setName("author")
+        def.addChildren(new DefExtractor("author")
                 .setType(ExpressionType.REGEX)
                 .setSource(Source.URL)
                 .setValue("https://github\\.com/(\\w+)/.*")
                 .setNullable(false));
-        def.addChildren(new DefExtractor().setName("readme")
+        def.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//div[@id='readme']/tidyText()")
                 .setNullable(false));
         Site site = new Site().setRetryTimes(3).setSleepTime(0);
-        task = new DistributedTask(123L, site, def);
+        task = new DefaultExtractorTask(123L, site, def);
     }
 
 }

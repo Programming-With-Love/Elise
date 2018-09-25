@@ -1,6 +1,6 @@
 package site.zido.elise.distributed;
 
-import site.zido.elise.DistributedTask;
+import site.zido.elise.DefaultExtractorTask;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
 import site.zido.elise.Spider;
@@ -66,7 +66,7 @@ public class ConfigurableUrlFinderTest {
                 .setValue("//div[@class='rich_media_content']/html()")
                 .setNullable(false));
         spider.start();
-        spider.pushRequest(new DistributedTask(IdWorker.nextId(), new Site().setSleepTime(3000).putExtra("downloadMode", "htmlUnit"), def), new Request("http://weixin.sogou.com/weixin?type=1&s_from=input&query=" + keyword));
+        spider.pushRequest(new DefaultExtractorTask(IdWorker.nextId(), new Site().setSleepTime(3000).putExtra("downloadMode", "htmlUnit"), def), new Request("http://weixin.sogou.com/weixin?type=1&s_from=input&query=" + keyword));
         latch.await(30000, TimeUnit.SECONDS);
     }
 }

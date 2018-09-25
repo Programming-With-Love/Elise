@@ -1,14 +1,13 @@
 package site.zido.elise.configurable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.ResultItem;
 import site.zido.elise.extractor.ModelExtractor;
 import site.zido.elise.selector.Selector;
-import site.zido.elise.selector.Selectors;
 import site.zido.elise.selector.UrlFinderSelector;
 import site.zido.elise.utils.ValidateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,8 +28,6 @@ public class ConfigurableModelExtractor implements ModelExtractor {
 
     private List<UrlFinderSelector> helpUrlSelectors = new ArrayList<>();
 
-    private Selector selector;
-
     private DefRootExtractor defRootExtractor;
 
     private static final String PT = "http";
@@ -44,7 +41,6 @@ public class ConfigurableModelExtractor implements ModelExtractor {
      */
     public ConfigurableModelExtractor(DefRootExtractor defRootExtractor) {
         this.defRootExtractor = defRootExtractor;
-        selector = defRootExtractor.compileSelector();
         //转化配置到具体类
         List<ConfigurableUrlFinder> targetUrlFinder = defRootExtractor.getTargetUrl();
         if (!ValidateUtils.isEmpty(targetUrlFinder)) {
@@ -64,22 +60,26 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     @Override
-    public ResultItem extract(Page page) {
-        ResultItem resultItem = new ResultItem();
-        if (multi()) {
-            List<Map<String, Object>> list = extractPageForList(page);
-            if (list == null || list.size() == 0) {
-                resultItem.setSkip(true);
-            }
-            resultItem.put(defRootExtractor.getName(), list);
-        } else {
-            Map<String, Object> obj = extractPageItem(page);
-            if (obj == null || obj.size() == 0) {
-                resultItem.setSkip(true);
-            }
-            resultItem.put(defRootExtractor.getName(), obj);
+    public List<ResultItem> extract(Page page) {
+        //不是目标链接直接返回
+        if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> urlFinderSelector.select(page.getUrl()) != null)) {
+            return new ArrayList<>();
         }
-        return resultItem;
+        List<ResultItem> results = new ArrayList<>();
+        Selector selector = defRootExtractor.compileSelector();
+        //get region
+        List<String> list = selector.selectList(page.getRawText());
+        for (String html : list) {
+            Map<String, List<String>> item = processSingle(page, html);
+            if (item != null) {
+                ResultItem resultItem = new ResultItem();
+                for (String s : item.keySet()) {
+                    resultItem.put(s, item.get(s));
+                }
+                results.add(resultItem);
+            }
+        }
+        return results;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         } else {
             links = new ArrayList<>();
             for (UrlFinderSelector selector : helpUrlSelectors) {
-                links.addAll(page.html().selectList(selector).all());
+                links.addAll(selector.selectList(page.getRawText()));
             }
             //兜底链接处理
             links = links.stream().map(link -> {
@@ -111,109 +111,36 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return links;
     }
 
-    /**
-     * 抓取页面内容，如果未抓取到/结果不匹配，返回null。
-     *
-     * @param page page
-     * @return result map
-     */
-    private Map<String, Object> extractPageItem(Page page) {
-        //不是目标链接直接返回
-        if (targetUrlSelectors
-                .stream()
-                .noneMatch(urlFinderSelector ->
-                        page.getUrl()
-                                .select(urlFinderSelector)
-                                .match())) {
-            return null;
-        }
-        String html = selector.select(page.getRawText());
-        return processSingle(page, html);
-    }
-
-    /**
-     * 抓取页面内容，如果未抓取到/结果不匹配，返回empty list。
-     *
-     * @param page page
-     */
-    private List<Map<String, Object>> extractPageForList(Page page) {
-        //不是目标链接直接返回
-        if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> page.getUrl()
-                .select(urlFinderSelector).match())) {
-            return null;
-        }
-        List<Map<String, Object>> results = new ArrayList<>();
-        List<String> list = selector.selectList(page.getRawText());
-        for (String html : list) {
-            Map<String, Object> result = processSingle(page, html);
-            if (result != null) {
-                results.add(result);
-            }
-        }
-        return results;
-    }
-
-    private Map<String, Object> processSingle(Page page, String html) {
-        Map<String, Object> map = new HashMap<>(defRootExtractor.getChildren().size());
+    private Map<String, List<String>> processSingle(Page page, String html) {
+        Map<String, List<String>> map = new HashMap<>(defRootExtractor.getChildren().size());
         for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
-            if (!fieldExtractor.getMulti()) {
-                String result = processField(fieldExtractor, page, html);
-                if (result == null && !fieldExtractor.getNullable()) {
-                    return null;
-                }
-                map.put(fieldExtractor.getName(), result);
-            } else {
-                List<String> results = processFieldForList(fieldExtractor, page, html);
-                if (ValidateUtils.isEmpty(results) && !fieldExtractor.getNullable()) {
-                    return null;
-                }
-                map.put(fieldExtractor.getName(), results);
+            List<String> results = processFieldForList(fieldExtractor, page, html);
+            if (ValidateUtils.isEmpty(results) && !fieldExtractor.getNullable()) {
+                return null;
             }
+            map.put(fieldExtractor.getName(), results);
         }
         return map;
     }
 
-    private String processField(DefExtractor fieldExtractor, Page page, String html) {
-        String value;
+    private List<String> processFieldForList(DefExtractor fieldExtractor, Page page, String html) {
+        List<String> value;
         Selector selector = fieldExtractor.compileSelector();
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
-                value = page.html().selectDocument(selector);
+                value = selector.selectList(page.getRawText());
                 break;
             case URL:
-                value = page.getUrl().select(selector).toString();
-                break;
-            case RAW_TEXT:
-                value = selector.select(page.getRawText());
-                break;
-            case SELECTED_HTML:
-            default:
-                value = selector.select(html);
-        }
-        return value;
-    }
-
-    private List<String> processFieldForList(DefExtractor fieldExtractor, Page page, String html) {
-        List<String> value;
-        switch (fieldExtractor.getSource()) {
-            case RAW_HTML:
-                value = page.html().selectDocumentForList(selector);
-                break;
-            case URL:
-                value = page.getUrl().selectList(selector).all();
+                value = selector.selectList(page.getUrl());
                 break;
             case RAW_TEXT:
                 value = selector.selectList(page.getRawText());
                 break;
-            case SELECTED_HTML:
+            case REGION:
             default:
                 value = selector.selectList(html);
         }
         return value;
-    }
-
-    private boolean multi() {
-        return defRootExtractor.getMulti();
     }
 
     public DefRootExtractor getDefRootExtractor() {

@@ -9,7 +9,7 @@ public enum Source {
     /**
      * 从已选择的html内容中抽取
      */
-    SELECTED_HTML,
+    REGION,
     /**
      * 从原html中抽取
      */

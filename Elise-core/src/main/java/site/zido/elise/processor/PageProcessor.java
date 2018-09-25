@@ -6,6 +6,8 @@ import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.scheduler.TaskScheduler;
 
+import java.util.List;
+
 /**
  * the page processor
  *
@@ -20,5 +22,5 @@ public interface PageProcessor {
      * @param putter put request holder
      * @return results
      */
-    ResultItem process(Task task, Page page, TaskScheduler putter);
+    List<ResultItem> process(Task task, Page page, TaskScheduler putter);
 }

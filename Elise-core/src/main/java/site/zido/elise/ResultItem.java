@@ -1,6 +1,7 @@
 package site.zido.elise;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Map;
  * @author zido
  */
 public class ResultItem {
-    private Map<String, Object> fields = new LinkedHashMap<>();
+    private Map<String, List<String>> fields = new LinkedHashMap<>();
 
     private Request request;
 
@@ -23,11 +24,11 @@ public class ResultItem {
         return fields.get(key);
     }
 
-    public Map<String, Object> getAll() {
+    public Map<String, List<String>> getAll() {
         return fields;
     }
 
-    public ResultItem put(String key, Object value) {
+    public ResultItem put(String key, List<String> value) {
         fields.put(key, value);
         return this;
     }

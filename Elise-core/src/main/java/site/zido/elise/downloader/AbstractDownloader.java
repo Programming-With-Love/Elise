@@ -11,14 +11,6 @@ import site.zido.elise.selector.Html;
  * @author zido
  */
 public abstract class AbstractDownloader implements Downloader {
-    public Html download(String url) {
-        return download(url, null);
-    }
-
-    public Html download(String url, String charset) {
-        Page page = download(new Request(url), new Site().setCharset(charset).toTask());
-        return page.html();
-    }
 
     public Page downloadAsPage(String url) {
         return download(new Request(url), new Site().toTask());

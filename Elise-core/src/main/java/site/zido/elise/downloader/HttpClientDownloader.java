@@ -71,7 +71,7 @@ public class HttpClientDownloader extends AbstractDownloader {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
             page = handleResponse(request, request.getCharset() != null ? request.getCharset() : task.getSite().getCharset(), httpResponse);
             onSuccess(request);
-            logger.info("downloading page success {}", request.getUrl());
+            logger.debug("downloading page success {}", request.getUrl());
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
@@ -103,7 +103,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
         page.setCharset(charset);
         page.setRawText(new String(bytes, charset));
-        page.setUrl(new PlainText(request.getUrl()));
+        page.setUrl(request.getUrl());
         page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         page.setDownloadSuccess(true);
         if (responseHeader) {

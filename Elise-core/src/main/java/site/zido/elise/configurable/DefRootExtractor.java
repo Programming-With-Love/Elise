@@ -40,6 +40,13 @@ public class DefRootExtractor extends DefExtractor {
      * 子规则
      */
     private ArrayList<DefExtractor> children;
+    public DefRootExtractor(){
+        this("default-task");
+    }
+
+    public DefRootExtractor(String name){
+        super(name);
+    }
 
     public List<ConfigurableUrlFinder> getTargetUrl() {
         return targetUrl;

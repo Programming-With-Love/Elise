@@ -17,7 +17,7 @@ public interface ModelExtractor {
      * @param page the page
      * @return the result item
      */
-    ResultItem extract(Page page);
+    List<ResultItem> extract(Page page);
 
     /**
      * Extract links list.

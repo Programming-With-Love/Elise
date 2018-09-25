@@ -1,6 +1,6 @@
 package site.zido.elise.distributed.pojo;
 
-import site.zido.elise.DistributedTask;
+import site.zido.elise.DefaultExtractorTask;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 
@@ -10,11 +10,11 @@ import site.zido.elise.Request;
  * @author zido
  */
 public class Seed {
-    private DistributedTask task;
+    private DefaultExtractorTask task;
     private Request request;
     private Page page;
 
-    public Seed(DistributedTask task, Request request, Page page) {
+    public Seed(DefaultExtractorTask task, Request request, Page page) {
         this.task = task;
         this.request = request;
         this.page = page;
@@ -24,11 +24,11 @@ public class Seed {
 
     }
 
-    public DistributedTask getTask() {
+    public DefaultExtractorTask getTask() {
         return task;
     }
 
-    public Seed setTask(DistributedTask task) {
+    public Seed setTask(DefaultExtractorTask task) {
         this.task = task;
         return this;
     }

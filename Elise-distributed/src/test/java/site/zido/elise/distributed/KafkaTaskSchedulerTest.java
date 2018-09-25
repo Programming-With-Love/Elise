@@ -1,6 +1,6 @@
 package site.zido.elise.distributed;
 
-import site.zido.elise.DistributedTask;
+import site.zido.elise.DefaultExtractorTask;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
@@ -67,7 +67,7 @@ public class KafkaTaskSchedulerTest {
 
     @Test
     public void testScheduler() throws InterruptedException {
-        DistributedTask dTask = new DistributedTask(6L, new Site().setCycleRetryTimes(10),
+        DefaultExtractorTask dTask = new DefaultExtractorTask(6L, new Site().setCycleRetryTimes(10),
                 new DefRootExtractor()
                         .addTargetUrl(new ConfigurableUrlFinder()
                                 .setType(ConfigurableUrlFinder.Type.REGEX)
@@ -77,13 +77,13 @@ public class KafkaTaskSchedulerTest {
         SpringKafkaTaskScheduler scheduler = new SpringKafkaTaskScheduler(new HashSetDeduplicationProcessor());
         scheduler.setBootstrapServers("192.168.0.103:9092");
         scheduler.registerAnalyzer((task, request, page) -> {
-            DistributedTask tmp = (DistributedTask) task;
+            DefaultExtractorTask tmp = (DefaultExtractorTask) task;
             logger.info("analyzer message:" + task.getId());
             Assert.assertEquals(".*", tmp.getDefExtractor().getTargetUrl().get(0).getValue());
             latch.countDown();
         });
         scheduler.registerDownloader(((task, request) -> {
-            DistributedTask tmp = (DistributedTask) task;
+            DefaultExtractorTask tmp = (DefaultExtractorTask) task;
             logger.info("downloader message:" + task.getId());
             Assert.assertEquals(".*", tmp.getDefExtractor().getTargetUrl().get(0).getValue());
             latch.countDown();

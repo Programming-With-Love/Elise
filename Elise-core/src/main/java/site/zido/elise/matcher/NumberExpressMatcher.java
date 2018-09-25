@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * a matcher for judging values
+ * a matcher for judging int values
  *
  * @author zido
  */
-public class NumberExpressMatcher implements EliseMatcher {
+public class NumberExpressMatcher implements Matcher {
 
-    private static final Pattern CHECK_PATTERN = Pattern.compile("^[1-9,<-]*$");
+    private static final Pattern CHECK_PATTERN = Pattern.compile("^[0-9,<-]*$");
     private List<Region> regions;
     private List<Integer> rows;
 
@@ -23,8 +23,8 @@ public class NumberExpressMatcher implements EliseMatcher {
 
     public NumberExpressMatcher(String express, char sep) {
         Asserts.hasLength(express, "express can't be null or empty");
-        if ((sep == '<' && !CHECK_PATTERN.matcher(express).find()) || !express.matches("^[1-9," + sep + "-]*$")) {
-            throw new IllegalArgumentException("express only can contains [1-9," + sep + "-]");
+        if ((sep == '<' && !CHECK_PATTERN.matcher(express).find()) || !express.matches("^[0-9," + sep + "-]*$")) {
+            throw new IllegalArgumentException("express only can contains [0-9," + sep + "-]");
         }
         regions = new ArrayList<>();
         rows = new ArrayList<>();
@@ -34,7 +34,7 @@ public class NumberExpressMatcher implements EliseMatcher {
                 Region region = new Region();
                 char[] chars = segment.toCharArray();
                 if (chars[0] == sep && chars.length > 1) {
-                    region.max = Integer.parseInt(new String(chars, 1, chars.length));
+                    region.max = Integer.parseInt(new String(chars, 1, chars.length - 1));
                 } else {
                     StringBuilder tempNumberBuilder = new StringBuilder(chars.length - 1);
                     int i = 0;
@@ -64,6 +64,13 @@ public class NumberExpressMatcher implements EliseMatcher {
             } else {
                 Asserts.hasLength(segment, "every number or segment must be split by [,]");
                 rows.add(Integer.valueOf(segment));
+            }
+        }
+        for (Region region : regions) {
+            if(region.max < region.min){
+                region.max = region.max ^ region.min;
+                region.min = region.max ^ region.min;
+                region.max = region.max ^ region.min;
             }
         }
     }

@@ -1,11 +1,12 @@
 package site.zido.elise.pipeline;
 
-import site.zido.elise.DistributedTask;
+import site.zido.elise.DefaultExtractorTask;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.configurable.DefRootExtractor;
 import site.zido.elise.utils.ValidateUtils;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,8 +38,8 @@ public abstract class AbstractSqlPipeline implements Pipeline {
          * @return 表名
          */
         default String getTableName(Task task) {
-            if (task instanceof DistributedTask) {
-                DefRootExtractor defExtractor = ((DistributedTask) task).getDefExtractor();
+            if (task instanceof DefaultExtractorTask) {
+                DefRootExtractor defExtractor = ((DefaultExtractorTask) task).getDefExtractor();
                 return defExtractor.getName();
             }
             return null;
@@ -78,7 +79,7 @@ public abstract class AbstractSqlPipeline implements Pipeline {
 
     @Override
     public void process(ResultItem resultItem, Task task) {
-        Map<String, Object> all = resultItem.getAll();
+        Map<String, List<String>> all = resultItem.getAll();
         String tableName;
         if (this.table == null || ValidateUtils.isEmpty(tableName = this.table.getTableName(task))) {
             tableName = defaultTableName;
@@ -87,8 +88,7 @@ public abstract class AbstractSqlPipeline implements Pipeline {
         if (generator != null) {
             sql.append("id").append(",");
         }
-        Map<String, Object> item = (Map<String, Object>) all.get(tableName);
-        Set<String> set = item.keySet();
+        Set<String> set = all.keySet();
         if (set.size() > 0) {
             sql.append(String.join(",", set));
         }
@@ -104,7 +104,8 @@ public abstract class AbstractSqlPipeline implements Pipeline {
         }
         for (String key : set) {
             sql.append("?,");
-            objects[i++] = item.get(key);
+            List<String> value = all.get(key);
+            objects[i++] = value.get(0);
         }
         sql = new StringBuilder(sql.substring(0, sql.length() - 1));
         sql.append(")");

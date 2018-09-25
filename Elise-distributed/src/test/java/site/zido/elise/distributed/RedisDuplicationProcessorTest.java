@@ -1,6 +1,6 @@
 package site.zido.elise.distributed;
 
-import site.zido.elise.DistributedTask;
+import site.zido.elise.DefaultExtractorTask;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
 import site.zido.elise.scheduler.DuplicationProcessor;
@@ -15,8 +15,8 @@ import org.junit.Test;
 public class RedisDuplicationProcessorTest {
     @Test
     public void testRedis() {
-        DistributedTask task = new DistributedTask(1L, new Site(), null);
-        DistributedTask task2 = new DistributedTask(2L, new Site(), null);
+        DefaultExtractorTask task = new DefaultExtractorTask(1L, new Site(), null);
+        DefaultExtractorTask task2 = new DefaultExtractorTask(2L, new Site(), null);
         DuplicationProcessor processor = new SimpleRedisDuplicationProcessor("redis://123456@localhost:6379/0");
         processor.resetDuplicateCheck(task);
         processor.resetDuplicateCheck(task2);

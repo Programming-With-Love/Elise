@@ -4,7 +4,7 @@ package site.zido.elise.matcher;
  * match interface
  * @author zido
  */
-public interface EliseMatcher {
+public interface Matcher {
     /**
      * Determine if it matches the target
      * @param target the target

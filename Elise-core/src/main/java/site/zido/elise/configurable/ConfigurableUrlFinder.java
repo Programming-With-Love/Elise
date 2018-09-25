@@ -38,6 +38,12 @@ public class ConfigurableUrlFinder {
 
     private List<LinkProperty> linkProperties = new ArrayList<>();
 
+    public ConfigurableUrlFinder(){}
+
+    public ConfigurableUrlFinder(String value){
+        this.value = value;
+    }
+
     public String getValue() {
         return value;
     }

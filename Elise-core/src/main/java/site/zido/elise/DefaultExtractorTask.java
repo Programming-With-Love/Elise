@@ -5,22 +5,21 @@ import site.zido.elise.configurable.DefRootExtractor;
 import site.zido.elise.extractor.ModelExtractor;
 
 /**
- * 可用于分布式传输的task
+ * default extractor task
  * <br>
- * 用作信息载体，仅携带必要信息
  *
  * @author zido
  */
-public class DistributedTask implements ExtractorTask {
+public class DefaultExtractorTask implements ExtractorTask {
     private Long id;
     private Site site;
     private DefRootExtractor defExtractor;
 
-    public DistributedTask() {
+    public DefaultExtractorTask() {
 
     }
 
-    public DistributedTask(ExtractorTask task) {
+    public DefaultExtractorTask(ExtractorTask task) {
         this.id = task.getId();
         this.site = task.getSite();
         ModelExtractor modelExtractor = task.modelExtractor();
@@ -31,7 +30,7 @@ public class DistributedTask implements ExtractorTask {
         }
     }
 
-    public DistributedTask(Long id, Site site, DefRootExtractor extractor) {
+    public DefaultExtractorTask(Long id, Site site, DefRootExtractor extractor) {
         this.id = id;
         this.site = site;
         this.defExtractor = extractor;
@@ -42,7 +41,7 @@ public class DistributedTask implements ExtractorTask {
         return id;
     }
 
-    public DistributedTask setId(Long id) {
+    public DefaultExtractorTask setId(Long id) {
         this.id = id;
         return this;
     }
@@ -52,7 +51,7 @@ public class DistributedTask implements ExtractorTask {
         return site;
     }
 
-    public DistributedTask setSite(Site site) {
+    public DefaultExtractorTask setSite(Site site) {
         this.site = site;
         return this;
     }
@@ -62,7 +61,7 @@ public class DistributedTask implements ExtractorTask {
         return new ConfigurableModelExtractor(defExtractor);
     }
 
-    public DistributedTask setDefExtractor(DefRootExtractor defExtractor) {
+    public DefaultExtractorTask setDefExtractor(DefRootExtractor defExtractor) {
         this.defExtractor = defExtractor;
         return this;
     }

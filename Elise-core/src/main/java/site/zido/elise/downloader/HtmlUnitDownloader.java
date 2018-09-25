@@ -56,7 +56,7 @@ public class HtmlUnitDownloader extends AbstractDownloader {
             int statusCode = htmlPage.getWebResponse().getStatusCode();
             page = new Page();
             page.setStatusCode(statusCode);
-            page.setUrl(new PlainText(request.getUrl()));
+            page.setUrl(request.getUrl());
             page.setRawText(htmlPage.asXml());
             page.setDownloadSuccess(true);
         } catch (MalformedURLException e) {

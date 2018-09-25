@@ -16,11 +16,9 @@ import java.util.Map;
 public class Page {
     private static final String HASH_SEP = "#";
 
-    private Html html;
-
     private String rawText;
 
-    private PlainText url;
+    private String url;
 
     private Map<String, List<String>> headers;
 
@@ -42,36 +40,15 @@ public class Page {
     }
 
     /**
-     * get html content of page
-     *
-     * @return html
-     */
-    public Html html() {
-        if (html == null) {
-            html = new Html(rawText, url.toString());
-        }
-        return html;
-    }
-
-    /**
-     * @param html html
-     * @deprecated since 0.4.0
-     * The html is parse just when first time of calling {@link #html()}, so use {@link #setRawText(String)} instead.
-     */
-    public void setHtml(Html html) {
-        this.html = html;
-    }
-
-    /**
      * get url of current page
      *
      * @return url of current page
      */
-    public PlainText getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public Page setUrl(PlainText url) {
+    public Page setUrl(String url) {
         this.url = url;
         return this;
     }
@@ -128,7 +105,6 @@ public class Page {
     @Override
     public String toString() {
         return "Page{" +
-                ", html=" + html +
                 ", rawText='" + rawText + '\'' +
                 ", url=" + url +
                 ", headers=" + headers +

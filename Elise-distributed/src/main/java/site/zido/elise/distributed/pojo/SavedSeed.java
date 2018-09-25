@@ -1,6 +1,6 @@
 package site.zido.elise.distributed.pojo;
 
-import site.zido.elise.DistributedTask;
+import site.zido.elise.DefaultExtractorTask;
 import site.zido.elise.Request;
 import site.zido.elise.distributed.SavedPage;
 
@@ -12,7 +12,7 @@ import site.zido.elise.distributed.SavedPage;
 public class SavedSeed extends Seed {
     private SavedPage savedPage;
 
-    public SavedSeed(DistributedTask task, Request request, SavedPage savedPage) {
+    public SavedSeed(DefaultExtractorTask task, Request request, SavedPage savedPage) {
         super(task, request, null);
         this.savedPage = savedPage;
     }

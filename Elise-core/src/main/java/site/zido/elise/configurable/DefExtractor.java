@@ -23,15 +23,11 @@ public class DefExtractor {
     /**
      * 抽取值，默认为xpath跟路径
      */
-    private String value = "//";
+    private String value = "/html/body";
     /**
      * 抽取值类型，默认为xpath
      */
     private ExpressionType type = ExpressionType.XPATH;
-    /**
-     * 是否多条 ,默认为单条
-     */
-    private Boolean multi = false;
     /**
      * 是否允许空 ,默认允许为空
      */
@@ -40,7 +36,11 @@ public class DefExtractor {
     /**
      * 选择抽取范围
      */
-    private Source source = Source.RAW_HTML;
+    private Source source = Source.REGION;
+
+    public DefExtractor(String name) {
+        this.name = name;
+    }
 
 
     public String getName() {
@@ -67,15 +67,6 @@ public class DefExtractor {
 
     public DefExtractor setType(ExpressionType type) {
         this.type = type;
-        return this;
-    }
-
-    public Boolean getMulti() {
-        return multi;
-    }
-
-    public DefExtractor setMulti(Boolean multi) {
-        this.multi = multi;
         return this;
     }
 

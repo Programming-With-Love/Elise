@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class ThreadTaskSchedulerTest {
     @Test
     public void testListen() throws InterruptedException {
-        DistributedTask distributedTask = new DistributedTask(1L, new Site(), null);
+        DefaultExtractorTask defaultExtractorTask = new DefaultExtractorTask(1L, new Site(), null);
         CountDownLatch latch = new CountDownLatch(2);
         SimpleTaskScheduler scheduler = new SimpleTaskScheduler();
         scheduler.registerAnalyzer((task, request, page) -> {
@@ -37,12 +37,12 @@ public class ThreadTaskSchedulerTest {
 
         Request request = new Request();
         request.setUrl("http://www.baidu.com");
-        scheduler.pushRequest(distributedTask, request);
+        scheduler.pushRequest(defaultExtractorTask, request);
         //此请求将被过滤
-        scheduler.pushRequest(distributedTask, request);
+        scheduler.pushRequest(defaultExtractorTask, request);
         Page page = new Page();
-        page.setUrl(new PlainText("i'm test"));
-        scheduler.process(distributedTask, request, page);
+        page.setUrl("i'm test");
+        scheduler.process(defaultExtractorTask, request, page);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
     }
 }

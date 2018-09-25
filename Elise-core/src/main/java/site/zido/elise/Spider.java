@@ -3,6 +3,7 @@ package site.zido.elise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.Downloader;
+import site.zido.elise.matcher.NumberExpressMatcher;
 import site.zido.elise.pipeline.ConsolePipeline;
 import site.zido.elise.pipeline.Pipeline;
 import site.zido.elise.processor.PageProcessor;
@@ -11,7 +12,6 @@ import site.zido.elise.utils.UrlUtils;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author zido
  */
-public class Spider implements RequestPutter{
+public class Spider implements RequestPutter {
     private Downloader downloader;
     private List<Pipeline> pipelines = new ArrayList<>();
     private PageProcessor pageProcessor;
@@ -63,38 +63,39 @@ public class Spider implements RequestPutter{
         public void onProcess(Task task, Request request, Page page) {
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
-                ResultItem resultItem = pageProcessor.process(task, page, manager);
-                if (resultItem != null) {
-                    if (site.getAcceptStatCode().contains(page.getStatusCode())) {
-                        if (!resultItem.isSkip()) {
-                            resultItem.setRequest(request);
-                            for (Pipeline pipeline : pipelines) {
-                                try {
-                                    pipeline.process(resultItem, task);
-                                } catch (Exception e) {
-                                    logger.error("处理发生错误", e);
+                String codeAccepter = site.getCodeAccepter();
+                NumberExpressMatcher matcher = new NumberExpressMatcher(codeAccepter);
+                if (matcher.matches(page.getStatusCode())) {
+                    List<ResultItem> resultItems = pageProcessor.process(task, page, manager);
+                    if (!ValidateUtils.isEmpty(resultItems)) {
+                        for (ResultItem resultItem : resultItems) {
+                            if (resultItem != null) {
+                                resultItem.setRequest(request);
+                                for (Pipeline pipeline : pipelines) {
+                                    try {
+                                        pipeline.process(resultItem, task);
+                                    } catch (Throwable e) {
+                                        logger.error("pipeline have made a exception", e);
+                                    }
                                 }
+                            } else {
+                                logger.info("page not find anything, page {}", request.getUrl());
                             }
                         }
-                    } else {
-                        logger.info("page status code error, page {} , code: {}", request.getUrl(), page.getStatusCode());
                     }
-
-                } else {
-                    logger.info("page not find anything, page {}", request.getUrl());
-                }
-
-                sleep(site.getSleepTime());
-                onSuccess(request);
-            } else {
-                Site site = task.getSite();
-                if (site.getCycleRetryTimes() == 0) {
                     sleep(site.getSleepTime());
-                } else {
-                    // for cycle retry
-                    doCycleRetry(task, request);
+                    onSuccess(request);
+                    return;
                 }
             }
+            Site site = task.getSite();
+            if (site.getCycleRetryTimes() == 0) {
+                sleep(site.getSleepTime());
+            } else {
+                // for cycle retry
+                doCycleRetry(task, request);
+            }
+
 
         }
     }
@@ -117,7 +118,8 @@ public class Spider implements RequestPutter{
         manager.removeAnalyzer(processor);
         manager.removeDownloader(processor);
     }
-    public static SpiderOptionBuilder builder(TaskScheduler scheduler){
+
+    public static SpiderOptionBuilder builder(TaskScheduler scheduler) {
         return new SpiderOptionBuilder(new Spider(scheduler));
     }
 
@@ -158,6 +160,7 @@ public class Spider implements RequestPutter{
             logger.error("Thread interrupted when sleep", e);
         }
     }
+
     /**
      * Add urls to crawl. <br>
      *
@@ -244,7 +247,7 @@ public class Spider implements RequestPutter{
             return this;
         }
 
-        public Spider build(){
+        public Spider build() {
             return spider;
         }
     }

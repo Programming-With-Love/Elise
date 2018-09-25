@@ -35,6 +35,7 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
             semaphore.acquire();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            return;
         }
         super.rootExecutor.execute(() -> {
             next.onDownload(task, request);
@@ -52,6 +53,7 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
             semaphore.acquire();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            return;
         }
         super.rootExecutor.execute(() -> {
             next.onProcess(task, request,page);
