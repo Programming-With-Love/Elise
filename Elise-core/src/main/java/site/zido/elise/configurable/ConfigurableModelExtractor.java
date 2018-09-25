@@ -101,9 +101,9 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                     return link;
                 }
                 try {
-                    return new URL(new URL(page.getUrl().toString()), link).toString();
+                    return new URL(new URL(page.getUrl()), link).toString();
                 } catch (MalformedURLException e) {
-                    logger.error("兜底链接处理失败,base:[{}],spec:[{}]", page.getUrl().toString(), link);
+                    logger.error("兜底链接处理失败,base:[{}],spec:[{}]", page.getUrl(), link);
                 }
                 return link;
             }).collect(Collectors.toList());
