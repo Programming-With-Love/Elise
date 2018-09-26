@@ -1,7 +1,6 @@
 package site.zido.elise.processor;
 
 import site.zido.elise.Page;
-import site.zido.elise.RequestPutter;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.scheduler.TaskScheduler;

@@ -1,5 +1,6 @@
 package site.zido.elise.utils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -49,11 +50,11 @@ public class ValidateUtils {
         return array == null || array.length == 0;
     }
 
-    public static boolean isEmpty(List list) {
+    public static boolean isEmpty(Collection<?> list) {
         return null == list || list.size() == 0;
     }
 
-    public static boolean isNotEmpty(List list) {
+    public static boolean isNotEmpty(Collection<?> list) {
         return !isEmpty(list);
     }
 

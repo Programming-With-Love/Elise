@@ -2,12 +2,18 @@ package site.zido.elise;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.matcher.NumberExpressMatcher;
 import site.zido.elise.pipeline.ConsolePipeline;
 import site.zido.elise.pipeline.Pipeline;
+import site.zido.elise.processor.ExtractorPageProcessor;
 import site.zido.elise.processor.PageProcessor;
+import site.zido.elise.scheduler.SimpleTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
+import site.zido.elise.task.DefaultMemoryTaskManager;
+import site.zido.elise.task.TaskManager;
+import site.zido.elise.utils.Asserts;
 import site.zido.elise.utils.UrlUtils;
 import site.zido.elise.utils.ValidateUtils;
 
@@ -19,31 +25,32 @@ import java.util.List;
  *
  * @author zido
  */
-public class Spider implements RequestPutter {
+public class Spider {
+    private static Logger logger = LoggerFactory.getLogger(Spider.class);
+
+    public static Spider defaults() {
+        return defaults(1);
+    }
+
+    public static Spider defaults(int threadNum) {
+        Spider spider = new Spider(new SimpleTaskScheduler(threadNum));
+        spider.setDownloader(new AutoSwitchDownloader());
+        spider.addPipeline(new ConsolePipeline());
+        spider.setPageProcessor(new ExtractorPageProcessor());
+        spider.setTaskManager(new DefaultMemoryTaskManager());
+        return spider;
+    }
+
     private Downloader downloader;
     private List<Pipeline> pipelines = new ArrayList<>();
     private PageProcessor pageProcessor;
     private DefaultSpiderListenProcessor processor = new DefaultSpiderListenProcessor();
-    private static Logger logger = LoggerFactory.getLogger(Spider.class);
 
-    private int threadNum = 1;
-
-    private List<SpiderListener> spiderListeners;
+    private TaskManager taskManager;
 
     private TaskScheduler manager;
 
-    @Override
-    public void pushRequest(Task task, Request request) {
-        manager.pushRequest(task, request);
-    }
-
-    private void pushRequest(Task task, List<Request> request) {
-        for (Request r : request) {
-            pushRequest(task, r);
-        }
-    }
-
-    public Spider(TaskScheduler manager) {
+    private Spider(TaskScheduler manager) {
         this.manager = manager;
     }
 
@@ -84,7 +91,6 @@ public class Spider implements RequestPutter {
                         }
                     }
                     sleep(site.getSleepTime());
-                    onSuccess(request);
                     return;
                 }
             }
@@ -100,54 +106,23 @@ public class Spider implements RequestPutter {
         }
     }
 
-    public Spider start() {
-        if (downloader != null) {
-            manager.registerDownloader(processor);
-            downloader.setThread(threadNum);
-        }
-        if (pageProcessor != null) {
-            manager.registerAnalyzer(processor);
-        }
-        if (pipelines.isEmpty()) {
-            pipelines.add(new ConsolePipeline());
-        }
-        return this;
-    }
-
-    public void stop() {
-        manager.removeAnalyzer(processor);
-        manager.removeDownloader(processor);
-    }
-
-    public static SpiderOptionBuilder builder(TaskScheduler scheduler) {
-        return new SpiderOptionBuilder(new Spider(scheduler));
-    }
-
-    private void onError(Request request) {
-        if (!ValidateUtils.isEmpty(spiderListeners)) {
-            for (SpiderListener spiderListener : spiderListeners) {
-                spiderListener.onError(request);
-            }
-        }
-    }
-
-    private void onSuccess(Request request) {
-        if (!ValidateUtils.isEmpty(spiderListeners)) {
-            for (SpiderListener spiderListener : spiderListeners) {
-                spiderListener.onSuccess(request);
-            }
-        }
+    protected void preStart() {
+        Asserts.notNull(downloader);
+        Asserts.notNull(pageProcessor);
+        Asserts.notEmpty(pipelines, "pipelines can not be null or empty");
+        manager.registerDownloader(processor);
+        manager.registerAnalyzer(processor);
     }
 
     private void doCycleRetry(Task task, Request request) {
         Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
-            pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, 1));
+            manager.pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, 1));
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
             cycleTriedTimes++;
             if (cycleTriedTimes < task.getSite().getCycleRetryTimes()) {
-                pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
+                manager.pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
             }
         }
         sleep(task.getSite().getRetrySleepTime());
@@ -168,88 +143,55 @@ public class Spider implements RequestPutter {
      * @return this
      */
     public Spider addUrl(String... urls) {
+        Asserts.notEmpty(urls);
+        preStart();
         for (String url : urls) {
-            pushRequest(new Site().toTask(), new Request(url));
+            manager.pushRequest(taskManager.lastTask(), new Request(url));
         }
+        return this;
+    }
+
+    public Spider addTask(Task task) {
+        Asserts.notNull(task);
+        preStart();
+        taskManager.addTask(task);
         return this;
     }
 
     public Spider addUrl(Task task, String... urls) {
+        Asserts.notNull(task);
+        Asserts.notEmpty(urls);
+        preStart();
+        taskManager.addTask(task);
         for (String url : urls) {
-            pushRequest(task, new Request(url));
+            manager.pushRequest(task, new Request(url));
         }
         return this;
     }
 
-    public static class SpiderOptionBuilder {
-        private Spider spider;
+    public Spider addPipeline(Pipeline pipeline) {
+        Asserts.notNull(pipeline);
+        pipelines.add(pipeline);
+        return this;
+    }
 
-        private SpiderOptionBuilder(Spider spider) {
-            this.spider = spider;
-        }
+    public List<Pipeline> getPipelines() {
+        return pipelines;
+    }
 
+    public Spider setDownloader(Downloader downloader) {
+        this.downloader = downloader;
+        return this;
+    }
 
-        /**
-         * add a pipeline for Spider
-         *
-         * @param pipeline pipeline
-         * @return this
-         * @see Pipeline
-         * @since 0.2.1
-         */
-        public SpiderOptionBuilder addPipeline(Pipeline pipeline) {
-            spider.pipelines.add(pipeline);
-            return this;
-        }
+    public Spider setPageProcessor(PageProcessor pageProcessor) {
+        this.pageProcessor = pageProcessor;
+        return this;
+    }
 
-        /**
-         * set pipelines for Spider
-         *
-         * @param pipelines pipelines
-         * @return this
-         * @see Pipeline
-         * @since 0.4.1
-         */
-        public SpiderOptionBuilder setPipelines(List<Pipeline> pipelines) {
-            spider.pipelines = pipelines;
-            return this;
-        }
-
-        /**
-         * clear the pipelines set
-         *
-         * @return this
-         */
-        public SpiderOptionBuilder clearPipeline() {
-            spider.pipelines.clear();
-            return this;
-        }
-
-        /**
-         * set the downloader of spider
-         *
-         * @param downloader downloader
-         * @return this
-         * @see Downloader
-         */
-        public SpiderOptionBuilder setDownloader(Downloader downloader) {
-            spider.downloader = downloader;
-            return this;
-        }
-
-        public SpiderOptionBuilder setSpiderListeners(List<SpiderListener> spiderListeners) {
-            spider.spiderListeners = spiderListeners;
-            return this;
-        }
-
-        public SpiderOptionBuilder setPageProcessor(PageProcessor pageProcessor) {
-            spider.pageProcessor = pageProcessor;
-            return this;
-        }
-
-        public Spider build() {
-            return spider;
-        }
+    public Spider setTaskManager(TaskManager manager) {
+        this.taskManager = manager;
+        return this;
     }
 
 }

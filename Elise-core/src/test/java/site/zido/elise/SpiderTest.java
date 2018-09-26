@@ -28,16 +28,7 @@ public class SpiderTest {
     @Test
     public void testMulti() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(6);
-        Spider spider = Spider.builder(new SimpleTaskScheduler(1))
-                .setDownloader(new HttpClientDownloader())
-                .setPageProcessor(new ExtractorPageProcessor())
-                .addPipeline(new ConsolePipeline(){
-                    @Override
-                    public void process(ResultItem resultItem, Task task) {
-                        super.process(resultItem, task);
-                        latch.countDown();
-                    }
-                }).build().start();
+        Spider spider = Spider.defaults();
         DefRootExtractor extractor = new DefRootExtractor("article");
         extractor.setType(ExpressionType.CSS).setValue(".page-container>.blog");
         extractor.addTargetUrl(new ConfigurableUrlFinder("zido.site/?$"));
@@ -49,6 +40,12 @@ public class SpiderTest {
                 .setType(ExpressionType.CSS));
         DefaultExtractorTask task = new DefaultExtractorTask(IdWorker.nextId(), new Site(), extractor);
         spider.addUrl(task,"http://zido.site");
+        latch.await();
+    }
+
+    @Test
+    public void testSimpleRun() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         latch.await();
     }
 }
