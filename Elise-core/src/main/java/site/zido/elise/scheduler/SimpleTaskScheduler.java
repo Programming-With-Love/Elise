@@ -1,35 +1,21 @@
 package site.zido.elise.scheduler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
-import site.zido.elise.Task;
+import site.zido.elise.task.DefaultMemoryTaskManager;
+import site.zido.elise.task.TaskManager;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This message manager provides thread-level messaging that is implemented from {@link TaskScheduler}.
- * <p>
- * This class is thread-safe. In addition to the efficiency issues,
- * you can rest assured that other concerns can be used with confidence.
- * <p>
- * This is the default stand-alone task scheduling management,
- * is thread-level and very simple, follow-up may add a better scheduling management solution,
- * currently only provides a simple implementation.
- * <p>
- * it based on {@link ThreadPoolExecutor}
- * <p>
- * Even if the internal download listener and analysis listener are all null,
- * it can still be used as a sending client to send messages.
  *
  * @author zido
  */
 public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler {
-    /**
-     * logger
-     */
-    private final static Logger logger = LoggerFactory.getLogger(SimpleTaskScheduler.class);
 
     protected LoadBalancer<DownloadListener> downloadListenerLoadBalancer;
     protected LoadBalancer<AnalyzerListener> analyzerListenerLoadBalancer;
@@ -54,25 +40,25 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         this.analyzerListenerLoadBalancer = new SimpleLoadBalancer<>();
         this.downloadListenerLoadBalancer = new SimpleLoadBalancer<>();
         this.blockSize = blockSize;
-        rootExecutor = new ThreadPoolExecutor(blockSize, blockSize, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(blockSize),new ThreadPoolExecutor.CallerRunsPolicy());
+        rootExecutor = new ThreadPoolExecutor(blockSize, blockSize, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(blockSize), new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     @Override
-    public void process(Task task, Request request, Page page) {
+    public void process(long taskId, Request request, Page page) {
         AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no analyzer");
         }
-        rootExecutor.execute(() -> next.onProcess(task, request, page));
+        rootExecutor.execute(() -> next.onProcess(taskId, request, page));
     }
 
     @Override
-    protected void pushWhenNoDuplicate(Request request, Task task) {
+    protected void pushWhenNoDuplicate(Request request, long taskId) {
         DownloadListener next = downloadListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no downloader");
         }
-        rootExecutor.execute(() -> next.onDownload(task, request));
+        rootExecutor.execute(() -> next.onDownload(taskId, request));
     }
 
     @Override

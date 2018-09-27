@@ -7,19 +7,19 @@ public abstract class AbstractNotRepeatTaskManager implements TaskManager {
     private Task lastTask = new Site().toTask();
 
     @Override
-    public void addTask(Task task) {
+    public boolean addTask(Task task) {
         lastTask = task;
         if (getTask(task.getId()) != null) {
-            return;
+            return false;
         }
-        addNotRepeat(task);
+        return addNotRepeat(task);
     }
 
     /**
      * add task
      * @param task task
      */
-    protected abstract void addNotRepeat(Task task);
+    protected abstract boolean addNotRepeat(Task task);
 
     @Override
     public Task lastTask() {

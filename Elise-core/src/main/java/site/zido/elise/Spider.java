@@ -57,17 +57,19 @@ public class Spider {
     class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
 
         @Override
-        public void onDownload(Task task, Request request) {
+        public void onDownload(long taskId, Request request) {
+            Task task = taskManager.getTask(taskId);
             Site site = task.getSite();
             if (site.getDomain() == null && request != null && request.getUrl() != null) {
                 site.setDomain(UrlUtils.getDomain(request.getUrl()));
             }
             Page page = downloader.download(request, task);
-            manager.process(task, request, page);
+            manager.process(taskId, request, page);
         }
 
         @Override
-        public void onProcess(Task task, Request request, Page page) {
+        public void onProcess(long taskId, Request request, Page page) {
+            Task task = taskManager.getTask(taskId);
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
                 String codeAccepter = site.getCodeAccepter();
@@ -117,12 +119,12 @@ public class Spider {
     private void doCycleRetry(Task task, Request request) {
         Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
-            manager.pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, 1));
+            manager.pushRequest(task.getId(), new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, 1));
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
             cycleTriedTimes++;
             if (cycleTriedTimes < task.getSite().getCycleRetryTimes()) {
-                manager.pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
+                manager.pushRequest(task.getId(), new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
             }
         }
         sleep(task.getSite().getRetrySleepTime());
@@ -146,7 +148,7 @@ public class Spider {
         Asserts.notEmpty(urls);
         preStart();
         for (String url : urls) {
-            manager.pushRequest(taskManager.lastTask(), new Request(url));
+            manager.pushRequest(taskManager.lastTask().getId(), new Request(url));
         }
         return this;
     }
@@ -164,7 +166,7 @@ public class Spider {
         preStart();
         taskManager.addTask(task);
         for (String url : urls) {
-            manager.pushRequest(task, new Request(url));
+            manager.pushRequest(task.getId(), new Request(url));
         }
         return this;
     }

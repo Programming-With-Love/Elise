@@ -10,7 +10,7 @@ import site.zido.elise.extractor.ModelExtractor;
  *
  * @author zido
  */
-public class DefaultExtractorTask implements ExtractorTask {
+public class DefaultExtractorTask implements Task {
     private Long id;
     private Site site;
     private DefRootExtractor defExtractor;
@@ -19,7 +19,7 @@ public class DefaultExtractorTask implements ExtractorTask {
 
     }
 
-    public DefaultExtractorTask(ExtractorTask task) {
+    public DefaultExtractorTask(Task task) {
         this.id = task.getId();
         this.site = task.getSite();
         ModelExtractor modelExtractor = task.modelExtractor();

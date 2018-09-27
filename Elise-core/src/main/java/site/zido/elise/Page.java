@@ -1,7 +1,5 @@
 package site.zido.elise;
 
-import site.zido.elise.selector.Html;
-import site.zido.elise.selector.PlainText;
 import site.zido.elise.utils.StatusCode;
 
 import java.util.Arrays;
@@ -14,8 +12,6 @@ import java.util.Map;
  * @author zido
  */
 public class Page {
-    private static final String HASH_SEP = "#";
-
     private String rawText;
 
     private String url;

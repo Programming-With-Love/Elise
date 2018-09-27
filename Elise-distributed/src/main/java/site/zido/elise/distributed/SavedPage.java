@@ -37,7 +37,7 @@ public class SavedPage {
          * @param originUrl origin url
          * @return the string
          */
-        String read(String url, PlainText originUrl);
+        String read(String url, String originUrl);
     }
 
     /**

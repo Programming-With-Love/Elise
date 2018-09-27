@@ -44,7 +44,7 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
     }
 
     @Override
-    public void process(Task task, Request request, Page page) {
+    public void processTask(Task task, Request request, Page page) {
         AnalyzerListener next = super.analyzerListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no downloader");
@@ -56,7 +56,7 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
             return;
         }
         super.rootExecutor.execute(() -> {
-            next.onProcess(task, request,page);
+            next.onProcess(task, request, page);
             semaphore.release();
         });
     }

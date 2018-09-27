@@ -20,13 +20,13 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     }
 
     @Override
-    public boolean pushRequest(Task task, Request request) {
-        logger.trace("get a candidate url {}", request.getUrl());
+    public boolean pushRequest(long taskId, Request request) {
+        logger.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
-                || !duplicationProcessor.isDuplicate(request, task)) {
+                || !duplicationProcessor.isDuplicate(request, taskId)) {
             logger.debug("push to queue {}", request.getUrl());
-            pushWhenNoDuplicate(request, task);
+            pushWhenNoDuplicate(request, taskId);
             return true;
         }
         return false;
@@ -45,9 +45,10 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
      * This method is called after removing duplicate data
      *
      * @param request request
-     * @param task    task
+     * @param taskId  task
      */
-    protected abstract void pushWhenNoDuplicate(Request request, Task task);
+    protected abstract void pushWhenNoDuplicate(Request request, long taskId);
+
 
     public int getTotalRequestsCount(Task task) {
         return duplicationProcessor.getTotalRequestsCount(task);

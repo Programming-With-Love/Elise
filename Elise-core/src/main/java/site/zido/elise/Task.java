@@ -1,5 +1,7 @@
 package site.zido.elise;
 
+import site.zido.elise.extractor.ModelExtractor;
+
 /**
  * Task interface
  *
@@ -19,4 +21,11 @@ public interface Task {
      * @return site
      */
     Site getSite();
+
+    /**
+     * get the model extractor
+     *
+     * @return extractors
+     */
+    ModelExtractor modelExtractor();
 }
