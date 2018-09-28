@@ -34,7 +34,7 @@ public class ConfigurableSpiderTest {
                 .setValue("//div[@id='readme']/tidyText()")
                 .setNullable(false));
         Site site = new Site().setRetryTimes(3).setSleepTime(0);
-        task = new DefaultExtractorTask(123L, site, def);
+        task = new DefaultTask(123L, site, def);
     }
 
 }

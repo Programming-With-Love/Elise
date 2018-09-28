@@ -10,27 +10,16 @@ import site.zido.elise.extractor.ModelExtractor;
  *
  * @author zido
  */
-public class DefaultExtractorTask implements Task {
+public class DefaultTask implements Task {
     private Long id;
     private Site site;
     private DefRootExtractor defExtractor;
 
-    public DefaultExtractorTask() {
+    public DefaultTask() {
 
     }
 
-    public DefaultExtractorTask(Task task) {
-        this.id = task.getId();
-        this.site = task.getSite();
-        ModelExtractor modelExtractor = task.modelExtractor();
-        if (modelExtractor != null) {
-            if (modelExtractor instanceof ConfigurableModelExtractor) {
-                this.defExtractor = ((ConfigurableModelExtractor) modelExtractor).getDefRootExtractor();
-            }
-        }
-    }
-
-    public DefaultExtractorTask(Long id, Site site, DefRootExtractor extractor) {
+    public DefaultTask(Long id, Site site, DefRootExtractor extractor) {
         this.id = id;
         this.site = site;
         this.defExtractor = extractor;
@@ -41,7 +30,7 @@ public class DefaultExtractorTask implements Task {
         return id;
     }
 
-    public DefaultExtractorTask setId(Long id) {
+    public DefaultTask setId(Long id) {
         this.id = id;
         return this;
     }
@@ -51,7 +40,7 @@ public class DefaultExtractorTask implements Task {
         return site;
     }
 
-    public DefaultExtractorTask setSite(Site site) {
+    public DefaultTask setSite(Site site) {
         this.site = site;
         return this;
     }
@@ -61,7 +50,7 @@ public class DefaultExtractorTask implements Task {
         return new ConfigurableModelExtractor(defExtractor);
     }
 
-    public DefaultExtractorTask setDefExtractor(DefRootExtractor defExtractor) {
+    public DefaultTask setDefExtractor(DefRootExtractor defExtractor) {
         this.defExtractor = defExtractor;
         return this;
     }

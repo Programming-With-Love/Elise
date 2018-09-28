@@ -1,6 +1,6 @@
 package site.zido.elise.pipeline;
 
-import site.zido.elise.DefaultExtractorTask;
+import site.zido.elise.DefaultTask;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.configurable.DefRootExtractor;
@@ -38,8 +38,8 @@ public abstract class AbstractSqlPipeline implements Pipeline {
          * @return 表名
          */
         default String getTableName(Task task) {
-            if (task instanceof DefaultExtractorTask) {
-                DefRootExtractor defExtractor = ((DefaultExtractorTask) task).getDefExtractor();
+            if (task instanceof DefaultTask) {
+                DefRootExtractor defExtractor = ((DefaultTask) task).getDefExtractor();
                 return defExtractor.getName();
             }
             return null;

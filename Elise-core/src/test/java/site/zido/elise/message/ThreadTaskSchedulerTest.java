@@ -2,7 +2,6 @@ package site.zido.elise.message;
 
 import site.zido.elise.*;
 import site.zido.elise.scheduler.SimpleTaskScheduler;
-import site.zido.elise.selector.PlainText;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class ThreadTaskSchedulerTest {
     @Test
     public void testListen() throws InterruptedException {
-        DefaultExtractorTask defaultExtractorTask = new DefaultExtractorTask(1L, new Site(), null);
+        DefaultTask defaultTask = new DefaultTask(1L, new Site(), null);
         CountDownLatch latch = new CountDownLatch(2);
         SimpleTaskScheduler scheduler = new SimpleTaskScheduler();
         scheduler.registerAnalyzer((task, request, page) -> {
@@ -37,12 +36,12 @@ public class ThreadTaskSchedulerTest {
 
         Request request = new Request();
         request.setUrl("http://www.baidu.com");
-        scheduler.pushRequest(defaultExtractorTask, request);
+        scheduler.pushRequest(defaultTask, request);
         //此请求将被过滤
-        scheduler.pushRequest(defaultExtractorTask, request);
+        scheduler.pushRequest(defaultTask, request);
         Page page = new Page();
         page.setUrl("i'm test");
-        scheduler.process(defaultExtractorTask, request, page);
+        scheduler.process(defaultTask, request, page);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
     }
 }

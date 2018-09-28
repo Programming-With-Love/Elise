@@ -1,23 +1,13 @@
 package site.zido.elise;
 
-import org.junit.Assert;
 import org.junit.Test;
 import site.zido.elise.configurable.ConfigurableUrlFinder;
 import site.zido.elise.configurable.DefExtractor;
 import site.zido.elise.configurable.DefRootExtractor;
 import site.zido.elise.configurable.ExpressionType;
-import site.zido.elise.downloader.HttpClientDownloader;
-import site.zido.elise.extractor.ModelExtractor;
-import site.zido.elise.pipeline.ConsolePipeline;
-import site.zido.elise.processor.ExtractorPageProcessor;
-import site.zido.elise.scheduler.SimpleTaskScheduler;
-import site.zido.elise.selector.Selectable;
 import site.zido.elise.utils.IdWorker;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * SpiderTest
@@ -38,7 +28,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("description")
                 .setValue("p.blog-content")
                 .setType(ExpressionType.CSS));
-        DefaultExtractorTask task = new DefaultExtractorTask(IdWorker.nextId(), new Site(), extractor);
+        DefaultTask task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
         spider.addUrl(task,"http://zido.site");
         latch.await();
     }

@@ -1,6 +1,6 @@
 package site.zido.elise.distributed;
 
-import site.zido.elise.DefaultExtractorTask;
+import site.zido.elise.DefaultTask;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
@@ -152,20 +152,20 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     @Override
     public void process(Task task, Request request, Page page) {
         if (this.savedListener == null) {
-            template.send(topicAnalyzer, new Seed().setTask((DefaultExtractorTask) task).setRequest(request).setPage(page));
+            template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
         } else {
             SavedPage savedPage = SavedPage.resolvePage(page, savedListener);
             if (savedPage == null) {
                 return;
             }
-            template.send(topicAnalyzer, new SavedSeed((DefaultExtractorTask) task, request, savedPage));
+            template.send(topicAnalyzer, new SavedSeed((DefaultTask) task, request, savedPage));
         }
 
     }
 
     @Override
     protected void pushWhenNoDuplicate(Request request, Task task) {
-        template.send(topicDownload, new Seed().setTask((DefaultExtractorTask) task).setRequest(request));
+        template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
     }
 
     private KafkaMessageListenerContainer<Long, Seed> createContainer(
