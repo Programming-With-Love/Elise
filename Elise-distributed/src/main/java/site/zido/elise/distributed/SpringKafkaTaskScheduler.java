@@ -1,9 +1,6 @@
 package site.zido.elise.distributed;
 
-import site.zido.elise.DefaultTask;
-import site.zido.elise.Page;
-import site.zido.elise.Request;
-import site.zido.elise.Task;
+import site.zido.elise.*;
 import site.zido.elise.distributed.pojo.SavedSeed;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.distributed.scheduler.BlockWaitScheduler;
@@ -24,6 +21,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * Spring Kafka Communication Manager
@@ -150,22 +148,24 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     }
 
     @Override
-    public void process(Task task, Request request, Page page) {
+    public ResultItem process(Task task, Request request, Page page) {
         if (this.savedListener == null) {
             template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
         } else {
             SavedPage savedPage = SavedPage.resolvePage(page, savedListener);
             if (savedPage == null) {
-                return;
+                return null;
             }
             template.send(topicAnalyzer, new SavedSeed((DefaultTask) task, request, savedPage));
         }
 
+        return null;
     }
 
     @Override
-    protected void pushWhenNoDuplicate(Request request, Task task) {
+    protected Future<ResultItem> pushWhenNoDuplicate(Request request, Task task) {
         template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
+        return null;
     }
 
     private KafkaMessageListenerContainer<Long, Seed> createContainer(

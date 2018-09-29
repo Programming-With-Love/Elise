@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.matcher.NumberExpressMatcher;
-import site.zido.elise.pipeline.ConsolePipeline;
-import site.zido.elise.pipeline.Pipeline;
+import site.zido.elise.pipeline.MemorySaver;
+import site.zido.elise.pipeline.Saver;
 import site.zido.elise.processor.ExtractorPageProcessor;
 import site.zido.elise.processor.PageProcessor;
 import site.zido.elise.scheduler.SimpleTaskScheduler;
@@ -17,8 +17,8 @@ import site.zido.elise.utils.Asserts;
 import site.zido.elise.utils.UrlUtils;
 import site.zido.elise.utils.ValidateUtils;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * the main spider
@@ -35,20 +35,30 @@ public class Spider {
     public static Spider defaults(int threadNum) {
         Spider spider = new Spider(new SimpleTaskScheduler(threadNum));
         spider.setDownloader(new AutoSwitchDownloader());
-        spider.addPipeline(new ConsolePipeline());
+        spider.setSaver(new MemorySaver());
         spider.setPageProcessor(new ExtractorPageProcessor());
         spider.setTaskManager(new DefaultMemoryTaskManager());
         return spider;
     }
 
     private Downloader downloader;
-    private List<Pipeline> pipelines = new ArrayList<>();
+    private Saver saver;
     private PageProcessor pageProcessor;
     private DefaultSpiderListenProcessor processor = new DefaultSpiderListenProcessor();
 
     private TaskManager taskManager;
 
     private TaskScheduler manager;
+
+    private RequestPutter putter = new Putter();
+
+    private class Putter implements RequestPutter {
+
+        @Override
+        public Future<ResultItem> pushRequest(Task task, Request request) {
+            return manager.pushRequest(task, request);
+        }
+    }
 
     private Spider(TaskScheduler manager) {
         this.manager = manager;
@@ -57,35 +67,31 @@ public class Spider {
     class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
 
         @Override
-        public void onDownload(long taskId, Request request) {
-            Task task = taskManager.getTask(taskId);
+        public ResultItem onDownload(Task task, Request request) {
             Site site = task.getSite();
             if (site.getDomain() == null && request != null && request.getUrl() != null) {
                 site.setDomain(UrlUtils.getDomain(request.getUrl()));
             }
             Page page = downloader.download(request, task);
-            manager.process(taskId, request, page);
+            return manager.process(task, request, page);
         }
 
         @Override
-        public void onProcess(long taskId, Request request, Page page) {
-            Task task = taskManager.getTask(taskId);
+        public ResultItem onProcess(Task task, Request request, Page page) {
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
                 String codeAccepter = site.getCodeAccepter();
                 NumberExpressMatcher matcher = new NumberExpressMatcher(codeAccepter);
                 if (matcher.matches(page.getStatusCode())) {
-                    List<ResultItem> resultItems = pageProcessor.process(task, page, manager);
+                    List<ResultItem> resultItems = pageProcessor.process(task, page, putter);
                     if (!ValidateUtils.isEmpty(resultItems)) {
                         for (ResultItem resultItem : resultItems) {
                             if (resultItem != null) {
                                 resultItem.setRequest(request);
-                                for (Pipeline pipeline : pipelines) {
-                                    try {
-                                        pipeline.process(resultItem, task);
-                                    } catch (Throwable e) {
-                                        logger.error("pipeline have made a exception", e);
-                                    }
+                                try {
+                                    saver.process(resultItem, task);
+                                } catch (Throwable e) {
+                                    logger.error("saver have made a exception", e);
                                 }
                             } else {
                                 logger.info("page not find anything, page {}", request.getUrl());
@@ -93,7 +99,7 @@ public class Spider {
                         }
                     }
                     sleep(site.getSleepTime());
-                    return;
+                    return resultItems.get(0);
                 }
             }
             Site site = task.getSite();
@@ -103,15 +109,14 @@ public class Spider {
                 // for cycle retry
                 doCycleRetry(task, request);
             }
-
-
+            return null;
         }
     }
 
     protected void preStart() {
         Asserts.notNull(downloader);
         Asserts.notNull(pageProcessor);
-        Asserts.notEmpty(pipelines, "pipelines can not be null or empty");
+        Asserts.notNull(saver, "saver can not be null");
         manager.registerDownloader(processor);
         manager.registerAnalyzer(processor);
     }
@@ -119,12 +124,12 @@ public class Spider {
     private void doCycleRetry(Task task, Request request) {
         Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
-            manager.pushRequest(task.getId(), new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, 1));
+            manager.pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, 1));
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
             cycleTriedTimes++;
             if (cycleTriedTimes < task.getSite().getCycleRetryTimes()) {
-                manager.pushRequest(task.getId(), new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
+                manager.pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
             }
         }
         sleep(task.getSite().getRetrySleepTime());
@@ -148,7 +153,7 @@ public class Spider {
         Asserts.notEmpty(urls);
         preStart();
         for (String url : urls) {
-            manager.pushRequest(taskManager.lastTask().getId(), new Request(url));
+            manager.pushRequest(taskManager.lastTask(), new Request(url));
         }
         return this;
     }
@@ -166,19 +171,15 @@ public class Spider {
         preStart();
         taskManager.addTask(task);
         for (String url : urls) {
-            manager.pushRequest(task.getId(), new Request(url));
+            manager.pushRequest(task, new Request(url));
         }
         return this;
     }
 
-    public Spider addPipeline(Pipeline pipeline) {
-        Asserts.notNull(pipeline);
-        pipelines.add(pipeline);
+    public Spider setSaver(Saver saver) {
+        Asserts.notNull(saver);
+        this.saver = saver;
         return this;
-    }
-
-    public List<Pipeline> getPipelines() {
-        return pipelines;
     }
 
     public Spider setDownloader(Downloader downloader) {

@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Abstract Sql Pipeline
+ * Abstract Sql Saver
  *
  * @author zido
  */
-public abstract class AbstractSqlPipeline implements Pipeline {
+public abstract class AbstractSqlSaver implements Saver {
     private String defaultTableName = "elise_result";
     private IdGenerator generator;
     private Table table = new Table() {
@@ -46,25 +46,25 @@ public abstract class AbstractSqlPipeline implements Pipeline {
         }
     }
 
-    public AbstractSqlPipeline() {
+    public AbstractSqlSaver() {
     }
 
-    public AbstractSqlPipeline(Table table, IdGenerator generator) {
+    public AbstractSqlSaver(Table table, IdGenerator generator) {
         this.generator = generator;
         this.table = table;
     }
 
-    public AbstractSqlPipeline setDefaultTableName(String defaultTableName) {
+    public AbstractSqlSaver setDefaultTableName(String defaultTableName) {
         this.defaultTableName = defaultTableName;
         return this;
     }
 
-    public AbstractSqlPipeline setGenerator(IdGenerator generator) {
+    public AbstractSqlSaver setGenerator(IdGenerator generator) {
         this.generator = generator;
         return this;
     }
 
-    public AbstractSqlPipeline setTable(Table table) {
+    public AbstractSqlSaver setTable(Table table) {
         this.table = table;
         return this;
     }

@@ -2,9 +2,11 @@ package site.zido.elise.distributed.scheduler;
 
 import site.zido.elise.Page;
 import site.zido.elise.Request;
+import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.scheduler.SimpleTaskScheduler;
 
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -26,7 +28,7 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
     }
 
     @Override
-    protected void pushWhenNoDuplicate(Request request, Task task) {
+    protected Future<ResultItem> pushWhenNoDuplicate(Request request, Task task) {
         DownloadListener next = super.downloadListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no downloader");
@@ -35,16 +37,17 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
             semaphore.acquire();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return;
+            return null;
         }
         super.rootExecutor.execute(() -> {
             next.onDownload(task, request);
             semaphore.release();
         });
+        return null;
     }
 
     @Override
-    public void processTask(Task task, Request request, Page page) {
+    public ResultItem process(Task task, Request request, Page page) {
         AnalyzerListener next = super.analyzerListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no downloader");
@@ -53,11 +56,12 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
             semaphore.acquire();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return;
+            return null;
         }
         super.rootExecutor.execute(() -> {
             next.onProcess(task, request, page);
             semaphore.release();
         });
+        return null;
     }
 }

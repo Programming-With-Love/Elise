@@ -8,7 +8,7 @@ import site.zido.elise.Task;
  *
  * @author zido
  */
-public interface Pipeline {
+public interface Saver {
     /**
      * 结果处理
      *
@@ -16,4 +16,10 @@ public interface Pipeline {
      * @param task       任务
      */
     void process(ResultItem resultItem, Task task);
+
+    ResultItem next(Task task, ResultItem item);
+
+    boolean hasNext(Task task, ResultItem item);
+
+    ResultItem first(Task task);
 }

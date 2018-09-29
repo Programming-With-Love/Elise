@@ -2,13 +2,10 @@ package site.zido.elise.scheduler;
 
 import site.zido.elise.Page;
 import site.zido.elise.Request;
-import site.zido.elise.task.DefaultMemoryTaskManager;
-import site.zido.elise.task.TaskManager;
+import site.zido.elise.ResultItem;
+import site.zido.elise.Task;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * This message manager provides thread-level messaging that is implemented from {@link TaskScheduler}.
@@ -44,21 +41,21 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
     }
 
     @Override
-    public void process(long taskId, Request request, Page page) {
+    public ResultItem process(Task task, Request request, Page page) {
         AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no analyzer");
         }
-        rootExecutor.execute(() -> next.onProcess(taskId, request, page));
+        return next.onProcess(task, request, page);
     }
 
     @Override
-    protected void pushWhenNoDuplicate(Request request, long taskId) {
+    protected Future<ResultItem> pushWhenNoDuplicate(Request request, Task task) {
         DownloadListener next = downloadListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no downloader");
         }
-        rootExecutor.execute(() -> next.onDownload(taskId, request));
+        return rootExecutor.submit(() -> next.onDownload(task, request));
     }
 
     @Override
