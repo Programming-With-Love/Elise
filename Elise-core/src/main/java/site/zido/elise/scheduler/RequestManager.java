@@ -5,5 +5,5 @@ import site.zido.elise.Request;
 public interface RequestManager {
     void pushRequest(Request request);
 
-    Request nextRequest();
+    Request nextRequest() throws InterruptedException;
 }

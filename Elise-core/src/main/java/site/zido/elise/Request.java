@@ -15,6 +15,7 @@ public class Request implements Serializable {
     private static final long serialVersionUID = 2018040215121L;
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
 
+    private Task task;
     /**
      * url
      */
@@ -63,6 +64,7 @@ public class Request implements Serializable {
         this.requestBody = request.requestBody;
         this.priority = request.priority;
         this.binaryContent = request.binaryContent;
+        this.task = task;
     }
 
     public Request() {
@@ -176,5 +178,13 @@ public class Request implements Serializable {
 
     public void setCharset(String charset) {
         this.charset = charset;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public Task getTask() {
+        return task;
     }
 }

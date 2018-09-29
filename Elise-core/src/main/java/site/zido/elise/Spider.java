@@ -56,7 +56,7 @@ public class Spider {
 
         @Override
         public Future<ResultItem> pushRequest(Task task, Request request) {
-            return manager.pushRequest(task, request);
+            return manager.pushRequest(request);
         }
     }
 
@@ -67,17 +67,19 @@ public class Spider {
     class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
 
         @Override
-        public ResultItem onDownload(Task task, Request request) {
+        public ResultItem onDownload(Request request) {
+            Task task = request.getTask();
             Site site = task.getSite();
-            if (site.getDomain() == null && request != null && request.getUrl() != null) {
+            if (site.getDomain() == null && request.getUrl() != null) {
                 site.setDomain(UrlUtils.getDomain(request.getUrl()));
             }
             Page page = downloader.download(request, task);
-            return manager.process(task, request, page);
+            return manager.process(request, page);
         }
 
         @Override
-        public ResultItem onProcess(Task task, Request request, Page page) {
+        public ResultItem onProcess(Request request, Page page) {
+            Task task = request.getTask();
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
                 String codeAccepter = site.getCodeAccepter();

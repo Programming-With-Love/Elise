@@ -23,13 +23,13 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     }
 
     @Override
-    public Future<ResultItem> pushRequest(Task task, Request request) {
+    public Future<ResultItem> pushRequest(Request request) {
         logger.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
-                || !duplicationProcessor.isDuplicate(request, task)) {
+                || !duplicationProcessor.isDuplicate(request)) {
             logger.debug("push to queue {}", request.getUrl());
-            return pushWhenNoDuplicate(request, task);
+            return pushWhenNoDuplicate(request);
         }
         return null;
     }
@@ -45,10 +45,10 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     /**
      * Specific insert logic implementation,
      * This method is called after removing duplicate data
-     *  @param request request
-     * @param task  task
+     *
+     * @param request request
      */
-    protected abstract Future<ResultItem> pushWhenNoDuplicate(Request request, Task task);
+    protected abstract Future<ResultItem> pushWhenNoDuplicate(Request request);
 
 
     public int getTotalRequestsCount(Task task) {

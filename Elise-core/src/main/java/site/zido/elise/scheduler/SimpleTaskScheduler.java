@@ -21,6 +21,10 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
 
     protected final ExecutorService rootExecutor;
 
+    private ExecutorService childExecutor;
+
+    private RequestManager requestManager;
+
     public SimpleTaskScheduler() {
         this(1);
     }
@@ -40,22 +44,41 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         rootExecutor = new ThreadPoolExecutor(blockSize, blockSize, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(blockSize), new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
+    private void start() {
+        while (!Thread.currentThread().isInterrupted()) {
+            Request request;
+            try {
+                request = requestManager.nextRequest();
+            } catch (InterruptedException e) {
+                logger.debug("interrupted when get request");
+                continue;
+            }
+            DownloadListener next = downloadListenerLoadBalancer.getNext();
+            if (next == null) {
+                throw new NullPointerException("no downloader");
+            }
+            childExecutor.submit(() -> next.onDownload(request));
+
+        }
+    }
+
+    private void stop() {
+
+    }
+
     @Override
-    public ResultItem process(Task task, Request request, Page page) {
+    public ResultItem process(Request request, Page page) {
         AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no analyzer");
         }
-        return next.onProcess(task, request, page);
+        return next.onProcess(request, page);
     }
 
     @Override
-    protected Future<ResultItem> pushWhenNoDuplicate(Request request, Task task) {
-        DownloadListener next = downloadListenerLoadBalancer.getNext();
-        if (next == null) {
-            throw new NullPointerException("no downloader");
-        }
-        return rootExecutor.submit(() -> next.onDownload(task, request));
+    protected Future<ResultItem> pushWhenNoDuplicate(Request request) {
+        requestManager.pushRequest(request);
+        //TODO how to fix it?
     }
 
     @Override

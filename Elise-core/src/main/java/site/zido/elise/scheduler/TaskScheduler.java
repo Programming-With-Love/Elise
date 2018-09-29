@@ -32,13 +32,10 @@ public interface TaskScheduler {
         /**
          * message listener.
          *
-         * @param task  the task {@link Task}
-         *                Use {@link Task} more to provide a better messaging mechanism,
-         *                significantly reducing the amount of data.
          * @param request request container
          * @param page    page container
          */
-        ResultItem onProcess(Task task, Request request, Page page);
+        ResultItem onProcess(Request request, Page page);
     }
 
     /**
@@ -49,12 +46,10 @@ public interface TaskScheduler {
     interface DownloadListener {
         /**
          * message listener.
-         * @param task  the task {@link Task}
-         *                Use {@link Task} more to provide a better messaging mechanism,
-         *                significantly reducing the amount of data.
+         *
          * @param request request container
          */
-        ResultItem onDownload(Task task, Request request);
+        ResultItem onDownload(Request request);
     }
 
     /**
@@ -93,16 +88,16 @@ public interface TaskScheduler {
      * manager will select the appropriate scheduling program
      * and call onDownload{@link DownloadListener} to other clients
      * (of course, may to call yourself also, if you are also an analysis client)
-     * @param task  the task
+     *
      * @param request the request
      * @param page    page
      */
-    ResultItem process(Task task, Request request, Page page);
+    ResultItem process(Request request, Page page);
 
     /**
      * If you need to download, you can call this method (usually after the analysis is completed)
-     *  @param task  the task
+     *
      * @param request the request
      */
-    Future<ResultItem> pushRequest(Task task, Request request);
+    Future<ResultItem> pushRequest(Request request);
 }
