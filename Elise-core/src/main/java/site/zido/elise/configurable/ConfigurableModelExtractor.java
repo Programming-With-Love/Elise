@@ -87,6 +87,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
             return new ArrayList<>(0);
         } else {
             links = new ArrayList<>();
+            //TODO can't select relative path
             for (UrlFinderSelector selector : helpUrlSelectors) {
                 links.addAll(selector.selectList(page.getRawText()));
             }

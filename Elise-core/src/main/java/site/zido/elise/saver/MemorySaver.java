@@ -1,4 +1,4 @@
-package site.zido.elise.pipeline;
+package site.zido.elise.saver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The type Console pipeline.
+ * The type Console saver.
  *
  * @author zido
  */
@@ -21,7 +21,7 @@ public class MemorySaver implements Saver {
     private Map<Long, List<ResultItem>> cup = new ConcurrentHashMap<>();
 
     @Override
-    public void process(ResultItem resultItem, Task task) {
+    public void save(ResultItem resultItem, Task task) {
         List<ResultItem> resultItems = cup.computeIfAbsent(task.getId(), k -> new ArrayList<>());
         resultItems.add(resultItem);
         Map<String, List<String>> all = resultItem.getAll();
@@ -54,5 +54,10 @@ public class MemorySaver implements Saver {
     @Override
     public ResultItem first(Task task) {
         return next(task, null);
+    }
+
+    @Override
+    public int size(Task task) {
+        return cup.computeIfAbsent(task.getId(), k -> new ArrayList<>()).size();
     }
 }

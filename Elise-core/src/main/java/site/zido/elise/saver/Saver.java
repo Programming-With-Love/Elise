@@ -1,4 +1,4 @@
-package site.zido.elise.pipeline;
+package site.zido.elise.saver;
 
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
@@ -15,11 +15,13 @@ public interface Saver {
      * @param resultItem 结果集
      * @param task       任务
      */
-    void process(ResultItem resultItem, Task task);
+    void save(ResultItem resultItem, Task task);
 
     ResultItem next(Task task, ResultItem item);
 
     boolean hasNext(Task task, ResultItem item);
 
     ResultItem first(Task task);
+
+    int size(Task task);
 }

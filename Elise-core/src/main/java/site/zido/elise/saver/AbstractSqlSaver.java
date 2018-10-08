@@ -1,4 +1,4 @@
-package site.zido.elise.pipeline;
+package site.zido.elise.saver;
 
 import site.zido.elise.DefaultTask;
 import site.zido.elise.ResultItem;
@@ -78,7 +78,7 @@ public abstract class AbstractSqlSaver implements Saver {
     public abstract void onInsert(String sql, Object[] object);
 
     @Override
-    public void process(ResultItem resultItem, Task task) {
+    public void save(ResultItem resultItem, Task task) {
         Map<String, List<String>> all = resultItem.getAll();
         String tableName;
         if (this.table == null || ValidateUtils.isEmpty(tableName = this.table.getTableName(task))) {

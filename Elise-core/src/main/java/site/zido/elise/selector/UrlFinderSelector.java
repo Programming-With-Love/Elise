@@ -1,10 +1,9 @@
 package site.zido.elise.selector;
 
+import org.jsoup.nodes.Element;
 import site.zido.elise.configurable.ConfigurableUrlFinder;
 import site.zido.elise.utils.ValidateUtils;
-import org.jsoup.nodes.Element;
 
-import javax.lang.model.util.Elements;
 import java.util.ArrayList;
 import java.util.List;
 

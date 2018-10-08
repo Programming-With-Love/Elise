@@ -1,8 +1,7 @@
 package site.zido.elise;
 
-import site.zido.elise.pipeline.Saver;
+import site.zido.elise.saver.Saver;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,17 +11,12 @@ import java.util.Map;
  *
  * @author zido
  */
-public class ResultItem implements Iterator {
+public class ResultItem {
     private Map<String, List<String>> fields = new LinkedHashMap<>();
 
     private Request request;
 
-    private Saver saver;
-    private Task task;
-
-    public ResultItem(Task task, Saver saver) {
-        this.saver = saver;
-        this.task = task;
+    public ResultItem() {
     }
 
     public Object get(String key) {
@@ -50,13 +44,5 @@ public class ResultItem implements Iterator {
         this.request = request;
     }
 
-    @Override
-    public boolean hasNext() {
-        return saver.hasNext(task, this);
-    }
 
-    @Override
-    public Object next() {
-        return saver.next(task, this);
-    }
 }

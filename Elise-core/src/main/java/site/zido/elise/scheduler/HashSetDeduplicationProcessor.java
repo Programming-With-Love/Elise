@@ -18,7 +18,7 @@ public class HashSetDeduplicationProcessor implements DuplicationProcessor {
     private Set<String> urls = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Override
-    public boolean isDuplicate(Request request) {
+    public boolean isDuplicate(Task task, Request request) {
         return !urls.add(getUrl(request));
     }
 

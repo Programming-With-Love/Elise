@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.matcher.NumberExpressMatcher;
-import site.zido.elise.pipeline.MemorySaver;
-import site.zido.elise.pipeline.Saver;
 import site.zido.elise.processor.ExtractorPageProcessor;
 import site.zido.elise.processor.PageProcessor;
+import site.zido.elise.saver.MemorySaver;
+import site.zido.elise.saver.Saver;
 import site.zido.elise.scheduler.SimpleTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
 import site.zido.elise.task.DefaultMemoryTaskManager;
@@ -55,8 +55,8 @@ public class Spider {
     private class Putter implements RequestPutter {
 
         @Override
-        public Future<ResultItem> pushRequest(Task task, Request request) {
-            return manager.pushRequest(request);
+        public Future<CrawlResult> pushRequest(Task task, Request request) {
+            return manager.pushRequest(task, request);
         }
     }
 
@@ -67,19 +67,17 @@ public class Spider {
     class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
 
         @Override
-        public ResultItem onDownload(Request request) {
-            Task task = request.getTask();
+        public CrawlResult onDownload(Task task, Request request) {
             Site site = task.getSite();
             if (site.getDomain() == null && request.getUrl() != null) {
                 site.setDomain(UrlUtils.getDomain(request.getUrl()));
             }
             Page page = downloader.download(request, task);
-            return manager.process(request, page);
+            return manager.process(task, request, page);
         }
 
         @Override
-        public ResultItem onProcess(Request request, Page page) {
-            Task task = request.getTask();
+        public CrawlResult onProcess(Task task, Request request, Page page) {
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
                 String codeAccepter = site.getCodeAccepter();
@@ -91,7 +89,7 @@ public class Spider {
                             if (resultItem != null) {
                                 resultItem.setRequest(request);
                                 try {
-                                    saver.process(resultItem, task);
+                                    saver.save(resultItem, task);
                                 } catch (Throwable e) {
                                     logger.error("saver have made a exception", e);
                                 }
@@ -101,7 +99,7 @@ public class Spider {
                         }
                     }
                     sleep(site.getSleepTime());
-                    return resultItems.get(0);
+                    return new CrawlResult(task, saver);
                 }
             }
             Site site = task.getSite();
@@ -111,7 +109,7 @@ public class Spider {
                 // for cycle retry
                 doCycleRetry(task, request);
             }
-            return null;
+            return CrawlResult.blank();
         }
     }
 
@@ -148,16 +146,14 @@ public class Spider {
     /**
      * Add urls to crawl. <br>
      *
-     * @param urls urls
+     * @param url url
      * @return this
      */
-    public Spider addUrl(String... urls) {
-        Asserts.notEmpty(urls);
+    public Future<CrawlResult> addUrl(String url) {
+        Asserts.hasLength(url);
         preStart();
-        for (String url : urls) {
-            manager.pushRequest(taskManager.lastTask(), new Request(url));
-        }
-        return this;
+        Request request = new Request(url);
+        return manager.pushRequest(taskManager.lastTask(), request);
     }
 
     public Spider addTask(Task task) {
@@ -167,15 +163,13 @@ public class Spider {
         return this;
     }
 
-    public Spider addUrl(Task task, String... urls) {
+    public Future<CrawlResult> addUrl(Task task, String url) {
         Asserts.notNull(task);
-        Asserts.notEmpty(urls);
+        Asserts.hasLength(url);
         preStart();
         taskManager.addTask(task);
-        for (String url : urls) {
-            manager.pushRequest(task, new Request(url));
-        }
-        return this;
+        Request request = new Request(url);
+        return manager.pushRequest(task, request);
     }
 
     public Spider setSaver(Saver saver) {

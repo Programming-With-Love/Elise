@@ -1,10 +1,5 @@
 package site.zido.elise.distributed;
 
-import site.zido.elise.*;
-import site.zido.elise.distributed.pojo.SavedSeed;
-import site.zido.elise.distributed.pojo.Seed;
-import site.zido.elise.distributed.scheduler.BlockWaitScheduler;
-import site.zido.elise.scheduler.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongDeserializer;
@@ -18,6 +13,14 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import site.zido.elise.*;
+import site.zido.elise.distributed.pojo.SavedSeed;
+import site.zido.elise.distributed.pojo.Seed;
+import site.zido.elise.distributed.scheduler.BlockWaitScheduler;
+import site.zido.elise.scheduler.AbstractDuplicateRemovedScheduler;
+import site.zido.elise.scheduler.DuplicationProcessor;
+import site.zido.elise.scheduler.MonitorableScheduler;
+import site.zido.elise.scheduler.TaskScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,8 +51,9 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         super(duplicationProcessor);
         this.taskScheduler = new BlockWaitScheduler(blockSize);
     }
-    public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor){
-        this(1,duplicationProcessor);
+
+    public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor) {
+        this(1, duplicationProcessor);
     }
 
     public SpringKafkaTaskScheduler setBootstrapServers(String bootstrapServers) {
@@ -148,7 +152,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     }
 
     @Override
-    public ResultItem process(Task task, Request request, Page page) {
+    public CrawlResult process(Task task, Request request, Page page) {
         if (this.savedListener == null) {
             template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
         } else {
@@ -163,7 +167,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     }
 
     @Override
-    protected Future<ResultItem> pushWhenNoDuplicate(Request request, Task task) {
+    protected Future<CrawlResult> pushWhenNoDuplicate(Task task, Request request) {
         template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
         return null;
     }

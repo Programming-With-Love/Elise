@@ -10,7 +10,7 @@ import site.zido.elise.Task;
  */
 public class NoDepuplicationProcessor implements DuplicationProcessor {
     @Override
-    public boolean isDuplicate(Request request, long taskId) {
+    public boolean isDuplicate(Task task, Request request) {
         return false;
     }
 

@@ -64,7 +64,7 @@ public class Request implements Serializable {
         this.requestBody = request.requestBody;
         this.priority = request.priority;
         this.binaryContent = request.binaryContent;
-        this.task = task;
+        this.task = request.task;
     }
 
     public Request() {

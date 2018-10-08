@@ -1,8 +1,8 @@
 package site.zido.elise.scheduler;
 
+import site.zido.elise.CrawlResult;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
-import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 
 import java.util.concurrent.*;
@@ -20,10 +20,6 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
     private int blockSize;
 
     protected final ExecutorService rootExecutor;
-
-    private ExecutorService childExecutor;
-
-    private RequestManager requestManager;
 
     public SimpleTaskScheduler() {
         this(1);
@@ -44,41 +40,24 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         rootExecutor = new ThreadPoolExecutor(blockSize, blockSize, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(blockSize), new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
-    private void start() {
-        while (!Thread.currentThread().isInterrupted()) {
-            Request request;
-            try {
-                request = requestManager.nextRequest();
-            } catch (InterruptedException e) {
-                logger.debug("interrupted when get request");
-                continue;
-            }
-            DownloadListener next = downloadListenerLoadBalancer.getNext();
-            if (next == null) {
-                throw new NullPointerException("no downloader");
-            }
-            childExecutor.submit(() -> next.onDownload(request));
-
-        }
-    }
-
-    private void stop() {
-
-    }
-
     @Override
-    public ResultItem process(Request request, Page page) {
+    public CrawlResult process(Task task, Request request, Page page) {
         AnalyzerListener next = analyzerListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no analyzer");
         }
-        return next.onProcess(request, page);
+        return next.onProcess(task, request, page);
     }
 
     @Override
-    protected Future<ResultItem> pushWhenNoDuplicate(Request request) {
-        requestManager.pushRequest(request);
-        //TODO how to fix it?
+    protected Future<CrawlResult> pushWhenNoDuplicate(Task task, Request request) {
+        return rootExecutor.submit(() -> {
+            DownloadListener next = downloadListenerLoadBalancer.getNext();
+            if (next == null) {
+                throw new NullPointerException("no downloader");
+            }
+            return next.onDownload(task, request);
+        });
     }
 
     @Override

@@ -3,12 +3,12 @@ package site.zido.elise.distributed;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 import site.zido.elise.scheduler.DuplicationProcessor;
 import site.zido.elise.utils.ValidateUtils;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.StatefulRedisConnection;
 
 /**
  * Redis-based distributed task scheduling,
@@ -69,7 +69,7 @@ public class SimpleRedisDuplicationProcessor implements DuplicationProcessor {
     }
 
     @Override
-    public boolean isDuplicate(Request request, Task task) {
+    public boolean isDuplicate(Task task, Request request) {
         return connection.sync().sadd(getSetKey(task), request.getUrl()) == 0;
     }
 

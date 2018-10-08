@@ -1,9 +1,6 @@
 package site.zido.elise.distributed.scheduler;
 
-import site.zido.elise.Page;
-import site.zido.elise.Request;
-import site.zido.elise.ResultItem;
-import site.zido.elise.Task;
+import site.zido.elise.*;
 import site.zido.elise.scheduler.SimpleTaskScheduler;
 
 import java.util.concurrent.Future;
@@ -28,7 +25,7 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
     }
 
     @Override
-    protected Future<ResultItem> pushWhenNoDuplicate(Request request, Task task) {
+    protected Future<CrawlResult> pushWhenNoDuplicate(Task task, Request request) {
         DownloadListener next = super.downloadListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no downloader");
@@ -47,7 +44,7 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
     }
 
     @Override
-    public ResultItem process(Task task, Request request, Page page) {
+    public CrawlResult process(Task task, Request request, Page page) {
         AnalyzerListener next = super.analyzerListenerLoadBalancer.getNext();
         if (next == null) {
             throw new NullPointerException("no downloader");

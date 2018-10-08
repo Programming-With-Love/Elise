@@ -1,9 +1,6 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.Page;
-import site.zido.elise.Request;
-import site.zido.elise.ResultItem;
-import site.zido.elise.Task;
+import site.zido.elise.*;
 
 import java.util.concurrent.Future;
 
@@ -31,11 +28,11 @@ public interface TaskScheduler {
     interface AnalyzerListener {
         /**
          * message listener.
-         *
+         *  @param task
          * @param request request container
          * @param page    page container
          */
-        ResultItem onProcess(Request request, Page page);
+        CrawlResult onProcess(Task task, Request request, Page page);
     }
 
     /**
@@ -49,7 +46,7 @@ public interface TaskScheduler {
          *
          * @param request request container
          */
-        ResultItem onDownload(Request request);
+        CrawlResult onDownload(Task task, Request request);
     }
 
     /**
@@ -88,16 +85,15 @@ public interface TaskScheduler {
      * manager will select the appropriate scheduling program
      * and call onDownload{@link DownloadListener} to other clients
      * (of course, may to call yourself also, if you are also an analysis client)
-     *
-     * @param request the request
+     *  @param request the request
      * @param page    page
      */
-    ResultItem process(Request request, Page page);
+    CrawlResult process(Task task, Request request, Page page);
 
     /**
      * If you need to download, you can call this method (usually after the analysis is completed)
      *
      * @param request the request
      */
-    Future<ResultItem> pushRequest(Request request);
+    Future<CrawlResult> pushRequest(Task task, Request request);
 }

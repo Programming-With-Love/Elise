@@ -14,10 +14,12 @@ public interface DuplicationProcessor {
     /**
      * Determine if this request is duplicate
      *
+     *
+     * @param task
      * @param request request
      * @return true/false
      */
-    boolean isDuplicate(Request request);
+    boolean isDuplicate(Task task, Request request);
 
     /**
      * Reset all non-repeating sets of this task so that the task can send the same request as before
