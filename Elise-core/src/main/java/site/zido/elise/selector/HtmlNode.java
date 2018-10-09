@@ -14,7 +14,8 @@ import java.util.ListIterator;
  */
 public class HtmlNode extends AbstractSelectable {
 
-    private final List<Element> elements;
+    //can't be serialized
+    private final transient List<Element> elements;
 
     public HtmlNode(List<Element> elements) {
         this.elements = elements;
@@ -63,7 +64,7 @@ public class HtmlNode extends AbstractSelectable {
      * @param elementSelector elementSelector
      * @return result
      */
-    protected Selectable selectElements(AbstractElementSelector elementSelector) {
+    private Selectable selectElements(AbstractElementSelector elementSelector) {
         ListIterator<Element> elementIterator = getElements().listIterator();
         if (!elementSelector.isText()) {
             List<Element> resultElements = new ArrayList<>();

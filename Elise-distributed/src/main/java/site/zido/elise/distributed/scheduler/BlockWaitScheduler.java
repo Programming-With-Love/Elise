@@ -1,6 +1,8 @@
 package site.zido.elise.distributed.scheduler;
 
-import site.zido.elise.*;
+import site.zido.elise.CrawlResult;
+import site.zido.elise.Request;
+import site.zido.elise.Task;
 import site.zido.elise.scheduler.SimpleTaskScheduler;
 
 import java.util.concurrent.Future;
@@ -34,31 +36,13 @@ public class BlockWaitScheduler extends SimpleTaskScheduler {
             semaphore.acquire();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return null;
         }
-        super.rootExecutor.execute(() -> {
-            next.onDownload(task, request);
-            semaphore.release();
+        return super.rootExecutor.submit(() -> {
+            try {
+                return next.onDownload(task, request);
+            } finally {
+                semaphore.release();
+            }
         });
-        return null;
-    }
-
-    @Override
-    public CrawlResult process(Task task, Request request, Page page) {
-        AnalyzerListener next = super.analyzerListenerLoadBalancer.getNext();
-        if (next == null) {
-            throw new NullPointerException("no downloader");
-        }
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return null;
-        }
-        super.rootExecutor.execute(() -> {
-            next.onProcess(task, request, page);
-            semaphore.release();
-        });
-        return null;
     }
 }

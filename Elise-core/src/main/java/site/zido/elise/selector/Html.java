@@ -17,7 +17,8 @@ import java.util.List;
 public class Html extends HtmlNode {
     private Logger logger = LoggerFactory.getLogger(Html.class);
 
-    private Document document;
+    //can't be serialized
+    private transient Document document;
 
     public Html(String text, String url) {
         try {
