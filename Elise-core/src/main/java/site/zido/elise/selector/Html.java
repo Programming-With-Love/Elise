@@ -15,27 +15,20 @@ import java.util.List;
  * @author zido
  */
 public class Html extends HtmlNode {
-    private Logger logger = LoggerFactory.getLogger(Html.class);
+    private static Logger logger = LoggerFactory.getLogger(Html.class);
 
     //can't be serialized
     private transient Document document;
+    private String text;
+    private String url;
 
     public Html(String text, String url) {
-        try {
-            this.document = Jsoup.parse(text, url);
-        } catch (Exception e) {
-            this.document = null;
-            logger.warn("parse document err", e);
-        }
+        this.text = text;
+        this.url = url;
     }
 
     public Html(String text) {
-        try {
-            this.document = Jsoup.parse(text);
-        } catch (Exception e) {
-            this.document = null;
-            logger.warn("parse document err", e);
-        }
+        this.text = text;
     }
 
     public Html(Document document) {
@@ -43,6 +36,9 @@ public class Html extends HtmlNode {
     }
 
     public Document document() {
+        if (document == null) {
+            document = Jsoup.parse(text, url);
+        }
         return document;
     }
 

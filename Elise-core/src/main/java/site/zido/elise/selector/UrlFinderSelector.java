@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author zido
  */
-public class UrlFinderSelector extends AbstractElementSelector implements ElementSelector, Selector {
+public class UrlFinderSelector extends AbstractElementSelector {
     private static final String EMPTY_URL_PATTERN = "https?://.*";
     private Selector targetSelector;
     private Selector regionSelector;

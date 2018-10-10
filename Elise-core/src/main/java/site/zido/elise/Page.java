@@ -12,13 +12,10 @@ import java.util.Map;
  * @author zido
  */
 public class Page {
-    private String rawText;
-
     private String url;
-
     private Map<String, List<String>> headers;
-
     private int statusCode = StatusCode.CODE_200;
+    private String rawText;
 
     private boolean downloadSuccess = true;
 
@@ -32,6 +29,7 @@ public class Page {
     public static Page fail() {
         Page page = new Page();
         page.setDownloadSuccess(false);
+        page.setStatusCode(-1);
         return page;
     }
 

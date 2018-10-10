@@ -6,6 +6,11 @@ Elise是使用httpclient+jsoup/xsoup封装，由Elise-core模块提供高度可�
 Elise-distributed模块提供了一些分布式扩展，例如基于spring-kafka的消息管理器，基于lettuce封装的使用redis作为远程数据库的url去重管理器。
 它完全基于Elise-core扩展，完全不改变任何使用方式。
 
+## 状态
+
+开发中[roadmap](./roadmap.md)... 
+
+
 ## 使用说明
 
 框架主要将爬虫分为四个大块，分别是**任务调度器**，**页面处理器**，**下载器**，**结果输出模块**。
