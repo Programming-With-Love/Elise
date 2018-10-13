@@ -1,11 +1,10 @@
 package site.zido.elise.selector;
 
-import site.zido.elise.utils.ValidateUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

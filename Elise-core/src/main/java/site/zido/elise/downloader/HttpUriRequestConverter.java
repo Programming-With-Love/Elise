@@ -1,16 +1,9 @@
 package site.zido.elise.downloader;
 
-import org.apache.http.auth.*;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.message.BasicHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import site.zido.elise.Request;
-import site.zido.elise.Site;
-import site.zido.elise.proxy.Proxy;
-import site.zido.elise.utils.Method;
-import site.zido.elise.utils.UrlUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.ChallengeState;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -21,6 +14,11 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import site.zido.elise.Request;
+import site.zido.elise.Site;
+import site.zido.elise.proxy.Proxy;
+import site.zido.elise.utils.Method;
+import site.zido.elise.utils.UrlUtils;
 
 import java.util.Map;
 

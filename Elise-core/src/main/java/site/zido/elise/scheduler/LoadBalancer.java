@@ -31,10 +31,11 @@ public interface LoadBalancer<T> {
      */
     boolean remove(T object);
 
-    <V>LoadBalancer<V> newClone();
+    <V> LoadBalancer<V> newClone();
 
     /**
      * return downloaderSize of list
+     *
      * @return downloaderSize
      */
     int size();

@@ -45,7 +45,8 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     /**
      * Specific insert logic implementation,
      * This method is called after removing duplicate data
-     *  @param task
+     *
+     * @param task    the task
      * @param request request
      */
     protected abstract Future<CrawlResult> pushWhenNoDuplicate(Task task, Request request);

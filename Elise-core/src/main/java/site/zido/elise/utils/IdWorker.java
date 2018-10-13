@@ -18,10 +18,6 @@ public class IdWorker {
         INSTANCE = new IdWorker();
     }
 
-    public static long nextId() {
-        return INSTANCE.next();
-    }
-
     /**
      * 机器id所占的位数
      */
@@ -38,12 +34,10 @@ public class IdWorker {
      * 支持的最大数据标识id，结果是31
      */
     private final long maxDataCenterId = ~(-1L << dataCenterIdBits);
-
     private long workerId;
     private long dataCenterId;
     private long sequence;
     private long lastTimestamp = -1L;
-
     public IdWorker() {
         dataCenterId = getDataCenterId(maxDataCenterId);
         workerId = getMaxWorkerId(dataCenterId, maxWorkerId);
@@ -59,6 +53,10 @@ public class IdWorker {
         }
         this.workerId = workerId;
         this.dataCenterId = dataCenterId;
+    }
+
+    public static long nextId() {
+        return INSTANCE.next();
     }
 
     /**

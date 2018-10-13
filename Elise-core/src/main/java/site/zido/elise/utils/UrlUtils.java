@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
  */
 public class UrlUtils {
     private final static String QUERY_START_CHARACTER = "?";
+    private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
+    private static Pattern patternForProtocal = Pattern.compile("[\\w]+://");
 
     /**
      * 规范url
@@ -71,8 +73,6 @@ public class UrlUtils {
         return url.replace(" ", "%20").replaceAll("#+", "#");
     }
 
-    private static Pattern patternForProtocal = Pattern.compile("[\\w]+://");
-
     /**
      * Remove protocol string.
      *
@@ -112,8 +112,6 @@ public class UrlUtils {
             return domain;
         }
     }
-
-    private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
 
     /**
      * Gets charset.

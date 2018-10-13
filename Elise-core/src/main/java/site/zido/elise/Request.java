@@ -12,9 +12,8 @@ import java.util.Map;
  * @author zido
  */
 public class Request implements Serializable {
-    private static final long serialVersionUID = 2018040215121L;
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
-
+    private static final long serialVersionUID = 2018040215121L;
     private Task task;
     /**
      * url
@@ -180,11 +179,11 @@ public class Request implements Serializable {
         this.charset = charset;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     public Task getTask() {
         return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 }

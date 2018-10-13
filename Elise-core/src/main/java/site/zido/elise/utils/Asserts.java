@@ -48,7 +48,8 @@ public class Asserts {
             throw new IllegalArgumentException(message);
         }
     }
-    public static void notEmpty(Object[] array){
+
+    public static void notEmpty(Object[] array) {
         notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
     }
 }

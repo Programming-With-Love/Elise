@@ -27,6 +27,17 @@ import java.util.concurrent.Future;
  */
 public class Spider {
     private static Logger logger = LoggerFactory.getLogger(Spider.class);
+    private Downloader downloader;
+    private Saver saver;
+    private PageProcessor pageProcessor;
+    private DefaultSpiderListenProcessor processor = new DefaultSpiderListenProcessor();
+    private TaskManager taskManager;
+    private TaskScheduler manager;
+    private RequestPutter putter = new Putter();
+
+    private Spider(TaskScheduler manager) {
+        this.manager = manager;
+    }
 
     public static Spider defaults() {
         return defaults(1);
@@ -39,78 +50,6 @@ public class Spider {
         spider.setPageProcessor(new ExtractorPageProcessor());
         spider.setTaskManager(new DefaultMemoryTaskManager());
         return spider;
-    }
-
-    private Downloader downloader;
-    private Saver saver;
-    private PageProcessor pageProcessor;
-    private DefaultSpiderListenProcessor processor = new DefaultSpiderListenProcessor();
-
-    private TaskManager taskManager;
-
-    private TaskScheduler manager;
-
-    private RequestPutter putter = new Putter();
-
-    private class Putter implements RequestPutter {
-
-        @Override
-        public Future<CrawlResult> pushRequest(Task task, Request request) {
-            return manager.pushRequest(task, request);
-        }
-    }
-
-    private Spider(TaskScheduler manager) {
-        this.manager = manager;
-    }
-
-    class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
-
-        @Override
-        public CrawlResult onDownload(Task task, Request request) {
-            Site site = task.getSite();
-            if (site.getDomain() == null && request.getUrl() != null) {
-                site.setDomain(UrlUtils.getDomain(request.getUrl()));
-            }
-            Page page = downloader.download(request, task);
-            return manager.process(task, request, page);
-        }
-
-        @Override
-        public CrawlResult onProcess(Task task, Request request, Page page) {
-            if (page.isDownloadSuccess()) {
-                Site site = task.getSite();
-                String codeAccepter = site.getCodeAccepter();
-                NumberExpressMatcher matcher = new NumberExpressMatcher(codeAccepter);
-                if (matcher.matches(page.getStatusCode())) {
-                    List<ResultItem> resultItems = pageProcessor.process(task, page, putter);
-                    if (!ValidateUtils.isEmpty(resultItems)) {
-                        for (ResultItem resultItem : resultItems) {
-                            if (resultItem != null) {
-                                resultItem.setRequest(request);
-                                try {
-                                    saver.save(resultItem, task);
-                                } catch (Throwable e) {
-                                    logger.error("saver have made a exception", e);
-                                }
-                            } else {
-                                logger.info("page not find anything, page {}", request.getUrl());
-                            }
-                        }
-                    }
-                    sleep(site.getSleepTime());
-                    return new CrawlResult(task, saver);
-                }
-            }
-            Site site = task.getSite();
-            if (site.getCycleRetryTimes() == 0) {
-                sleep(site.getSleepTime());
-            } else {
-                // for cycle retry
-                doCycleRetry(task, request);
-            }
-            return CrawlResult.blank();
-        }
     }
 
     protected void preStart() {
@@ -191,6 +130,63 @@ public class Spider {
     public Spider setTaskManager(TaskManager manager) {
         this.taskManager = manager;
         return this;
+    }
+
+    private class Putter implements RequestPutter {
+
+        @Override
+        public Future<CrawlResult> pushRequest(Task task, Request request) {
+            return manager.pushRequest(task, request);
+        }
+    }
+
+    class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
+
+        @Override
+        public CrawlResult onDownload(Task task, Request request) {
+            Site site = task.getSite();
+            if (site.getDomain() == null && request.getUrl() != null) {
+                site.setDomain(UrlUtils.getDomain(request.getUrl()));
+            }
+            Page page = downloader.download(request, task);
+            return manager.process(task, request, page);
+        }
+
+        @Override
+        public CrawlResult onProcess(Task task, Request request, Page page) {
+            if (page.isDownloadSuccess()) {
+                Site site = task.getSite();
+                String codeAccepter = site.getCodeAccepter();
+                NumberExpressMatcher matcher = new NumberExpressMatcher(codeAccepter);
+                if (matcher.matches(page.getStatusCode())) {
+                    List<ResultItem> resultItems = pageProcessor.process(task, page, putter);
+                    if (!ValidateUtils.isEmpty(resultItems)) {
+                        for (ResultItem resultItem : resultItems) {
+                            if (resultItem != null) {
+                                resultItem.setRequest(request);
+                                try {
+                                    saver.save(resultItem, task);
+                                } catch (Throwable e) {
+                                    logger.error("saver have made a exception", e);
+                                }
+                            } else {
+                                logger.info("page not find anything, page {}", request.getUrl());
+                            }
+                        }
+                    }
+                    sleep(site.getSleepTime());
+                    return new CrawlResult(task, saver);
+                }
+            }
+            Site site = task.getSite();
+            if (site.getCycleRetryTimes() == 0) {
+                sleep(site.getSleepTime());
+            } else {
+                // for cycle retry
+                doCycleRetry(task, request);
+            }
+            return CrawlResult.blank();
+        }
     }
 
 }

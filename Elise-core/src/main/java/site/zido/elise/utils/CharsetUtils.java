@@ -7,7 +7,6 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
@@ -16,10 +15,10 @@ import java.nio.charset.Charset;
  * @author zido
  */
 public class CharsetUtils {
+    private static Logger logger = LoggerFactory.getLogger(CharsetUtils.class);
+
     private CharsetUtils() {
     }
-
-    private static Logger logger = LoggerFactory.getLogger(CharsetUtils.class);
 
     public static String detectCharset(String contentType, byte[] contentBytes) {
         String charset;

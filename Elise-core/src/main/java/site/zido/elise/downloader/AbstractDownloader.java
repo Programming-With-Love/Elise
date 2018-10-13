@@ -3,7 +3,6 @@ package site.zido.elise.downloader;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
-import site.zido.elise.selector.Html;
 
 /**
  * abstract downloader,which support charset

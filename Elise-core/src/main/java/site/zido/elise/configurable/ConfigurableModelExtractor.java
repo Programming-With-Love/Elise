@@ -24,15 +24,11 @@ import java.util.stream.Collectors;
  */
 public class ConfigurableModelExtractor implements ModelExtractor {
 
-    private List<UrlFinderSelector> targetUrlSelectors = new ArrayList<>();
-
-    private List<UrlFinderSelector> helpUrlSelectors = new ArrayList<>();
-
-    private DefRootExtractor defRootExtractor;
-
     private static final String HTTP_LABEL = "http";
-
     private static Logger logger = LoggerFactory.getLogger(ConfigurableModelExtractor.class);
+    private List<UrlFinderSelector> targetUrlSelectors = new ArrayList<>();
+    private List<UrlFinderSelector> helpUrlSelectors = new ArrayList<>();
+    private DefRootExtractor defRootExtractor;
 
     /**
      * construct by {@link DefRootExtractor}

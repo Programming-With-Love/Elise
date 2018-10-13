@@ -67,17 +67,12 @@ public class NumberExpressMatcher implements Matcher {
             }
         }
         for (Region region : regions) {
-            if(region.max < region.min){
+            if (region.max < region.min) {
                 region.max = region.max ^ region.min;
                 region.min = region.max ^ region.min;
                 region.max = region.max ^ region.min;
             }
         }
-    }
-
-    private static class Region {
-        private int max = Integer.MAX_VALUE;
-        private int min = Integer.MIN_VALUE;
     }
 
     @Override
@@ -96,6 +91,11 @@ public class NumberExpressMatcher implements Matcher {
             }
         }
         return false;
+    }
+
+    private static class Region {
+        private int max = Integer.MAX_VALUE;
+        private int min = Integer.MIN_VALUE;
     }
 
 }

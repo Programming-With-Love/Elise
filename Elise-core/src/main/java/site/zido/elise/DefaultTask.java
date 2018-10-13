@@ -50,12 +50,12 @@ public class DefaultTask implements Task {
         return new ConfigurableModelExtractor(defExtractor);
     }
 
+    public DefRootExtractor getDefExtractor() {
+        return defExtractor;
+    }
+
     public DefaultTask setDefExtractor(DefRootExtractor defExtractor) {
         this.defExtractor = defExtractor;
         return this;
-    }
-
-    public DefRootExtractor getDefExtractor() {
-        return defExtractor;
     }
 }

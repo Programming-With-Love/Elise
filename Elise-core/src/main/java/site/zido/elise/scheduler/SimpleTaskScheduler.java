@@ -4,6 +4,7 @@ import site.zido.elise.CrawlResult;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
+import site.zido.elise.thread.ModuleNamedDefaultThreadFactory;
 
 import java.util.concurrent.*;
 
@@ -14,12 +15,10 @@ import java.util.concurrent.*;
  */
 public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler implements MonitorableScheduler {
 
+    protected final ExecutorService rootExecutor;
     protected LoadBalancer<DownloadListener> downloadListenerLoadBalancer;
     protected LoadBalancer<AnalyzerListener> analyzerListenerLoadBalancer;
-
     private int blockSize;
-
-    protected final ExecutorService rootExecutor;
 
     public SimpleTaskScheduler() {
         this(1);
@@ -37,7 +36,7 @@ public class SimpleTaskScheduler extends AbstractDuplicateRemovedScheduler imple
         this.analyzerListenerLoadBalancer = new SimpleLoadBalancer<>();
         this.downloadListenerLoadBalancer = new SimpleLoadBalancer<>();
         this.blockSize = blockSize;
-        rootExecutor = new ThreadPoolExecutor(blockSize, blockSize, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(blockSize), new ThreadPoolExecutor.CallerRunsPolicy());
+        rootExecutor = new ThreadPoolExecutor(blockSize, blockSize, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(blockSize), new ModuleNamedDefaultThreadFactory("task scheduler"));
     }
 
     @Override

@@ -1,13 +1,5 @@
 package site.zido.elise.downloader;
 
-import site.zido.elise.Page;
-import site.zido.elise.Request;
-import site.zido.elise.Site;
-import site.zido.elise.Task;
-import site.zido.elise.proxy.Proxy;
-import site.zido.elise.proxy.ProxyProvider;
-import site.zido.elise.selector.PlainText;
-import site.zido.elise.utils.CharsetUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -15,6 +7,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.Page;
+import site.zido.elise.Request;
+import site.zido.elise.Site;
+import site.zido.elise.Task;
+import site.zido.elise.proxy.Proxy;
+import site.zido.elise.proxy.ProxyProvider;
+import site.zido.elise.utils.CharsetUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -29,9 +28,8 @@ import java.util.Map;
  * @author zido
  */
 public class HttpClientDownloader extends AbstractDownloader {
-    private Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
     private final Map<String, CloseableHttpClient> httpClients = new HashMap<>();
-
+    private Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
     private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
 
     private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
