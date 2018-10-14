@@ -24,7 +24,7 @@ public class ModuleNamedDefaultThreadFactory implements ThreadFactory {
     public ModuleNamedDefaultThreadFactory(String moduleName, boolean daemon) {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        prefix = moduleName + "-pool" + poolNumber.getAndIncrement() + "-thread-";
+        prefix = moduleName + "-pool-" + poolNumber.getAndIncrement() + "-thread-";
         this.daemon = daemon;
     }
 
