@@ -1,6 +1,6 @@
 package site.zido.elise;
 
-import site.zido.elise.extractor.ModelExtractor;
+import site.zido.elise.configurable.ModelExtractor;
 import site.zido.elise.matcher.NumberExpressMatcher;
 import site.zido.elise.utils.IdWorker;
 

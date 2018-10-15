@@ -1,7 +1,5 @@
 package site.zido.elise.utils;
 
-import site.zido.elise.thread.ModuleNamedDefaultThreadFactory;
-
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

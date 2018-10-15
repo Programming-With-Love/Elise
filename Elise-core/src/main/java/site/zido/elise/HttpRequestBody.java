@@ -1,4 +1,4 @@
-package site.zido.elise.model;
+package site.zido.elise;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;

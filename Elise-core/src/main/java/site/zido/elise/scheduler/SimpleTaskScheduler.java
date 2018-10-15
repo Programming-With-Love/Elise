@@ -4,7 +4,7 @@ import site.zido.elise.CrawlResult;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
-import site.zido.elise.thread.ModuleNamedDefaultThreadFactory;
+import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
 import java.util.concurrent.*;
 

@@ -2,7 +2,7 @@ package site.zido.elise;
 
 import site.zido.elise.configurable.ConfigurableModelExtractor;
 import site.zido.elise.configurable.DefRootExtractor;
-import site.zido.elise.extractor.ModelExtractor;
+import site.zido.elise.configurable.ModelExtractor;
 
 /**
  * default extractor task

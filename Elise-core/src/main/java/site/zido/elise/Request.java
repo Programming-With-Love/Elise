@@ -1,7 +1,5 @@
 package site.zido.elise;
 
-import site.zido.elise.model.HttpRequestBody;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.ResultItem;
-import site.zido.elise.extractor.ModelExtractor;
 import site.zido.elise.selector.Selector;
 import site.zido.elise.selector.UrlFinderSelector;
 import site.zido.elise.utils.ValidateUtils;

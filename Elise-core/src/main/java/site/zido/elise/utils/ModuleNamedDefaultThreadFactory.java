@@ -1,4 +1,4 @@
-package site.zido.elise.thread;
+package site.zido.elise.utils;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

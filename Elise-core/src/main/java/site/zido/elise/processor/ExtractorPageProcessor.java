@@ -3,7 +3,7 @@ package site.zido.elise.processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.*;
-import site.zido.elise.extractor.ModelExtractor;
+import site.zido.elise.configurable.ModelExtractor;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
