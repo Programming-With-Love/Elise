@@ -2,7 +2,7 @@ package site.zido.elise;
 
 import site.zido.elise.configurable.ConfigurableModelExtractor;
 import site.zido.elise.configurable.DefRootExtractor;
-import site.zido.elise.extractor.ModelExtractor;
+import site.zido.elise.configurable.ModelExtractor;
 
 /**
  * default extractor task
@@ -50,12 +50,12 @@ public class DefaultTask implements Task {
         return new ConfigurableModelExtractor(defExtractor);
     }
 
+    public DefRootExtractor getDefExtractor() {
+        return defExtractor;
+    }
+
     public DefaultTask setDefExtractor(DefRootExtractor defExtractor) {
         this.defExtractor = defExtractor;
         return this;
-    }
-
-    public DefRootExtractor getDefExtractor() {
-        return defExtractor;
     }
 }

@@ -9,9 +9,8 @@ package site.zido.elise.selector;
  */
 class RegexResult {
 
-    private String[] groups;
-
     public static final RegexResult EMPTY_RESULT = new RegexResult();
+    private String[] groups;
 
     public RegexResult() {
 

@@ -15,7 +15,7 @@ public class CrawlResult implements Iterable<ResultItem> {
     }
 
     public static CrawlResult blank() {
-        return new CrawlResult(null,new BlankSaver());
+        return new CrawlResult(null, new BlankSaver());
     }
 
     public int size() {

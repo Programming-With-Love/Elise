@@ -1,6 +1,9 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.*;
+import site.zido.elise.CrawlResult;
+import site.zido.elise.Page;
+import site.zido.elise.Request;
+import site.zido.elise.Task;
 
 import java.util.concurrent.Future;
 
@@ -17,37 +20,6 @@ import java.util.concurrent.Future;
  * @author zido
  */
 public interface TaskScheduler {
-
-    /**
-     * analyzer listener,this interface should called by download service.
-     * <p>
-     * all downloaded page should be submitted to the analysis module for analysis.
-     *
-     * @author zido
-     */
-    interface AnalyzerListener {
-        /**
-         * message listener.
-         *  @param task
-         * @param request request container
-         * @param page    page container
-         */
-        CrawlResult onProcess(Task task, Request request, Page page);
-    }
-
-    /**
-     * download listener.
-     *
-     * @author zido
-     */
-    interface DownloadListener {
-        /**
-         * message listener.
-         *
-         * @param request request container
-         */
-        CrawlResult onDownload(Task task, Request request);
-    }
 
     /**
      * register as an Analysis Client.
@@ -85,7 +57,8 @@ public interface TaskScheduler {
      * manager will select the appropriate scheduling program
      * and call onDownload{@link DownloadListener} to other clients
      * (of course, may to call yourself also, if you are also an analysis client)
-     *  @param request the request
+     *
+     * @param request the request
      * @param page    page
      */
     CrawlResult process(Task task, Request request, Page page);
@@ -96,4 +69,36 @@ public interface TaskScheduler {
      * @param request the request
      */
     Future<CrawlResult> pushRequest(Task task, Request request);
+
+    /**
+     * analyzer listener,this interface should called by download service.
+     * <p>
+     * all downloaded page should be submitted to the analysis module for analysis.
+     *
+     * @author zido
+     */
+    interface AnalyzerListener {
+        /**
+         * message listener.
+         *
+         * @param task
+         * @param request request container
+         * @param page    page container
+         */
+        CrawlResult onProcess(Task task, Request request, Page page);
+    }
+
+    /**
+     * download listener.
+     *
+     * @author zido
+     */
+    interface DownloadListener {
+        /**
+         * message listener.
+         *
+         * @param request request container
+         */
+        CrawlResult onDownload(Task task, Request request);
+    }
 }

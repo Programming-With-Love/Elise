@@ -1,6 +1,5 @@
 package site.zido.elise.downloader;
 
-import site.zido.elise.Site;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.CookieStore;
 import org.apache.http.config.Registry;
@@ -15,6 +14,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.Site;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -32,13 +32,10 @@ import java.util.Map;
  */
 public class HttpClientGenerator {
 
-    private transient Logger logger = LoggerFactory.getLogger(getClass());
-
-    private PoolingHttpClientConnectionManager connectionManager;
-
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
-
     private static final String GZIP = "gzip";
+    private transient Logger logger = LoggerFactory.getLogger(getClass());
+    private PoolingHttpClientConnectionManager connectionManager;
 
     public HttpClientGenerator() {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()

@@ -1,7 +1,7 @@
 package site.zido.elise.selector;
 
-import site.zido.elise.utils.ValidateUtils;
 import org.jsoup.nodes.Element;
+import site.zido.elise.utils.ValidateUtils;
 import us.codecraft.xsoup.XPathEvaluator;
 import us.codecraft.xsoup.Xsoup;
 

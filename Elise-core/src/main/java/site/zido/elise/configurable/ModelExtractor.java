@@ -1,4 +1,4 @@
-package site.zido.elise.extractor;
+package site.zido.elise.configurable;
 
 import site.zido.elise.Page;
 import site.zido.elise.ResultItem;

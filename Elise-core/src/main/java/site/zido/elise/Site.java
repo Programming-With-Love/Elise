@@ -1,10 +1,13 @@
 package site.zido.elise;
 
-import site.zido.elise.extractor.ModelExtractor;
+import site.zido.elise.configurable.ModelExtractor;
+import site.zido.elise.select.CompilerException;
 import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.utils.IdWorker;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Website information configuration
@@ -49,11 +52,6 @@ public class Site {
         return this;
     }
 
-    public Site setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-        return this;
-    }
-
     public Map<String, String> getCookies() {
         return defaultCookies;
     }
@@ -66,6 +64,11 @@ public class Site {
         return userAgent;
     }
 
+    public Site setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+        return this;
+    }
+
     public String getDomain() {
         return domain;
     }
@@ -75,13 +78,13 @@ public class Site {
         return this;
     }
 
+    public String getCharset() {
+        return charset;
+    }
+
     public Site setCharset(String charset) {
         this.charset = charset;
         return this;
-    }
-
-    public String getCharset() {
-        return charset;
     }
 
     public int getTimeOut() {
@@ -93,17 +96,22 @@ public class Site {
         return this;
     }
 
+    public int getSleepTime() {
+        return sleepTime;
+    }
+
     public Site setSleepTime(int sleepTime) {
         this.sleepTime = sleepTime;
         return this;
     }
 
-    public int getSleepTime() {
-        return sleepTime;
-    }
-
     public int getRetryTimes() {
         return retryTimes;
+    }
+
+    public Site setRetryTimes(int retryTimes) {
+        this.retryTimes = retryTimes;
+        return this;
     }
 
     public Map<String, String> getHeaders() {
@@ -112,11 +120,6 @@ public class Site {
 
     public Site addHeader(String key, String value) {
         headers.put(key, value);
-        return this;
-    }
-
-    public Site setRetryTimes(int retryTimes) {
-        this.retryTimes = retryTimes;
         return this;
     }
 
@@ -133,17 +136,17 @@ public class Site {
         return useGzip;
     }
 
+    public Site setUseGzip(boolean useGzip) {
+        this.useGzip = useGzip;
+        return this;
+    }
+
     public int getRetrySleepTime() {
         return retrySleepTime;
     }
 
     public Site setRetrySleepTime(int retrySleepTime) {
         this.retrySleepTime = retrySleepTime;
-        return this;
-    }
-
-    public Site setUseGzip(boolean useGzip) {
-        this.useGzip = useGzip;
         return this;
     }
 
@@ -198,14 +201,22 @@ public class Site {
     }
 
     public Site setCodeAccepter(String codeAccepter) {
-        codeMatcher = new NumberExpressMatcher(codeAccepter);
+        try {
+            codeMatcher = new NumberExpressMatcher(codeAccepter);
+        } catch (CompilerException e) {
+            e.printStackTrace();
+        }
         this.codeAccepter = codeAccepter;
         return this;
     }
 
-    public synchronized NumberExpressMatcher getCodeMatcher(){
-        if(this.codeMatcher == null){
-            this.codeMatcher = new NumberExpressMatcher(codeAccepter);
+    public synchronized NumberExpressMatcher getCodeMatcher() {
+        if (this.codeMatcher == null) {
+            try {
+                this.codeMatcher = new NumberExpressMatcher(codeAccepter);
+            } catch (CompilerException e) {
+                e.printStackTrace();
+            }
         }
         return this.codeMatcher;
     }

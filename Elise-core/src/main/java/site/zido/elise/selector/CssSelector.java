@@ -1,10 +1,10 @@
 package site.zido.elise.selector;
 
-import site.zido.elise.utils.ValidateUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class CssSelector extends AbstractElementSelector {
     public static final String INNER_HTML = "innerHtml";
     public static final String TEXT = "text";
     public static final String ALL_TEXT = "allText";
-    
+
     private String selectorText;
 
     private String attrName;

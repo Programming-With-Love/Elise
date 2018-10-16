@@ -14,7 +14,6 @@ public interface DuplicationProcessor {
     /**
      * Determine if this request is duplicate
      *
-     *
      * @param task
      * @param request request
      * @return true/false

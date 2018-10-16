@@ -1,6 +1,5 @@
 package site.zido.elise.downloader;
 
-import site.zido.elise.utils.Method;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolException;
@@ -12,6 +11,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.utils.Method;
 
 import java.net.URI;
 

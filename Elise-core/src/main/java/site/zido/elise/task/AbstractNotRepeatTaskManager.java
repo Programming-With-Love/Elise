@@ -17,6 +17,7 @@ public abstract class AbstractNotRepeatTaskManager implements TaskManager {
 
     /**
      * add task
+     *
      * @param task task
      */
     protected abstract boolean addNotRepeat(Task task);

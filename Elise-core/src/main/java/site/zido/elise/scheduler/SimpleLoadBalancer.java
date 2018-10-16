@@ -31,11 +31,6 @@ public class SimpleLoadBalancer<T> implements LoadBalancer<T> {
         current = 0;
     }
 
-    /**
-     * if there is nothing, it will wait until an available object is returned
-     *
-     * @return object
-     */
     @Override
     public T getNext() {
         lock.lock();

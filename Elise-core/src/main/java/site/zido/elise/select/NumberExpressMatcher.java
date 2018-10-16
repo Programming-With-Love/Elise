@@ -79,11 +79,6 @@ public class NumberExpressMatcher implements Matcher {
         }
     }
 
-    private static class Region {
-        private int max = Integer.MAX_VALUE;
-        private int min = Integer.MIN_VALUE;
-    }
-
     @Override
     public boolean matches(Object target) {
         if (!(target instanceof Number)) {
@@ -100,6 +95,11 @@ public class NumberExpressMatcher implements Matcher {
             }
         }
         return false;
+    }
+
+    private static class Region {
+        private int max = Integer.MAX_VALUE;
+        private int min = Integer.MIN_VALUE;
     }
 
 }

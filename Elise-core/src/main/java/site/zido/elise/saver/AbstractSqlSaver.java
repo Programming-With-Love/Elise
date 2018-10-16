@@ -21,31 +21,6 @@ public abstract class AbstractSqlSaver implements Saver {
     private Table table = new Table() {
     };
 
-    public interface IdGenerator {
-        /**
-         * get id
-         *
-         * @return id
-         */
-        Long getId();
-    }
-
-    interface Table {
-        /**
-         * 获取表名
-         *
-         * @param task task
-         * @return 表名
-         */
-        default String getTableName(Task task) {
-            if (task instanceof DefaultTask) {
-                DefRootExtractor defExtractor = ((DefaultTask) task).getDefExtractor();
-                return defExtractor.getName();
-            }
-            return null;
-        }
-    }
-
     public AbstractSqlSaver() {
     }
 
@@ -110,5 +85,30 @@ public abstract class AbstractSqlSaver implements Saver {
         sql = new StringBuilder(sql.substring(0, sql.length() - 1));
         sql.append(")");
         onInsert(sql.toString(), objects);
+    }
+
+    public interface IdGenerator {
+        /**
+         * get id
+         *
+         * @return id
+         */
+        Long getId();
+    }
+
+    interface Table {
+        /**
+         * 获取表名
+         *
+         * @param task task
+         * @return 表名
+         */
+        default String getTableName(Task task) {
+            if (task instanceof DefaultTask) {
+                DefRootExtractor defExtractor = ((DefaultTask) task).getDefExtractor();
+                return defExtractor.getName();
+            }
+            return null;
+        }
     }
 }

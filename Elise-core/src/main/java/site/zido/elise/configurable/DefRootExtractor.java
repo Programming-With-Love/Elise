@@ -40,11 +40,12 @@ public class DefRootExtractor extends DefExtractor {
      * 子规则
      */
     private ArrayList<DefExtractor> children;
-    public DefRootExtractor(){
+
+    public DefRootExtractor() {
         this("default-task");
     }
 
-    public DefRootExtractor(String name){
+    public DefRootExtractor(String name) {
         super(name);
     }
 

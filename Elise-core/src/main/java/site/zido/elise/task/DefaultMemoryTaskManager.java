@@ -15,7 +15,7 @@ public class DefaultMemoryTaskManager extends AbstractNotRepeatTaskManager {
 
     @Override
     public boolean updateTask(Task task) {
-        taskMap.put(task.getId(),task);
+        taskMap.put(task.getId(), task);
         return true;
     }
 

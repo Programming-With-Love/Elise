@@ -6,15 +6,14 @@ import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
-import site.zido.elise.selector.PlainText;
 import site.zido.elise.utils.ValidateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -27,8 +26,8 @@ import java.nio.charset.Charset;
  * @author zido
  */
 public class HtmlUnitDownloader extends AbstractDownloader {
-    private ProxyProvider proxyProvider;
     private static final Logger logger = LoggerFactory.getLogger(HtmlUnitDownloader.class);
+    private ProxyProvider proxyProvider;
 
     @Override
     public Page download(Request request, Task task) {
@@ -38,7 +37,7 @@ public class HtmlUnitDownloader extends AbstractDownloader {
         try {
             if (proxy != null) {
                 webClient = new WebClient(BrowserVersion.CHROME, proxy.getHost(), proxy.getPort());
-                if(!ValidateUtils.isEmpty(proxy.getUsername()) && !ValidateUtils.isEmpty(proxy.getPassword())) {
+                if (!ValidateUtils.isEmpty(proxy.getUsername()) && !ValidateUtils.isEmpty(proxy.getPassword())) {
                     webClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxy.getUsername(), proxy.getPassword()));
                 }
             } else {

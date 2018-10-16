@@ -2,8 +2,8 @@ package site.zido.elise.configurable;
 
 import site.zido.elise.selector.CssSelector;
 import site.zido.elise.selector.RegexSelector;
-import site.zido.elise.selector.XpathSelector;
 import site.zido.elise.selector.Selector;
+import site.zido.elise.selector.XpathSelector;
 
 /**
  * 抽取器描述
