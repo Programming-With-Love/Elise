@@ -1,7 +1,7 @@
 package site.zido.elise;
 
 import site.zido.elise.extractor.ModelExtractor;
-import site.zido.elise.matcher.NumberExpressMatcher;
+import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.utils.IdWorker;
 
 import java.util.*;
@@ -32,7 +32,7 @@ public class Site {
     private int timeOut = 5000;
 
     /**
-     * judge the status code {@link site.zido.elise.matcher.NumberExpressMatcher}
+     * judge the status code {@link site.zido.elise.select.NumberExpressMatcher}
      */
     private String codeAccepter = "200";
 

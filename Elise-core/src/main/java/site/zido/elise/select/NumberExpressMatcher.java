@@ -1,13 +1,13 @@
-package site.zido.elise.matcher;
+package site.zido.elise.select;
 
-import site.zido.elise.utils.Asserts;
+import site.zido.elise.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * a matcher for judging int values
+ * a select for judging int values
  *
  * @author zido
  */
@@ -17,14 +17,16 @@ public class NumberExpressMatcher implements Matcher {
     private List<Region> regions;
     private List<Integer> rows;
 
-    public NumberExpressMatcher(String express) {
+    public NumberExpressMatcher(String express) throws CompilerException {
         this(express, '<');
     }
 
-    public NumberExpressMatcher(String express, char sep) {
-        Asserts.hasLength(express, "express can't be null or empty");
+    public NumberExpressMatcher(String express, char sep) throws CompilerException {
+        if (!StringUtils.hasLength(express)) {
+            throw new CompilerException("express can't be null or empty");
+        }
         if ((sep == '<' && !CHECK_PATTERN.matcher(express).find()) || !express.matches("^[0-9," + sep + "-]*$")) {
-            throw new IllegalArgumentException("express only can contains [0-9," + sep + "-]");
+            throw new CompilerException("express only can contains [0-9," + sep + "-]");
         }
         regions = new ArrayList<>();
         rows = new ArrayList<>();
@@ -52,7 +54,7 @@ public class NumberExpressMatcher implements Matcher {
                         for (++i; i < chars.length; i++) {
                             char ch = chars[i];
                             if (ch == sep) {
-                                throw new IllegalArgumentException("a child express can not contains two or more [" + sep + "] character");
+                                throw new CompilerException("a child express can not contains two or more [" + sep + "] character");
                             }
                             tempNumberBuilder.append(ch);
                         }
@@ -62,12 +64,14 @@ public class NumberExpressMatcher implements Matcher {
                 }
                 regions.add(region);
             } else {
-                Asserts.hasLength(segment, "every number or segment must be split by [,]");
+                if (!StringUtils.hasLength(segment)) {
+                    throw new CompilerException("every number or segment must be split by [,]");
+                }
                 rows.add(Integer.valueOf(segment));
             }
         }
         for (Region region : regions) {
-            if(region.max < region.min){
+            if (region.max < region.min) {
                 region.max = region.max ^ region.min;
                 region.min = region.max ^ region.min;
                 region.max = region.max ^ region.min;

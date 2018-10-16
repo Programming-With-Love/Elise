@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.matcher.NumberExpressMatcher;
+import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.processor.ExtractorPageProcessor;
 import site.zido.elise.processor.PageProcessor;
 import site.zido.elise.saver.MemorySaver;
@@ -144,7 +144,7 @@ public class Spider {
     }
 
     /**
-     * Add urls to crawl. <br>
+     * Add urls to select. <br>
      *
      * @param url url
      * @return this
