@@ -25,6 +25,8 @@ public class Http {
     private static final Http DEFAULT_HTTP;
     private static final Logger LOGGER = LoggerFactory.getLogger(Http.class);
 
+    public static final String CONTENT_TYPE = "Content-Type";
+
     static {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         DEFAULT_HTTP = new Http();

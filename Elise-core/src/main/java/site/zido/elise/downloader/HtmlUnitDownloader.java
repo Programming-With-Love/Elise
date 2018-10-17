@@ -13,6 +13,7 @@ import site.zido.elise.Request;
 import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
+import site.zido.elise.select.HTML;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class HtmlUnitDownloader extends AbstractDownloader {
             page = new Page();
             page.setStatusCode(statusCode);
             page.setUrl(request.getUrl());
-            page.setRawText(htmlPage.asXml());
+            page.setBody(new HTML(htmlPage.asXml(), htmlPage.getUrl().toString()));
             page.setDownloadSuccess(true);
         } catch (MalformedURLException e) {
             logger.error(String.format("url is invalid [%s]", request.getUrl()), e);

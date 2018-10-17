@@ -2,10 +2,10 @@ package site.zido.elise.select;
 
 import java.util.List;
 
-public class PlainText implements Selectable {
+public class Text implements Selectable {
     private String text;
 
-    public PlainText(String text) {
+    public Text(String text) {
         this.text = text;
     }
 

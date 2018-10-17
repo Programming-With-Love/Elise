@@ -1,6 +1,9 @@
 package site.zido.elise.select;
 
-class Paragraph {
+import java.io.Serializable;
+
+class Paragraph implements Serializable {
+    private static final long serialVersionUID = 2429211411138531885L;
     private RichType type;
     private String raw;
 

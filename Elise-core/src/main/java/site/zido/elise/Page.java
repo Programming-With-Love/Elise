@@ -1,5 +1,6 @@
 package site.zido.elise;
 
+import site.zido.elise.select.Selectable;
 import site.zido.elise.utils.StatusCode;
 
 import java.util.Arrays;
@@ -15,7 +16,8 @@ public class Page {
     private String url;
     private Map<String, List<String>> headers;
     private int statusCode = StatusCode.CODE_200;
-    private String rawText;
+
+    private Selectable body;
 
     private boolean downloadSuccess = true;
 
@@ -56,12 +58,8 @@ public class Page {
     }
 
     public String getRawText() {
-        return rawText;
-    }
-
-    public Page setRawText(String rawText) {
-        this.rawText = rawText;
-        return this;
+        //TODO handle raw text
+        return null;
     }
 
     public Map<String, List<String>> getHeaders() {
@@ -99,7 +97,6 @@ public class Page {
     @Override
     public String toString() {
         return "Page{" +
-                ", rawText='" + rawText + '\'' +
                 ", url=" + url +
                 ", headers=" + headers +
                 ", statusCode=" + statusCode +
@@ -107,5 +104,13 @@ public class Page {
                 ", charset='" + charset + '\'' +
                 ", bytes=" + Arrays.toString(bytes) +
                 '}';
+    }
+
+    public Selectable getBody() {
+        return body;
+    }
+
+    public void setBody(Selectable body) {
+        this.body = body;
     }
 }

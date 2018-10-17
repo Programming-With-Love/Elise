@@ -1,7 +1,6 @@
 package site.zido.elise.distributed;
 
 import site.zido.elise.Page;
-import site.zido.elise.selector.PlainText;
 
 /**
  * SavedPage
@@ -33,7 +32,7 @@ public class SavedPage {
         /**
          * Read string.
          *
-         * @param url the url
+         * @param url       the url
          * @param originUrl origin url
          * @return the string
          */
@@ -51,13 +50,11 @@ public class SavedPage {
         byte[] bytes = page.getBytes();
         if (bytes == null) {
             String rawText = page.getRawText();
-            if(rawText == null){
+            if (rawText == null) {
                 return null;
             }
             bytes = rawText.getBytes();
         }
-        page.setRawText(null);
-        page.setBytes(null);
         SavedPage savedPage = new SavedPage();
         savedPage.url = listener.onSave(bytes);
         savedPage.page = page;
@@ -74,7 +71,7 @@ public class SavedPage {
     public static Page resolvePage(SavedPage savedPage, ReadListener listener) {
         Page page = savedPage.page;
         String rawText = listener.read(savedPage.url, page.getUrl());
-        page.setRawText(rawText);
+        //page.setRawText(rawText);
         return page;
     }
 

@@ -1,5 +1,6 @@
 package site.zido.elise.select;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,8 @@ import java.util.List;
  *
  * @author zido
  */
-public class Fragment {
+public class Fragment implements Serializable {
+    private static final long serialVersionUID = -630439618508226636L;
     private List<Paragraph> contents = new ArrayList<>();
 
     public Fragment() {

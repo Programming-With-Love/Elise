@@ -13,6 +13,7 @@ import site.zido.elise.Site;
 import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
+import site.zido.elise.select.BodyFactory;
 import site.zido.elise.utils.CharsetUtils;
 
 import java.io.IOException;
@@ -100,7 +101,7 @@ public class HttpClientDownloader extends AbstractDownloader {
             charset = getHtmlCharset(contentType, bytes);
         }
         page.setCharset(charset);
-        page.setRawText(new String(bytes, charset));
+        page.setBody(BodyFactory.createBody(new String(bytes), contentType));
         page.setUrl(request.getUrl());
         page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         page.setDownloadSuccess(true);

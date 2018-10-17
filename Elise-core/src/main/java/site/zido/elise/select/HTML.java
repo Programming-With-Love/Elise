@@ -4,9 +4,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import site.zido.elise.utils.ValidateUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class HTML implements ElementSelectable {
+public class HTML implements ElementSelectable, Serializable {
+    private static final long serialVersionUID = 3727961912145284879L;
     private String text;
     private String url;
     private transient Document document;
