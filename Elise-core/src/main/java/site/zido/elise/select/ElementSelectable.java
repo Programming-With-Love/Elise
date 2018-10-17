@@ -1,7 +1,7 @@
 package site.zido.elise.select;
 
-import site.zido.elise.selector.ElementSelector;
+import java.util.List;
 
 public interface ElementSelectable extends Selectable {
-    String select(ElementSelector selector);
+    List<Fragment> select(ElementSelector selector);
 }

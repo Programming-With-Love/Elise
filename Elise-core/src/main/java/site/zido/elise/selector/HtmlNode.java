@@ -88,7 +88,7 @@ public class HtmlNode extends AbstractSelectable {
     }
 
     /**
-     * Only document can be select
+     * Only getDocument can be select
      * See: https://github.com/code4craft/webmagic/issues/113
      *
      * @param elementIterator elementIterator

@@ -1,6 +1,6 @@
 package site.zido.elise.select;
 
-import site.zido.elise.selector.Selector;
+import java.util.List;
 
 public class PlainText implements Selectable {
     private String text;
@@ -10,7 +10,7 @@ public class PlainText implements Selectable {
     }
 
     @Override
-    public String select(Selector selector) {
+    public List<String> select(Selector selector) {
         return selector.select(text);
     }
 
