@@ -1,9 +1,9 @@
 package site.zido.elise;
 
 import site.zido.elise.select.Selectable;
+import site.zido.elise.select.Text;
 import site.zido.elise.utils.StatusCode;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -13,15 +13,13 @@ import java.util.Map;
  * @author zido
  */
 public class Page {
-    private String url;
+    private Text url;
     private Map<String, List<String>> headers;
     private int statusCode = StatusCode.CODE_200;
 
     private Selectable body;
 
     private boolean downloadSuccess = true;
-
-    private byte[] bytes;
 
     private String charset;
 
@@ -40,11 +38,11 @@ public class Page {
      *
      * @return url of current page
      */
-    public String getUrl() {
+    public Text getUrl() {
         return url;
     }
 
-    public Page setUrl(String url) {
+    public Page setUrl(Text url) {
         this.url = url;
         return this;
     }
@@ -58,7 +56,6 @@ public class Page {
     }
 
     public String getRawText() {
-        //TODO handle raw text
         return null;
     }
 
@@ -78,14 +75,6 @@ public class Page {
         this.downloadSuccess = downloadSuccess;
     }
 
-    public byte[] getBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
     public String getCharset() {
         return charset;
     }
@@ -97,12 +86,12 @@ public class Page {
     @Override
     public String toString() {
         return "Page{" +
-                ", url=" + url +
+                "url='" + url + '\'' +
                 ", headers=" + headers +
                 ", statusCode=" + statusCode +
+                ", body=" + body +
                 ", downloadSuccess=" + downloadSuccess +
                 ", charset='" + charset + '\'' +
-                ", bytes=" + Arrays.toString(bytes) +
                 '}';
     }
 

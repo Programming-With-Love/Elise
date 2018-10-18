@@ -144,6 +144,8 @@ public class Http {
     }
 
     public static class HttpExceptionWrapper extends RuntimeException {
+        private static final long serialVersionUID = -5766019000294865930L;
+
         public HttpExceptionWrapper(Throwable e) {
             super(e);
         }

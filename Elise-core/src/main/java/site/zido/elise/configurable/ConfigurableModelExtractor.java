@@ -54,7 +54,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
 
     @Override
     public List<ResultItem> extract(Page page) {
-        if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> urlFinderSelector.select(page.getUrl()) != null)) {
+        if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> urlFinderSelector.select(page.getUrl().toString()) != null)) {
             return new ArrayList<>();
         }
         List<ResultItem> results = new ArrayList<>();
@@ -94,9 +94,9 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                     return link;
                 }
                 try {
-                    return new URL(new URL(page.getUrl()), link).toString();
+                    return new URL(new URL(page.getUrl().toString()), link).toString();
                 } catch (MalformedURLException e) {
-                    logger.error("An error occurred while processing the link,base:[{}],spec:[{}]", page.getUrl(), link);
+                    logger.error("An error occurred while processing the link,base:[{}],spec:[{}]", page.getUrl().toString(), link);
                 }
                 return link;
             }).collect(Collectors.toList());
@@ -124,7 +124,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                 value = selector.selectList(page.getRawText());
                 break;
             case URL:
-                value = selector.selectList(page.getUrl());
+                value = selector.selectList(page.getUrl().toString());
                 break;
             case RAW_TEXT:
                 value = selector.selectList(page.getRawText());

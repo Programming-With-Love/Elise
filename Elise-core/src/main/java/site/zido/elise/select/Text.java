@@ -18,4 +18,9 @@ public class Text implements Selectable {
     public boolean match(Selector selector) {
         return selector.select(text) != null;
     }
+
+    @Override
+    public String toString() {
+        return text;
+    }
 }

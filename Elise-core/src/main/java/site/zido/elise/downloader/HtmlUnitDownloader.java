@@ -14,6 +14,7 @@ import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
 import site.zido.elise.select.HTML;
+import site.zido.elise.select.Text;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class HtmlUnitDownloader extends AbstractDownloader {
             int statusCode = htmlPage.getWebResponse().getStatusCode();
             page = new Page();
             page.setStatusCode(statusCode);
-            page.setUrl(request.getUrl());
+            page.setUrl(new Text(request.getUrl()));
             page.setBody(new HTML(htmlPage.asXml(), htmlPage.getUrl().toString()));
             page.setDownloadSuccess(true);
         } catch (MalformedURLException e) {

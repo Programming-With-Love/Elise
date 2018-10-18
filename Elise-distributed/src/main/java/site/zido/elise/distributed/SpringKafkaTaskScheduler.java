@@ -14,7 +14,6 @@ import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import site.zido.elise.*;
-import site.zido.elise.distributed.pojo.SavedSeed;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.distributed.scheduler.BlockWaitScheduler;
 import site.zido.elise.scheduler.AbstractDuplicateRemovedScheduler;
@@ -36,9 +35,6 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     private String groupId = "Elise";
     private String topicAnalyzer = "__analyzer__";
     private String topicDownload = "__download__";
-
-    private SavedPage.ReadListener readListener;
-    private SavedPage.SavedListener savedListener;
 
     private KafkaTemplate<Long, Seed> template;
 
@@ -67,16 +63,6 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         return this;
     }
 
-    public SpringKafkaTaskScheduler setReadListener(SavedPage.ReadListener readListener) {
-        this.readListener = readListener;
-        return this;
-    }
-
-    public SpringKafkaTaskScheduler setSavedListener(SavedPage.SavedListener savedListener) {
-        this.savedListener = savedListener;
-        return this;
-    }
-
     public SpringKafkaTaskScheduler setTopicAnalyzer(String topicAnalyzer) {
         this.topicAnalyzer = topicAnalyzer;
         return this;
@@ -92,13 +78,8 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         taskScheduler.registerAnalyzer(listener);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
-                if (readListener == null) {
-                    Seed seed = message.value();
-                    taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
-                } else {
-                    SavedSeed seed = (SavedSeed) message.value();
-                    taskScheduler.process(seed.getTask(), seed.getRequest(), SavedPage.resolvePage(seed.getSavedPage(), readListener));
-                }
+                Seed seed = message.value();
+                taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
             });
         }
         if (!this.analyzerContainer.isRunning()) {
@@ -153,16 +134,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
 
     @Override
     public CrawlResult process(Task task, Request request, Page page) {
-        if (this.savedListener == null) {
-            template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
-        } else {
-            SavedPage savedPage = SavedPage.resolvePage(page, savedListener);
-            if (savedPage == null) {
-                return null;
-            }
-            template.send(topicAnalyzer, new SavedSeed((DefaultTask) task, request, savedPage));
-        }
-
+        template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
         return null;
     }
 
