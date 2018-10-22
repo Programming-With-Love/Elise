@@ -13,8 +13,8 @@ import java.util.concurrent.ExecutionException;
  *
  * @author zido
  */
-public class ExtractorPageProcessor implements PageProcessor {
-    private static Logger LOGGER = LoggerFactory.getLogger(ExtractorPageProcessor.class);
+public class DefaultPageProcessor implements PageProcessor {
+    private static Logger LOGGER = LoggerFactory.getLogger(DefaultPageProcessor.class);
 
     @Override
     public List<ResultItem> process(Task task, Page page, RequestPutter putter) {

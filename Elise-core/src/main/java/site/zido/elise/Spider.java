@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.select.NumberExpressMatcher;
-import site.zido.elise.processor.ExtractorPageProcessor;
+import site.zido.elise.processor.DefaultPageProcessor;
 import site.zido.elise.processor.PageProcessor;
 import site.zido.elise.saver.MemorySaver;
 import site.zido.elise.saver.Saver;
@@ -47,7 +47,7 @@ public class Spider {
         Spider spider = new Spider(new SimpleTaskScheduler(threadNum));
         spider.setDownloader(new AutoSwitchDownloader());
         spider.setSaver(new MemorySaver());
-        spider.setPageProcessor(new ExtractorPageProcessor());
+        spider.setPageProcessor(new DefaultPageProcessor());
         spider.setTaskManager(new DefaultMemoryTaskManager());
         return spider;
     }
