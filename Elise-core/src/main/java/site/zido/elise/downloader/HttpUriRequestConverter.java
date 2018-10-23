@@ -16,8 +16,8 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
+import site.zido.elise.http.Http;
 import site.zido.elise.proxy.Proxy;
-import site.zido.elise.utils.Method;
 import site.zido.elise.utils.UrlUtils;
 
 import java.util.Map;
@@ -84,18 +84,18 @@ public class HttpUriRequestConverter {
 
     private RequestBuilder selectRequestMethod(Request request) {
         String method = request.getMethod();
-        if (method == null || method.equalsIgnoreCase(Method.GET)) {
+        if (method == null || method.equalsIgnoreCase(Http.Method.GET)) {
             //default get
             return RequestBuilder.get();
-        } else if (method.equalsIgnoreCase(Method.POST)) {
+        } else if (method.equalsIgnoreCase(Http.Method.POST)) {
             return addFormParams(RequestBuilder.post(), request);
-        } else if (method.equalsIgnoreCase(Method.HEAD)) {
+        } else if (method.equalsIgnoreCase(Http.Method.HEAD)) {
             return RequestBuilder.head();
-        } else if (method.equalsIgnoreCase(Method.PUT)) {
+        } else if (method.equalsIgnoreCase(Http.Method.PUT)) {
             return addFormParams(RequestBuilder.put(), request);
-        } else if (method.equalsIgnoreCase(Method.DELETE)) {
+        } else if (method.equalsIgnoreCase(Http.Method.DELETE)) {
             return RequestBuilder.delete();
-        } else if (method.equalsIgnoreCase(Method.TRACE)) {
+        } else if (method.equalsIgnoreCase(Http.Method.TRACE)) {
             return RequestBuilder.trace();
         }
         throw new IllegalArgumentException("Illegal HTTP Method " + method);

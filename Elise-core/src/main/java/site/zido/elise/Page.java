@@ -2,7 +2,6 @@ package site.zido.elise;
 
 import site.zido.elise.select.Selectable;
 import site.zido.elise.select.Text;
-import site.zido.elise.utils.StatusCode;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.Map;
 public class Page {
     private Text url;
     private Map<String, List<String>> headers;
-    private int statusCode = StatusCode.CODE_200;
+    private int statusCode = 200;
 
     private Selectable body;
 

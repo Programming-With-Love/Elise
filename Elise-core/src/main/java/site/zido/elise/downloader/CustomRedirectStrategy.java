@@ -11,7 +11,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.utils.Method;
+import site.zido.elise.http.Http;
 
 import java.net.URI;
 
@@ -29,7 +29,7 @@ public class CustomRedirectStrategy extends LaxRedirectStrategy {
     public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context) throws ProtocolException {
         URI uri = getLocationURI(request, response, context);
         String method = request.getRequestLine().getMethod();
-        if (Method.POST.equalsIgnoreCase(method)) {
+        if (Http.Method.POST.equalsIgnoreCase(method)) {
             try {
                 HttpRequestWrapper httpRequestWrapper = (HttpRequestWrapper) request;
                 httpRequestWrapper.setURI(uri);

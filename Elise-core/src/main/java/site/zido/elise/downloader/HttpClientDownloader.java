@@ -79,7 +79,6 @@ public class HttpClientDownloader extends AbstractDownloader {
             return page;
         } finally {
             if (httpResponse != null) {
-                //ensure the connection is released back to pool
                 EntityUtils.consumeQuietly(httpResponse.getEntity());
                 try {
                     httpResponse.close();
@@ -101,7 +100,7 @@ public class HttpClientDownloader extends AbstractDownloader {
             charset = getHtmlCharset(contentType, bytes);
         }
         page.setCharset(charset);
-        page.setBody(BodyFactory.createBody(new String(bytes), contentType));
+        page.setBody(BodyFactory.createBody(bytes, contentType));
         page.setUrl(new Text(request.getUrl()));
         page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         page.setDownloadSuccess(true);

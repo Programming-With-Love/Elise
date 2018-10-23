@@ -1,4 +1,4 @@
-package site.zido.elise.utils;
+package site.zido.elise.http;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,17 +19,17 @@ import java.util.Map;
  *
  * @author zido
  */
-public class Http {
+public class SimpleHttpClient {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private static final Http DEFAULT_HTTP;
-    private static final Logger LOGGER = LoggerFactory.getLogger(Http.class);
+    private static final SimpleHttpClient DEFAULT_HTTP;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHttpClient.class);
 
     public static final String CONTENT_TYPE = "Content-Type";
 
     static {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        DEFAULT_HTTP = new Http();
+        DEFAULT_HTTP = new SimpleHttpClient();
     }
 
     private URL url;
@@ -152,15 +152,15 @@ public class Http {
     }
 
     public static class HttpBuilder {
-        private Http http;
+        private SimpleHttpClient http;
         private Map<String, Object> paramMap = new HashMap<>(6);
         private ContentType contentType;
 
         public HttpBuilder() {
-            this.http = new Http();
+            this.http = new SimpleHttpClient();
         }
 
-        public HttpBuilder(Http http) {
+        public HttpBuilder(SimpleHttpClient http) {
             this.http = http;
         }
 
@@ -203,7 +203,7 @@ public class Http {
             return this;
         }
 
-        public Http build() {
+        public SimpleHttpClient build() {
             if (contentType == null) {
                 contentType = ContentType.JSON;
             }
@@ -242,9 +242,9 @@ public class Http {
         private Map<String, List<String>> header;
         private int code;
         private String body;
-        private Http http;
+        private SimpleHttpClient http;
 
-        public HTTPResult(Http http, InputStream is, Map<String, List<String>> header, int code) {
+        public HTTPResult(SimpleHttpClient http, InputStream is, Map<String, List<String>> header, int code) {
             this.is = is;
             this.header = header;
             this.code = code;

@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class NumberExpressMatcherTest {
     @Test
-    public void testCompile(){
+    public void testCompile() throws CompilerException {
         try{
             new NumberExpressMatcher("daw3484");
         }catch (IllegalArgumentException e){

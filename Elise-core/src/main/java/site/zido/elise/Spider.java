@@ -4,13 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.processor.DefaultPageProcessor;
 import site.zido.elise.processor.PageProcessor;
 import site.zido.elise.saver.MemorySaver;
 import site.zido.elise.saver.Saver;
 import site.zido.elise.scheduler.SimpleTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
+import site.zido.elise.select.CompilerException;
+import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.task.DefaultMemoryTaskManager;
 import site.zido.elise.task.TaskManager;
 import site.zido.elise.utils.Asserts;
@@ -157,7 +158,12 @@ public class Spider {
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
                 String codeAccepter = site.getCodeAccepter();
-                NumberExpressMatcher matcher = new NumberExpressMatcher(codeAccepter);
+                NumberExpressMatcher matcher = null;
+                try {
+                    matcher = new NumberExpressMatcher(codeAccepter);
+                } catch (CompilerException e) {
+                    throw new RuntimeException(e);
+                }
                 if (matcher.matches(page.getStatusCode())) {
                     List<ResultItem> resultItems = pageProcessor.process(task, page, putter);
                     if (!ValidateUtils.isEmpty(resultItems)) {

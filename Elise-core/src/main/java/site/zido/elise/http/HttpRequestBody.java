@@ -1,4 +1,4 @@
-package site.zido.elise;
+package site.zido.elise.http;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -117,8 +117,5 @@ public class HttpRequestBody implements Serializable {
             return value;
         }
 
-        public void setValue(String value) {
-            this.value = value;
-        }
     }
 }
