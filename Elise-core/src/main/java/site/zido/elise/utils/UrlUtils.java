@@ -1,13 +1,8 @@
 package site.zido.elise.utils;
 
-import site.zido.elise.Request;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +14,7 @@ import java.util.regex.Pattern;
 public class UrlUtils {
     private final static String QUERY_START_CHARACTER = "?";
     private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
-    private static Pattern patternForProtocal = Pattern.compile("[\\w]+://");
+    private static Pattern patternForProtocol = Pattern.compile("[\\w]+://");
 
     /**
      * 规范url
@@ -50,20 +45,6 @@ public class UrlUtils {
     }
 
     /**
-     * Convert to requests list.
-     *
-     * @param urls the urls
-     * @return the list
-     */
-    public static List<Request> convertToRequests(Collection<String> urls) {
-        List<Request> requestList = new ArrayList<Request>(urls.size());
-        for (String url : urls) {
-            requestList.add(new Request(url));
-        }
-        return requestList;
-    }
-
-    /**
      * Fix illegal character in url string.
      *
      * @param url the url
@@ -80,7 +61,7 @@ public class UrlUtils {
      * @return the string
      */
     public static String removeProtocol(String url) {
-        return patternForProtocal.matcher(url).replaceAll("");
+        return patternForProtocol.matcher(url).replaceAll("");
     }
 
     /**
@@ -112,6 +93,7 @@ public class UrlUtils {
             return domain;
         }
     }
+
 
     /**
      * Gets charset.

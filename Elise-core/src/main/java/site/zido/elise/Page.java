@@ -1,5 +1,6 @@
 package site.zido.elise;
 
+import site.zido.elise.http.Http;
 import site.zido.elise.select.Selectable;
 import site.zido.elise.select.Text;
 
@@ -20,7 +21,7 @@ public class Page {
 
     private boolean downloadSuccess = true;
 
-    private String charset;
+    private Http.ContentType contentType;
 
     public Page() {
     }
@@ -74,12 +75,12 @@ public class Page {
         this.downloadSuccess = downloadSuccess;
     }
 
-    public String getCharset() {
-        return charset;
+    public Http.ContentType getContentType() {
+        return contentType;
     }
 
-    public void setCharset(String charset) {
-        this.charset = charset;
+    public void setContentType(Http.ContentType contentType) {
+        this.contentType = contentType;
     }
 
     @Override
@@ -90,7 +91,6 @@ public class Page {
                 ", statusCode=" + statusCode +
                 ", body=" + body +
                 ", downloadSuccess=" + downloadSuccess +
-                ", charset='" + charset + '\'' +
                 '}';
     }
 
