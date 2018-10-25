@@ -21,7 +21,6 @@ public interface Downloader {
 
     /**
      * 设置下载线程
-     * 分布式下载时不支持此方法
      *
      * @param threadNum 线程数量
      */

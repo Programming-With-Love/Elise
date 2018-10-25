@@ -15,10 +15,8 @@ import site.zido.elise.http.Http;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
 import site.zido.elise.select.Text;
-import site.zido.elise.utils.CharsetUtils;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,9 +57,6 @@ public class HttpClientDownloader extends AbstractDownloader {
 
     @Override
     public Page download(Request request, Task task) {
-        if (task == null || task.getSite() == null) {
-            throw new NullPointerException("task or site can not be null");
-        }
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
@@ -69,12 +64,12 @@ public class HttpClientDownloader extends AbstractDownloader {
         Page page = Page.fail();
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
-            page = handleResponse(request, request.getCharset() != null ? request.getCharset() : task.getSite().getCharset(), httpResponse);
+            page = handleResponse(request, task, httpResponse);
             onSuccess(request);
             logger.debug("downloading page success {}", request.getUrl());
             return page;
         } catch (IOException e) {
-            logger.warn("download page {} error", request.getUrl(), e);
+            logger.error("download page {} error", request.getUrl(), e);
             onError(request);
             return page;
         } finally {
@@ -92,12 +87,14 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
     }
 
-    private Page handleResponse(Request request, String charset, HttpResponse httpResponse) throws IOException {
+    private Page handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
         byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
+
         Page page = new Page();
-        page.setContentType(Http.ContentType.parse(contentType, "text/html", charset));
+        page.setContentType(Http.ContentType.parse(contentType));
         //TODO create body
+//        page.setBody();
         page.setUrl(new Text(request.getUrl()));
         page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         page.setDownloadSuccess(true);
@@ -114,15 +111,6 @@ public class HttpClientDownloader extends AbstractDownloader {
             list.add(header.getValue());
         }
         return results;
-    }
-
-    private String getHtmlCharset(String contentType, byte[] contentBytes) {
-        String charset = CharsetUtils.detectCharset(contentType, contentBytes);
-        if (charset == null) {
-            charset = Charset.defaultCharset().name();
-            logger.warn("Charset autodetect failed, use {} as charset. Please specify charset in Site.setCharset()", Charset.defaultCharset());
-        }
-        return charset;
     }
 
     @Override

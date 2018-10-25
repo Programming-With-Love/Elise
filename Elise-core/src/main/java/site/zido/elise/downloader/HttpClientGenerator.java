@@ -59,7 +59,6 @@ public class HttpClientGenerator {
     }
 
     private SSLContext createIgnoreVerifySSL() throws NoSuchAlgorithmException, KeyManagementException {
-        // 实现一个X509TrustManager接口，用于绕过验证，不用修改里面的方法
         X509TrustManager trustManager = new X509TrustManager() {
 
             @Override

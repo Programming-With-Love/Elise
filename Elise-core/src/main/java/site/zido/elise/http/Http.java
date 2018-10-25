@@ -48,7 +48,18 @@ public class Http {
      * type已经包含了http中定义的type和subtype字段，也即是说类似'application/json'
      */
     public static class ContentType {
-        private static final Pattern CONTENT_TYPE_PATTERN = Pattern.compile("Content-Type\\s*:\\s*([^;]*)");
+        public static final ContentType TEXT_HTML = parse("text/html");
+        public static final ContentType TEXT_PLAIN = parse("text/plain");
+        public static final ContentType TEXT_XML = parse("text/xml");
+        public static final ContentType IMAGE_GIF = parse("image/gif");
+        public static final ContentType IMAGE_JPEG = parse("image/jpeg");
+        public static final ContentType IMAGE_PNG = parse("image/png");
+        public static final ContentType APPLICATION_JSON = parse("application/json");
+        public static final ContentType APPLICATION_JSON_UTF_8 = parse("application/json;charset:utf-8");
+        public static final ContentType APPLICATION_OCTET_STREAM = parse("application/octet-stream");
+        public static final ContentType APPLICATION_X_WWW_FORM_URLENCODED = parse("application/x-www-form-urlencoded");
+        public static final ContentType MULTIPART_FORM_DATA = parse("multipart/form-data");
+        private static final Pattern CONTENT_TYPE_PATTERN = Pattern.compile("(Content-Type\\s*:)?\\s*([^;]*)");
         private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
         private String type;
         private String charset;
@@ -70,7 +81,7 @@ public class Http {
             String charset = defaultCharset;
             Matcher matcher = CONTENT_TYPE_PATTERN.matcher(contentType);
             if (matcher.find()) {
-                type = matcher.group(1);
+                type = matcher.group(2);
             }
             matcher = PATTERN_FOR_CHARSET.matcher(contentType);
             if (matcher.find()) {
