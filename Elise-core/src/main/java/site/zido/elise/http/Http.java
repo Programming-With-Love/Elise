@@ -48,21 +48,37 @@ public class Http {
      * type已经包含了http中定义的type和subtype字段，也即是说类似'application/json'
      */
     public static class ContentType {
-        public static final ContentType TEXT_HTML = parse("text/html");
-        public static final ContentType TEXT_PLAIN = parse("text/plain");
-        public static final ContentType TEXT_XML = parse("text/xml");
-        public static final ContentType IMAGE_GIF = parse("image/gif");
-        public static final ContentType IMAGE_JPEG = parse("image/jpeg");
-        public static final ContentType IMAGE_PNG = parse("image/png");
-        public static final ContentType APPLICATION_JSON = parse("application/json");
-        public static final ContentType APPLICATION_JSON_UTF_8 = parse("application/json;charset:utf-8");
-        public static final ContentType APPLICATION_OCTET_STREAM = parse("application/octet-stream");
-        public static final ContentType APPLICATION_X_WWW_FORM_URLENCODED = parse("application/x-www-form-urlencoded");
-        public static final ContentType MULTIPART_FORM_DATA = parse("multipart/form-data");
-        private static final Pattern CONTENT_TYPE_PATTERN = Pattern.compile("(Content-Type\\s*:)?\\s*([^;]*)");
-        private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
+        private static final Pattern CONTENT_TYPE_PATTERN;
+        private static final Pattern PATTERN_FOR_CHARSET;
+        public static final ContentType TEXT_HTML;
+        public static final ContentType TEXT_PLAIN;
+        public static final ContentType TEXT_XML;
+        public static final ContentType IMAGE_GIF;
+        public static final ContentType IMAGE_JPEG;
+        public static final ContentType IMAGE_PNG;
+        public static final ContentType APPLICATION_JSON;
+        public static final ContentType APPLICATION_JSON_UTF_8;
+        public static final ContentType APPLICATION_OCTET_STREAM;
+        public static final ContentType APPLICATION_X_WWW_FORM_URLENCODED;
+        public static final ContentType MULTIPART_FORM_DATA;
         private String type;
         private String charset;
+
+        static {
+            CONTENT_TYPE_PATTERN = Pattern.compile("(Content-Type\\s*:)?\\s*([^;]*)");
+            PATTERN_FOR_CHARSET = Pattern.compile("(Content-Type\\s*:)?\\s*([^;]*)");
+            TEXT_HTML = parse("text/html");
+            TEXT_PLAIN = parse("text/plain");
+            TEXT_XML = parse("text/xml");
+            IMAGE_GIF = parse("image/gif");
+            IMAGE_JPEG = parse("image/jpeg");
+            IMAGE_PNG = parse("image/png");
+            APPLICATION_JSON = parse("application/json");
+            APPLICATION_JSON_UTF_8 = parse("application/json;charset:utf-8");
+            APPLICATION_OCTET_STREAM = parse("application/octet-stream");
+            APPLICATION_X_WWW_FORM_URLENCODED = parse("application/x-www-form-urlencoded");
+            MULTIPART_FORM_DATA = parse("multipart/form-data");
+        }
 
         /**
          * 解析head中的Content-Type

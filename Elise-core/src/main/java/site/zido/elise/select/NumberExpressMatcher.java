@@ -81,7 +81,7 @@ public class NumberExpressMatcher implements Matcher {
 
     @Override
     public boolean matches(Object target) {
-        if (!(target instanceof Number)) {
+        if (!(target instanceof java.lang.Number)) {
             return false;
         }
         for (Integer row : rows) {

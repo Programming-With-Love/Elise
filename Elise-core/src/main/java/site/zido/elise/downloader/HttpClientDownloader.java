@@ -14,7 +14,9 @@ import site.zido.elise.Task;
 import site.zido.elise.http.Http;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
+import site.zido.elise.select.HTML;
 import site.zido.elise.select.Text;
+import site.zido.elise.utils.HtmlUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -93,8 +95,12 @@ public class HttpClientDownloader extends AbstractDownloader {
 
         Page page = new Page();
         page.setContentType(Http.ContentType.parse(contentType));
-        //TODO create body
-//        page.setBody();
+        String charset = request.getCharset();
+        charset = HtmlUtils.getHtmlCharset(bytes, charset);
+        if (charset == null) {
+            charset = task.getSite().getCharset();
+        }
+        page.setBody(new HTML(new String(bytes, charset), request.getUrl()));
         page.setUrl(new Text(request.getUrl()));
         page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         page.setDownloadSuccess(true);

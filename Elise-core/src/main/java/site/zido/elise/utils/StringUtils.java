@@ -2,12 +2,18 @@ package site.zido.elise.utils;
 
 import com.sun.istack.internal.Nullable;
 
+import java.nio.charset.Charset;
+
 public class StringUtils {
     public static boolean hasLength(@Nullable String text) {
         return text != null && text.length() > 0;
     }
 
     public static String getEncode(byte[] bytes) {
+        return getEncode(bytes, Charset.defaultCharset().name());
+    }
+
+    public static String getEncode(byte[] bytes, String defaultCharset) {
         String code;
         if (bytes == null || bytes.length < 2) {
             return null;
@@ -24,7 +30,7 @@ public class StringUtils {
                 code = "UTF-16BE";
                 break;
             default:
-                code = "GBK";
+                code = defaultCharset;
         }
         return code;
     }

@@ -6,15 +6,14 @@ import org.junit.Test;
 public class NumberExpressMatcherTest {
     @Test
     public void testCompile() throws CompilerException {
-        try{
+        try {
             new NumberExpressMatcher("daw3484");
-        }catch (IllegalArgumentException e){
+        } catch (CompilerException e) {
             Assert.assertNotNull(e);
-            Assert.assertEquals("express only can contains [0-9,<-]",e.getMessage());
         }
-        try{
+        try {
             new NumberExpressMatcher(",,12");
-        }catch (IllegalArgumentException e){
+        } catch (CompilerException e) {
             Assert.assertNotNull(e);
         }
 
