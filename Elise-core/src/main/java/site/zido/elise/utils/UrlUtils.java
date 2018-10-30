@@ -2,8 +2,6 @@ package site.zido.elise.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -13,7 +11,6 @@ import java.util.regex.Pattern;
  */
 public class UrlUtils {
     private final static String QUERY_START_CHARACTER = "?";
-    private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)", Pattern.CASE_INSENSITIVE);
     private static Pattern patternForProtocol = Pattern.compile("[\\w]+://");
 
     /**
@@ -95,20 +92,4 @@ public class UrlUtils {
     }
 
 
-    /**
-     * Gets charset.
-     *
-     * @param contentType the content type
-     * @return the charset
-     */
-    public static String getCharset(String contentType) {
-        Matcher matcher = PATTERN_FOR_CHARSET.matcher(contentType);
-        if (matcher.find()) {
-            String charset = matcher.group(1);
-            if (Charset.isSupported(charset)) {
-                return charset;
-            }
-        }
-        return null;
-    }
 }

@@ -10,7 +10,7 @@ public class Text implements Selectable {
     }
 
     @Override
-    public List<String> select(Selector selector) {
+    public List<Fragment> select(Selector selector) {
         return selector.select(text);
     }
 

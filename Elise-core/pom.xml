@@ -16,8 +16,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>us.codecraft</groupId>
-            <artifactId>xsoup</artifactId>
+            <groupId>com.virjar</groupId>
+            <artifactId>sipsoup</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.assertj</groupId>

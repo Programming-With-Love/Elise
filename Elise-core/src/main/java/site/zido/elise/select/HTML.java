@@ -2,6 +2,7 @@ package site.zido.elise.select;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Node;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.io.Serializable;
@@ -36,7 +37,12 @@ public class HTML implements ElementSelectable, Serializable {
     }
 
     @Override
-    public List<String> select(Selector selector) {
+    public List<Node> selectAsNode(ElementSelector selector) {
+        return selector.selectAsNode(getDocument());
+    }
+
+    @Override
+    public List<Fragment> select(Selector selector) {
         return selector.select(text);
     }
 

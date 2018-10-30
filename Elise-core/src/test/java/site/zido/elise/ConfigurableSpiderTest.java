@@ -1,6 +1,6 @@
 package site.zido.elise;
 
-import site.zido.elise.configurable.*;
+import site.zido.elise.select.configurable.*;
 import org.junit.Before;
 
 /**

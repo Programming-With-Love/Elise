@@ -1,6 +1,6 @@
-package site.zido.elise.configurable;
+package site.zido.elise.select.configurable;
 
-import site.zido.elise.selector.LinkProperty;
+import site.zido.elise.select.LinkProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;

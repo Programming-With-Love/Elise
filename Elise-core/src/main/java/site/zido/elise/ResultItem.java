@@ -1,5 +1,7 @@
 package site.zido.elise;
 
+import site.zido.elise.select.Fragment;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
  * @author zido
  */
 public class ResultItem {
-    private Map<String, List<String>> fields = new LinkedHashMap<>();
+    private Map<String, List<Fragment>> fields = new LinkedHashMap<>();
 
     private Request request;
 
@@ -25,11 +27,11 @@ public class ResultItem {
         return fields.get(key);
     }
 
-    public Map<String, List<String>> getAll() {
+    public Map<String, List<Fragment>> getAll() {
         return fields;
     }
 
-    public ResultItem put(String key, List<String> value) {
+    public ResultItem put(String key, List<Fragment> value) {
         fields.put(key, value);
         return this;
     }

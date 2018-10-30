@@ -20,12 +20,10 @@ import java.util.Map;
  * @author zido
  */
 public class SimpleHttpClient {
+    public static final String CONTENT_TYPE = "Content-Type";
     private static final ObjectMapper mapper = new ObjectMapper();
-
     private static final SimpleHttpClient DEFAULT_HTTP;
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHttpClient.class);
-
-    public static final String CONTENT_TYPE = "Content-Type";
 
     static {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

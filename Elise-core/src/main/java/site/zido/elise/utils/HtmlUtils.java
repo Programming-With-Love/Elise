@@ -9,17 +9,36 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * html utils
+ *
+ * @author zido
+ */
 public class HtmlUtils {
     //html5 in meta
     private static final Pattern META_CHARSET_PATTERN = Pattern.compile("<[mM][eE][tT][aA][^>]*([cC][Hh][Aa][Rr][Ss][Ee][Tt][\\s]*=[\\s\\\"']*)([\\w\\d-_]*)[^>]*>");
+    private static final char[] keywords = {'h', 'e', 'a', 'd', '>'};
 
+    /**
+     * get the charset from html
+     *
+     * @param htmlContent html bytes
+     * @return charset name
+     */
     public static String getHtmlCharset(byte[] htmlContent) {
         String charset = Charset.defaultCharset().name();
         return getHtmlCharset(htmlContent, charset);
     }
 
-    public static String getHtmlCharset(byte[] bytes, String defaultCharset) {
-        String content = new String(bytes);
+    /**
+     * get the charset from html
+     *
+     * @param htmlContent    html bytes
+     * @param defaultCharset default charset
+     * @return charset name
+     */
+    public static String getHtmlCharset(byte[] htmlContent, String defaultCharset) {
+        String content = new String(htmlContent);
         Matcher matcher = META_CHARSET_PATTERN.matcher(content);
         if (matcher.find()) {
             return matcher.group(2);
@@ -35,12 +54,17 @@ public class HtmlUtils {
                 }
             }
         }
-        return StringUtils.getEncode(bytes, defaultCharset);
+        return StringUtils.getEncode(htmlContent, defaultCharset);
     }
 
+    /**
+     * get the head string from html
+     *
+     * @param html the html str that contains the head tag
+     * @return head string
+     */
     public static String getHeadStr(String html) {
         char[] chars = html.toCharArray();
-        char[] keywords = {'h', 'e', 'a', 'd', '>'};
         boolean isStartTag = true;
         int startIndex = -1, endIndex = -1;
         for (int i = 0; i < chars.length; i++) {

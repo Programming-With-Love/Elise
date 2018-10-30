@@ -1,9 +1,10 @@
-package site.zido.elise.configurable;
+package site.zido.elise.select.configurable;
 
-import site.zido.elise.selector.CssSelector;
-import site.zido.elise.selector.RegexSelector;
-import site.zido.elise.selector.Selector;
-import site.zido.elise.selector.XpathSelector;
+import com.virjar.sipsoup.exception.XpathSyntaxErrorException;
+import site.zido.elise.select.CssSelector;
+import site.zido.elise.select.RegexSelector;
+import site.zido.elise.select.Selector;
+import site.zido.elise.select.XPathSelector;
 
 /**
  * 抽取器描述
@@ -100,7 +101,12 @@ public class DefExtractor {
                 break;
             case XPATH:
             default:
-                selector = new XpathSelector(this.value);
+                try {
+                    selector = new XPathSelector(this.value);
+                } catch (XpathSyntaxErrorException e) {
+                    //TODO exception handle
+                    throw new RuntimeException(e);
+                }
         }
         return selector;
     }

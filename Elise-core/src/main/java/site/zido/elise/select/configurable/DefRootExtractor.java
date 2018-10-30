@@ -1,4 +1,4 @@
-package site.zido.elise.configurable;
+package site.zido.elise.select.configurable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

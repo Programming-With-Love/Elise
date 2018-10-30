@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
+import site.zido.elise.select.Fragment;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
@@ -24,8 +25,8 @@ public class MemorySaver implements Saver {
     public void save(ResultItem resultItem, Task task) {
         List<ResultItem> resultItems = cup.computeIfAbsent(task.getId(), k -> new ArrayList<>());
         resultItems.add(resultItem);
-        Map<String, List<String>> all = resultItem.getAll();
-        for (Map.Entry<String, List<String>> entry : all.entrySet()) {
+        Map<String, List<Fragment>> all = resultItem.getAll();
+        for (Map.Entry<String, List<Fragment>> entry : all.entrySet()) {
             LOGGER.debug(entry.getKey() + ":\t" + entry.getValue());
         }
     }

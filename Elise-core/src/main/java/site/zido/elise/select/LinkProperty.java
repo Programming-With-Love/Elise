@@ -1,4 +1,4 @@
-package site.zido.elise.selector;
+package site.zido.elise.select;
 
 /**
  * LinkProperty

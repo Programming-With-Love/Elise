@@ -55,10 +55,6 @@ public class Page {
         this.statusCode = statusCode;
     }
 
-    public String getRawText() {
-        return null;
-    }
-
     public Map<String, List<String>> getHeaders() {
         return headers;
     }

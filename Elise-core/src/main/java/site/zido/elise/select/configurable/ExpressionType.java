@@ -1,4 +1,4 @@
-package site.zido.elise.configurable;
+package site.zido.elise.select.configurable;
 
 /**
  * 抽取器类型

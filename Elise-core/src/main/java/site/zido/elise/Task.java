@@ -1,6 +1,6 @@
 package site.zido.elise;
 
-import site.zido.elise.configurable.ModelExtractor;
+import site.zido.elise.select.configurable.ModelExtractor;
 
 /**
  * Task interface

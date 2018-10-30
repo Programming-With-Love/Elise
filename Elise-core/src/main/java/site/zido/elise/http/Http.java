@@ -48,8 +48,6 @@ public class Http {
      * type已经包含了http中定义的type和subtype字段，也即是说类似'application/json'
      */
     public static class ContentType {
-        private static final Pattern CONTENT_TYPE_PATTERN;
-        private static final Pattern PATTERN_FOR_CHARSET;
         public static final ContentType TEXT_HTML;
         public static final ContentType TEXT_PLAIN;
         public static final ContentType TEXT_XML;
@@ -61,8 +59,8 @@ public class Http {
         public static final ContentType APPLICATION_OCTET_STREAM;
         public static final ContentType APPLICATION_X_WWW_FORM_URLENCODED;
         public static final ContentType MULTIPART_FORM_DATA;
-        private String type;
-        private String charset;
+        private static final Pattern CONTENT_TYPE_PATTERN;
+        private static final Pattern PATTERN_FOR_CHARSET;
 
         static {
             CONTENT_TYPE_PATTERN = Pattern.compile("(Content-Type\\s*:)?\\s*([^;]*)");
@@ -78,6 +76,14 @@ public class Http {
             APPLICATION_OCTET_STREAM = parse("application/octet-stream");
             APPLICATION_X_WWW_FORM_URLENCODED = parse("application/x-www-form-urlencoded");
             MULTIPART_FORM_DATA = parse("multipart/form-data");
+        }
+
+        private String type;
+        private String charset;
+
+        public ContentType(String type, String charset) {
+            this.type = type;
+            this.charset = charset;
         }
 
         /**
@@ -104,11 +110,6 @@ public class Http {
                 charset = matcher.group(1);
             }
             return new ContentType(type, charset);
-        }
-
-        public ContentType(String type, String charset) {
-            this.type = type;
-            this.charset = charset;
         }
 
         public String getType() {

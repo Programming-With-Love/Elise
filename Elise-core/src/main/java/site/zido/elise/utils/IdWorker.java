@@ -38,6 +38,7 @@ public class IdWorker {
     private long dataCenterId;
     private long sequence;
     private long lastTimestamp = -1L;
+
     public IdWorker() {
         dataCenterId = getDataCenterId(maxDataCenterId);
         workerId = getMaxWorkerId(dataCenterId, maxWorkerId);

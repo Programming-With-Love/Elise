@@ -1,11 +1,11 @@
-package site.zido.elise.configurable;
+package site.zido.elise.select.configurable;
 
+import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.ResultItem;
-import site.zido.elise.selector.Selector;
-import site.zido.elise.selector.UrlFinderSelector;
+import site.zido.elise.select.*;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.net.MalformedURLException;
@@ -25,8 +25,8 @@ public class ConfigurableModelExtractor implements ModelExtractor {
 
     private static final String HTTP_LABEL = "http";
     private static Logger logger = LoggerFactory.getLogger(ConfigurableModelExtractor.class);
-    private List<UrlFinderSelector> targetUrlSelectors = new ArrayList<>();
-    private List<UrlFinderSelector> helpUrlSelectors = new ArrayList<>();
+    private List<LinkSelector> targetUrlSelectors = new ArrayList<>();
+    private List<LinkSelector> helpUrlSelectors = new ArrayList<>();
     private DefRootExtractor defRootExtractor;
 
     /**
@@ -39,39 +39,49 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         List<ConfigurableUrlFinder> targetUrlFinder = defRootExtractor.getTargetUrl();
         if (!ValidateUtils.isEmpty(targetUrlFinder)) {
             for (ConfigurableUrlFinder configurableUrlFinder : targetUrlFinder) {
-                UrlFinderSelector urlFinderSelector = new UrlFinderSelector(configurableUrlFinder);
-                this.targetUrlSelectors.add(urlFinderSelector);
+                LinkSelector linkSelector = new LinkSelector(configurableUrlFinder);
+                this.targetUrlSelectors.add(linkSelector);
             }
         }
         List<ConfigurableUrlFinder> helpUrlFinder = defRootExtractor.getHelpUrl();
         if (!ValidateUtils.isEmpty(helpUrlFinder)) {
             for (ConfigurableUrlFinder configurableUrlFinder : helpUrlFinder) {
-                UrlFinderSelector urlFinderSelector = new UrlFinderSelector(configurableUrlFinder);
-                this.helpUrlSelectors.add(urlFinderSelector);
+                LinkSelector linkSelector = new LinkSelector(configurableUrlFinder);
+                this.helpUrlSelectors.add(linkSelector);
             }
         }
     }
 
     @Override
     public List<ResultItem> extract(Page page) {
-        if (targetUrlSelectors.stream().noneMatch(urlFinderSelector -> urlFinderSelector.select(page.getUrl().toString()) != null)) {
+        if (targetUrlSelectors.stream().noneMatch(linkSelector -> linkSelector.select(page.getUrl().toString()) != null)) {
             return new ArrayList<>();
         }
         List<ResultItem> results = new ArrayList<>();
+        Selectable body = page.getBody();
         Selector selector = defRootExtractor.compileSelector();
-        //get region
-        List<String> list = selector.selectList(page.getRawText());
-        for (String html : list) {
-            Map<String, List<String>> item = processSingle(page, html);
-            if (item != null) {
-                ResultItem resultItem = new ResultItem();
-                for (String s : item.keySet()) {
-                    resultItem.put(s, item.get(s));
-                }
-                results.add(resultItem);
+        if (body instanceof ElementSelectable && selector instanceof ElementSelector) {
+            List<Node> list = ((ElementSelectable) body).selectAsNode((ElementSelector) selector);
+            for (Node node : list) {
+                //TODO handle element select
             }
+        } else {
+            List<Fragment> list = body.select(selector);
+            //get region
+            for (Fragment fragment : list) {
+                String html = fragment.toString();
+                Map<String, List<Fragment>> item = processSingle(page, html);
+                if (item != null) {
+                    ResultItem resultItem = new ResultItem();
+                    for (String s : item.keySet()) {
+                        resultItem.put(s, item.get(s));
+                    }
+                    results.add(resultItem);
+                }
+            }
+            return results;
         }
-        return results;
+        return new ArrayList<>();
     }
 
     @Override
@@ -83,8 +93,11 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         } else {
             links = new ArrayList<>();
             //TODO can't select relative path
-            for (UrlFinderSelector selector : helpUrlSelectors) {
-                links.addAll(selector.selectList(page.getRawText()));
+            for (LinkSelector selector : helpUrlSelectors) {
+                List<Fragment> list = page.getBody().select(selector);
+                for (Fragment fragment : list) {
+                    links.add(fragment.toString());
+                }
             }
             //processing link
             links = links.stream().map(link -> {
@@ -104,10 +117,10 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return links;
     }
 
-    private Map<String, List<String>> processSingle(Page page, String html) {
-        Map<String, List<String>> map = new HashMap<>(defRootExtractor.getChildren().size());
+    private Map<String, List<Fragment>> processSingle(Page page, String html) {
+        Map<String, List<Fragment>> map = new HashMap<>(defRootExtractor.getChildren().size());
         for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
-            List<String> results = processField(fieldExtractor, page, html);
+            List<Fragment> results = processField(fieldExtractor, page, html);
             if (ValidateUtils.isEmpty(results) && !fieldExtractor.getNullable()) {
                 return null;
             }
@@ -116,22 +129,22 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return map;
     }
 
-    private List<String> processField(DefExtractor fieldExtractor, Page page, String html) {
-        List<String> value;
+    private List<Fragment> processField(DefExtractor fieldExtractor, Page page, String html) {
+        List<Fragment> value;
         Selector selector = fieldExtractor.compileSelector();
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
-                value = selector.selectList(page.getRawText());
+                value = page.getBody().select(selector);
                 break;
             case URL:
-                value = selector.selectList(page.getUrl().toString());
+                value = selector.select(page.getUrl().toString());
                 break;
             case RAW_TEXT:
-                value = selector.selectList(page.getRawText());
+                value = page.getBody().select(selector);
                 break;
             case REGION:
             default:
-                value = selector.selectList(html);
+                value = selector.select(html);
         }
         return value;
     }

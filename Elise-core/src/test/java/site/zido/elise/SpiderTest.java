@@ -2,10 +2,10 @@ package site.zido.elise;
 
 import org.junit.Assert;
 import org.junit.Test;
-import site.zido.elise.configurable.ConfigurableUrlFinder;
-import site.zido.elise.configurable.DefExtractor;
-import site.zido.elise.configurable.DefRootExtractor;
-import site.zido.elise.configurable.ExpressionType;
+import site.zido.elise.select.configurable.ConfigurableUrlFinder;
+import site.zido.elise.select.configurable.DefExtractor;
+import site.zido.elise.select.configurable.DefRootExtractor;
+import site.zido.elise.select.configurable.ExpressionType;
 import site.zido.elise.utils.IdWorker;
 
 import java.util.concurrent.ExecutionException;
