@@ -74,6 +74,16 @@ public class Fragment implements Serializable {
         return contents;
     }
 
+    public String text() {
+        StringBuilder sb = new StringBuilder();
+        for (Paragraph content : contents) {
+            if (content.getType() == RichType.TEXT) {
+                sb.append(content.getRaw());
+            }
+        }
+        return sb.toString();
+    }
+
     @Override
     public String toString() {
         if (contents.size() == 0) {

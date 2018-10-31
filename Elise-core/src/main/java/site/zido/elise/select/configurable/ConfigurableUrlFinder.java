@@ -32,6 +32,8 @@ public class ConfigurableUrlFinder {
 
     public ConfigurableUrlFinder(String value) {
         this.value = value;
+        this.linkProperties = new ArrayList<>();
+        this.linkProperties.add(new LinkProperty("a", "href"));
     }
 
     public String getValue() {

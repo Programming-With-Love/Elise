@@ -33,10 +33,9 @@ public class CrawlResult implements Iterable<ResultItem> {
 
     private class ItemIter implements Iterator<ResultItem> {
 
-        private ResultItem current;
+        private ResultItem current = null;
 
         private ItemIter() {
-            current = saver.first(task);
         }
 
         @Override

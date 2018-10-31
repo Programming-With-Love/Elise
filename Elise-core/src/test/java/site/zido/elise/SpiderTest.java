@@ -2,12 +2,15 @@ package site.zido.elise;
 
 import org.junit.Assert;
 import org.junit.Test;
+import site.zido.elise.select.Fragment;
 import site.zido.elise.select.configurable.ConfigurableUrlFinder;
 import site.zido.elise.select.configurable.DefExtractor;
 import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ExpressionType;
 import site.zido.elise.utils.IdWorker;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -33,8 +36,16 @@ public class SpiderTest {
         Future<CrawlResult> future = spider.addUrl(task, "http://zido.site");
         CrawlResult result = future.get();
         Assert.assertEquals(8, result.size());
+        int i = 1;
         for (ResultItem item : result) {
-            System.out.println(item.getAll());
+            Map<String, List<Fragment>> all = item.getAll();
+            for (String fieldName : all.keySet()) {
+                List<Fragment> fragments = all.get(fieldName);
+                for (Fragment fragment : fragments) {
+                    System.out.println(fieldName + "[" + (i) + "]:" + fragment.text());
+                }
+            }
+            i++;
         }
     }
 

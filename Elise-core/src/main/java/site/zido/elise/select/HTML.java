@@ -43,6 +43,9 @@ public class HTML implements ElementSelectable, Serializable {
 
     @Override
     public List<Fragment> select(Selector selector) {
+        if (selector instanceof ElementSelector) {
+            return ((ElementSelector) selector).select(getDocument());
+        }
         return selector.select(text);
     }
 

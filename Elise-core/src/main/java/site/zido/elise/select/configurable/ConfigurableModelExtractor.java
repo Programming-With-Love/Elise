@@ -1,5 +1,6 @@
 package site.zido.elise.select.configurable;
 
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +63,10 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         Selector selector = defRootExtractor.compileSelector();
         if (body instanceof ElementSelectable && selector instanceof ElementSelector) {
             List<Node> list = ((ElementSelectable) body).selectAsNode((ElementSelector) selector);
+            //select from region
             for (Node node : list) {
-                //TODO handle element select
+                Map<String, List<Fragment>> item = processSingle(page, node);
+                toResults(results, item);
             }
         } else {
             List<Fragment> list = body.select(selector);
@@ -71,17 +74,20 @@ public class ConfigurableModelExtractor implements ModelExtractor {
             for (Fragment fragment : list) {
                 String html = fragment.toString();
                 Map<String, List<Fragment>> item = processSingle(page, html);
-                if (item != null) {
-                    ResultItem resultItem = new ResultItem();
-                    for (String s : item.keySet()) {
-                        resultItem.put(s, item.get(s));
-                    }
-                    results.add(resultItem);
-                }
+                toResults(results, item);
             }
-            return results;
         }
-        return new ArrayList<>();
+        return results;
+    }
+
+    private void toResults(List<ResultItem> results, Map<String, List<Fragment>> item) {
+        if (item != null) {
+            ResultItem resultItem = new ResultItem();
+            for (String s : item.keySet()) {
+                resultItem.put(s, item.get(s));
+            }
+            results.add(resultItem);
+        }
     }
 
     @Override
@@ -96,7 +102,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
             for (LinkSelector selector : helpUrlSelectors) {
                 List<Fragment> list = page.getBody().select(selector);
                 for (Fragment fragment : list) {
-                    links.add(fragment.toString());
+                    links.add(fragment.text());
                 }
             }
             //processing link
@@ -117,7 +123,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return links;
     }
 
-    private Map<String, List<Fragment>> processSingle(Page page, String html) {
+    private Map<String, List<Fragment>> processSingle(Page page, Object html) {
         Map<String, List<Fragment>> map = new HashMap<>(defRootExtractor.getChildren().size());
         for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
             List<Fragment> results = processField(fieldExtractor, page, html);
@@ -129,7 +135,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return map;
     }
 
-    private List<Fragment> processField(DefExtractor fieldExtractor, Page page, String html) {
+    private List<Fragment> processField(DefExtractor fieldExtractor, Page page, Object html) {
         List<Fragment> value;
         Selector selector = fieldExtractor.compileSelector();
         switch (fieldExtractor.getSource()) {
@@ -144,7 +150,16 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                 break;
             case REGION:
             default:
-                value = selector.select(html);
+                if (html instanceof Node) {
+                    if (selector instanceof ElementSelector) {
+                        value = ((ElementSelector) selector).select((Element) html);
+                    } else {
+                        value = selector.select(((Node) html).outerHtml());
+                    }
+                } else {
+                    value = selector.select((String) html);
+                }
+
         }
         return value;
     }
