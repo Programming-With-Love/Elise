@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ModuleNamedDefaultThreadFactory implements ThreadFactory {
 
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
-    private static final AtomicInteger threadNumber = new AtomicInteger(1);
+    private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final ThreadGroup group;
     //will be a part of name
     private final String prefix;

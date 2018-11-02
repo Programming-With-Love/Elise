@@ -98,7 +98,6 @@ public class ConfigurableModelExtractor implements ModelExtractor {
             return new ArrayList<>(0);
         } else {
             links = new ArrayList<>();
-            //TODO can't select relative path
             for (LinkSelector selector : helpUrlSelectors) {
                 List<Fragment> list = page.getBody().select(selector);
                 for (Fragment fragment : list) {

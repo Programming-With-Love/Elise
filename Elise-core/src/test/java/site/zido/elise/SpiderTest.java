@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
  */
 public class SpiderTest {
     @Test
-    public void testRun() throws InterruptedException, ExecutionException {
+    public void testOnePage() throws InterruptedException, ExecutionException {
         Spider spider = Spider.defaults();
         DefRootExtractor extractor = new DefRootExtractor("article");
         extractor.setType(ExpressionType.CSS).setValue(".page-container>.blog");
@@ -50,7 +50,7 @@ public class SpiderTest {
     }
 
     @Test
-    public void testPause() throws ExecutionException, InterruptedException {
+    public void testMultiPage() throws ExecutionException, InterruptedException {
         Spider spider = Spider.defaults();
         DefRootExtractor extractor = new DefRootExtractor("project");
         extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
