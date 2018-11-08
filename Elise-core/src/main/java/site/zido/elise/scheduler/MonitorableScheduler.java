@@ -6,19 +6,6 @@ package site.zido.elise.scheduler;
  * @author zido
  */
 public interface MonitorableScheduler {
-    /**
-     * get the downloaderSize by type
-     *
-     * @return downloaderSize
-     */
-    int downloaderSize();
-
-    /**
-     * get the number of analyzer clients
-     *
-     * @return size
-     */
-    int analyzerSize();
 
     /**
      * See how many messages are in the message container

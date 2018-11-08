@@ -12,7 +12,6 @@ import site.zido.elise.utils.IdWorker;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * SpiderTest
@@ -33,9 +32,13 @@ public class SpiderTest {
                 .setValue("p.blog-content")
                 .setType(ExpressionType.CSS));
         DefaultTask task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
-        Future<CrawlResult> future = spider.addUrl(task, "http://zido.site");
-        CrawlResult result = future.get();
+        CrawlResult result = spider.addUrl(task, "http://zido.site");
         Assert.assertEquals(8, result.size());
+
+        extractResultItem(result);
+    }
+
+    private void extractResultItem(CrawlResult result) {
         int i = 1;
         for (ResultItem item : result) {
             Map<String, List<Fragment>> all = item.getAll();
@@ -65,9 +68,7 @@ public class SpiderTest {
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
         Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
-        CrawlResult result = spider.addUrl(task, "http://github.com/zidoshare").get();
-        for (ResultItem resultItem : result) {
-            System.out.println(resultItem.getAll());
-        }
+        CrawlResult result = spider.addUrl(task, "https://github.com/zidoshare");
+        extractResultItem(result);
     }
 }

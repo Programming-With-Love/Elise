@@ -6,7 +6,6 @@ import site.zido.elise.*;
 import site.zido.elise.select.configurable.ModelExtractor;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * model page processor with extractor,
@@ -22,13 +21,7 @@ public class DefaultPageProcessor implements PageProcessor {
         List<String> links = extractor.extractLinks(page);
         if (links != null) {
             for (String link : links) {
-                try {
-                    putter.pushRequest(task, new Request(link)).get();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } catch (ExecutionException e) {
-                    LOGGER.error("error:", e.getCause());
-                }
+                putter.pushRequest(task, new Request(link));
             }
         }
         return extractor.extract(page);

@@ -8,7 +8,7 @@ import site.zido.elise.processor.DefaultPageProcessor;
 import site.zido.elise.processor.PageProcessor;
 import site.zido.elise.saver.MemorySaver;
 import site.zido.elise.saver.Saver;
-import site.zido.elise.scheduler.SimpleTaskScheduler;
+import site.zido.elise.scheduler.SyncTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
 import site.zido.elise.select.CompilerException;
 import site.zido.elise.select.NumberExpressMatcher;
@@ -19,7 +19,6 @@ import site.zido.elise.utils.UrlUtils;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * the main spider
@@ -45,7 +44,7 @@ public class Spider {
     }
 
     public static Spider defaults(int threadNum) {
-        Spider spider = new Spider(new SimpleTaskScheduler(threadNum));
+        Spider spider = new Spider(new SyncTaskScheduler(threadNum));
         spider.setDownloader(new AutoSwitchDownloader());
         spider.setSaver(new MemorySaver());
         spider.setPageProcessor(new DefaultPageProcessor());
@@ -57,8 +56,8 @@ public class Spider {
         Asserts.notNull(downloader);
         Asserts.notNull(pageProcessor);
         Asserts.notNull(saver, "saver can not be null");
-        manager.registerDownloader(processor);
-        manager.registerAnalyzer(processor);
+        manager.setDownloader(processor);
+        manager.setAnalyzer(processor);
     }
 
     private void doCycleRetry(Task task, Request request) {
@@ -89,7 +88,7 @@ public class Spider {
      * @param url url
      * @return this
      */
-    public Future<CrawlResult> addUrl(String url) {
+    public CrawlResult addUrl(String url) {
         Asserts.hasLength(url);
         preStart();
         Request request = new Request(url);
@@ -103,7 +102,7 @@ public class Spider {
         return this;
     }
 
-    public Future<CrawlResult> addUrl(Task task, String url) {
+    public CrawlResult addUrl(Task task, String url) {
         Asserts.notNull(task);
         Asserts.hasLength(url);
         preStart();
@@ -136,7 +135,7 @@ public class Spider {
     private class Putter implements RequestPutter {
 
         @Override
-        public Future<CrawlResult> pushRequest(Task task, Request request) {
+        public CrawlResult pushRequest(Task task, Request request) {
             return manager.pushRequest(task, request);
         }
     }
@@ -150,7 +149,7 @@ public class Spider {
                 site.setDomain(UrlUtils.getDomain(request.getUrl()));
             }
             Page page = downloader.download(request, task);
-            return manager.process(task, request, page);
+            return manager.processPage(task, request, page);
         }
 
         @Override

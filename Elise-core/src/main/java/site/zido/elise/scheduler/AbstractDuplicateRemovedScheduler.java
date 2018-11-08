@@ -6,8 +6,6 @@ import site.zido.elise.CrawlResult;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 
-import java.util.concurrent.Future;
-
 /**
  * Abstract Duplicate Removed Scheduler
  *
@@ -23,7 +21,7 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     }
 
     @Override
-    public Future<CrawlResult> pushRequest(Task task, Request request) {
+    public CrawlResult pushRequest(Task task, Request request) {
         logger.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
@@ -45,11 +43,10 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     /**
      * Specific insert logic implementation,
      * This method is called after removing duplicate data
-     *
-     * @param task    the task
+     *  @param task    the task
      * @param request request
      */
-    protected abstract Future<CrawlResult> pushWhenNoDuplicate(Task task, Request request);
+    protected abstract CrawlResult pushWhenNoDuplicate(Task task, Request request);
 
 
     public int getTotalRequestsCount(Task task) {

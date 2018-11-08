@@ -1,8 +1,6 @@
 package site.zido.elise.scheduler;
 
 import site.zido.elise.CrawlResult;
-import site.zido.elise.event.CancelTaskEvent;
-import site.zido.elise.event.EventService;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -22,15 +20,13 @@ public class TaskFuture implements Future<CrawlResult> {
     private volatile CrawlResult result;
     private volatile boolean isCancelled;
     private volatile boolean done = false;
-    private final EventService eventService;
     private final Lock lock = new ReentrantLock();
     private final Condition resultCondition = lock.newCondition();
     private volatile AtomicBoolean waiting = new AtomicBoolean(false);
     private final long taskId;
 
-    public TaskFuture(long taskId, EventService eventService) {
+    public TaskFuture(long taskId) {
         this.taskId = taskId;
-        this.eventService = eventService;
     }
 
     @Override
@@ -62,7 +58,6 @@ public class TaskFuture implements Future<CrawlResult> {
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        eventService.publish(new CancelTaskEvent(taskId));
         return true;
     }
 

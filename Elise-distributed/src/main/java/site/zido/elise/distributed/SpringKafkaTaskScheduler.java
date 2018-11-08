@@ -15,15 +15,13 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import site.zido.elise.*;
 import site.zido.elise.distributed.pojo.Seed;
-import site.zido.elise.distributed.scheduler.BlockWaitScheduler;
 import site.zido.elise.scheduler.AbstractDuplicateRemovedScheduler;
 import site.zido.elise.scheduler.DuplicationProcessor;
-import site.zido.elise.scheduler.MonitorableScheduler;
+import site.zido.elise.scheduler.SyncTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 /**
  * Spring Kafka Communication Manager
@@ -45,7 +43,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
 
     public SpringKafkaTaskScheduler(int blockSize, DuplicationProcessor duplicationProcessor) {
         super(duplicationProcessor);
-        this.taskScheduler = new BlockWaitScheduler(blockSize);
+        this.taskScheduler = new SyncTaskScheduler(blockSize);
     }
 
     public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor) {
@@ -74,12 +72,12 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     }
 
     @Override
-    public synchronized void registerAnalyzer(AnalyzerListener listener) {
-        taskScheduler.registerAnalyzer(listener);
+    public synchronized void setAnalyzer(AnalyzerListener listener) {
+        taskScheduler.setAnalyzer(listener);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 Seed seed = message.value();
-                taskScheduler.process(seed.getTask(), seed.getRequest(), seed.getPage());
+                taskScheduler.processPage(seed.getTask(), seed.getRequest(), seed.getPage());
             });
         }
         if (!this.analyzerContainer.isRunning()) {
@@ -88,8 +86,8 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     }
 
     @Override
-    public synchronized void registerDownloader(DownloadListener listener) {
-        taskScheduler.registerDownloader(listener);
+    public synchronized void setDownloader(DownloadListener listener) {
+        taskScheduler.setDownloader(listener);
         if (this.downloaderContainer == null) {
             this.downloaderContainer = runContainer(topicDownload, message -> {
                 Seed seed = message.value();
@@ -102,28 +100,6 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
 
     }
 
-    @Override
-    public synchronized void removeAnalyzer(AnalyzerListener listener) {
-        taskScheduler.removeAnalyzer(listener);
-        if (taskScheduler instanceof MonitorableScheduler) {
-            MonitorableScheduler monitorableScheduler = (MonitorableScheduler) taskScheduler;
-            if (monitorableScheduler.analyzerSize() <= 0) {
-                this.analyzerContainer.stop();
-            }
-        }
-    }
-
-    @Override
-    public synchronized void removeDownloader(DownloadListener listener) {
-        taskScheduler.removeDownloader(listener);
-        if (taskScheduler instanceof MonitorableScheduler) {
-            MonitorableScheduler monitorableScheduler = (MonitorableScheduler) taskScheduler;
-            if (monitorableScheduler.downloaderSize() <= 0) {
-                this.downloaderContainer.stop();
-            }
-        }
-    }
-
     private KafkaMessageListenerContainer<Long, Seed> runContainer(String topic, MessageListener<Long, Seed> listener) {
         ContainerProperties containerProps = new ContainerProperties(topic);
         containerProps.setMessageListener(listener);
@@ -133,13 +109,13 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     }
 
     @Override
-    public CrawlResult process(Task task, Request request, Page page) {
+    public CrawlResult processPage(Task task, Request request, Page page) {
         template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
         return null;
     }
 
     @Override
-    protected Future<CrawlResult> pushWhenNoDuplicate(Task task, Request request) {
+    protected CrawlResult pushWhenNoDuplicate(Task task, Request request) {
         template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
         return null;
     }

@@ -5,8 +5,6 @@ import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 
-import java.util.concurrent.Future;
-
 /**
  * the interface of message manager,it provide message service.
  * <p>
@@ -14,8 +12,6 @@ import java.util.concurrent.Future;
  * <p>
  * In theory, the client is based on statelessness, either as a download client, an analytics client, or both.
  * Just simply register as the appropriate module
- * {@link #registerAnalyzer(AnalyzerListener)}
- * {@link #registerDownloader(DownloadListener)}
  *
  * @author zido
  */
@@ -26,28 +22,14 @@ public interface TaskScheduler {
      *
      * @param listener When the download is complete, this interface is called
      */
-    void registerAnalyzer(AnalyzerListener listener);
+    void setAnalyzer(AnalyzerListener listener);
 
     /**
      * register as an Download Client.
      *
      * @param listener When the analysis is complete, this interface is called
      */
-    void registerDownloader(DownloadListener listener);
-
-    /**
-     * remove analyzer from container
-     *
-     * @param listener analyzer listener
-     */
-    void removeAnalyzer(AnalyzerListener listener);
-
-    /**
-     * remove downloader from container
-     *
-     * @param listener downloader listener
-     */
-    void removeDownloader(DownloadListener listener);
+    void setDownloader(DownloadListener listener);
 
     /**
      * If the download client download is completed,
@@ -61,14 +43,14 @@ public interface TaskScheduler {
      * @param request the request
      * @param page    page
      */
-    CrawlResult process(Task task, Request request, Page page);
+    CrawlResult processPage(Task task, Request request, Page page);
 
     /**
      * If you need to download, you can call this method (usually after the analysis is completed)
      *
      * @param request the request
      */
-    Future<CrawlResult> pushRequest(Task task, Request request);
+    CrawlResult pushRequest(Task task, Request request);
 
     /**
      * analyzer listener,this interface should called by download service.
