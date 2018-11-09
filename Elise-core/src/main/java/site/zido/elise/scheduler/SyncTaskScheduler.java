@@ -16,18 +16,11 @@ public class SyncTaskScheduler extends AbstractDuplicateRemovedScheduler {
     private AnalyzerListener analyzerListener;
 
     public SyncTaskScheduler() {
-        this(1);
+        this(new HashSetDeduplicationProcessor());
     }
 
-    public SyncTaskScheduler(int blockSize) {
-        this(blockSize, new HashSetDeduplicationProcessor());
-    }
-
-    public SyncTaskScheduler(int blockSize, DuplicationProcessor duplicationProcessor) {
+    public SyncTaskScheduler(DuplicationProcessor duplicationProcessor) {
         super(duplicationProcessor);
-        if (blockSize < 1) {
-            throw new IllegalArgumentException("blockSize can't be less than 1");
-        }
     }
 
     @Override
