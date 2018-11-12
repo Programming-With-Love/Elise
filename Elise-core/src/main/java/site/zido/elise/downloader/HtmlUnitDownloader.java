@@ -32,7 +32,7 @@ public class HtmlUnitDownloader extends AbstractDownloader {
     private ProxyProvider proxyProvider;
 
     @Override
-    public Page download(Request request, Task task) {
+    public Page download(Task task, Request request) {
         WebClient webClient = null;
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         Page page = Page.fail();

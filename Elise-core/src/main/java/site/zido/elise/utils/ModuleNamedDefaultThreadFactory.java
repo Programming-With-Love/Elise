@@ -15,10 +15,10 @@ public class ModuleNamedDefaultThreadFactory implements ThreadFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModuleNamedDefaultThreadFactory.class);
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
-    private volatile int threadNumber = 1;
     private final ThreadGroup group;
     //will be a part of name
     private final String prefix;
+    private volatile int threadNumber = 1;
     private boolean daemon;
     private String moduleName;
 

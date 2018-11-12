@@ -2,9 +2,11 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.CrawlResult;
 import site.zido.elise.Request;
+import site.zido.elise.Site;
 import site.zido.elise.Task;
+import site.zido.elise.processor.CrawlResult;
+import site.zido.elise.utils.UrlUtils;
 
 /**
  * Abstract Duplicate Removed Scheduler
@@ -27,6 +29,10 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
                 || noNeedToRemoveDuplicate(request)
                 || !duplicationProcessor.isDuplicate(task, request)) {
             logger.debug("push to queue {}", request.getUrl());
+            Site site = task.getSite();
+            if (site.getDomain() == null && request.getUrl() != null) {
+                site.setDomain(UrlUtils.getDomain(request.getUrl()));
+            }
             return pushWhenNoDuplicate(task, request);
         }
         return null;
@@ -43,7 +49,8 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     /**
      * Specific insert logic implementation,
      * This method is called after removing duplicate data
-     *  @param task    the task
+     *
+     * @param task    the task
      * @param request request
      */
     protected abstract CrawlResult pushWhenNoDuplicate(Task task, Request request);

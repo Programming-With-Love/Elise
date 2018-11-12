@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.processor.DefaultPageProcessor;
-import site.zido.elise.processor.PageProcessor;
-import site.zido.elise.saver.MemorySaver;
-import site.zido.elise.saver.Saver;
+import site.zido.elise.processor.*;
 import site.zido.elise.scheduler.SyncTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
 import site.zido.elise.select.CompilerException;
@@ -15,7 +12,6 @@ import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.task.DefaultMemoryTaskManager;
 import site.zido.elise.task.TaskManager;
 import site.zido.elise.utils.Asserts;
-import site.zido.elise.utils.UrlUtils;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.List;
@@ -44,7 +40,7 @@ public class Spider {
     }
 
     public static Spider defaults(int threadNum) {
-        Spider spider = new Spider(new SyncTaskScheduler(threadNum));
+        Spider spider = new Spider(new SyncTaskScheduler());
         spider.setDownloader(new AutoSwitchDownloader());
         spider.setSaver(new MemorySaver());
         spider.setPageProcessor(new DefaultPageProcessor());
@@ -56,7 +52,6 @@ public class Spider {
         Asserts.notNull(downloader);
         Asserts.notNull(pageProcessor);
         Asserts.notNull(saver, "saver can not be null");
-        manager.setDownloader(processor);
         manager.setAnalyzer(processor);
     }
 
@@ -140,31 +135,26 @@ public class Spider {
         }
     }
 
-    class DefaultSpiderListenProcessor implements TaskScheduler.DownloadListener, TaskScheduler.AnalyzerListener {
-
-        @Override
-        public CrawlResult onDownload(Task task, Request request) {
-            Site site = task.getSite();
-            if (site.getDomain() == null && request.getUrl() != null) {
-                site.setDomain(UrlUtils.getDomain(request.getUrl()));
-            }
-            Page page = downloader.download(request, task);
-            return manager.processPage(task, request, page);
-        }
+    class DefaultSpiderListenProcessor implements TaskScheduler.AnalyzerListener {
 
         @Override
         public CrawlResult onProcess(Task task, Request request, Page page) {
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
                 String codeAccepter = site.getCodeAccepter();
-                NumberExpressMatcher matcher = null;
+                NumberExpressMatcher matcher;
                 try {
                     matcher = new NumberExpressMatcher(codeAccepter);
                 } catch (CompilerException e) {
                     throw new RuntimeException(e);
                 }
                 if (matcher.matches(page.getStatusCode())) {
-                    List<ResultItem> resultItems = pageProcessor.process(task, page, putter);
+                    ItemLinksModel model = pageProcessor.process(task, page);
+                    List<ResultItem> resultItems = model.getItems();
+                    List<String> links = model.newLinks();
+                    for (String link : links) {
+                        manager.pushRequest(task, new Request(link));
+                    }
                     if (!ValidateUtils.isEmpty(resultItems)) {
                         for (ResultItem resultItem : resultItems) {
                             if (resultItem != null) {
@@ -180,7 +170,8 @@ public class Spider {
                         }
                     }
                     sleep(site.getSleepTime());
-                    return new CrawlResult(task, saver);
+                    //TODO return result
+//                    return result;
                 }
             }
             Site site = task.getSite();
@@ -190,7 +181,7 @@ public class Spider {
                 // for cycle retry
                 doCycleRetry(task, request);
             }
-            return CrawlResult.blank();
+            return new BlankCrawResult();
         }
     }
 

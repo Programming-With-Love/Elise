@@ -36,19 +36,19 @@ public class RegexSelector implements Selector {
         return results;
     }
 
-    public void setPattern(Pattern pattern) {
-        this.pattern = pattern;
-    }
-
     public Pattern getPattern() {
         return pattern;
     }
 
-    public void setGroup(int group) {
-        this.group = group;
+    public void setPattern(Pattern pattern) {
+        this.pattern = pattern;
     }
 
     public int getGroup() {
         return group;
+    }
+
+    public void setGroup(int group) {
+        this.group = group;
     }
 }

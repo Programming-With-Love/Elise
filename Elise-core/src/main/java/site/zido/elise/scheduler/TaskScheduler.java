@@ -1,9 +1,9 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.CrawlResult;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
+import site.zido.elise.processor.CrawlResult;
 
 /**
  * the interface of message manager,it provide message service.
@@ -23,13 +23,6 @@ public interface TaskScheduler {
      * @param listener When the download is complete, this interface is called
      */
     void setAnalyzer(AnalyzerListener listener);
-
-    /**
-     * register as an Download Client.
-     *
-     * @param listener When the analysis is complete, this interface is called
-     */
-    void setDownloader(DownloadListener listener);
 
     /**
      * If the download client download is completed,
@@ -81,6 +74,6 @@ public interface TaskScheduler {
          *
          * @param request request container
          */
-        CrawlResult onDownload(Task task, Request request);
+        Page onDownload(Task task, Request request);
     }
 }

@@ -1,9 +1,10 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.CrawlResult;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
+import site.zido.elise.downloader.Downloader;
+import site.zido.elise.processor.CrawlResult;
 
 /**
  * This message manager provides thread-level messaging that is implemented from {@link TaskScheduler}.
@@ -12,7 +13,7 @@ import site.zido.elise.Task;
  */
 public class SyncTaskScheduler extends AbstractDuplicateRemovedScheduler {
 
-    private DownloadListener downloadListener;
+    private Downloader downloader;
     private AnalyzerListener analyzerListener;
 
     public SyncTaskScheduler() {
@@ -30,7 +31,8 @@ public class SyncTaskScheduler extends AbstractDuplicateRemovedScheduler {
 
     @Override
     protected CrawlResult pushWhenNoDuplicate(Task task, Request request) {
-        return downloadListener.onDownload(task, request);
+        Page page = downloader.download(task, request);
+        return analyzerListener.onProcess(task, request, page);
     }
 
     @Override
@@ -38,8 +40,4 @@ public class SyncTaskScheduler extends AbstractDuplicateRemovedScheduler {
         this.analyzerListener = listener;
     }
 
-    @Override
-    public void setDownloader(TaskScheduler.DownloadListener listener) {
-        this.downloadListener = listener;
-    }
 }

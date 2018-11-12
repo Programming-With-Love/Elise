@@ -1,6 +1,6 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.CrawlResult;
+import site.zido.elise.processor.CrawlResult;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -17,13 +17,13 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class TaskFuture implements Future<CrawlResult> {
 
+    private final Lock lock = new ReentrantLock();
+    private final Condition resultCondition = lock.newCondition();
+    private final long taskId;
     private volatile CrawlResult result;
     private volatile boolean isCancelled;
     private volatile boolean done = false;
-    private final Lock lock = new ReentrantLock();
-    private final Condition resultCondition = lock.newCondition();
     private volatile AtomicBoolean waiting = new AtomicBoolean(false);
-    private final long taskId;
 
     public TaskFuture(long taskId) {
         this.taskId = taskId;

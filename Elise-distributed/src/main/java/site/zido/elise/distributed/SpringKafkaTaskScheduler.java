@@ -11,10 +11,14 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.listener.config.ContainerProperties;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import site.zido.elise.*;
 import site.zido.elise.distributed.pojo.Seed;
+import site.zido.elise.processor.CrawlResult;
 import site.zido.elise.scheduler.AbstractDuplicateRemovedScheduler;
 import site.zido.elise.scheduler.DuplicationProcessor;
 import site.zido.elise.scheduler.SyncTaskScheduler;
@@ -43,7 +47,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
 
     public SpringKafkaTaskScheduler(int blockSize, DuplicationProcessor duplicationProcessor) {
         super(duplicationProcessor);
-        this.taskScheduler = new SyncTaskScheduler(blockSize);
+        this.taskScheduler = new SyncTaskScheduler();
     }
 
     public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor) {
@@ -85,21 +89,6 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
         }
     }
 
-    @Override
-    public synchronized void setDownloader(DownloadListener listener) {
-        taskScheduler.setDownloader(listener);
-        if (this.downloaderContainer == null) {
-            this.downloaderContainer = runContainer(topicDownload, message -> {
-                Seed seed = message.value();
-                taskScheduler.pushRequest(seed.getTask(), seed.getRequest());
-            });
-        }
-        if (!this.downloaderContainer.isRunning()) {
-            this.downloaderContainer.start();
-        }
-
-    }
-
     private KafkaMessageListenerContainer<Long, Seed> runContainer(String topic, MessageListener<Long, Seed> listener) {
         ContainerProperties containerProps = new ContainerProperties(topic);
         containerProps.setMessageListener(listener);
@@ -116,7 +105,18 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
 
     @Override
     protected CrawlResult pushWhenNoDuplicate(Task task, Request request) {
-        template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
+        ListenableFuture<SendResult<Long, Seed>> future = template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
+        future.addCallback(new ListenableFutureCallback<SendResult<Long, Seed>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(SendResult<Long, Seed> longSeedSendResult) {
+
+            }
+        });
         return null;
     }
 

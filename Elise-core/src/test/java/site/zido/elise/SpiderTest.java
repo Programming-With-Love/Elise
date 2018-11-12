@@ -2,6 +2,7 @@ package site.zido.elise;
 
 import org.junit.Assert;
 import org.junit.Test;
+import site.zido.elise.processor.CrawlResult;
 import site.zido.elise.select.Fragment;
 import site.zido.elise.select.configurable.ConfigurableUrlFinder;
 import site.zido.elise.select.configurable.DefExtractor;
@@ -33,7 +34,7 @@ public class SpiderTest {
                 .setType(ExpressionType.CSS));
         DefaultTask task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
         CrawlResult result = spider.addUrl(task, "http://zido.site");
-        Assert.assertEquals(8, result.size());
+        Assert.assertEquals(8, result.count());
 
         extractResultItem(result);
     }

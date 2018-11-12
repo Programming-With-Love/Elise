@@ -14,7 +14,6 @@ import java.util.Map;
 public class Request implements Serializable {
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
     private static final long serialVersionUID = 2018040215121L;
-    private Task task;
     /**
      * url
      */
@@ -63,7 +62,6 @@ public class Request implements Serializable {
         this.requestBody = request.requestBody;
         this.priority = request.priority;
         this.binaryContent = request.binaryContent;
-        this.task = request.task;
     }
 
     public Request() {
@@ -179,11 +177,4 @@ public class Request implements Serializable {
         this.charset = charset;
     }
 
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
 }

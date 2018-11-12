@@ -17,7 +17,7 @@ public interface Downloader {
      * @param task    任务
      * @return 下载后的页面
      */
-    Page download(Request request, Task task);
+    Page download(Task task, Request request);
 
     /**
      * 设置下载线程

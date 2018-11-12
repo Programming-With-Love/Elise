@@ -2,7 +2,9 @@ package site.zido.elise.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.*;
+import site.zido.elise.Page;
+import site.zido.elise.ResultItem;
+import site.zido.elise.Task;
 import site.zido.elise.select.configurable.ModelExtractor;
 
 import java.util.List;
@@ -13,17 +15,11 @@ import java.util.List;
  * @author zido
  */
 public class DefaultPageProcessor implements PageProcessor {
-    private static Logger LOGGER = LoggerFactory.getLogger(DefaultPageProcessor.class);
-
     @Override
-    public List<ResultItem> process(Task task, Page page, RequestPutter putter) {
+    public ItemLinksModel process(Task task, Page page) {
         ModelExtractor extractor = task.modelExtractor();
         List<String> links = extractor.extractLinks(page);
-        if (links != null) {
-            for (String link : links) {
-                putter.pushRequest(task, new Request(link));
-            }
-        }
-        return extractor.extract(page);
+        List<ResultItem> extract = extractor.extract(page);
+        return new ItemLinksModel(extract,links);
     }
 }

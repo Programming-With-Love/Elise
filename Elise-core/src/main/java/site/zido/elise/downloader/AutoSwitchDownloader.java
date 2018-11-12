@@ -24,13 +24,13 @@ public class AutoSwitchDownloader extends AbstractDownloader {
     }
 
     @Override
-    public Page download(Request request, Task task) {
+    public Page download(Task task, Request request) {
         Site site = task.getSite();
         Object extra = site.getExtra(DOWNLOAD_MODE);
         if (DOWNLOAD_MODE_HTML_UNIT.equalsIgnoreCase(String.valueOf(extra))) {
-            return htmlUnitDownloader.download(request, task);
+            return htmlUnitDownloader.download(task, request);
         } else {
-            return httpClientDownloader.download(request, task);
+            return httpClientDownloader.download(task, request);
         }
     }
 

@@ -12,7 +12,7 @@ import site.zido.elise.Site;
 public abstract class AbstractDownloader implements Downloader {
 
     public Page downloadAsPage(String url) {
-        return download(new Request(url), new Site().toTask());
+        return download(new Site().toTask(), new Request(url));
     }
 
     protected void onSuccess(Request request) {
