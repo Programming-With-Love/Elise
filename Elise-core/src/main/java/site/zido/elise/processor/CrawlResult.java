@@ -1,6 +1,8 @@
 package site.zido.elise.processor;
 
-public interface CrawlResult {
+import java.io.Serializable;
+
+public interface CrawlResult extends Serializable {
 
     void cancel();
 

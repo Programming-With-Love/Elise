@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class SpiderTest {
     @Test
-    public void testOnePage() throws InterruptedException, ExecutionException {
+    public void testOnePage() {
         Spider spider = Spider.defaults();
         DefRootExtractor extractor = new DefRootExtractor("article");
         extractor.setType(ExpressionType.CSS).setValue(".page-container>.blog");
@@ -36,25 +36,10 @@ public class SpiderTest {
         CrawlResult result = spider.addUrl(task, "http://zido.site");
         Assert.assertEquals(8, result.count());
 
-        extractResultItem(result);
-    }
-
-    private void extractResultItem(CrawlResult result) {
-        int i = 1;
-        for (ResultItem item : result) {
-            Map<String, List<Fragment>> all = item.getAll();
-            for (String fieldName : all.keySet()) {
-                List<Fragment> fragments = all.get(fieldName);
-                for (Fragment fragment : fragments) {
-                    System.out.println(fieldName + "[" + (i) + "]:" + fragment.text());
-                }
-            }
-            i++;
-        }
     }
 
     @Test
-    public void testMultiPage() throws ExecutionException, InterruptedException {
+    public void testMultiPage() {
         Spider spider = Spider.defaults();
         DefRootExtractor extractor = new DefRootExtractor("project");
         extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
@@ -70,6 +55,5 @@ public class SpiderTest {
                 .setValue("//*[@id=\"readme\"]/div[2]"));
         Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
         CrawlResult result = spider.addUrl(task, "https://github.com/zidoshare");
-        extractResultItem(result);
     }
 }

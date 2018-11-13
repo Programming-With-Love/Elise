@@ -21,7 +21,7 @@ import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.processor.CrawlResult;
 import site.zido.elise.scheduler.AbstractDuplicateRemovedScheduler;
 import site.zido.elise.scheduler.DuplicationProcessor;
-import site.zido.elise.scheduler.SyncTaskScheduler;
+import site.zido.elise.scheduler.DefaultTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
 
 import java.util.HashMap;
@@ -47,7 +47,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
 
     public SpringKafkaTaskScheduler(int blockSize, DuplicationProcessor duplicationProcessor) {
         super(duplicationProcessor);
-        this.taskScheduler = new SyncTaskScheduler();
+        this.taskScheduler = new DefaultTaskScheduler();
     }
 
     public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor) {

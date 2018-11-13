@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.downloader.AutoSwitchDownloader;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.processor.*;
-import site.zido.elise.scheduler.SyncTaskScheduler;
+import site.zido.elise.scheduler.DefaultTaskScheduler;
 import site.zido.elise.scheduler.TaskScheduler;
 import site.zido.elise.select.CompilerException;
 import site.zido.elise.select.NumberExpressMatcher;
@@ -40,7 +40,7 @@ public class Spider {
     }
 
     public static Spider defaults(int threadNum) {
-        Spider spider = new Spider(new SyncTaskScheduler());
+        Spider spider = new Spider(new DefaultTaskScheduler(threadNum));
         spider.setDownloader(new AutoSwitchDownloader());
         spider.setSaver(new MemorySaver());
         spider.setPageProcessor(new DefaultPageProcessor());
@@ -149,14 +149,15 @@ public class Spider {
                     throw new RuntimeException(e);
                 }
                 if (matcher.matches(page.getStatusCode())) {
+                    CombineCrawResult result = new CombineCrawResult();
                     ItemLinksModel model = pageProcessor.process(task, page);
                     List<ResultItem> resultItems = model.getItems();
                     List<String> links = model.newLinks();
                     for (String link : links) {
-                        manager.pushRequest(task, new Request(link));
+                        result.add(manager.pushRequest(task, new Request(link)));
                     }
                     if (!ValidateUtils.isEmpty(resultItems)) {
-                        for (ResultItem resultItem : resultItems) {
+                        for (ResultItem resultItem : resultItems)
                             if (resultItem != null) {
                                 resultItem.setRequest(request);
                                 try {
@@ -167,11 +168,9 @@ public class Spider {
                             } else {
                                 logger.info("page not find anything, page {}", request.getUrl());
                             }
-                        }
                     }
                     sleep(site.getSleepTime());
-                    //TODO return result
-//                    return result;
+                    return result;
                 }
             }
             Site site = task.getSite();
