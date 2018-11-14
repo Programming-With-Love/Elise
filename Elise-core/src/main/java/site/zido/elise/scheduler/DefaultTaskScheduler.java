@@ -60,7 +60,7 @@ public class DefaultTaskScheduler extends AbstractDuplicateRemovedScheduler {
                 } catch (InterruptedException e) {
                     LOGGER.debug("received cancel signal");
                     Thread.currentThread().interrupt();
-                    continue;
+                    break;
                 }
                 Task task = seed.getTask();
                 Page pollPage = seed.getPage();

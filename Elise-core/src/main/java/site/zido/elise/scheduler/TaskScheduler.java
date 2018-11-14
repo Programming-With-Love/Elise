@@ -26,11 +26,7 @@ public interface TaskScheduler {
     /**
      * If the download client download is completed,
      * this method can be called to send the download completion message and pass the download page to the analysis client.
-     * Next, please rest assured that the task scheduling to the manager,
      * <p>
-     * manager will select the appropriate scheduling program
-     * and call onDownload{@link DownloadListener} to other clients
-     * (of course, may to call yourself also, if you are also an analysis client)
      *  @param request the request
      * @param page    page
      */
@@ -46,7 +42,7 @@ public interface TaskScheduler {
     /**
      * analyzer listener,this interface should called by download service.
      * <p>
-     * all downloaded page should be submitted to the analysis module for analysis.
+     * all downloaded pages are submitted to the analysis module for analysis.
      *
      * @author zido
      */
@@ -60,17 +56,4 @@ public interface TaskScheduler {
         void onProcess(Task task, Request request, Page page);
     }
 
-    /**
-     * download listener.
-     *
-     * @author zido
-     */
-    interface DownloadListener {
-        /**
-         * message listener.
-         *
-         * @param request request container
-         */
-        Page onDownload(Task task, Request request);
-    }
 }
