@@ -1,14 +1,15 @@
 package site.zido.elise.scheduler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.processor.BlankCrawResult;
-import site.zido.elise.processor.CrawlResult;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This default task scheduler provides thread-level task scheduling that is implemented from {@link TaskScheduler}.
@@ -17,9 +18,13 @@ import java.util.concurrent.*;
  */
 public class DefaultTaskScheduler extends AbstractDuplicateRemovedScheduler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTaskScheduler.class);
     private Downloader downloader;
     private AnalyzerListener analyzerListener;
     private final ThreadPoolExecutor executor;
+    private final LinkedBlockingQueue<Seed> queue = new LinkedBlockingQueue<>();
+    private final ExecutorService rootExecutor = Executors.newFixedThreadPool(1, new ModuleNamedDefaultThreadFactory("task queue processor"));
+    private final AtomicBoolean RUNNING = new AtomicBoolean(false);
 
     public DefaultTaskScheduler() {
         this(Runtime.getRuntime().availableProcessors() * 2, new HashSetDeduplicationProcessor());
@@ -40,24 +45,50 @@ public class DefaultTaskScheduler extends AbstractDuplicateRemovedScheduler {
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
-    @Override
-    public CrawlResult processPage(Task task, Request request, Page page) {
-        return analyzerListener.onProcess(task, request, page);
+    public void preStart() {
+        if (!RUNNING.compareAndSet(false, true)) {
+            return;
+        }
+        rootExecutor.execute(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                Seed seed;
+                try {
+                    seed = queue.poll(1, TimeUnit.MINUTES);
+                    if (seed == null) {
+                        continue;
+                    }
+                } catch (InterruptedException e) {
+                    LOGGER.debug("received cancel signal");
+                    Thread.currentThread().interrupt();
+                    continue;
+                }
+                Task task = seed.getTask();
+                Page pollPage = seed.getPage();
+                Request request = seed.getRequest();
+                if (pollPage == null) {
+                    executor.execute(() -> {
+                        Page page = downloader.download(task, request);
+                        processPage(task, request, page);
+                    });
+                } else {
+                    executor.execute(() -> {
+                        analyzerListener.onProcess(task, request, pollPage);
+                    });
+                }
+            }
+        });
     }
 
     @Override
-    protected CrawlResult pushWhenNoDuplicate(Task task, Request request) {
-        FutureTask<Page> future = (FutureTask<Page>) executor.submit(() -> downloader.download(task, request));
-        try {
-            Page page = future.get();
+    public void processPage(Task task, Request request, Page page) {
+        preStart();
+        queue.offer(new Seed(task, request, page));
+    }
 
-            return analyzerListener.onProcess(task, request, page);
-        } catch (InterruptedException e) {
-            //如果线程中断，停止解析，并返回空解析结果
-            return new BlankCrawResult();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e.getCause());
-        }
+    @Override
+    protected void pushWhenNoDuplicate(Task task, Request request) {
+        preStart();
+        queue.offer(new Seed(task, request));
     }
 
     @Override
@@ -65,4 +96,7 @@ public class DefaultTaskScheduler extends AbstractDuplicateRemovedScheduler {
         this.analyzerListener = listener;
     }
 
+    public void setDownloader(Downloader downloader) {
+        this.downloader = downloader;
+    }
 }

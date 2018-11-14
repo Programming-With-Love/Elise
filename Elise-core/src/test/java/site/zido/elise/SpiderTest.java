@@ -1,18 +1,11 @@
 package site.zido.elise;
 
-import org.junit.Assert;
 import org.junit.Test;
-import site.zido.elise.processor.CrawlResult;
-import site.zido.elise.select.Fragment;
 import site.zido.elise.select.configurable.ConfigurableUrlFinder;
 import site.zido.elise.select.configurable.DefExtractor;
 import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ExpressionType;
 import site.zido.elise.utils.IdWorker;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * SpiderTest
@@ -33,9 +26,7 @@ public class SpiderTest {
                 .setValue("p.blog-content")
                 .setType(ExpressionType.CSS));
         DefaultTask task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
-        CrawlResult result = spider.addUrl(task, "http://zido.site");
-        Assert.assertEquals(8, result.count());
-
+        spider.addUrl(task, "http://zido.site");
     }
 
     @Test
@@ -54,6 +45,5 @@ public class SpiderTest {
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
         Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
-        CrawlResult result = spider.addUrl(task, "https://github.com/zidoshare");
     }
 }

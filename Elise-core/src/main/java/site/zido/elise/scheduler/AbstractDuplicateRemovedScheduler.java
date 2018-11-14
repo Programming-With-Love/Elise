@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.Request;
 import site.zido.elise.Site;
 import site.zido.elise.Task;
-import site.zido.elise.processor.CrawlResult;
 import site.zido.elise.utils.UrlUtils;
 
 /**
@@ -23,7 +22,7 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     }
 
     @Override
-    public CrawlResult pushRequest(Task task, Request request) {
+    public void pushRequest(Task task, Request request) {
         logger.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
@@ -33,9 +32,8 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
             if (site.getDomain() == null && request.getUrl() != null) {
                 site.setDomain(UrlUtils.getDomain(request.getUrl()));
             }
-            return pushWhenNoDuplicate(task, request);
+            pushWhenNoDuplicate(task, request);
         }
-        return null;
     }
 
     private boolean shouldReserved(Request request) {
@@ -49,11 +47,10 @@ public abstract class AbstractDuplicateRemovedScheduler implements TaskScheduler
     /**
      * Specific insert logic implementation,
      * This method is called after removing duplicate data
-     *
-     * @param task    the task
+     *  @param task    the task
      * @param request request
      */
-    protected abstract CrawlResult pushWhenNoDuplicate(Task task, Request request);
+    protected abstract void pushWhenNoDuplicate(Task task, Request request);
 
 
     public int getTotalRequestsCount(Task task) {

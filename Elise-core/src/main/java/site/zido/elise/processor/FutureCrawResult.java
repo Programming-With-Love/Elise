@@ -2,7 +2,7 @@ package site.zido.elise.processor;
 
 import java.util.concurrent.Future;
 
-public class FutureCrawResult<T> implements CrawlResult {
+public class FutureCrawResult<T> implements CrawlHandler {
     private static final long serialVersionUID = 2376315568978974152L;
     private Future<T> future;
 
@@ -16,7 +16,7 @@ public class FutureCrawResult<T> implements CrawlResult {
     }
 
     @Override
-    public int count() {
+    public int resultCount() {
         return 0;
     }
 }

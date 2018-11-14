@@ -6,6 +6,7 @@ import site.zido.elise.Page;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.select.configurable.ModelExtractor;
+import site.zido.elise.utils.ValidateUtils;
 
 import java.util.List;
 
@@ -15,11 +16,31 @@ import java.util.List;
  * @author zido
  */
 public class DefaultPageProcessor implements PageProcessor {
+    private static Logger LOGGER = LoggerFactory.getLogger(DefaultPageProcessor.class);
+
+    private Saver saver;
+
+    public DefaultPageProcessor(Saver saver) {
+        this.saver = saver;
+    }
+
     @Override
-    public ItemLinksModel process(Task task, Page page) {
+    public List<String> process(Task task, Page page) {
         ModelExtractor extractor = task.modelExtractor();
         List<String> links = extractor.extractLinks(page);
-        List<ResultItem> extract = extractor.extract(page);
-        return new ItemLinksModel(extract,links);
+        List<ResultItem> resultItems = extractor.extract(page);
+        if (!ValidateUtils.isEmpty(resultItems)) {
+            for (ResultItem resultItem : resultItems)
+                if (resultItem != null) {
+                    try {
+                        saver.save(resultItem, task);
+                    } catch (Throwable e) {
+                        LOGGER.error("saver have made a exception", e);
+                    }
+                } else {
+                    LOGGER.info("page not find anything, page {}", page.getUrl());
+                }
+        }
+        return links;
     }
 }

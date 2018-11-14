@@ -1,6 +1,6 @@
 package site.zido.elise.processor;
 
-public class SavedCrawResult implements CrawlResult {
+public class SavedCrawResult implements CrawlHandler {
     private static final long serialVersionUID = 391732165604651548L;
 
     public SavedCrawResult() {
@@ -12,7 +12,7 @@ public class SavedCrawResult implements CrawlResult {
     }
 
     @Override
-    public int count() {
+    public int resultCount() {
         return 1;
     }
 }

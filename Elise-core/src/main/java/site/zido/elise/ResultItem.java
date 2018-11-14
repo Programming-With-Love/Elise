@@ -14,8 +14,6 @@ import java.util.Map;
 public class ResultItem {
     private Map<String, List<Fragment>> fields = new LinkedHashMap<>();
 
-    private Request request;
-
     public ResultItem() {
     }
 
@@ -34,14 +32,6 @@ public class ResultItem {
     public ResultItem put(String key, List<Fragment> value) {
         fields.put(key, value);
         return this;
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
     }
 
 

@@ -3,7 +3,6 @@ package site.zido.elise.scheduler;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
-import site.zido.elise.processor.CrawlResult;
 
 /**
  * the interface of message manager,it provide message service.
@@ -32,18 +31,17 @@ public interface TaskScheduler {
      * manager will select the appropriate scheduling program
      * and call onDownload{@link DownloadListener} to other clients
      * (of course, may to call yourself also, if you are also an analysis client)
-     *
-     * @param request the request
+     *  @param request the request
      * @param page    page
      */
-    CrawlResult processPage(Task task, Request request, Page page);
+    void processPage(Task task, Request request, Page page);
 
     /**
      * If you need to download, you can call this method (usually after the analysis is completed)
      *
      * @param request the request
      */
-    CrawlResult pushRequest(Task task, Request request);
+    void pushRequest(Task task, Request request);
 
     /**
      * analyzer listener,this interface should called by download service.
@@ -55,12 +53,11 @@ public interface TaskScheduler {
     interface AnalyzerListener {
         /**
          * message listener.
-         *
-         * @param task
+         *  @param task
          * @param request request container
          * @param page    page container
          */
-        CrawlResult onProcess(Task task, Request request, Page page);
+        void onProcess(Task task, Request request, Page page);
     }
 
     /**

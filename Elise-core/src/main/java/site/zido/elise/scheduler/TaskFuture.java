@@ -1,6 +1,6 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.processor.CrawlResult;
+import site.zido.elise.processor.CrawlHandler;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -15,12 +15,12 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author zido
  */
-public class TaskFuture implements Future<CrawlResult> {
+public class TaskFuture implements Future<CrawlHandler> {
 
     private final Lock lock = new ReentrantLock();
     private final Condition resultCondition = lock.newCondition();
     private final long taskId;
-    private volatile CrawlResult result;
+    private volatile CrawlHandler result;
     private volatile boolean isCancelled;
     private volatile boolean done = false;
     private volatile AtomicBoolean waiting = new AtomicBoolean(false);
@@ -30,7 +30,7 @@ public class TaskFuture implements Future<CrawlResult> {
     }
 
     @Override
-    public CrawlResult get() throws InterruptedException, ExecutionException {
+    public CrawlHandler get() throws InterruptedException, ExecutionException {
         if (!waiting.compareAndSet(false, true)) {
             throw new ExecutionException(new Exception("more than one thread to wait the result"));
         }
@@ -39,7 +39,7 @@ public class TaskFuture implements Future<CrawlResult> {
     }
 
     @Override
-    public CrawlResult get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException {
+    public CrawlHandler get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException {
         if (!waiting.compareAndSet(false, true)) {
             throw new ExecutionException(new Exception("more than one thread to wait the result"));
         }
@@ -47,7 +47,7 @@ public class TaskFuture implements Future<CrawlResult> {
         return this.result;
     }
 
-    public void set(CrawlResult result) {
+    public void set(CrawlHandler result) {
         this.result = result;
         resultCondition.signalAll();
     }

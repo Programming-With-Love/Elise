@@ -18,7 +18,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import site.zido.elise.*;
 import site.zido.elise.distributed.pojo.Seed;
-import site.zido.elise.processor.CrawlResult;
 import site.zido.elise.scheduler.AbstractDuplicateRemovedScheduler;
 import site.zido.elise.scheduler.DuplicationProcessor;
 import site.zido.elise.scheduler.DefaultTaskScheduler;
@@ -98,26 +97,13 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
     }
 
     @Override
-    public CrawlResult processPage(Task task, Request request, Page page) {
+    public void processPage(Task task, Request request, Page page) {
         template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
-        return null;
     }
 
     @Override
-    protected CrawlResult pushWhenNoDuplicate(Task task, Request request) {
+    protected void pushWhenNoDuplicate(Task task, Request request) {
         ListenableFuture<SendResult<Long, Seed>> future = template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
-        future.addCallback(new ListenableFutureCallback<SendResult<Long, Seed>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onSuccess(SendResult<Long, Seed> longSeedSendResult) {
-
-            }
-        });
-        return null;
     }
 
     private KafkaMessageListenerContainer<Long, Seed> createContainer(
