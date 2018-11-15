@@ -1,6 +1,6 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.Page;
+import site.zido.elise.EventListener;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 
@@ -17,43 +17,12 @@ import site.zido.elise.Task;
 public interface TaskScheduler {
 
     /**
-     * register as an Analysis Client.
-     *
-     * @param listener When the download is complete, this interface is called
-     */
-    void setAnalyzer(AnalyzerListener listener);
-
-    /**
-     * If the download client download is completed,
-     * this method can be called to send the download completion message and pass the download page to the analysis client.
-     * <p>
-     *  @param request the request
-     * @param page    page
-     */
-    void processPage(Task task, Request request, Page page);
-
-    /**
      * If you need to download, you can call this method (usually after the analysis is completed)
      *
      * @param request the request
      */
     void pushRequest(Task task, Request request);
 
-    /**
-     * analyzer listener,this interface should called by download service.
-     * <p>
-     * all downloaded pages are submitted to the analysis module for analysis.
-     *
-     * @author zido
-     */
-    interface AnalyzerListener {
-        /**
-         * message listener.
-         *  @param task
-         * @param request request container
-         * @param page    page container
-         */
-        void onProcess(Task task, Request request, Page page);
-    }
+    void addEventListener(EventListener listener);
 
 }

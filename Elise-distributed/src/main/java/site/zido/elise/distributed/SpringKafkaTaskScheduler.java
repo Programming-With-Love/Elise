@@ -11,16 +11,16 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.listener.config.ContainerProperties;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-import site.zido.elise.*;
+import site.zido.elise.DefaultTask;
+import site.zido.elise.Page;
+import site.zido.elise.Request;
+import site.zido.elise.Task;
 import site.zido.elise.distributed.pojo.Seed;
-import site.zido.elise.scheduler.AbstractDuplicateRemovedScheduler;
-import site.zido.elise.scheduler.DuplicationProcessor;
+import site.zido.elise.scheduler.AbstractScheduler;
 import site.zido.elise.scheduler.DefaultTaskScheduler;
+import site.zido.elise.scheduler.DuplicationProcessor;
 import site.zido.elise.scheduler.TaskScheduler;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * @author zido
  */
-public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler {
+public class SpringKafkaTaskScheduler extends AbstractScheduler {
     private String bootstrapServers;
     private String groupId = "Elise";
     private String topicAnalyzer = "__analyzer__";
@@ -103,7 +103,7 @@ public class SpringKafkaTaskScheduler extends AbstractDuplicateRemovedScheduler 
 
     @Override
     protected void pushWhenNoDuplicate(Task task, Request request) {
-        ListenableFuture<SendResult<Long, Seed>> future = template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
+        template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
     }
 
     private KafkaMessageListenerContainer<Long, Seed> createContainer(

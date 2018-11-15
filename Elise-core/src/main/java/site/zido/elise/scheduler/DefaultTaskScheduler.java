@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
-import site.zido.elise.downloader.Downloader;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
 import java.util.concurrent.*;
@@ -16,11 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class DefaultTaskScheduler extends AbstractDuplicateRemovedScheduler {
+public class DefaultTaskScheduler extends AbstractScheduler implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTaskScheduler.class);
-    private Downloader downloader;
-    private AnalyzerListener analyzerListener;
     private final ThreadPoolExecutor executor;
     private final LinkedBlockingQueue<Seed> queue = new LinkedBlockingQueue<>();
     private final ExecutorService rootExecutor = Executors.newFixedThreadPool(1, new ModuleNamedDefaultThreadFactory("task queue processor"));
@@ -49,37 +46,9 @@ public class DefaultTaskScheduler extends AbstractDuplicateRemovedScheduler {
         if (!RUNNING.compareAndSet(false, true)) {
             return;
         }
-        rootExecutor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                Seed seed;
-                try {
-                    seed = queue.poll(1, TimeUnit.MINUTES);
-                    if (seed == null) {
-                        continue;
-                    }
-                } catch (InterruptedException e) {
-                    LOGGER.debug("received cancel signal");
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-                Task task = seed.getTask();
-                Page pollPage = seed.getPage();
-                Request request = seed.getRequest();
-                if (pollPage == null) {
-                    executor.execute(() -> {
-                        Page page = downloader.download(task, request);
-                        processPage(task, request, page);
-                    });
-                } else {
-                    executor.execute(() -> {
-                        analyzerListener.onProcess(task, request, pollPage);
-                    });
-                }
-            }
-        });
+        rootExecutor.execute(this);
     }
 
-    @Override
     public void processPage(Task task, Request request, Page page) {
         preStart();
         queue.offer(new Seed(task, request, page));
@@ -92,11 +61,32 @@ public class DefaultTaskScheduler extends AbstractDuplicateRemovedScheduler {
     }
 
     @Override
-    public void setAnalyzer(TaskScheduler.AnalyzerListener listener) {
-        this.analyzerListener = listener;
-    }
-
-    public void setDownloader(Downloader downloader) {
-        this.downloader = downloader;
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            Seed seed;
+            try {
+                seed = queue.poll(1, TimeUnit.MINUTES);
+                if (seed == null) {
+                    continue;
+                }
+            } catch (InterruptedException e) {
+                LOGGER.debug("received cancel signal");
+                Thread.currentThread().interrupt();
+                break;
+            }
+            Task task = seed.getTask();
+            Page pollPage = seed.getPage();
+            Request request = seed.getRequest();
+            if (pollPage == null) {
+                executor.execute(() -> {
+                    Page page = super.onDownload(task, request);
+                    processPage(task, request, page);
+                });
+            } else {
+                executor.execute(() -> {
+                    super.onProcess(task, request, pollPage);
+                });
+            }
+        }
     }
 }
