@@ -14,14 +14,13 @@ import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import site.zido.elise.DefaultTask;
-import site.zido.elise.Page;
 import site.zido.elise.Request;
 import site.zido.elise.Task;
 import site.zido.elise.distributed.pojo.Seed;
+import site.zido.elise.downloader.Downloader;
+import site.zido.elise.processor.PageProcessor;
 import site.zido.elise.scheduler.AbstractScheduler;
-import site.zido.elise.scheduler.DefaultTaskScheduler;
 import site.zido.elise.scheduler.DuplicationProcessor;
-import site.zido.elise.scheduler.TaskScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,18 +38,12 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
 
     private KafkaTemplate<Long, Seed> template;
 
-    private TaskScheduler taskScheduler;
 
     private KafkaMessageListenerContainer<Long, Seed> analyzerContainer;
     private KafkaMessageListenerContainer<Long, Seed> downloaderContainer;
 
-    public SpringKafkaTaskScheduler(int blockSize, DuplicationProcessor duplicationProcessor) {
-        super(duplicationProcessor);
-        this.taskScheduler = new DefaultTaskScheduler();
-    }
-
     public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor) {
-        this(1, duplicationProcessor);
+        super(duplicationProcessor);
     }
 
     public SpringKafkaTaskScheduler setBootstrapServers(String bootstrapServers) {
@@ -75,16 +68,30 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
     }
 
     @Override
-    public synchronized void setAnalyzer(AnalyzerListener listener) {
-        taskScheduler.setAnalyzer(listener);
+    public synchronized void setProcessor(PageProcessor processor) {
+        super.setProcessor(processor);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 Seed seed = message.value();
-                taskScheduler.processPage(seed.getTask(), seed.getRequest(), seed.getPage());
+                super.onProcess(seed.getTask(), seed.getRequest(), seed.getPage());
             });
         }
         if (!this.analyzerContainer.isRunning()) {
             this.analyzerContainer.start();
+        }
+    }
+
+    @Override
+    public synchronized void setDownloader(Downloader downloader) {
+        super.setDownloader(downloader);
+        if (this.downloaderContainer == null) {
+            this.downloaderContainer = runContainer(topicDownload, message -> {
+                Seed seed = message.value();
+                super.onDownload(seed.getTask(), seed.getRequest());
+            });
+        }
+        if (!this.downloaderContainer.isRunning()) {
+            this.downloaderContainer.start();
         }
     }
 
@@ -94,11 +101,6 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
         KafkaMessageListenerContainer<Long, Seed> tmp = createContainer(containerProps);
         tmp.setBeanName(topic + "message-listener");
         return tmp;
-    }
-
-    @Override
-    public void processPage(Task task, Request request, Page page) {
-        template.send(topicAnalyzer, new Seed().setTask((DefaultTask) task).setRequest(request).setPage(page));
     }
 
     @Override

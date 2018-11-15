@@ -12,7 +12,7 @@ import site.zido.elise.utils.UrlUtils;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  * Abstract Duplicate Removed Scheduler
@@ -78,21 +78,21 @@ public abstract class AbstractScheduler implements TaskScheduler {
     protected Page onDownload(Task task, Request request) {
         final Page page = downloader.download(task, request);
         if (page.isDownloadSuccess()) {
-            for (EventListener listener : listeners) {
+            notifyListeners(listener -> {
                 listener.onDownloadSuccess(task, request, page);
-            }
+            });
         } else {
-            for (EventListener listener : listeners) {
+            notifyListeners((listener) -> {
                 listener.onDownloadError(task, request, page);
-            }
+            });
         }
         return page;
     }
 
-    protected void notifyListeners(Function<EventListener, Void> callback) {
+    protected void notifyListeners(Consumer<EventListener> callback) {
         for (EventListener listener : listeners) {
             try {
-                final Void apply = callback.apply(listener);
+                callback.accept(listener);
             } catch (Throwable t) {
                 LOGGER.error("listen error", t);
             }

@@ -30,16 +30,17 @@ public class DefaultPageProcessor implements PageProcessor {
         List<String> links = extractor.extractLinks(page);
         List<ResultItem> resultItems = extractor.extract(page);
         if (!ValidateUtils.isEmpty(resultItems)) {
-            for (ResultItem resultItem : resultItems)
+            for (ResultItem resultItem : resultItems) {
                 if (resultItem != null) {
                     try {
                         saver.save(resultItem, task);
                     } catch (Throwable e) {
                         LOGGER.error("saver have made a exception", e);
                     }
-                } else {
-                    LOGGER.info("page not find anything, page {}", page.getUrl());
                 }
+            }
+        } else {
+            LOGGER.info("page not find anything, page {}", page.getUrl());
         }
         return links;
     }
