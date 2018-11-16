@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class DefaultTaskScheduler extends AbstractScheduler implements Runnable {
+public class DefaultTaskScheduler extends ConfigurableScheduler implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTaskScheduler.class);
     private final ThreadPoolExecutor executor;
@@ -24,15 +24,10 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
     private final AtomicBoolean RUNNING = new AtomicBoolean(false);
 
     public DefaultTaskScheduler() {
-        this(Runtime.getRuntime().availableProcessors() * 2, new HashSetDeduplicationProcessor());
+        this(Runtime.getRuntime().availableProcessors() * 2);
     }
 
     public DefaultTaskScheduler(int threadNum) {
-        this(threadNum, new HashSetDeduplicationProcessor());
-    }
-
-    public DefaultTaskScheduler(int threadNum, DuplicationProcessor duplicationProcessor) {
-        super(duplicationProcessor);
         this.executor = new ThreadPoolExecutor(threadNum,
                 threadNum,
                 1,
@@ -43,10 +38,9 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
     }
 
     public void preStart() {
-        if (!RUNNING.compareAndSet(false, true)) {
-            return;
+        if (RUNNING.compareAndSet(false, true)) {
+            rootExecutor.execute(this);
         }
-        rootExecutor.execute(this);
     }
 
     public void processPage(Task task, Request request, Page page) {
@@ -65,7 +59,7 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
         while (!Thread.currentThread().isInterrupted()) {
             Seed seed;
             try {
-                seed = queue.poll(1, TimeUnit.MINUTES);
+                seed = queue.poll(1, TimeUnit.SECONDS);
                 if (seed == null) {
                     continue;
                 }
@@ -78,15 +72,51 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
             Page pollPage = seed.getPage();
             Request request = seed.getRequest();
             if (pollPage == null) {
-                executor.execute(() -> {
-                    Page page = super.onDownload(task, request);
-                    processPage(task, request, page);
-                });
+                try {
+                    executor.execute(() -> {
+                        Page page = super.onDownload(task, request);
+                        processPage(task, request, page);
+                    });
+                } catch (RejectedExecutionException e) {
+                    if (executor.isShutdown()) {
+                        LOGGER.info(Thread.currentThread().getName() + " is shutdown");
+                    } else {
+                        LOGGER.error("too more request");
+                    }
+                }
             } else {
-                executor.execute(() -> {
-                    super.onProcess(task, request, pollPage);
-                });
+                try {
+                    executor.execute(() -> super.onProcess(task, request, pollPage));
+                } catch (RejectedExecutionException e) {
+                    if (executor.isShutdown()) {
+                        LOGGER.info(Thread.currentThread().getName() + " is shutdown");
+                    } else {
+                        LOGGER.error("too more page");
+                    }
+                }
             }
+        }
+        //clear interrupted state
+        Thread.interrupted();
+        //other thread can end the waiting state
+        while (!executor.isTerminated() && !Thread.currentThread().isInterrupted()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignore) {
+            }
+        }
+        //reset interrupted
+        Thread.currentThread().interrupt();
+        super.onCancel();
+    }
+
+    @Override
+    public void cancel(boolean ifRunning) {
+        rootExecutor.shutdownNow();
+        if (ifRunning) {
+            executor.shutdown();
+        } else {
+            executor.shutdownNow();
         }
     }
 }

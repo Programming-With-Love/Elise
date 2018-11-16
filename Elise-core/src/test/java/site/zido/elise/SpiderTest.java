@@ -7,6 +7,8 @@ import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ExpressionType;
 import site.zido.elise.utils.IdWorker;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * SpiderTest
  *
@@ -14,7 +16,8 @@ import site.zido.elise.utils.IdWorker;
  */
 public class SpiderTest {
     @Test
-    public void testOnePage() {
+    public void testOnePage() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         Spider spider = Spider.defaults();
         DefRootExtractor extractor = new DefRootExtractor("article");
         extractor.setType(ExpressionType.CSS).setValue(".page-container>.blog");
@@ -27,10 +30,23 @@ public class SpiderTest {
                 .setType(ExpressionType.CSS));
         DefaultTask task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
         spider.addUrl(task, "http://zido.site");
+        spider.addEventListener(new EventListener() {
+            @Override
+            public void onSuccess(Task task) {
+                spider.cancel(true);
+            }
+
+            @Override
+            public void onCancel() {
+                latch.countDown();
+            }
+        });
+        latch.await();
     }
 
     @Test
-    public void testMultiPage() {
+    public void testMultiPage() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         Spider spider = Spider.defaults();
         DefRootExtractor extractor = new DefRootExtractor("project");
         extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
@@ -45,5 +61,18 @@ public class SpiderTest {
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
         Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
+        spider.addUrl(task,"http://github.com/zidoshare");
+        spider.addEventListener(new EventListener() {
+            @Override
+            public void onSuccess(Task task) {
+                spider.cancel(true);
+            }
+
+            @Override
+            public void onCancel() {
+                latch.countDown();
+            }
+        });
+        latch.await();
     }
 }

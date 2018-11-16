@@ -6,18 +6,22 @@ import site.zido.elise.Page;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.select.configurable.ModelExtractor;
+import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.ValidateUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * model page processor with extractor,
  *
  * @author zido
  */
-public class DefaultPageProcessor implements PageProcessor {
+public class DefaultPageProcessor implements ListenablePageProcessor {
     private static Logger LOGGER = LoggerFactory.getLogger(DefaultPageProcessor.class);
 
+    private Set<ProcessorEventListener> listeners = new HashSet<>();
     private Saver saver;
 
     public DefaultPageProcessor(Saver saver) {
@@ -25,23 +29,29 @@ public class DefaultPageProcessor implements PageProcessor {
     }
 
     @Override
-    public List<String> process(Task task, Page page) {
+    public Set<String> process(Task task, Page page) {
         ModelExtractor extractor = task.modelExtractor();
-        List<String> links = extractor.extractLinks(page);
+        Set<String> links = extractor.extractLinks(page);
         List<ResultItem> resultItems = extractor.extract(page);
         if (!ValidateUtils.isEmpty(resultItems)) {
-            for (ResultItem resultItem : resultItems) {
+            for (ResultItem resultItem : resultItems)
                 if (resultItem != null) {
                     try {
                         saver.save(resultItem, task);
+                        EventUtils.mustNotifyListeners(listeners, listener -> listener.onSaveSuccess(task, resultItem));
                     } catch (Throwable e) {
+                        EventUtils.mustNotifyListeners(listeners, listener -> listener.onSaveError(task, resultItem));
                         LOGGER.error("saver have made a exception", e);
                     }
                 }
-            }
         } else {
             LOGGER.info("page not find anything, page {}", page.getUrl());
         }
         return links;
+    }
+
+    @Override
+    public void addEventListener(ProcessorEventListener listener) {
+        listeners.add(listener);
     }
 }

@@ -3,7 +3,7 @@ package site.zido.elise.processor;
 import site.zido.elise.Page;
 import site.zido.elise.Task;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * the page processor
@@ -18,5 +18,5 @@ public interface PageProcessor {
      * @param page page.
      * @return results
      */
-    List<String> process(Task task, Page page);
+    Set<String> process(Task task, Page page);
 }

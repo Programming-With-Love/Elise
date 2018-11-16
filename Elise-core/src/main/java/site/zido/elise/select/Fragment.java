@@ -51,7 +51,7 @@ public class Fragment implements Serializable {
             case "a": //mark like this:<a href="http://www.baidu.com"><p>somethings</p><strong>other things</strong></a>
                 //and then,the result like this:START_TAG|href=http://www.baidu.com|something|other things|END_TAG
                 add("", RichType.CONTENT_START);
-                add(node.attr("href"), RichType.LINK);
+                add(node.attr("abs:href"), RichType.LINK);
                 List<Node> linkNodes = node.childNodes();
                 for (Node linkNode : linkNodes) {
                     add(linkNode);

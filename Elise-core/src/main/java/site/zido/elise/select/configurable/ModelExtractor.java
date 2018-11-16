@@ -4,6 +4,7 @@ import site.zido.elise.Page;
 import site.zido.elise.ResultItem;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * model extractor
@@ -25,5 +26,5 @@ public interface ModelExtractor {
      * @param page the page
      * @return the list
      */
-    List<String> extractLinks(Page page);
+    Set<String> extractLinks(Page page);
 }

@@ -11,10 +11,7 @@ import site.zido.elise.utils.ValidateUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -91,17 +88,18 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     @Override
-    public List<String> extractLinks(Page page) {
-        List<String> links;
+    public Set<String> extractLinks(Page page) {
+        Set<String> links;
 
         if (ValidateUtils.isEmpty(helpUrlSelectors)) {
-            return new ArrayList<>(0);
+            return new HashSet<>(0);
         } else {
-            links = new ArrayList<>();
+            links = new HashSet<>();
             for (LinkSelector selector : helpUrlSelectors) {
                 List<Fragment> list = page.getBody().select(selector);
                 for (Fragment fragment : list) {
-                    links.add(fragment.text());
+                    String link = fragment.text().replaceAll("#.*$", "");
+                    links.add(link);
                 }
             }
             //processing link
@@ -117,7 +115,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                     logger.error("An error occurred while processing the link,base:[{}],spec:[{}]", page.getUrl().toString(), link);
                 }
                 return link;
-            }).collect(Collectors.toList());
+            }).collect(Collectors.toSet());
         }
         return links;
     }

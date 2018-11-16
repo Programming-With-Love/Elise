@@ -4,15 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.*;
 import site.zido.elise.downloader.Downloader;
+import site.zido.elise.processor.ListenablePageProcessor;
 import site.zido.elise.processor.PageProcessor;
 import site.zido.elise.select.CompilerException;
 import site.zido.elise.select.NumberExpressMatcher;
+import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.UrlUtils;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * Abstract Duplicate Removed Scheduler
@@ -22,23 +22,16 @@ import java.util.function.Consumer;
 public abstract class AbstractScheduler implements TaskScheduler {
     protected Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    private DuplicationProcessor duplicationProcessor;
-    private Downloader downloader;
-    private PageProcessor processor;
     private Set<EventListener> listeners = new HashSet<>();
-
-
-    public AbstractScheduler(DuplicationProcessor duplicationProcessor) {
-        this.duplicationProcessor = duplicationProcessor;
-    }
 
     @Override
     public void pushRequest(Task task, Request request) {
         LOGGER.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
-                || !duplicationProcessor.isDuplicate(task, request)) {
+                || !getDuplicationProcessor().isDuplicate(task, request)) {
             LOGGER.debug("push to queue {}", request.getUrl());
+            getCountManager().incr(task, 1);
             Site site = task.getSite();
             if (site.getDomain() == null && request.getUrl() != null) {
                 site.setDomain(UrlUtils.getDomain(request.getUrl()));
@@ -58,14 +51,24 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 throw new RuntimeException(e);
             }
             if (matcher.matches(page.getStatusCode())) {
-                List<String> links = processor.process(task, page);
+                Set<String> links = getProcessor().process(task, page);
                 for (String link : links) {
                     pushRequest(task, new Request(link));
                 }
+                getCountManager().incr(task, -1, i -> {
+                    if (i == 0) {
+                        EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
+                    }
+                });
                 sleep(site.getSleepTime());
                 return;
             }
         }
+        getCountManager().incr(task, -1, i -> {
+            if (i == 0) {
+                EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
+            }
+        });
         Site site = task.getSite();
         if (site.getCycleRetryTimes() == 0) {
             sleep(site.getSleepTime());
@@ -76,27 +79,18 @@ public abstract class AbstractScheduler implements TaskScheduler {
     }
 
     protected Page onDownload(Task task, Request request) {
-        final Page page = downloader.download(task, request);
+        final Page page = getDownloader().download(task, request);
+
         if (page.isDownloadSuccess()) {
-            notifyListeners(listener -> {
-                listener.onDownloadSuccess(task, request, page);
-            });
+            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadSuccess(task, request, page));
         } else {
-            notifyListeners((listener) -> {
-                listener.onDownloadError(task, request, page);
-            });
+            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadError(task, request, page));
         }
         return page;
     }
 
-    protected void notifyListeners(Consumer<EventListener> callback) {
-        for (EventListener listener : listeners) {
-            try {
-                callback.accept(listener);
-            } catch (Throwable t) {
-                LOGGER.error("listen error", t);
-            }
-        }
+    protected void onCancel() {
+        EventUtils.mustNotifyListeners(listeners, EventListener::onCancel);
     }
 
     private void doCycleRetry(Task task, Request request) {
@@ -142,25 +136,16 @@ public abstract class AbstractScheduler implements TaskScheduler {
     @Override
     public void addEventListener(EventListener listener) {
         listeners.add(listener);
+        if (getProcessor() instanceof ListenablePageProcessor) {
+            ((ListenablePageProcessor) getProcessor()).addEventListener(listener);
+        }
     }
 
-    public int getTotalRequestsCount(Task task) {
-        return duplicationProcessor.getTotalRequestsCount(task);
-    }
+    public abstract Downloader getDownloader();
 
-    public Downloader getDownloader() {
-        return this.downloader;
-    }
+    public abstract PageProcessor getProcessor();
 
-    public PageProcessor getProcessor() {
-        return this.processor;
-    }
+    public abstract CountManager getCountManager();
 
-    public void setDownloader(Downloader downloader) {
-        this.downloader = downloader;
-    }
-
-    public void setProcessor(PageProcessor processor) {
-        this.processor = processor;
-    }
+    public abstract DuplicationProcessor getDuplicationProcessor();
 }

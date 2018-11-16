@@ -1,19 +1,26 @@
 package site.zido.elise;
 
-import java.util.List;
+import site.zido.elise.processor.ProcessorEventListener;
 
-public interface EventListener {
-    void onDownloadSuccess(Task task, Request request, Page page);
+public interface EventListener extends ProcessorEventListener, java.util.EventListener {
+    default void onDownloadSuccess(Task task, Request request, Page page) {
+    }
 
-    void onDownloadError(Task task, Request request, Page page);
+    default void onDownloadError(Task task, Request request, Page page) {
+    }
 
-    void onSaveSuccess(Task task, List<ResultItem> resultItems);
+    default void onSuccess(Task task) {
+    }
 
-    void onSaveError(Task task, List<ResultItem> resultItems);
+    default void onPause(Task task) {
+    }
 
-    void onSuccess(Task task, int size);
+    default void onCancel(Task task) {
+    }
 
-    void onPause(Task task);
+    default void onPause() {
+    }
 
-    void onCancel(Task task);
+    default void onCancel() {
+    }
 }

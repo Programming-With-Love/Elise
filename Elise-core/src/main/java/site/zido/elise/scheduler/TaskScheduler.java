@@ -25,4 +25,6 @@ public interface TaskScheduler {
 
     void addEventListener(EventListener listener);
 
+    void cancel(boolean ifRunning);
+
 }
