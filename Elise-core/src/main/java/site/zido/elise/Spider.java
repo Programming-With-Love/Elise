@@ -11,9 +11,6 @@ import site.zido.elise.task.DefaultMemoryTaskManager;
 import site.zido.elise.task.TaskManager;
 import site.zido.elise.utils.Asserts;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * the main spider
  *
@@ -80,31 +77,9 @@ public class Spider {
         return this;
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        final ExecutorService service = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 20; i++) {
-            int finalI = i;
-            service.execute(() -> {
-                try {
-                    System.out.println("run in " + finalI +"   " + Thread.currentThread().getName());
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    System.out.println("shutdown " + finalI + " name:" + Thread.currentThread().getName());
-                }
-            });
-        }
-        Thread.sleep(1000);
-        service.shutdown();
-        for (int i = 20; i < 40; i++) {
-            int finalI = i;
-            service.execute(() -> {
-                try {
-                    System.out.println("run in " + finalI +"   " + Thread.currentThread().getName());
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    System.out.println("shutdown " + finalI + " name:" + Thread.currentThread().getName());
-                }
-            });
-        }
+    public Spider cancel(Task task, boolean ifRunning) {
+        scheduler.cancel(task, ifRunning);
+        return this;
     }
+
 }

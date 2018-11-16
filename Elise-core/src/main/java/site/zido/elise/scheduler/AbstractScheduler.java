@@ -11,7 +11,9 @@ import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.UrlUtils;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,13 +25,27 @@ public abstract class AbstractScheduler implements TaskScheduler {
     protected Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private Set<EventListener> listeners = new HashSet<>();
+    private static final byte STATE_PAUSE = 0;
+    private static final byte STATE_CANCEL = 1;
+    private static final byte STATE_CANCEL_NOW = 2;
+    private final Map<Long, Byte> stateMap = new HashMap<>();
+    private final Set<Seed> pauseSet = new HashSet<>();
 
     @Override
     public void pushRequest(Task task, Request request) {
+        Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
+        //will no longer receive new requests when the task is in the canceled state
+        if (state >= STATE_CANCEL) {
+            return;
+        }
         LOGGER.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
                 || !getDuplicationProcessor().isDuplicate(task, request)) {
+            if (state == STATE_PAUSE) {
+                pauseSet.add(new Seed(task, request));
+                return;
+            }
             LOGGER.debug("push to queue {}", request.getUrl());
             getCountManager().incr(task, 1);
             Site site = task.getSite();
@@ -41,27 +57,34 @@ public abstract class AbstractScheduler implements TaskScheduler {
     }
 
     protected void onProcess(Task task, Request request, Page page) {
-        if (page.isDownloadSuccess()) {
-            Site site = task.getSite();
-            String codeAccepter = site.getCodeAccepter();
-            NumberExpressMatcher matcher;
-            try {
-                matcher = new NumberExpressMatcher(codeAccepter);
-            } catch (CompilerException e) {
-                throw new RuntimeException(e);
-            }
-            if (matcher.matches(page.getStatusCode())) {
-                Set<String> links = getProcessor().process(task, page);
-                for (String link : links) {
-                    pushRequest(task, new Request(link));
+        //will no longer process any pages when the task is in the cancel_now state
+        final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
+        if (state != STATE_CANCEL_NOW) {
+            if (page.isDownloadSuccess()) {
+                Site site = task.getSite();
+                String codeAccepter = site.getCodeAccepter();
+                NumberExpressMatcher matcher;
+                try {
+                    matcher = new NumberExpressMatcher(codeAccepter);
+                } catch (CompilerException e) {
+                    throw new RuntimeException(e);
                 }
-                getCountManager().incr(task, -1, i -> {
-                    if (i == 0) {
-                        EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
+                if (matcher.matches(page.getStatusCode())) {
+                    Set<String> links = getProcessor().process(task, page);
+                    //will no longer process any pages when the task is in the cancel_now state
+                    if (state != STATE_CANCEL) {
+                        for (String link : links) {
+                            pushRequest(task, new Request(link));
+                        }
                     }
-                });
-                sleep(site.getSleepTime());
-                return;
+                    getCountManager().incr(task, -1, i -> {
+                        if (i == 0) {
+                            EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
+                        }
+                    });
+                    sleep(site.getSleepTime());
+                    return;
+                }
             }
         }
         getCountManager().incr(task, -1, i -> {
@@ -69,12 +92,14 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
             }
         });
-        Site site = task.getSite();
-        if (site.getCycleRetryTimes() == 0) {
-            sleep(site.getSleepTime());
-        } else {
-            // for cycle retry
-            doCycleRetry(task, request);
+        if (state == -1) {
+            Site site = task.getSite();
+            if (site.getCycleRetryTimes() == 0) {
+                sleep(site.getSleepTime());
+            } else {
+                // for cycle retry
+                doCycleRetry(task, request);
+            }
         }
     }
 
@@ -139,6 +164,19 @@ public abstract class AbstractScheduler implements TaskScheduler {
         if (getProcessor() instanceof ListenablePageProcessor) {
             ((ListenablePageProcessor) getProcessor()).addEventListener(listener);
         }
+    }
+
+    @Override
+    public boolean cancel(Task task, boolean giveUpSeeds) {
+        final byte newState = giveUpSeeds ? STATE_CANCEL_NOW : STATE_CANCEL;
+        synchronized (stateMap) {
+            final Byte currentState = stateMap.get(task.getId());
+            if (currentState != null) {
+                return currentState == newState;
+            }
+        }
+        stateMap.put(task.getId(), newState);
+        return true;
     }
 
     public abstract Downloader getDownloader();

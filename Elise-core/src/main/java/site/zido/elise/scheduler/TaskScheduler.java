@@ -27,4 +27,5 @@ public interface TaskScheduler {
 
     void cancel(boolean ifRunning);
 
+    boolean cancel(Task task, boolean ifRunning);
 }
