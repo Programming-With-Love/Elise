@@ -44,6 +44,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 || !getDuplicationProcessor().isDuplicate(task, request)) {
             if (state == STATE_PAUSE) {
                 pauseSet.add(new Seed(task, request));
+                countEvent(state, task);
                 return;
             }
             LOGGER.debug("push to queue {}", request.getUrl());
@@ -59,6 +60,11 @@ public abstract class AbstractScheduler implements TaskScheduler {
     protected void onProcess(Task task, Request request, Page page) {
         //will no longer process any pages when the task is in the cancel_now state
         final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
+        if (state == STATE_PAUSE) {
+            pauseSet.add(new Seed(task, request, page));
+            countEvent(state, task);
+            return;
+        }
         if (state != STATE_CANCEL_NOW) {
             if (page.isDownloadSuccess()) {
                 Site site = task.getSite();
@@ -77,21 +83,13 @@ public abstract class AbstractScheduler implements TaskScheduler {
                             pushRequest(task, new Request(link));
                         }
                     }
-                    getCountManager().incr(task, -1, i -> {
-                        if (i == 0) {
-                            EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
-                        }
-                    });
+                    countEvent(state, task);
                     sleep(site.getSleepTime());
                     return;
                 }
             }
         }
-        getCountManager().incr(task, -1, i -> {
-            if (i == 0) {
-                EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
-            }
-        });
+        countEvent(state, task);
         if (state == -1) {
             Site site = task.getSite();
             if (site.getCycleRetryTimes() == 0) {
@@ -101,6 +99,20 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 doCycleRetry(task, request);
             }
         }
+    }
+
+    private void countEvent(final byte state, Task task) {
+        getCountManager().incr(task, -1, i -> {
+            if (i == 0) {
+                if (state == -1) {
+                    EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
+                } else if (state > STATE_CANCEL) {
+                    EventUtils.notifyListeners(listeners, listener -> listener.onCancel(task));
+                } else if (state == STATE_PAUSE) {
+                    EventUtils.notifyListeners(listeners, listeners -> listeners.onPause(task));
+                }
+            }
+        });
     }
 
     protected Page onDownload(Task task, Request request) {
@@ -116,6 +128,10 @@ public abstract class AbstractScheduler implements TaskScheduler {
 
     protected void onCancel() {
         EventUtils.mustNotifyListeners(listeners, EventListener::onCancel);
+    }
+
+    protected void onPause(Task task) {
+        EventUtils.mustNotifyListeners(listeners, listener -> listener.onPause(task));
     }
 
     private void doCycleRetry(Task task, Request request) {
@@ -176,6 +192,17 @@ public abstract class AbstractScheduler implements TaskScheduler {
             }
         }
         stateMap.put(task.getId(), newState);
+        return true;
+    }
+
+    public boolean pause(Task task) {
+        synchronized (stateMap) {
+            final Byte currentState = stateMap.get(task.getId());
+            if (currentState != null) {
+                return currentState == STATE_PAUSE;
+            }
+        }
+        stateMap.put(task.getId(), STATE_PAUSE);
         return true;
     }
 

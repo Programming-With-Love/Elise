@@ -82,4 +82,9 @@ public class Spider {
         return this;
     }
 
+    public Spider pause(Task task) {
+        scheduler.pause(task);
+        return this;
+    }
+
 }

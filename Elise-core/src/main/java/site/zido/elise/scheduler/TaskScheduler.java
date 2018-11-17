@@ -28,4 +28,6 @@ public interface TaskScheduler {
     void cancel(boolean ifRunning);
 
     boolean cancel(Task task, boolean ifRunning);
+
+    boolean pause(Task task);
 }
