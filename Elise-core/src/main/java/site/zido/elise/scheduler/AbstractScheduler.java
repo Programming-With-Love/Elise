@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Abstract Duplicate Removed Scheduler
@@ -25,11 +26,11 @@ public abstract class AbstractScheduler implements TaskScheduler {
     protected Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private Set<EventListener> listeners = new HashSet<>();
-    private static final byte STATE_PAUSE = 0;
-    private static final byte STATE_CANCEL = 1;
-    private static final byte STATE_CANCEL_NOW = 2;
+    private static final byte STATE_PAUSE = 1;
+    private static final byte STATE_CANCEL = 2;
+    private static final byte STATE_CANCEL_NOW = 3;
     private final Map<Long, Byte> stateMap = new HashMap<>();
-    private final Set<Seed> pauseSet = new HashSet<>();
+    private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
 
     @Override
     public void pushRequest(Task task, Request request) {
@@ -43,7 +44,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 || noNeedToRemoveDuplicate(request)
                 || !getDuplicationProcessor().isDuplicate(task, request)) {
             if (state == STATE_PAUSE) {
-                pauseSet.add(new Seed(task, request));
+                LOGGER.debug(task.getId()+"[" + request.getUrl() + "] received pause");
+                addToPauseMap(task.getId(), new Seed(task, request));
                 countEvent(state, task);
                 return;
             }
@@ -57,11 +59,16 @@ public abstract class AbstractScheduler implements TaskScheduler {
         }
     }
 
+    private void addToPauseMap(Long taskId, Seed seed) {
+        Set<Seed> seeds = pauseMap.computeIfAbsent(taskId, k -> new HashSet<>());
+        seeds.add(seed);
+    }
+
     protected void onProcess(Task task, Request request, Page page) {
         //will no longer process any pages when the task is in the cancel_now state
         final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
         if (state == STATE_PAUSE) {
-            pauseSet.add(new Seed(task, request, page));
+            addToPauseMap(task.getId(), new Seed(task, request, page));
             countEvent(state, task);
             return;
         }
@@ -130,10 +137,6 @@ public abstract class AbstractScheduler implements TaskScheduler {
         EventUtils.mustNotifyListeners(listeners, EventListener::onCancel);
     }
 
-    protected void onPause(Task task) {
-        EventUtils.mustNotifyListeners(listeners, listener -> listener.onPause(task));
-    }
-
     private void doCycleRetry(Task task, Request request) {
         Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
@@ -195,15 +198,30 @@ public abstract class AbstractScheduler implements TaskScheduler {
         return true;
     }
 
-    public boolean pause(Task task) {
-        synchronized (stateMap) {
-            final Byte currentState = stateMap.get(task.getId());
-            if (currentState != null) {
-                return currentState == STATE_PAUSE;
-            }
+    public synchronized boolean pause(Task task) {
+        final Byte currentState = stateMap.get(task.getId());
+        if (currentState != null) {
+            return currentState == STATE_PAUSE;
         }
         stateMap.put(task.getId(), STATE_PAUSE);
         return true;
+    }
+
+    public synchronized void recover(Task task) {
+        final Byte currentState = stateMap.get(task.getId());
+        if (currentState == null) {
+            return;
+        }
+        EventUtils.notifyListeners(listeners, eventListener -> eventListener.onRecover(task));
+        stateMap.remove(task.getId());
+        Set<Seed> set = pauseMap.getOrDefault(task.getId(), new HashSet<>());
+        for (Seed seed : set) {
+            if (seed.getPage() != null) {
+                onProcess(seed.getTask(), seed.getRequest(), seed.getPage());
+            } else {
+                pushWhenNoDuplicate(seed.getTask(), seed.getRequest());
+            }
+        }
     }
 
     public abstract Downloader getDownloader();

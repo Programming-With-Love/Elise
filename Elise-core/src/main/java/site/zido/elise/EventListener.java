@@ -15,6 +15,9 @@ public interface EventListener extends ProcessorEventListener, java.util.EventLi
     default void onPause(Task task) {
     }
 
+    default void onRecover(Task task){
+    }
+
     default void onCancel(Task task) {
     }
 

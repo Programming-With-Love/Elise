@@ -87,4 +87,9 @@ public class Spider {
         return this;
     }
 
+    public Spider recover(Task task) {
+        scheduler.recover(task);
+        return this;
+    }
+
 }

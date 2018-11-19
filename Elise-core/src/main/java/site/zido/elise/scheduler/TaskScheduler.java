@@ -30,4 +30,6 @@ public interface TaskScheduler {
     boolean cancel(Task task, boolean ifRunning);
 
     boolean pause(Task task);
+
+    void recover(Task task);
 }

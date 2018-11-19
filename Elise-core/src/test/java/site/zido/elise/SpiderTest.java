@@ -61,7 +61,7 @@ public class SpiderTest {
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
         Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
-        spider.addUrl(task,"http://github.com/zidoshare");
+        spider.addUrl(task, "http://github.com/zidoshare");
         spider.addEventListener(new EventListener() {
             @Override
             public void onSuccess(Task task) {
@@ -73,6 +73,73 @@ public class SpiderTest {
                 latch.countDown();
             }
         });
+        latch.await();
+    }
+
+    @Test
+    public void testCancel() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        Spider spider = Spider.defaults();
+        DefRootExtractor extractor = new DefRootExtractor("project");
+        extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
+        extractor.addHelpUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
+        extractor.addChildren(new DefExtractor("title")
+                .setType(ExpressionType.XPATH)
+                .setValue("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a"));
+        extractor.addChildren(new DefExtractor("description")
+                .setType(ExpressionType.XPATH)
+                .setValue("//*[@id=\"repo-meta-edit\"]/summary/div[1]/div/span[1]/div/span"));
+        extractor.addChildren(new DefExtractor("readme")
+                .setType(ExpressionType.XPATH)
+                .setValue("//*[@id=\"readme\"]/div[2]"));
+        Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
+        spider.addEventListener(new EventListener() {
+            @Override
+            public void onCancel() {
+                latch.countDown();
+            }
+        });
+        spider.addUrl(task, "http://github.com/zidoshare");
+        Thread.sleep(3000);
+        spider.cancel(true);
+        latch.await();
+    }
+
+    @Test
+    public void testPause() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(2);
+        Spider spider = Spider.defaults();
+        DefRootExtractor extractor = new DefRootExtractor("project");
+        extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
+        extractor.addHelpUrl(new ConfigurableUrlFinder("github.com/zidoshare"));
+        extractor.addChildren(new DefExtractor("title")
+                .setType(ExpressionType.XPATH)
+                .setValue("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a"));
+        extractor.addChildren(new DefExtractor("description")
+                .setType(ExpressionType.XPATH)
+                .setValue("//*[@id=\"repo-meta-edit\"]/summary/div[1]/div/span[1]/div/span"));
+        extractor.addChildren(new DefExtractor("readme")
+                .setType(ExpressionType.XPATH)
+                .setValue("//*[@id=\"readme\"]/div[2]"));
+        Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
+        spider.addEventListener(new EventListener() {
+            @Override
+            public void onPause(Task task) {
+                System.out.println("pause");
+                latch.countDown();
+            }
+
+            @Override
+            public void onRecover(Task task) {
+                System.out.println("recovered");
+                latch.countDown();
+            }
+        });
+        spider.addUrl(task, "http://github.com/zidoshare");
+        Thread.sleep(3000);
+        spider.pause(task);
+        Thread.sleep(10000);
+        spider.recover(task);
         latch.await();
     }
 }
