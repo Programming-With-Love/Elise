@@ -97,16 +97,18 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
             }
         }
         //clear interrupted state
-        Thread.interrupted();
-        //other thread can end the waiting state
-        while (!executor.isTerminated() && !Thread.currentThread().isInterrupted()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignore) {
+        final boolean interrupted = Thread.interrupted();
+        if (interrupted) {
+            //other thread can end the waiting state
+            while (!executor.isTerminated() && !Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ignore) {
+                }
             }
+            //reset interrupted
+            Thread.currentThread().interrupt();
         }
-        //reset interrupted
-        Thread.currentThread().interrupt();
         super.onCancel();
     }
 
@@ -118,6 +120,24 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
         } else {
             executor.shutdownNow();
         }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        final Thread thread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            final boolean interrupted = Thread.interrupted();
+            System.out.println(interrupted);
+            System.out.println(Thread.currentThread().isInterrupted());
+        });
+        thread.start();
+        Thread.sleep(333);
+        thread.interrupt();
     }
 
 }
