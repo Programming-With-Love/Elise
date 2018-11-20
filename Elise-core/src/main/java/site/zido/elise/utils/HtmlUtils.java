@@ -44,6 +44,9 @@ public class HtmlUtils {
             return matcher.group(2);
         } else {
             String headStr = getHeadStr(content);
+            if (headStr == null) {
+                return null;
+            }
             Document head = Jsoup.parse(headStr);
             Elements links = head.select("meta");
             for (Element link : links) {

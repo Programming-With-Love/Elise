@@ -42,6 +42,8 @@
     <modules>
         <module>Elise-core</module>
         <module>Elise-distributed</module>
+        <module>Elise-redis-support</module>
+        <module>Elise-jedis-support</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

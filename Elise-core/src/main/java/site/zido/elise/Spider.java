@@ -24,7 +24,7 @@ public class Spider {
     }
 
     public static Spider defaults() {
-        return defaults(1);
+        return defaults(Runtime.getRuntime().availableProcessors() * 2);
     }
 
     public static Spider defaults(int threadNum) {

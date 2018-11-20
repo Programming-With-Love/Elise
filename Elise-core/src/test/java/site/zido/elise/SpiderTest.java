@@ -127,6 +127,12 @@ public class SpiderTest {
             public void onPause(Task task) {
                 System.out.println("pause");
                 latch.countDown();
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                spider.recover(task);
             }
 
             @Override
@@ -138,8 +144,6 @@ public class SpiderTest {
         spider.addUrl(task, "http://github.com/zidoshare");
         Thread.sleep(3000);
         spider.pause(task);
-        Thread.sleep(10000);
-        spider.recover(task);
         latch.await();
     }
 }

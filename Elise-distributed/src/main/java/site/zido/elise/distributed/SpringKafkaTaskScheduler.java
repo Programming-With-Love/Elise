@@ -19,8 +19,7 @@ import site.zido.elise.Task;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.processor.PageProcessor;
-import site.zido.elise.scheduler.AbstractScheduler;
-import site.zido.elise.scheduler.DuplicationProcessor;
+import site.zido.elise.scheduler.ConfigurableScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +29,7 @@ import java.util.Map;
  *
  * @author zido
  */
-public class SpringKafkaTaskScheduler extends AbstractScheduler {
+public class SpringKafkaTaskScheduler extends ConfigurableScheduler {
     private String bootstrapServers;
     private String groupId = "Elise";
     private String topicAnalyzer = "__analyzer__";
@@ -41,10 +40,6 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
 
     private KafkaMessageListenerContainer<Long, Seed> analyzerContainer;
     private KafkaMessageListenerContainer<Long, Seed> downloaderContainer;
-
-    public SpringKafkaTaskScheduler(DuplicationProcessor duplicationProcessor) {
-        super(duplicationProcessor);
-    }
 
     public SpringKafkaTaskScheduler setBootstrapServers(String bootstrapServers) {
         this.bootstrapServers = bootstrapServers;
@@ -155,7 +150,8 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
         return props;
     }
 
-    public void stop() {
+    @Override
+    public void cancel(boolean ifRunning) {
         if (this.analyzerContainer != null && this.analyzerContainer.isRunning()) {
             this.analyzerContainer.stop();
         }

@@ -44,7 +44,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 || noNeedToRemoveDuplicate(request)
                 || !getDuplicationProcessor().isDuplicate(task, request)) {
             if (state == STATE_PAUSE) {
-                LOGGER.debug(task.getId()+"[" + request.getUrl() + "] received pause");
+                LOGGER.debug(task.getId() + "[" + request.getUrl() + "] received pause");
                 addToPauseMap(task.getId(), new Seed(task, request));
                 countEvent(state, task);
                 return;
