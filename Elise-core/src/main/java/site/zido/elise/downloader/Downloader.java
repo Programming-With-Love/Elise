@@ -1,7 +1,7 @@
 package site.zido.elise.downloader;
 
-import site.zido.elise.Page;
-import site.zido.elise.Request;
+import site.zido.elise.http.Response;
+import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 
 /**
@@ -17,7 +17,7 @@ public interface Downloader {
      * @param task    任务
      * @return 下载后的页面
      */
-    Page download(Task task, Request request);
+    Response download(Task task, Request request);
 
     /**
      * 设置下载线程

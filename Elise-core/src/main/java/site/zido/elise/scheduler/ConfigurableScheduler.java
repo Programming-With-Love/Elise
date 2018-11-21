@@ -1,12 +1,12 @@
 package site.zido.elise.scheduler;
 
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.processor.PageProcessor;
+import site.zido.elise.processor.ResponseHandler;
 
 
 public abstract class ConfigurableScheduler extends AbstractScheduler {
     private Downloader downloader;
-    private PageProcessor processor;
+    private ResponseHandler ResponseHandler;
     private CountManager countManager;
     private DuplicationProcessor duplicationProcessor;
 
@@ -16,8 +16,8 @@ public abstract class ConfigurableScheduler extends AbstractScheduler {
     }
 
     @Override
-    public PageProcessor getProcessor() {
-        return processor;
+    public ResponseHandler getResponseHandler() {
+        return ResponseHandler;
     }
 
     @Override
@@ -34,8 +34,8 @@ public abstract class ConfigurableScheduler extends AbstractScheduler {
         this.downloader = downloader;
     }
 
-    public void setProcessor(PageProcessor processor) {
-        this.processor = processor;
+    public void setResponseHandler(ResponseHandler responseHandler) {
+        this.ResponseHandler = responseHandler;
     }
 
     public void setCountManager(CountManager countManager) {

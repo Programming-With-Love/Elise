@@ -1,12 +1,14 @@
 package site.zido.elise;
 
+import site.zido.elise.http.Request;
+import site.zido.elise.http.Response;
 import site.zido.elise.processor.ProcessorEventListener;
 
 public interface EventListener extends ProcessorEventListener, java.util.EventListener {
-    default void onDownloadSuccess(Task task, Request request, Page page) {
+    default void onDownloadSuccess(Task task, Request request, Response response) {
     }
 
-    default void onDownloadError(Task task, Request request, Page page) {
+    default void onDownloadError(Task task, Request request, Response response) {
     }
 
     default void onSuccess(Task task) {

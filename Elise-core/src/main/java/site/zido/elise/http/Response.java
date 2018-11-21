@@ -1,20 +1,20 @@
-package site.zido.elise;
+package site.zido.elise.http;
 
-import site.zido.elise.http.Http;
 import site.zido.elise.select.Selectable;
 import site.zido.elise.select.Text;
 
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
 
 /**
- * 下载的页面对象
+ * 下载的响应对象
+ * <br>
+ * 重点关注几个常用的响应内容，并未将所有的响应内容全部包含在内
  *
  * @author zido
  */
-public class Page {
+public class Response implements Serializable {
+    private static final long serialVersionUID = 8652625484193923483L;
     private Text url;
-    private Map<String, List<String>> headers;
     private int statusCode = 200;
 
     private Selectable body;
@@ -23,14 +23,14 @@ public class Page {
 
     private Http.ContentType contentType;
 
-    public Page() {
+    public Response() {
     }
 
-    public static Page fail() {
-        Page page = new Page();
-        page.setDownloadSuccess(false);
-        page.setStatusCode(-1);
-        return page;
+    public static Response fail() {
+        Response response = new Response();
+        response.setDownloadSuccess(false);
+        response.setStatusCode(-1);
+        return response;
     }
 
     /**
@@ -42,7 +42,7 @@ public class Page {
         return url;
     }
 
-    public Page setUrl(Text url) {
+    public Response setUrl(Text url) {
         this.url = url;
         return this;
     }
@@ -55,13 +55,6 @@ public class Page {
         this.statusCode = statusCode;
     }
 
-    public Map<String, List<String>> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Map<String, List<String>> headers) {
-        this.headers = headers;
-    }
 
     public boolean isDownloadSuccess() {
         return downloadSuccess;
@@ -81,9 +74,8 @@ public class Page {
 
     @Override
     public String toString() {
-        return "Page{" +
+        return "Response{" +
                 "url='" + url + '\'' +
-                ", headers=" + headers +
                 ", statusCode=" + statusCode +
                 ", body=" + body +
                 ", downloadSuccess=" + downloadSuccess +

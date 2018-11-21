@@ -2,7 +2,7 @@ package site.zido.elise.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Page;
+import site.zido.elise.http.Response;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.select.configurable.ModelExtractor;
@@ -18,21 +18,21 @@ import java.util.Set;
  *
  * @author zido
  */
-public class DefaultPageProcessor implements ListenablePageProcessor {
-    private static Logger LOGGER = LoggerFactory.getLogger(DefaultPageProcessor.class);
+public class DefaultResponseHandler implements ListenableResponseHandler {
+    private static Logger LOGGER = LoggerFactory.getLogger(DefaultResponseHandler.class);
 
     private Set<ProcessorEventListener> listeners = new HashSet<>();
     private Saver saver;
 
-    public DefaultPageProcessor(Saver saver) {
+    public DefaultResponseHandler(Saver saver) {
         this.saver = saver;
     }
 
     @Override
-    public Set<String> process(Task task, Page page) {
+    public Set<String> process(Task task, Response response) {
         ModelExtractor extractor = task.modelExtractor();
-        Set<String> links = extractor.extractLinks(page);
-        List<ResultItem> resultItems = extractor.extract(page);
+        Set<String> links = extractor.extractLinks(response);
+        List<ResultItem> resultItems = extractor.extract(response);
         if (!ValidateUtils.isEmpty(resultItems)) {
             for (ResultItem resultItem : resultItems)
                 if (resultItem != null) {
@@ -45,7 +45,7 @@ public class DefaultPageProcessor implements ListenablePageProcessor {
                     }
                 }
         } else {
-            LOGGER.info("page not find anything, page {}", page.getUrl());
+            LOGGER.info("response not find anything, response {}", response.getUrl());
         }
         return links;
     }

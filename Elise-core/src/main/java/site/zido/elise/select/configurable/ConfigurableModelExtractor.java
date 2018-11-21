@@ -4,7 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Page;
+import site.zido.elise.http.Response;
 import site.zido.elise.ResultItem;
 import site.zido.elise.select.*;
 import site.zido.elise.utils.ValidateUtils;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * configurable Page model extractor
+ * configurable Response model extractor
  *
  * @author zido
  */
@@ -51,18 +51,18 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     @Override
-    public List<ResultItem> extract(Page page) {
-        if (targetUrlSelectors.stream().noneMatch(linkSelector -> linkSelector.select(page.getUrl().toString()) != null)) {
+    public List<ResultItem> extract(Response response) {
+        if (targetUrlSelectors.stream().noneMatch(linkSelector -> linkSelector.select(response.getUrl().toString()) != null)) {
             return new ArrayList<>();
         }
         List<ResultItem> results = new ArrayList<>();
-        Selectable body = page.getBody();
+        Selectable body = response.getBody();
         Selector selector = defRootExtractor.compileSelector();
         if (body instanceof ElementSelectable && selector instanceof ElementSelector) {
             List<Node> list = ((ElementSelectable) body).selectAsNode((ElementSelector) selector);
             //select from region
             for (Node node : list) {
-                Map<String, List<Fragment>> item = processSingle(page, node);
+                Map<String, List<Fragment>> item = processSingle(response, node);
                 toResults(results, item);
             }
         } else {
@@ -70,7 +70,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
             //get region
             for (Fragment fragment : list) {
                 String html = fragment.toString();
-                Map<String, List<Fragment>> item = processSingle(page, html);
+                Map<String, List<Fragment>> item = processSingle(response, html);
                 toResults(results, item);
             }
         }
@@ -88,7 +88,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     @Override
-    public Set<String> extractLinks(Page page) {
+    public Set<String> extractLinks(Response response) {
         Set<String> links;
 
         if (ValidateUtils.isEmpty(helpUrlSelectors)) {
@@ -96,7 +96,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         } else {
             links = new HashSet<>();
             for (LinkSelector selector : helpUrlSelectors) {
-                List<Fragment> list = page.getBody().select(selector);
+                List<Fragment> list = response.getBody().select(selector);
                 for (Fragment fragment : list) {
                     String link = fragment.text().replaceAll("#.*$", "");
                     links.add(link);
@@ -110,9 +110,9 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                     return link;
                 }
                 try {
-                    return new URL(new URL(page.getUrl().toString()), link).toString();
+                    return new URL(new URL(response.getUrl().toString()), link).toString();
                 } catch (MalformedURLException e) {
-                    logger.error("An error occurred while processing the link,base:[{}],spec:[{}]", page.getUrl().toString(), link);
+                    logger.error("An error occurred while processing the link,base:[{}],spec:[{}]", response.getUrl().toString(), link);
                 }
                 return link;
             }).collect(Collectors.toSet());
@@ -120,10 +120,10 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return links;
     }
 
-    private Map<String, List<Fragment>> processSingle(Page page, Object html) {
+    private Map<String, List<Fragment>> processSingle(Response response, Object html) {
         Map<String, List<Fragment>> map = new HashMap<>(defRootExtractor.getChildren().size());
         for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
-            List<Fragment> results = processField(fieldExtractor, page, html);
+            List<Fragment> results = processField(fieldExtractor, response, html);
             if (ValidateUtils.isEmpty(results) && !fieldExtractor.getNullable()) {
                 return null;
             }
@@ -132,18 +132,18 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return map;
     }
 
-    private List<Fragment> processField(DefExtractor fieldExtractor, Page page, Object html) {
+    private List<Fragment> processField(DefExtractor fieldExtractor, Response response, Object html) {
         List<Fragment> value;
         Selector selector = fieldExtractor.compileSelector();
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
-                value = page.getBody().select(selector);
+                value = response.getBody().select(selector);
                 break;
             case URL:
-                value = selector.select(page.getUrl().toString());
+                value = selector.select(response.getUrl().toString());
                 break;
             case RAW_TEXT:
-                value = page.getBody().select(selector);
+                value = response.getBody().select(selector);
                 break;
             case REGION:
             default:

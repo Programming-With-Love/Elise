@@ -14,7 +14,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import site.zido.elise.Request;
+import site.zido.elise.http.Request;
 import site.zido.elise.Site;
 import site.zido.elise.http.Http;
 import site.zido.elise.proxy.Proxy;

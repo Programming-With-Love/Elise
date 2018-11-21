@@ -1,6 +1,6 @@
 package site.zido.elise.proxy;
 
-import site.zido.elise.Page;
+import site.zido.elise.http.Response;
 import site.zido.elise.Task;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class SimpleProxyProvider implements ProxyProvider {
     }
 
     @Override
-    public void returnProxy(Proxy proxy, Page page, Task task) {
+    public void returnProxy(Proxy proxy, Response response, Task task) {
     }
 
     @Override

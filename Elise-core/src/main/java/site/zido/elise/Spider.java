@@ -1,7 +1,8 @@
 package site.zido.elise;
 
 import site.zido.elise.downloader.AutoSwitchDownloader;
-import site.zido.elise.processor.DefaultPageProcessor;
+import site.zido.elise.http.Request;
+import site.zido.elise.processor.DefaultResponseHandler;
 import site.zido.elise.processor.MemorySaver;
 import site.zido.elise.scheduler.DefaultMemoryCountManager;
 import site.zido.elise.scheduler.DefaultTaskScheduler;
@@ -32,7 +33,7 @@ public class Spider {
         final DefaultTaskScheduler scheduler = new DefaultTaskScheduler(threadNum);
         spider.scheduler = scheduler;
         scheduler.setDownloader(new AutoSwitchDownloader());
-        scheduler.setProcessor(new DefaultPageProcessor(new MemorySaver()));
+        scheduler.setResponseHandler(new DefaultResponseHandler(new MemorySaver()));
         scheduler.setDuplicationProcessor(new HashSetDeduplicationProcessor());
         scheduler.setCountManager(new DefaultMemoryCountManager());
         spider.taskManager = new DefaultMemoryTaskManager();

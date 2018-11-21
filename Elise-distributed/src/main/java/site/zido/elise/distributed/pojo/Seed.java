@@ -1,8 +1,8 @@
 package site.zido.elise.distributed.pojo;
 
 import site.zido.elise.DefaultTask;
-import site.zido.elise.Page;
-import site.zido.elise.Request;
+import site.zido.elise.http.Response;
+import site.zido.elise.http.Request;
 
 /**
  * 种子，信息载体
@@ -12,12 +12,12 @@ import site.zido.elise.Request;
 public class Seed {
     private DefaultTask task;
     private Request request;
-    private Page page;
+    private Response response;
 
-    public Seed(DefaultTask task, Request request, Page page) {
+    public Seed(DefaultTask task, Request request, Response response) {
         this.task = task;
         this.request = request;
-        this.page = page;
+        this.response = response;
     }
 
     public Seed() {
@@ -42,12 +42,12 @@ public class Seed {
         return this;
     }
 
-    public Page getPage() {
-        return page;
+    public Response getResponse() {
+        return response;
     }
 
-    public Seed setPage(Page page) {
-        this.page = page;
+    public Seed setResponse(Response response) {
+        this.response = response;
         return this;
     }
 }

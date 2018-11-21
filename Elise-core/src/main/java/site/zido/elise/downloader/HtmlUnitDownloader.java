@@ -8,8 +8,8 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Page;
-import site.zido.elise.Request;
+import site.zido.elise.http.Response;
+import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
@@ -32,10 +32,10 @@ public class HtmlUnitDownloader implements Downloader {
     private ProxyProvider proxyProvider;
 
     @Override
-    public Page download(Task task, Request request) {
+    public Response download(Task task, Request request) {
         WebClient webClient = null;
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
-        Page page = Page.fail();
+        Response response = Response.fail();
         try {
             if (proxy != null) {
                 webClient = new WebClient(BrowserVersion.CHROME, proxy.getHost(), proxy.getPort());
@@ -55,21 +55,21 @@ public class HtmlUnitDownloader implements Downloader {
             }
             HtmlPage htmlPage = webClient.getPage(webRequest);
             int statusCode = htmlPage.getWebResponse().getStatusCode();
-            page = new Page();
-            page.setStatusCode(statusCode);
-            page.setUrl(new Text(request.getUrl()));
-            page.setBody(new HTML(htmlPage.asXml(), htmlPage.getUrl().toString()));
-            page.setDownloadSuccess(true);
+            response = new Response();
+            response.setStatusCode(statusCode);
+            response.setUrl(new Text(request.getUrl()));
+            response.setBody(new HTML(htmlPage.asXml(), htmlPage.getUrl().toString()));
+            response.setDownloadSuccess(true);
         } catch (MalformedURLException e) {
             logger.error(String.format("url is invalid [%s]", request.getUrl()), e);
         } catch (IOException e) {
-            logger.error(String.format("download page fail [%s]", request.getUrl()), e);
+            logger.error(String.format("download response fail [%s]", request.getUrl()), e);
         } finally {
             if (webClient != null) {
                 webClient.close();
             }
         }
-        return page;
+        return response;
     }
 
     @Override

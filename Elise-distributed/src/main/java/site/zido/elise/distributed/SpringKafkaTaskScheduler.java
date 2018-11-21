@@ -14,11 +14,11 @@ import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import site.zido.elise.DefaultTask;
-import site.zido.elise.Request;
+import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.processor.PageProcessor;
+import site.zido.elise.processor.ResponseHandler;
 import site.zido.elise.scheduler.ConfigurableScheduler;
 
 import java.util.HashMap;
@@ -63,12 +63,12 @@ public class SpringKafkaTaskScheduler extends ConfigurableScheduler {
     }
 
     @Override
-    public synchronized void setProcessor(PageProcessor processor) {
-        super.setProcessor(processor);
+    public synchronized void setResponseHandler(ResponseHandler responseHandler) {
+        super.setResponseHandler(responseHandler);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 Seed seed = message.value();
-                super.onProcess(seed.getTask(), seed.getRequest(), seed.getPage());
+                super.onProcess(seed.getTask(), seed.getRequest(), seed.getResponse());
             });
         }
         if (!this.analyzerContainer.isRunning()) {

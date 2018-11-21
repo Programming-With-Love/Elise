@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.*;
 import site.zido.elise.downloader.Downloader;
-import site.zido.elise.processor.ListenablePageProcessor;
-import site.zido.elise.processor.PageProcessor;
+import site.zido.elise.http.Request;
+import site.zido.elise.http.Response;
+import site.zido.elise.processor.ListenableResponseHandler;
+import site.zido.elise.processor.ResponseHandler;
 import site.zido.elise.select.CompilerException;
 import site.zido.elise.select.NumberExpressMatcher;
 import site.zido.elise.utils.EventUtils;
@@ -64,16 +66,16 @@ public abstract class AbstractScheduler implements TaskScheduler {
         seeds.add(seed);
     }
 
-    protected void onProcess(Task task, Request request, Page page) {
+    protected void onProcess(Task task, Request request, Response response) {
         //will no longer process any pages when the task is in the cancel_now state
         final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
         if (state == STATE_PAUSE) {
-            addToPauseMap(task.getId(), new Seed(task, request, page));
+            addToPauseMap(task.getId(), new Seed(task, request, response));
             countEvent(state, task);
             return;
         }
         if (state != STATE_CANCEL_NOW) {
-            if (page.isDownloadSuccess()) {
+            if (response.isDownloadSuccess()) {
                 Site site = task.getSite();
                 String codeAccepter = site.getCodeAccepter();
                 NumberExpressMatcher matcher;
@@ -82,8 +84,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 } catch (CompilerException e) {
                     throw new RuntimeException(e);
                 }
-                if (matcher.matches(page.getStatusCode())) {
-                    Set<String> links = getProcessor().process(task, page);
+                if (matcher.matches(response.getStatusCode())) {
+                    Set<String> links = getResponseHandler().process(task, response);
                     //will no longer process any pages when the task is in the cancel_now state
                     if (state != STATE_CANCEL) {
                         for (String link : links) {
@@ -122,15 +124,15 @@ public abstract class AbstractScheduler implements TaskScheduler {
         });
     }
 
-    protected Page onDownload(Task task, Request request) {
-        final Page page = getDownloader().download(task, request);
+    protected Response onDownload(Task task, Request request) {
+        final Response response = getDownloader().download(task, request);
 
-        if (page.isDownloadSuccess()) {
-            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadSuccess(task, request, page));
+        if (response.isDownloadSuccess()) {
+            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadSuccess(task, request, response));
         } else {
-            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadError(task, request, page));
+            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadError(task, request, response));
         }
-        return page;
+        return response;
     }
 
     protected void onCancel() {
@@ -180,8 +182,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
     @Override
     public void addEventListener(EventListener listener) {
         listeners.add(listener);
-        if (getProcessor() instanceof ListenablePageProcessor) {
-            ((ListenablePageProcessor) getProcessor()).addEventListener(listener);
+        if (getResponseHandler() instanceof ListenableResponseHandler) {
+            ((ListenableResponseHandler) getResponseHandler()).addEventListener(listener);
         }
     }
 
@@ -216,8 +218,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
         stateMap.remove(task.getId());
         Set<Seed> set = pauseMap.getOrDefault(task.getId(), new HashSet<>());
         for (Seed seed : set) {
-            if (seed.getPage() != null) {
-                onProcess(seed.getTask(), seed.getRequest(), seed.getPage());
+            if (seed.getResponse() != null) {
+                onProcess(seed.getTask(), seed.getRequest(), seed.getResponse());
             } else {
                 pushWhenNoDuplicate(seed.getTask(), seed.getRequest());
             }
@@ -226,7 +228,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
 
     public abstract Downloader getDownloader();
 
-    public abstract PageProcessor getProcessor();
+    public abstract ResponseHandler getResponseHandler();
 
     public abstract CountManager getCountManager();
 

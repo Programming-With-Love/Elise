@@ -1,5 +1,5 @@
 package site.zido.elise.processor;
 
-public interface ListenablePageProcessor extends PageProcessor {
+public interface ListenableResponseHandler extends ResponseHandler {
     void addEventListener(ProcessorEventListener listener);
 }

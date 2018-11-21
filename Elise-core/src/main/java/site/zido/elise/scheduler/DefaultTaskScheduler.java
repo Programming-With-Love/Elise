@@ -2,8 +2,8 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Page;
-import site.zido.elise.Request;
+import site.zido.elise.http.Response;
+import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
@@ -43,9 +43,9 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
         }
     }
 
-    public void processPage(Task task, Request request, Page page) {
+    public void processPage(Task task, Request request, Response response) {
         preStart();
-        queue.offer(new Seed(task, request, page));
+        queue.offer(new Seed(task, request, response));
     }
 
     @Override
@@ -69,13 +69,13 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
                 break;
             }
             Task task = seed.getTask();
-            Page pollPage = seed.getPage();
+            Response pollResponse = seed.getResponse();
             Request request = seed.getRequest();
-            if (pollPage == null) {
+            if (pollResponse == null) {
                 try {
                     executor.execute(() -> {
-                        Page page = super.onDownload(task, request);
-                        processPage(task, request, page);
+                        Response response = super.onDownload(task, request);
+                        processPage(task, request, response);
                     });
                 } catch (RejectedExecutionException e) {
                     if (executor.isShutdown()) {
@@ -86,7 +86,7 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
                 }
             } else {
                 try {
-                    executor.execute(() -> super.onProcess(task, request, pollPage));
+                    executor.execute(() -> super.onProcess(task, request, pollResponse));
                 } catch (RejectedExecutionException e) {
                     if (executor.isShutdown()) {
                         LOGGER.info(Thread.currentThread().getName() + " is shutdown");

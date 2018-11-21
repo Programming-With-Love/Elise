@@ -7,8 +7,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Page;
-import site.zido.elise.Request;
+import site.zido.elise.http.Response;
+import site.zido.elise.http.Request;
 import site.zido.elise.Site;
 import site.zido.elise.Task;
 import site.zido.elise.http.Http;
@@ -58,20 +58,20 @@ public class HttpClientDownloader implements Downloader {
     }
 
     @Override
-    public Page download(Task task, Request request) {
+    public Response download(Task task, Request request) {
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         HttpClientRequestContext requestContext = httpUriRequestConverter.convert(request, task.getSite(), proxy);
-        Page page = Page.fail();
+        Response response = Response.fail();
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
-            page = handleResponse(request, task, httpResponse);
-            logger.debug("downloading page success {}", request.getUrl());
-            return page;
+            response = handleResponse(request, task, httpResponse);
+            logger.debug("downloading response success {}", request.getUrl());
+            return response;
         } catch (IOException e) {
-            logger.error("download page {} error", request.getUrl(), e);
-            return page;
+            logger.error("download response {} error", request.getUrl(), e);
+            return response;
         } finally {
             if (httpResponse != null) {
                 EntityUtils.consumeQuietly(httpResponse.getEntity());
@@ -82,30 +82,27 @@ public class HttpClientDownloader implements Downloader {
                 }
             }
             if (proxyProvider != null && proxy != null) {
-                proxyProvider.returnProxy(proxy, page, task);
+                proxyProvider.returnProxy(proxy, response, task);
             }
         }
     }
 
-    private Page handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
+    private Response handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
         byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
 
-        Page page = new Page();
-        page.setContentType(Http.ContentType.parse(contentType));
+        Response response = new Response();
+        response.setContentType(Http.ContentType.parse(contentType));
         String charset = request.getCharset();
         charset = HtmlUtils.getHtmlCharset(bytes, charset);
         if (charset == null) {
             charset = task.getSite().getCharset();
         }
-        page.setBody(new HTML(new String(bytes, charset), request.getUrl()));
-        page.setUrl(new Text(request.getUrl()));
-        page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
-        page.setDownloadSuccess(true);
-        if (responseHeader) {
-            page.setHeaders(convertHeaders(httpResponse.getAllHeaders()));
-        }
-        return page;
+        response.setBody(new HTML(new String(bytes, charset), request.getUrl()));
+        response.setUrl(new Text(request.getUrl()));
+        response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
+        response.setDownloadSuccess(true);
+        return response;
     }
 
     private Map<String, List<String>> convertHeaders(Header[] headers) {
