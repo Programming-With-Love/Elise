@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @author zido
  */
-public class HttpClientDownloader extends AbstractDownloader {
+public class HttpClientDownloader implements Downloader {
     private final Map<String, CloseableHttpClient> httpClients = new HashMap<>();
     private Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
     private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
@@ -67,12 +67,10 @@ public class HttpClientDownloader extends AbstractDownloader {
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
             page = handleResponse(request, task, httpResponse);
-            onSuccess(request);
             logger.debug("downloading page success {}", request.getUrl());
             return page;
         } catch (IOException e) {
             logger.error("download page {} error", request.getUrl(), e);
-            onError(request);
             return page;
         } finally {
             if (httpResponse != null) {

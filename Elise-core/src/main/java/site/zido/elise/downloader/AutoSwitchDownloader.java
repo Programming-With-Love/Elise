@@ -11,7 +11,7 @@ import site.zido.elise.proxy.ProxyProvider;
  *
  * @author zido
  */
-public class AutoSwitchDownloader extends AbstractDownloader {
+public class AutoSwitchDownloader implements Downloader {
     public static final String DOWNLOAD_MODE = "downloadMode";
     public static final String DOWNLOAD_MODE_NORMAL = "normal";
     public static final String DOWNLOAD_MODE_HTML_UNIT = "htmlUnit";

@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
  *
  * @author zido
  */
-public class HtmlUnitDownloader extends AbstractDownloader {
+public class HtmlUnitDownloader implements Downloader {
     private static final Logger logger = LoggerFactory.getLogger(HtmlUnitDownloader.class);
     private ProxyProvider proxyProvider;
 
