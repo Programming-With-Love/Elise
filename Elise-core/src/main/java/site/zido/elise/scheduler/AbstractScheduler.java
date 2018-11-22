@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.*;
 import site.zido.elise.downloader.Downloader;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.Request;
-import site.zido.elise.http.Response;
 import site.zido.elise.processor.ListenableResponseHandler;
 import site.zido.elise.processor.ResponseHandler;
 import site.zido.elise.select.CompilerException;
@@ -66,7 +66,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
         seeds.add(seed);
     }
 
-    protected void onProcess(Task task, Request request, Response response) {
+    protected void onProcess(Task task, Request request, DefaultResponse response) {
         //will no longer process any pages when the task is in the cancel_now state
         final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
         if (state == STATE_PAUSE) {
@@ -124,8 +124,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
         });
     }
 
-    protected Response onDownload(Task task, Request request) {
-        final Response response = getDownloader().download(task, request);
+    protected DefaultResponse onDownload(Task task, Request request) {
+        final DefaultResponse response = getDownloader().download(task, request);
 
         if (response.isDownloadSuccess()) {
             EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadSuccess(task, request, response));

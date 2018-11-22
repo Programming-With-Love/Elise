@@ -8,7 +8,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
@@ -32,10 +32,10 @@ public class HtmlUnitDownloader implements Downloader {
     private ProxyProvider proxyProvider;
 
     @Override
-    public Response download(Task task, Request request) {
+    public DefaultResponse download(Task task, Request request) {
         WebClient webClient = null;
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
-        Response response = Response.fail();
+        DefaultResponse response = DefaultResponse.fail();
         try {
             if (proxy != null) {
                 webClient = new WebClient(BrowserVersion.CHROME, proxy.getHost(), proxy.getPort());
@@ -55,7 +55,7 @@ public class HtmlUnitDownloader implements Downloader {
             }
             HtmlPage htmlPage = webClient.getPage(webRequest);
             int statusCode = htmlPage.getWebResponse().getStatusCode();
-            response = new Response();
+            response = new DefaultResponse();
             response.setStatusCode(statusCode);
             response.setUrl(new Text(request.getUrl()));
             response.setBody(new HTML(htmlPage.asXml(), htmlPage.getUrl().toString()));

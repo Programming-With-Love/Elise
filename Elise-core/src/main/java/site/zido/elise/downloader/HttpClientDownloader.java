@@ -7,7 +7,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.Request;
 import site.zido.elise.Site;
 import site.zido.elise.Task;
@@ -58,12 +58,12 @@ public class HttpClientDownloader implements Downloader {
     }
 
     @Override
-    public Response download(Task task, Request request) {
+    public DefaultResponse download(Task task, Request request) {
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         HttpClientRequestContext requestContext = httpUriRequestConverter.convert(request, task.getSite(), proxy);
-        Response response = Response.fail();
+        DefaultResponse response = DefaultResponse.fail();
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
             response = handleResponse(request, task, httpResponse);
@@ -87,11 +87,11 @@ public class HttpClientDownloader implements Downloader {
         }
     }
 
-    private Response handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
+    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
         byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
 
-        Response response = new Response();
+        DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
         String charset = request.getCharset();
         charset = HtmlUtils.getHtmlCharset(bytes, charset);

@@ -1,6 +1,6 @@
 package site.zido.elise.proxy;
 
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.Task;
 
 /**
@@ -17,7 +17,7 @@ public interface ProxyProvider {
      * @param response  the download result
      * @param task  the download task
      */
-    void returnProxy(Proxy proxy, Response response, Task task);
+    void returnProxy(Proxy proxy, DefaultResponse response, Task task);
 
     /**
      * Get a proxy for task by some strategy.

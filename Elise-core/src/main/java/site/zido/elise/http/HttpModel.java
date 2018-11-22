@@ -1,13 +1,11 @@
 package site.zido.elise.http;
 
-import org.apache.http.Header;
+import java.io.Serializable;
+import java.util.List;
 
-public interface HttpModel {
-    HttpHeader[] getHeaders(String key);
+public interface HttpModel extends Serializable {
+    List<Header> getHeaders(String key);
 
-    HttpHeader[] getAllHeaders();
+    List<Header> getAllHeaders();
 
-    void setHeader(Header header);
-
-    void addHeader(String key, String value);
 }

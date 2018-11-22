@@ -1,6 +1,6 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 
@@ -10,9 +10,9 @@ public class Seed implements Serializable {
     private static final long serialVersionUID = 6615813166213363435L;
     private Task task;
     private Request request;
-    private Response response;
+    private DefaultResponse response;
 
-    public Seed(Task task, Request request, Response response) {
+    public Seed(Task task, Request request, DefaultResponse response) {
         this.task = task;
         this.request = request;
         this.response = response;
@@ -39,11 +39,11 @@ public class Seed implements Serializable {
         this.request = request;
     }
 
-    public Response getResponse() {
+    public DefaultResponse getResponse() {
         return response;
     }
 
-    public void setResponse(Response response) {
+    public void setResponse(DefaultResponse response) {
         this.response = response;
     }
 }

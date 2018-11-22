@@ -4,7 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.ResultItem;
 import site.zido.elise.select.*;
 import site.zido.elise.utils.ValidateUtils;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * configurable Response model extractor
+ * configurable DefaultResponse model extractor
  *
  * @author zido
  */
@@ -51,7 +51,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     @Override
-    public List<ResultItem> extract(Response response) {
+    public List<ResultItem> extract(DefaultResponse response) {
         if (targetUrlSelectors.stream().noneMatch(linkSelector -> linkSelector.select(response.getUrl().toString()) != null)) {
             return new ArrayList<>();
         }
@@ -88,7 +88,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     @Override
-    public Set<String> extractLinks(Response response) {
+    public Set<String> extractLinks(DefaultResponse response) {
         Set<String> links;
 
         if (ValidateUtils.isEmpty(helpUrlSelectors)) {
@@ -120,7 +120,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return links;
     }
 
-    private Map<String, List<Fragment>> processSingle(Response response, Object html) {
+    private Map<String, List<Fragment>> processSingle(DefaultResponse response, Object html) {
         Map<String, List<Fragment>> map = new HashMap<>(defRootExtractor.getChildren().size());
         for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
             List<Fragment> results = processField(fieldExtractor, response, html);
@@ -132,7 +132,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return map;
     }
 
-    private List<Fragment> processField(DefExtractor fieldExtractor, Response response, Object html) {
+    private List<Fragment> processField(DefExtractor fieldExtractor, DefaultResponse response, Object html) {
         List<Fragment> value;
         Selector selector = fieldExtractor.compileSelector();
         switch (fieldExtractor.getSource()) {

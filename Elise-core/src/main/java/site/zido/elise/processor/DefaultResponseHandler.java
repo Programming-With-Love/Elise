@@ -2,7 +2,7 @@ package site.zido.elise.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 import site.zido.elise.select.configurable.ModelExtractor;
@@ -29,7 +29,7 @@ public class DefaultResponseHandler implements ListenableResponseHandler {
     }
 
     @Override
-    public Set<String> process(Task task, Response response) {
+    public Set<String> process(Task task, DefaultResponse response) {
         ModelExtractor extractor = task.modelExtractor();
         Set<String> links = extractor.extractLinks(response);
         List<ResultItem> resultItems = extractor.extract(response);

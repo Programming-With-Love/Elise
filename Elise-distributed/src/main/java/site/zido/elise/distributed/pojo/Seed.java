@@ -1,7 +1,7 @@
 package site.zido.elise.distributed.pojo;
 
 import site.zido.elise.DefaultTask;
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.Request;
 
 /**
@@ -12,9 +12,9 @@ import site.zido.elise.http.Request;
 public class Seed {
     private DefaultTask task;
     private Request request;
-    private Response response;
+    private DefaultResponse response;
 
-    public Seed(DefaultTask task, Request request, Response response) {
+    public Seed(DefaultTask task, Request request, DefaultResponse response) {
         this.task = task;
         this.request = request;
         this.response = response;
@@ -42,11 +42,11 @@ public class Seed {
         return this;
     }
 
-    public Response getResponse() {
+    public DefaultResponse getResponse() {
         return response;
     }
 
-    public Seed setResponse(Response response) {
+    public Seed setResponse(DefaultResponse response) {
         this.response = response;
         return this;
     }

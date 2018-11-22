@@ -1,6 +1,6 @@
 package site.zido.elise.downloader;
 
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.Request;
 import site.zido.elise.Site;
 import site.zido.elise.Task;
@@ -24,7 +24,7 @@ public class AutoSwitchDownloader implements Downloader {
     }
 
     @Override
-    public Response download(Task task, Request request) {
+    public DefaultResponse download(Task task, Request request) {
         Site site = task.getSite();
         Object extra = site.getExtra(DOWNLOAD_MODE);
         if (DOWNLOAD_MODE_HTML_UNIT.equalsIgnoreCase(String.valueOf(extra))) {

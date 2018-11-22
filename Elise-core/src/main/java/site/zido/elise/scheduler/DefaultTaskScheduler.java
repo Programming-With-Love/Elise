@@ -2,7 +2,7 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
@@ -43,7 +43,7 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
         }
     }
 
-    public void processPage(Task task, Request request, Response response) {
+    public void processPage(Task task, Request request, DefaultResponse response) {
         preStart();
         queue.offer(new Seed(task, request, response));
     }
@@ -69,12 +69,12 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
                 break;
             }
             Task task = seed.getTask();
-            Response pollResponse = seed.getResponse();
+            DefaultResponse pollResponse = seed.getResponse();
             Request request = seed.getRequest();
             if (pollResponse == null) {
                 try {
                     executor.execute(() -> {
-                        Response response = super.onDownload(task, request);
+                        DefaultResponse response = super.onDownload(task, request);
                         processPage(task, request, response);
                     });
                 } catch (RejectedExecutionException e) {
