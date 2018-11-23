@@ -1,6 +1,6 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.http.Request;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.Task;
 
 import java.util.Collections;
@@ -18,11 +18,11 @@ public class HashSetDeduplicationProcessor implements DuplicationProcessor {
     private Set<String> urls = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Override
-    public boolean isDuplicate(Task task, Request request) {
+    public boolean isDuplicate(Task task, DefaultRequest request) {
         return !urls.add(getUrl(request));
     }
 
-    protected String getUrl(Request request) {
+    protected String getUrl(DefaultRequest request) {
         return request.getUrl();
     }
 

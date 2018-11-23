@@ -1,7 +1,7 @@
 package site.zido.elise.scheduler;
 
 import site.zido.elise.EventListener;
-import site.zido.elise.http.Request;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.Task;
 
 /**
@@ -21,7 +21,7 @@ public interface TaskScheduler {
      *
      * @param request the request
      */
-    void pushRequest(Task task, Request request);
+    void pushRequest(Task task, DefaultRequest request);
 
     void addEventListener(EventListener listener);
 

@@ -8,8 +8,8 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
@@ -32,7 +32,7 @@ public class HtmlUnitDownloader implements Downloader {
     private ProxyProvider proxyProvider;
 
     @Override
-    public DefaultResponse download(Task task, Request request) {
+    public DefaultResponse download(Task task, DefaultRequest request) {
         WebClient webClient = null;
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         DefaultResponse response = DefaultResponse.fail();

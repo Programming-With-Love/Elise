@@ -7,8 +7,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.http.Request;
 import site.zido.elise.Site;
 import site.zido.elise.Task;
 import site.zido.elise.http.Http;
@@ -58,7 +58,7 @@ public class HttpClientDownloader implements Downloader {
     }
 
     @Override
-    public DefaultResponse download(Task task, Request request) {
+    public DefaultResponse download(Task task, DefaultRequest request) {
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
@@ -87,7 +87,7 @@ public class HttpClientDownloader implements Downloader {
         }
     }
 
-    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
+    private DefaultResponse handleResponse(DefaultRequest request, Task task, HttpResponse httpResponse) throws IOException {
         byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
 

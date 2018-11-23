@@ -14,29 +14,30 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import site.zido.elise.http.Request;
 import site.zido.elise.Site;
+import site.zido.elise.http.Header;
 import site.zido.elise.http.Http;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.utils.UrlUtils;
 
 import java.util.Map;
 
 /**
- * Http Uri Request Converter
+ * Http Uri DefaultRequest Converter
  *
  * @author zido
  */
 public class HttpUriRequestConverter {
 
-    public HttpClientRequestContext convert(Request request, Site site, Proxy proxy) {
+    public HttpClientRequestContext convert(DefaultRequest request, Site site, Proxy proxy) {
         HttpClientRequestContext httpClientRequestContext = new HttpClientRequestContext();
         httpClientRequestContext.setHttpUriRequest(convertHttpUriRequest(request, site, proxy));
         httpClientRequestContext.setHttpClientContext(convertHttpClientContext(request, proxy));
         return httpClientRequestContext;
     }
 
-    private HttpClientContext convertHttpClientContext(Request request, Proxy proxy) {
+    private HttpClientContext convertHttpClientContext(DefaultRequest request, Proxy proxy) {
         HttpClientContext httpContext = new HttpClientContext();
         if (proxy != null && proxy.getUsername() != null) {
             AuthState authState = new AuthState();
@@ -55,7 +56,7 @@ public class HttpUriRequestConverter {
         return httpContext;
     }
 
-    private HttpUriRequest convertHttpUriRequest(Request request, Site site, Proxy proxy) {
+    private HttpUriRequest convertHttpUriRequest(DefaultRequest request, Site site, Proxy proxy) {
         RequestBuilder requestBuilder = selectRequestMethod(request).setUri(UrlUtils.fixIllegalCharacterInUrl(request.getUrl()));
         if (site.getHeaders() != null) {
             for (Map.Entry<String, String> headerEntry : site.getHeaders().entrySet()) {
@@ -75,14 +76,14 @@ public class HttpUriRequestConverter {
         requestBuilder.setConfig(requestConfigBuilder.build());
         HttpUriRequest httpUriRequest = requestBuilder.build();
         if (request.getHeaders() != null && !request.getHeaders().isEmpty()) {
-            for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
-                httpUriRequest.addHeader(header.getKey(), header.getValue());
+            for (Header header : request.getHeaders()) {
+                httpUriRequest.addHeader(header.getName(), header.getValue());
             }
         }
         return httpUriRequest;
     }
 
-    private RequestBuilder selectRequestMethod(Request request) {
+    private RequestBuilder selectRequestMethod(DefaultRequest request) {
         String method = request.getMethod();
         if (method == null || method.equalsIgnoreCase(Http.Method.GET)) {
             //default get
@@ -101,10 +102,10 @@ public class HttpUriRequestConverter {
         throw new IllegalArgumentException("Illegal HTTP Method " + method);
     }
 
-    private RequestBuilder addFormParams(RequestBuilder requestBuilder, Request request) {
-        if (request.getRequestBody() != null) {
-            ByteArrayEntity entity = new ByteArrayEntity(request.getRequestBody().getBody());
-            entity.setContentType(request.getRequestBody().getContentType().getType());
+    private RequestBuilder addFormParams(RequestBuilder requestBuilder, DefaultRequest request) {
+        if (request.getBody() != null) {
+            ByteArrayEntity entity = new ByteArrayEntity(request.getBody().getBody());
+            entity.setContentType(request.getBody().getContentType().getType());
             requestBuilder.setEntity(entity);
         }
         return requestBuilder;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
-import site.zido.elise.http.Request;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.Task;
 import site.zido.elise.scheduler.DuplicationProcessor;
 import site.zido.elise.utils.ValidateUtils;
@@ -24,7 +24,7 @@ public class SimpleRedisDuplicationProcessor implements DuplicationProcessor {
 
     private String itemPrefix = "item_";
 
-    protected boolean checkForAdditionalInfo(Request request) {
+    protected boolean checkForAdditionalInfo(DefaultRequest request) {
         if (request == null) {
             return false;
         }
@@ -37,7 +37,7 @@ public class SimpleRedisDuplicationProcessor implements DuplicationProcessor {
             return true;
         }
 
-        if (request.getRequestBody() != null) {
+        if (request.getBody() != null) {
             return true;
         }
 
@@ -69,7 +69,7 @@ public class SimpleRedisDuplicationProcessor implements DuplicationProcessor {
     }
 
     @Override
-    public boolean isDuplicate(Task task, Request request) {
+    public boolean isDuplicate(Task task, DefaultRequest request) {
         return connection.sync().sadd(getSetKey(task), request.getUrl()) == 0;
     }
 

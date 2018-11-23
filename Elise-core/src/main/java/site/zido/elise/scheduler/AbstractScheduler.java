@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.*;
 import site.zido.elise.downloader.Downloader;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.http.Request;
 import site.zido.elise.processor.ListenableResponseHandler;
 import site.zido.elise.processor.ResponseHandler;
 import site.zido.elise.select.CompilerException;
@@ -35,7 +35,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
     private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
 
     @Override
-    public void pushRequest(Task task, Request request) {
+    public void pushRequest(Task task, DefaultRequest request) {
         Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
         //will no longer receive new requests when the task is in the canceled state
         if (state >= STATE_CANCEL) {
@@ -66,7 +66,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
         seeds.add(seed);
     }
 
-    protected void onProcess(Task task, Request request, DefaultResponse response) {
+    protected void onProcess(Task task, DefaultRequest request, DefaultResponse response) {
         //will no longer process any pages when the task is in the cancel_now state
         final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
         if (state == STATE_PAUSE) {
@@ -89,7 +89,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
                     //will no longer process any pages when the task is in the cancel_now state
                     if (state != STATE_CANCEL) {
                         for (String link : links) {
-                            pushRequest(task, new Request(link));
+                            pushRequest(task, new DefaultRequest(link));
                         }
                     }
                     countEvent(state, task);
@@ -124,7 +124,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
         });
     }
 
-    protected DefaultResponse onDownload(Task task, Request request) {
+    protected DefaultResponse onDownload(Task task, DefaultRequest request) {
         final DefaultResponse response = getDownloader().download(task, request);
 
         if (response.isDownloadSuccess()) {
@@ -139,15 +139,15 @@ public abstract class AbstractScheduler implements TaskScheduler {
         EventUtils.mustNotifyListeners(listeners, EventListener::onCancel);
     }
 
-    private void doCycleRetry(Task task, Request request) {
-        Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
+    private void doCycleRetry(Task task, DefaultRequest request) {
+        Object cycleTriedTimesObject = request.getExtra(DefaultRequest.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
-            pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, 1));
+            pushRequest(task, new DefaultRequest(request).putExtra(DefaultRequest.CYCLE_TRIED_TIMES, 1));
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
             cycleTriedTimes++;
             if (cycleTriedTimes < task.getSite().getCycleRetryTimes()) {
-                pushRequest(task, new Request(request).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
+                pushRequest(task, new DefaultRequest(request).putExtra(DefaultRequest.CYCLE_TRIED_TIMES, cycleTriedTimes));
             }
         }
         sleep(task.getSite().getRetrySleepTime());
@@ -162,11 +162,11 @@ public abstract class AbstractScheduler implements TaskScheduler {
     }
 
 
-    private boolean shouldReserved(Request request) {
-        return request.getExtra(Request.CYCLE_TRIED_TIMES) != null;
+    private boolean shouldReserved(DefaultRequest request) {
+        return request.getExtra(DefaultRequest.CYCLE_TRIED_TIMES) != null;
     }
 
-    private boolean noNeedToRemoveDuplicate(Request request) {
+    private boolean noNeedToRemoveDuplicate(DefaultRequest request) {
         return "post".equalsIgnoreCase(request.getMethod());
     }
 
@@ -177,7 +177,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
      * @param task    the task
      * @param request request
      */
-    protected abstract void pushWhenNoDuplicate(Task task, Request request);
+    protected abstract void pushWhenNoDuplicate(Task task, DefaultRequest request);
 
     @Override
     public void addEventListener(EventListener listener) {

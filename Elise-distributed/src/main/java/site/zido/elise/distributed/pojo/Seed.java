@@ -2,7 +2,7 @@ package site.zido.elise.distributed.pojo;
 
 import site.zido.elise.DefaultTask;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.http.Request;
+import site.zido.elise.http.impl.DefaultRequest;
 
 /**
  * 种子，信息载体
@@ -11,10 +11,10 @@ import site.zido.elise.http.Request;
  */
 public class Seed {
     private DefaultTask task;
-    private Request request;
+    private DefaultRequest request;
     private DefaultResponse response;
 
-    public Seed(DefaultTask task, Request request, DefaultResponse response) {
+    public Seed(DefaultTask task, DefaultRequest request, DefaultResponse response) {
         this.task = task;
         this.request = request;
         this.response = response;
@@ -33,11 +33,11 @@ public class Seed {
         return this;
     }
 
-    public Request getRequest() {
+    public DefaultRequest getRequest() {
         return request;
     }
 
-    public Seed setRequest(Request request) {
+    public Seed setRequest(DefaultRequest request) {
         this.request = request;
         return this;
     }

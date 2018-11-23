@@ -116,7 +116,4 @@ public class DefaultResponse implements Response {
         headers.add(header);
     }
 
-    public void addHeader(String key, String value) {
-        headers.add(new DefaultHeader(key, value));
-    }
 }

@@ -4,7 +4,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 
 /**
- * Http Client Request Context
+ * Http Client DefaultRequest Context
  *
  * @author zido
  */
