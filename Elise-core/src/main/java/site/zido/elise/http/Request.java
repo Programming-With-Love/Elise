@@ -10,4 +10,6 @@ public interface Request extends HttpModel {
     HttpRequestBody getBody();
 
     List<Header> getHeaders();
+
+    List<Cookie> getCookies();
 }

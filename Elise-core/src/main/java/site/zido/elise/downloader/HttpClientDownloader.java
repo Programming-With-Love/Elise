@@ -37,7 +37,6 @@ public class HttpClientDownloader implements Downloader {
     private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
 
     private ProxyProvider proxyProvider;
-    private boolean responseHeader = true;
 
     private CloseableHttpClient getHttpClient(Site site) {
         if (site == null) {
@@ -125,10 +124,6 @@ public class HttpClientDownloader implements Downloader {
 
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
         this.httpUriRequestConverter = httpUriRequestConverter;
-    }
-
-    public void setResponseHeader(boolean responseHeader) {
-        this.responseHeader = responseHeader;
     }
 
     public void setProxyProvider(ProxyProvider proxyProvider) {

@@ -1,13 +1,12 @@
 package site.zido.elise.http.impl;
 
+import site.zido.elise.http.Cookie;
 import site.zido.elise.http.Header;
 import site.zido.elise.http.HttpRequestBody;
 import site.zido.elise.http.Request;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * DefaultRequest
@@ -38,7 +37,7 @@ public class DefaultRequest implements Request {
     /**
      * cookies for current url, if not set use Site's cookies
      */
-    private Map<String, String> cookies = new HashMap<>();
+    private List<Cookie> cookies = new ArrayList<>();
 
     private List<Header> headers = new ArrayList<>();
 
@@ -114,9 +113,8 @@ public class DefaultRequest implements Request {
         return method != null ? method.equals(request.method) : request.method == null;
     }
 
-    public DefaultRequest addCookie(String name, String value) {
-        cookies.put(name, value);
-        return this;
+    public void addCookie(Cookie cookie) {
+        this.cookies.add(cookie);
     }
 
     public DefaultRequest addHeader(Header header) {
@@ -159,11 +157,11 @@ public class DefaultRequest implements Request {
         this.extras = extras;
     }
 
-    public Map<String, String> getCookies() {
+    public List<Cookie> getCookies() {
         return cookies;
     }
 
-    public void setCookies(Map<String, String> cookies) {
+    public void setCookies(List<Cookie> cookies) {
         this.cookies = cookies;
     }
 
@@ -185,11 +183,11 @@ public class DefaultRequest implements Request {
 
     @Override
     public List<Header> getHeaders(String key) {
-        return null;
+        return headers.stream().filter(header -> Objects.equals(header.getName(), key)).collect(Collectors.toList());
     }
 
     @Override
     public List<Header> getAllHeaders() {
-        return null;
+        return headers;
     }
 }
