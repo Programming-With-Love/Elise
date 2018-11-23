@@ -15,6 +15,7 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import site.zido.elise.Site;
+import site.zido.elise.http.Cookie;
 import site.zido.elise.http.Header;
 import site.zido.elise.http.Http;
 import site.zido.elise.http.impl.DefaultRequest;
@@ -46,8 +47,8 @@ public class HttpUriRequestConverter {
         }
         if (request.getCookies() != null && !request.getCookies().isEmpty()) {
             CookieStore cookieStore = new BasicCookieStore();
-            for (Map.Entry<String, String> cookieEntry : request.getCookies().entrySet()) {
-                BasicClientCookie cookie1 = new BasicClientCookie(cookieEntry.getKey(), cookieEntry.getValue());
+            for (Cookie cookie : request.getCookies()) {
+                BasicClientCookie cookie1 = new BasicClientCookie(cookie.getName(), cookie.getValue());
                 cookie1.setDomain(UrlUtils.removePort(UrlUtils.getDomain(request.getUrl())));
                 cookieStore.addCookie(cookie1);
             }
