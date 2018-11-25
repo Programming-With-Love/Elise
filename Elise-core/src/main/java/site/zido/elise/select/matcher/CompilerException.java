@@ -1,4 +1,4 @@
-package site.zido.elise.select;
+package site.zido.elise.select.matcher;
 
 public class CompilerException extends Exception {
     public CompilerException(String msg) {
