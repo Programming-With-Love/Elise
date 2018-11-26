@@ -27,6 +27,7 @@ public class MemorySaver implements Saver {
         resultItems.add(resultItem);
         Map<String, List<Fragment>> all = resultItem.getAll();
         for (Map.Entry<String, List<Fragment>> entry : all.entrySet()) {
+            System.out.println(entry.getKey() + ":\t" + entry.getValue());
             //LOGGER.debug(entry.getKey() + ":\t" + entry.getValue());
         }
     }
