@@ -14,9 +14,9 @@ public interface ResponseHandler {
     /**
      * process the response, extract urls to fetch, extract the data and store.
      *
-     * @param task task.
+     * @param task     task.
      * @param response response.
-     * @return results
+     * @return results set
      */
     Set<String> process(Task task, DefaultResponse response);
 }

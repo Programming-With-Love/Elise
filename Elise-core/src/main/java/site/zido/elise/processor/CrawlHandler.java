@@ -2,6 +2,11 @@ package site.zido.elise.processor;
 
 import java.io.Serializable;
 
+/**
+ * The interface Crawl handler.
+ *
+ * @author zido
+ */
 public interface CrawlHandler extends Serializable {
 
     /**
@@ -16,6 +21,11 @@ public interface CrawlHandler extends Serializable {
      */
     int resultCount();
 
+    /**
+     * Is empty boolean.
+     *
+     * @return the boolean
+     */
     default boolean isEmpty() {
         return resultCount() == 0;
     }

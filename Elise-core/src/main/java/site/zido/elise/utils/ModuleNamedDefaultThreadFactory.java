@@ -22,10 +22,21 @@ public class ModuleNamedDefaultThreadFactory implements ThreadFactory {
     private boolean daemon;
     private String moduleName;
 
+    /**
+     * Instantiates a new Module named default thread factory.
+     *
+     * @param moduleName the module name
+     */
     public ModuleNamedDefaultThreadFactory(String moduleName) {
         this(moduleName, false);
     }
 
+    /**
+     * Instantiates a new Module named default thread factory.
+     *
+     * @param moduleName the module name
+     * @param daemon     the daemon
+     */
     public ModuleNamedDefaultThreadFactory(String moduleName, boolean daemon) {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();

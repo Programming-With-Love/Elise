@@ -17,14 +17,27 @@ public class Fragment implements Serializable {
     private static final long serialVersionUID = -630439618508226636L;
     private List<Paragraph> contents = new ArrayList<>();
 
+    /**
+     * Instantiates a new Fragment.
+     */
     public Fragment() {
 
     }
 
+    /**
+     * Instantiates a new Fragment.
+     *
+     * @param text the text
+     */
     public Fragment(String text) {
         this.add(text, RichType.TEXT);
     }
 
+    /**
+     * Add.
+     *
+     * @param node the node
+     */
     public void add(Node node) {
         switch (node.nodeName()) {
             case "#text":
@@ -66,14 +79,30 @@ public class Fragment implements Serializable {
         }
     }
 
+    /**
+     * Add.
+     *
+     * @param raw  the raw
+     * @param type the type
+     */
     public void add(String raw, RichType type) {
         this.contents.add(new Paragraph(raw, type));
     }
 
+    /**
+     * Gets contents.
+     *
+     * @return the contents
+     */
     public List<Paragraph> getContents() {
         return contents;
     }
 
+    /**
+     * Text string.
+     *
+     * @return the string
+     */
     public String text() {
         StringBuilder sb = new StringBuilder();
         for (Paragraph content : contents) {

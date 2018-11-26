@@ -15,10 +15,20 @@ public class DefaultTask implements Task {
     private Site site;
     private DefRootExtractor defExtractor;
 
+    /**
+     * Instantiates a new Default task.
+     */
     public DefaultTask() {
 
     }
 
+    /**
+     * Instantiates a new Default task.
+     *
+     * @param id        the id
+     * @param site      the site
+     * @param extractor the extractor
+     */
     public DefaultTask(Long id, Site site, DefRootExtractor extractor) {
         this.id = id;
         this.site = site;
@@ -30,6 +40,12 @@ public class DefaultTask implements Task {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     * @return the id
+     */
     public DefaultTask setId(Long id) {
         this.id = id;
         return this;
@@ -40,6 +56,12 @@ public class DefaultTask implements Task {
         return site;
     }
 
+    /**
+     * Sets site.
+     *
+     * @param site the site
+     * @return the site
+     */
     public DefaultTask setSite(Site site) {
         this.site = site;
         return this;
@@ -50,10 +72,21 @@ public class DefaultTask implements Task {
         return new ConfigurableModelExtractor(defExtractor);
     }
 
+    /**
+     * Gets def extractor.
+     *
+     * @return the def extractor
+     */
     public DefRootExtractor getDefExtractor() {
         return defExtractor;
     }
 
+    /**
+     * Sets def extractor.
+     *
+     * @param defExtractor the def extractor
+     * @return the def extractor
+     */
     public DefaultTask setDefExtractor(DefRootExtractor defExtractor) {
         this.defExtractor = defExtractor;
         return this;

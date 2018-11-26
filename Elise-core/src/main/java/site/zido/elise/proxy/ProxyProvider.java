@@ -13,9 +13,9 @@ public interface ProxyProvider {
     /**
      * Return proxy to Provider when complete a download.
      *
-     * @param proxy the proxy config contains host,port and identify info
-     * @param response  the download result
-     * @param task  the download task
+     * @param proxy    the proxy config contains host,port and identify info
+     * @param response the download result
+     * @param task     the download task
      */
     void returnProxy(Proxy proxy, DefaultResponse response, Task task);
 
@@ -23,7 +23,7 @@ public interface ProxyProvider {
      * Get a proxy for task by some strategy.
      *
      * @param task the download task
-     * @return proxy
+     * @return proxy proxy
      */
     Proxy getProxy(Task task);
 

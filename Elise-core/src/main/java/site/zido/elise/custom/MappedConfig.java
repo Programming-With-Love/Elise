@@ -8,9 +8,17 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Properties;
 
+/**
+ * The type Mapped config.
+ *
+ * @author zido
+ */
 public class MappedConfig extends HashMap<String, Object> implements Config {
     private static final long serialVersionUID = 8315976702547630336L;
 
+    /**
+     * Instantiates a new Mapped config.
+     */
     public MappedConfig() {
     }
 

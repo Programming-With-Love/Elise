@@ -7,9 +7,19 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Css selector.
+ *
+ * @author zido
+ */
 public class CssSelector extends AbstractElementSelector {
     private String cssExpress;
 
+    /**
+     * Instantiates a new Css selector.
+     *
+     * @param cssExpress the css express
+     */
     public CssSelector(String cssExpress) {
         this.cssExpress = cssExpress;
     }

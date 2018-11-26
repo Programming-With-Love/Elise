@@ -7,17 +7,29 @@ import site.zido.elise.Task;
 import site.zido.elise.proxy.ProxyProvider;
 
 /**
- * AutoSwitchDownloader
+ * Auto switch downloader.
  *
  * @author zido
  */
 public class AutoSwitchDownloader implements Downloader {
+    /**
+     * The constant DOWNLOAD_MODE.
+     */
     public static final String DOWNLOAD_MODE = "downloadMode";
+    /**
+     * The constant DOWNLOAD_MODE_NORMAL.
+     */
     public static final String DOWNLOAD_MODE_NORMAL = "normal";
+    /**
+     * The constant DOWNLOAD_MODE_HTML_UNIT.
+     */
     public static final String DOWNLOAD_MODE_HTML_UNIT = "htmlUnit";
     private HttpClientDownloader httpClientDownloader;
     private HtmlUnitDownloader htmlUnitDownloader;
 
+    /**
+     * Instantiates a new Auto switch downloader.
+     */
     public AutoSwitchDownloader() {
         this.httpClientDownloader = new HttpClientDownloader();
         this.htmlUnitDownloader = new HtmlUnitDownloader();
@@ -39,6 +51,12 @@ public class AutoSwitchDownloader implements Downloader {
         httpClientDownloader.setThread(threadNum);
     }
 
+    /**
+     * Sets proxy provider.
+     *
+     * @param proxyProvider the proxy provider
+     * @return the proxy provider
+     */
     public AutoSwitchDownloader setProxyProvider(ProxyProvider proxyProvider) {
         this.httpClientDownloader.setProxyProvider(proxyProvider);
         this.htmlUnitDownloader.setProxyProvider(proxyProvider);

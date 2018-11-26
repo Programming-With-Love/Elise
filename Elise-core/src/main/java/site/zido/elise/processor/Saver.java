@@ -17,11 +17,37 @@ public interface Saver {
      */
     void save(ResultItem resultItem, Task task);
 
+    /**
+     * Next result item.
+     *
+     * @param task the task
+     * @param item the item
+     * @return the result item
+     */
     ResultItem next(Task task, ResultItem item);
 
+    /**
+     * Has next boolean.
+     *
+     * @param task the task
+     * @param item the item
+     * @return the boolean
+     */
     boolean hasNext(Task task, ResultItem item);
 
+    /**
+     * First result item.
+     *
+     * @param task the task
+     * @return the result item
+     */
     ResultItem first(Task task);
 
+    /**
+     * Size int.
+     *
+     * @param task the task
+     * @return the int
+     */
     int size(Task task);
 }

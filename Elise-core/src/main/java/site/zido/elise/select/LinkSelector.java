@@ -23,15 +23,32 @@ public class LinkSelector extends AbstractElementSelector {
     private ElementSelector regionSelector;
     private List<LinkProperty> linkProperties;
 
+    /**
+     * Instantiates a new Link selector.
+     *
+     * @param urlFinder the url finder
+     */
     public LinkSelector(ConfigurableUrlFinder urlFinder) {
         this(urlFinder.getValue(), urlFinder.getType(), urlFinder.getSourceRegion());
         this.setLinkProperties(urlFinder.getLinkProperties());
     }
 
+    /**
+     * Instantiates a new Link selector.
+     *
+     * @param target the target
+     */
     public LinkSelector(String target) {
         this(target, null, null);
     }
 
+    /**
+     * Instantiates a new Link selector.
+     *
+     * @param target       the target
+     * @param type         the type
+     * @param sourceRegion the source region
+     */
     public LinkSelector(String target, ConfigurableUrlFinder.Type type, String sourceRegion) {
         String pattern = target;
         if (pattern == null) {
@@ -59,10 +76,21 @@ public class LinkSelector extends AbstractElementSelector {
 
     }
 
+    /**
+     * Gets link properties.
+     *
+     * @return the link properties
+     */
     public List<LinkProperty> getLinkProperties() {
         return linkProperties;
     }
 
+    /**
+     * Sets link properties.
+     *
+     * @param linkProperties the link properties
+     * @return the link properties
+     */
     public LinkSelector setLinkProperties(List<LinkProperty> linkProperties) {
         this.linkProperties = linkProperties;
         return this;

@@ -7,6 +7,11 @@ import site.zido.elise.Task;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Default memory count manager.
+ *
+ * @author zido
+ */
 public class DefaultMemoryCountManager implements CountManager {
     private Map<Long, Integer> container = new HashMap<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMemoryCountManager.class);

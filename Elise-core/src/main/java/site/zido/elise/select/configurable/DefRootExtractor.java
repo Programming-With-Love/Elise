@@ -41,32 +41,68 @@ public class DefRootExtractor extends DefExtractor {
      */
     private ArrayList<DefExtractor> children;
 
+    /**
+     * Instantiates a new Def root extractor.
+     */
     public DefRootExtractor() {
         this("default-task");
     }
 
+    /**
+     * Instantiates a new Def root extractor.
+     *
+     * @param name the name
+     */
     public DefRootExtractor(String name) {
         super(name);
     }
 
+    /**
+     * Gets target url.
+     *
+     * @return the target url
+     */
     public List<ConfigurableUrlFinder> getTargetUrl() {
         return targetUrl;
     }
 
+    /**
+     * Sets target url.
+     *
+     * @param targetUrl the target url
+     * @return the target url
+     */
     public DefRootExtractor setTargetUrl(List<ConfigurableUrlFinder> targetUrl) {
         this.targetUrl = targetUrl;
         return this;
     }
 
+    /**
+     * Gets help url.
+     *
+     * @return the help url
+     */
     public List<ConfigurableUrlFinder> getHelpUrl() {
         return helpUrl;
     }
 
+    /**
+     * Sets help url.
+     *
+     * @param helpUrl the help url
+     * @return the help url
+     */
     public DefRootExtractor setHelpUrl(List<ConfigurableUrlFinder> helpUrl) {
         this.helpUrl = helpUrl;
         return this;
     }
 
+    /**
+     * Add target url def root extractor.
+     *
+     * @param targetUrl the target url
+     * @return the def root extractor
+     */
     public DefRootExtractor addTargetUrl(ConfigurableUrlFinder... targetUrl) {
         if (this.targetUrl == null) {
             this.targetUrl = new ArrayList<>();
@@ -78,6 +114,12 @@ public class DefRootExtractor extends DefExtractor {
         return this;
     }
 
+    /**
+     * Add help url def root extractor.
+     *
+     * @param helpUrl the help url
+     * @return the def root extractor
+     */
     public DefRootExtractor addHelpUrl(ConfigurableUrlFinder... helpUrl) {
         if (this.helpUrl == null) {
             this.helpUrl = new ArrayList<>();
@@ -89,15 +131,31 @@ public class DefRootExtractor extends DefExtractor {
         return this;
     }
 
+    /**
+     * Gets children.
+     *
+     * @return the children
+     */
     public ArrayList<DefExtractor> getChildren() {
         return children;
     }
 
+    /**
+     * Sets children.
+     *
+     * @param children the children
+     * @return the children
+     */
     public DefExtractor setChildren(ArrayList<DefExtractor> children) {
         this.children = children;
         return this;
     }
 
+    /**
+     * Add children.
+     *
+     * @param extractor the extractor
+     */
     public void addChildren(DefExtractor extractor) {
         if (this.children == null) {
             this.children = new ArrayList<>();

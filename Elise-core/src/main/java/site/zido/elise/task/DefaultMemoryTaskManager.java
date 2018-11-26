@@ -5,6 +5,11 @@ import site.zido.elise.Task;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The type Default memory task manager.
+ *
+ * @author zido
+ */
 public class DefaultMemoryTaskManager extends AbstractNotRepeatTaskManager {
     private Map<Long, Task> taskMap = new ConcurrentHashMap<>(7);
 

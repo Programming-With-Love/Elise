@@ -25,6 +25,11 @@ public class TaskFuture implements Future<CrawlHandler> {
     private volatile boolean done = false;
     private volatile AtomicBoolean waiting = new AtomicBoolean(false);
 
+    /**
+     * Instantiates a new Task future.
+     *
+     * @param taskId the task id
+     */
     public TaskFuture(long taskId) {
         this.taskId = taskId;
     }
@@ -47,11 +52,21 @@ public class TaskFuture implements Future<CrawlHandler> {
         return this.result;
     }
 
+    /**
+     * Set.
+     *
+     * @param result the result
+     */
     public void set(CrawlHandler result) {
         this.result = result;
         resultCondition.signalAll();
     }
 
+    /**
+     * Is cancelled.
+     *
+     * @param isCancelled the is cancelled
+     */
     public void isCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
     }
@@ -66,6 +81,9 @@ public class TaskFuture implements Future<CrawlHandler> {
         return this.isCancelled;
     }
 
+    /**
+     * Done.
+     */
     public void done() {
         this.done = true;
     }

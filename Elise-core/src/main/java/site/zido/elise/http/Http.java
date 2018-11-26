@@ -3,6 +3,11 @@ package site.zido.elise.http;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The type Http.
+ *
+ * @author zido
+ */
 public class Http {
     private Http() {
     }
@@ -48,16 +53,49 @@ public class Http {
      * type已经包含了http中定义的type和subtype字段，也即是说类似'application/json'
      */
     public static class ContentType {
+        /**
+         * The constant TEXT_HTML.
+         */
         public static final ContentType TEXT_HTML;
+        /**
+         * The constant TEXT_PLAIN.
+         */
         public static final ContentType TEXT_PLAIN;
+        /**
+         * The constant TEXT_XML.
+         */
         public static final ContentType TEXT_XML;
+        /**
+         * The constant IMAGE_GIF.
+         */
         public static final ContentType IMAGE_GIF;
+        /**
+         * The constant IMAGE_JPEG.
+         */
         public static final ContentType IMAGE_JPEG;
+        /**
+         * The constant IMAGE_PNG.
+         */
         public static final ContentType IMAGE_PNG;
+        /**
+         * The constant APPLICATION_JSON.
+         */
         public static final ContentType APPLICATION_JSON;
+        /**
+         * The constant APPLICATION_JSON_UTF_8.
+         */
         public static final ContentType APPLICATION_JSON_UTF_8;
+        /**
+         * The constant APPLICATION_OCTET_STREAM.
+         */
         public static final ContentType APPLICATION_OCTET_STREAM;
+        /**
+         * The constant APPLICATION_X_WWW_FORM_URLENCODED.
+         */
         public static final ContentType APPLICATION_X_WWW_FORM_URLENCODED;
+        /**
+         * The constant MULTIPART_FORM_DATA.
+         */
         public static final ContentType MULTIPART_FORM_DATA;
         private static final Pattern CONTENT_TYPE_PATTERN;
         private static final Pattern PATTERN_FOR_CHARSET;
@@ -81,6 +119,12 @@ public class Http {
         private String type;
         private String charset;
 
+        /**
+         * Instantiates a new Content type.
+         *
+         * @param type    the type
+         * @param charset the charset
+         */
         public ContentType(String type, String charset) {
             this.type = type;
             this.charset = charset;
@@ -90,7 +134,7 @@ public class Http {
          * 解析head中的Content-Type
          *
          * @param contentType head中的Content-Type字符串
-         * @return ContentType
+         * @return ContentType content type
          */
         public static ContentType parse(String contentType) {
             String type = "*/*";
@@ -98,6 +142,14 @@ public class Http {
             return parse(contentType, type, charset);
         }
 
+        /**
+         * Parse content type.
+         *
+         * @param contentType    the content type
+         * @param defaultType    the default type
+         * @param defaultCharset the default charset
+         * @return the content type
+         */
         public static ContentType parse(String contentType, String defaultType, String defaultCharset) {
             String type = defaultType;
             String charset = defaultCharset;
@@ -112,18 +164,38 @@ public class Http {
             return new ContentType(type, charset);
         }
 
+        /**
+         * Gets type.
+         *
+         * @return the type
+         */
         public String getType() {
             return type;
         }
 
+        /**
+         * Sets type.
+         *
+         * @param type the type
+         */
         public void setType(String type) {
             this.type = type;
         }
 
+        /**
+         * Gets charset.
+         *
+         * @return the charset
+         */
         public String getCharset() {
             return charset;
         }
 
+        /**
+         * Sets charset.
+         *
+         * @param charset the charset
+         */
         public void setCharset(String charset) {
             this.charset = charset;
         }

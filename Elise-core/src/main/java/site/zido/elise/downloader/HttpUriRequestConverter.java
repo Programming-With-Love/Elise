@@ -31,6 +31,14 @@ import java.util.Map;
  */
 public class HttpUriRequestConverter {
 
+    /**
+     * Convert http client request context.
+     *
+     * @param request the request
+     * @param site    the site
+     * @param proxy   the proxy
+     * @return the http client request context
+     */
     public HttpClientRequestContext convert(DefaultRequest request, Site site, Proxy proxy) {
         HttpClientRequestContext httpClientRequestContext = new HttpClientRequestContext();
         httpClientRequestContext.setHttpUriRequest(convertHttpUriRequest(request, site, proxy));

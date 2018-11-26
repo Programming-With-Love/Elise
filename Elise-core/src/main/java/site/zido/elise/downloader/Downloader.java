@@ -1,8 +1,8 @@
 package site.zido.elise.downloader;
 
+import site.zido.elise.Task;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.Task;
 
 /**
  * downloader interface
@@ -11,18 +11,16 @@ import site.zido.elise.Task;
  */
 public interface Downloader {
     /**
-     * 下载
+     * download by task and request
      *
-     * @param request 请求
-     * @param task    任务
-     * @return 下载后的页面
+     * @return the response
      */
     DefaultResponse download(Task task, DefaultRequest request);
 
     /**
-     * 设置下载线程
+     * set thread number
      *
-     * @param threadNum 线程数量
+     * @param threadNum the thread number
      */
     void setThread(int threadNum);
 }

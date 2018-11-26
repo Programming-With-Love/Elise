@@ -7,6 +7,11 @@ import org.jsoup.nodes.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Abstract element selector.
+ *
+ * @author zido
+ */
 public abstract class AbstractElementSelector implements ElementSelector {
     @Override
     public List<Fragment> select(Element element) {

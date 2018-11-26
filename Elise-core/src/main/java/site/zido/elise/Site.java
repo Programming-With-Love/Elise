@@ -47,118 +47,262 @@ public class Site {
 
     private boolean disableCookieManagement = false;
 
+    /**
+     * Add cookie site.
+     *
+     * @param name  the name
+     * @param value the value
+     * @return the site
+     */
     public Site addCookie(String name, String value) {
         defaultCookies.put(name, value);
         return this;
     }
 
+    /**
+     * Gets cookies.
+     *
+     * @return the cookies
+     */
     public Map<String, String> getCookies() {
         return defaultCookies;
     }
 
+    /**
+     * Gets all cookies.
+     *
+     * @return the all cookies
+     */
     public Map<String, Map<String, String>> getAllCookies() {
         return cookies;
     }
 
+    /**
+     * Gets user agent.
+     *
+     * @return the user agent
+     */
     public String getUserAgent() {
         return userAgent;
     }
 
+    /**
+     * Sets user agent.
+     *
+     * @param userAgent the user agent
+     * @return the user agent
+     */
     public Site setUserAgent(String userAgent) {
         this.userAgent = userAgent;
         return this;
     }
 
+    /**
+     * Gets domain.
+     *
+     * @return the domain
+     */
     public String getDomain() {
         return domain;
     }
 
+    /**
+     * Sets domain.
+     *
+     * @param domain the domain
+     * @return the domain
+     */
     public Site setDomain(String domain) {
         this.domain = domain;
         return this;
     }
 
+    /**
+     * Gets charset.
+     *
+     * @return the charset
+     */
     public String getCharset() {
         return charset;
     }
 
+    /**
+     * Sets charset.
+     *
+     * @param charset the charset
+     * @return the charset
+     */
     public Site setCharset(String charset) {
         this.charset = charset;
         return this;
     }
 
+    /**
+     * Gets time out.
+     *
+     * @return the time out
+     */
     public int getTimeOut() {
         return timeOut;
     }
 
+    /**
+     * Sets time out.
+     *
+     * @param timeOut the time out
+     * @return the time out
+     */
     public Site setTimeOut(int timeOut) {
         this.timeOut = timeOut;
         return this;
     }
 
+    /**
+     * Gets sleep time.
+     *
+     * @return the sleep time
+     */
     public int getSleepTime() {
         return sleepTime;
     }
 
+    /**
+     * Sets sleep time.
+     *
+     * @param sleepTime the sleep time
+     * @return the sleep time
+     */
     public Site setSleepTime(int sleepTime) {
         this.sleepTime = sleepTime;
         return this;
     }
 
+    /**
+     * Gets retry times.
+     *
+     * @return the retry times
+     */
     public int getRetryTimes() {
         return retryTimes;
     }
 
+    /**
+     * Sets retry times.
+     *
+     * @param retryTimes the retry times
+     * @return the retry times
+     */
     public Site setRetryTimes(int retryTimes) {
         this.retryTimes = retryTimes;
         return this;
     }
 
+    /**
+     * Gets headers.
+     *
+     * @return the headers
+     */
     public Map<String, String> getHeaders() {
         return headers;
     }
 
+    /**
+     * Add header site.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the site
+     */
     public Site addHeader(String key, String value) {
         headers.put(key, value);
         return this;
     }
 
+    /**
+     * Gets cycle retry times.
+     *
+     * @return the cycle retry times
+     */
     public int getCycleRetryTimes() {
         return cycleRetryTimes;
     }
 
+    /**
+     * Sets cycle retry times.
+     *
+     * @param cycleRetryTimes the cycle retry times
+     * @return the cycle retry times
+     */
     public Site setCycleRetryTimes(int cycleRetryTimes) {
         this.cycleRetryTimes = cycleRetryTimes;
         return this;
     }
 
+    /**
+     * Is use gzip boolean.
+     *
+     * @return the boolean
+     */
     public boolean isUseGzip() {
         return useGzip;
     }
 
+    /**
+     * Sets use gzip.
+     *
+     * @param useGzip the use gzip
+     * @return the use gzip
+     */
     public Site setUseGzip(boolean useGzip) {
         this.useGzip = useGzip;
         return this;
     }
 
+    /**
+     * Gets retry sleep time.
+     *
+     * @return the retry sleep time
+     */
     public int getRetrySleepTime() {
         return retrySleepTime;
     }
 
+    /**
+     * Sets retry sleep time.
+     *
+     * @param retrySleepTime the retry sleep time
+     * @return the retry sleep time
+     */
     public Site setRetrySleepTime(int retrySleepTime) {
         this.retrySleepTime = retrySleepTime;
         return this;
     }
 
+    /**
+     * Is disable cookie management boolean.
+     *
+     * @return the boolean
+     */
     public boolean isDisableCookieManagement() {
         return disableCookieManagement;
     }
 
+    /**
+     * Sets disable cookie management.
+     *
+     * @param disableCookieManagement the disable cookie management
+     * @return the disable cookie management
+     */
     public Site setDisableCookieManagement(boolean disableCookieManagement) {
         this.disableCookieManagement = disableCookieManagement;
         return this;
     }
 
+    /**
+     * To task task.
+     *
+     * @return the task
+     */
     public Task toTask() {
         return new Task() {
             @Override
@@ -178,28 +322,63 @@ public class Site {
         };
     }
 
+    /**
+     * Put extra site.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the site
+     */
     public Site putExtra(String key, Object value) {
         this.extras.put(key, value);
         return this;
     }
 
+    /**
+     * Gets extras.
+     *
+     * @return the extras
+     */
     public Map<String, Object> getExtras() {
         return this.extras;
     }
 
+    /**
+     * Sets extras.
+     *
+     * @param extras the extras
+     * @return the extras
+     */
     public Site setExtras(Map<String, Object> extras) {
         this.extras = extras;
         return this;
     }
 
+    /**
+     * Gets extra.
+     *
+     * @param key the key
+     * @return the extra
+     */
     public Object getExtra(String key) {
         return this.extras.get(key);
     }
 
+    /**
+     * Gets code accepter.
+     *
+     * @return the code accepter
+     */
     public String getCodeAccepter() {
         return codeAccepter;
     }
 
+    /**
+     * Sets code accepter.
+     *
+     * @param codeAccepter the code accepter
+     * @return the code accepter
+     */
     public Site setCodeAccepter(String codeAccepter) {
         try {
             codeMatcher = new NumberExpressMatcher(codeAccepter);
@@ -210,6 +389,11 @@ public class Site {
         return this;
     }
 
+    /**
+     * Gets code matcher.
+     *
+     * @return the code matcher
+     */
     public synchronized NumberExpressMatcher getCodeMatcher() {
         if (this.codeMatcher == null) {
             try {

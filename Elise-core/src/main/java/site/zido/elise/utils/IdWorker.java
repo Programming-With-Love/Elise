@@ -39,11 +39,20 @@ public class IdWorker {
     private long sequence;
     private long lastTimestamp = -1L;
 
+    /**
+     * Instantiates a new Id worker.
+     */
     public IdWorker() {
         dataCenterId = getDataCenterId(maxDataCenterId);
         workerId = getMaxWorkerId(dataCenterId, maxWorkerId);
     }
 
+    /**
+     * Instantiates a new Id worker.
+     *
+     * @param workerId     the worker id
+     * @param dataCenterId the data center id
+     */
     public IdWorker(long workerId, long dataCenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
@@ -56,6 +65,11 @@ public class IdWorker {
         this.dataCenterId = dataCenterId;
     }
 
+    /**
+     * Next id long.
+     *
+     * @return the long
+     */
     public static long nextId() {
         return INSTANCE.next();
     }
@@ -104,6 +118,11 @@ public class IdWorker {
         return id;
     }
 
+    /**
+     * Next long.
+     *
+     * @return the long
+     */
     public synchronized long next() {
         long timeStamp = timeGen();
         int maxOffset = 5;

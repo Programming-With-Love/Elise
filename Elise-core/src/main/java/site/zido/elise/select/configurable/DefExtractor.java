@@ -39,56 +39,121 @@ public class DefExtractor {
      */
     private Source source = Source.REGION;
 
+    /**
+     * Instantiates a new Def extractor.
+     *
+     * @param name the name
+     */
     public DefExtractor(String name) {
         this.name = name;
     }
 
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     * @return the name
+     */
     public DefExtractor setName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Sets value.
+     *
+     * @param value the value
+     * @return the value
+     */
     public DefExtractor setValue(String value) {
         this.value = value;
         return this;
     }
 
+    /**
+     * Gets type.
+     *
+     * @return the type
+     */
     public ExpressionType getType() {
         return type;
     }
 
+    /**
+     * Sets type.
+     *
+     * @param type the type
+     * @return the type
+     */
     public DefExtractor setType(ExpressionType type) {
         this.type = type;
         return this;
     }
 
+    /**
+     * Gets nullable.
+     *
+     * @return the nullable
+     */
     public Boolean getNullable() {
         return nullable;
     }
 
+    /**
+     * Sets nullable.
+     *
+     * @param nullable the nullable
+     * @return the nullable
+     */
     public DefExtractor setNullable(Boolean nullable) {
         this.nullable = nullable;
         return this;
     }
 
+    /**
+     * Gets source.
+     *
+     * @return the source
+     */
     public Source getSource() {
         return source;
     }
 
+    /**
+     * Sets source.
+     *
+     * @param source the source
+     * @return the source
+     */
     public DefExtractor setSource(Source source) {
         this.source = source;
         return this;
     }
 
+    /**
+     * Compile selector selector.
+     *
+     * @return the selector
+     */
     public Selector compileSelector() {
         ExpressionType type = getType();
         Selector selector;

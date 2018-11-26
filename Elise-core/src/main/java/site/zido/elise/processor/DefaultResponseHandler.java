@@ -24,6 +24,11 @@ public class DefaultResponseHandler implements ListenableResponseHandler {
     private Set<ProcessorEventListener> listeners = new HashSet<>();
     private Saver saver;
 
+    /**
+     * Instantiates a new Default response handler.
+     *
+     * @param saver the saver
+     */
     public DefaultResponseHandler(Saver saver) {
         this.saver = saver;
     }

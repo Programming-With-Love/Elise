@@ -30,10 +30,18 @@ public class DefaultResponse implements Response {
 
     private List<Header> headers;
 
+    /**
+     * Instantiates a new Default response.
+     */
     public DefaultResponse() {
         this.headers = new ArrayList<>();
     }
 
+    /**
+     * Fail default response.
+     *
+     * @return the default response
+     */
     public static DefaultResponse fail() {
         DefaultResponse response = new DefaultResponse();
         response.setDownloadSuccess(false);
@@ -51,6 +59,12 @@ public class DefaultResponse implements Response {
         return url;
     }
 
+    /**
+     * Sets url.
+     *
+     * @param url the url
+     * @return the url
+     */
     public DefaultResponse setUrl(Text url) {
         this.url = url;
         return this;
@@ -66,38 +80,83 @@ public class DefaultResponse implements Response {
         return reasonPhrase;
     }
 
+    /**
+     * Sets status code.
+     *
+     * @param statusCode the status code
+     */
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
 
+    /**
+     * Sets reason phrase.
+     *
+     * @param reasonPhrase the reason phrase
+     */
     public void setReasonPhrase(String reasonPhrase) {
         this.reasonPhrase = reasonPhrase;
     }
 
+    /**
+     * Sets headers.
+     *
+     * @param headers the headers
+     */
     public void setHeaders(List<Header> headers) {
         this.headers = headers;
     }
 
+    /**
+     * Is download success boolean.
+     *
+     * @return the boolean
+     */
     public boolean isDownloadSuccess() {
         return downloadSuccess;
     }
 
+    /**
+     * Sets download success.
+     *
+     * @param downloadSuccess the download success
+     */
     public void setDownloadSuccess(boolean downloadSuccess) {
         this.downloadSuccess = downloadSuccess;
     }
 
+    /**
+     * Gets content type.
+     *
+     * @return the content type
+     */
     public Http.ContentType getContentType() {
         return contentType;
     }
 
+    /**
+     * Sets content type.
+     *
+     * @param contentType the content type
+     */
     public void setContentType(Http.ContentType contentType) {
         this.contentType = contentType;
     }
 
+    /**
+     * Gets body.
+     *
+     * @return the body
+     */
     public Selectable getBody() {
         return body;
     }
 
+    /**
+     * Sets body.
+     *
+     * @param body the body
+     */
     public void setBody(Selectable body) {
         this.body = body;
     }
@@ -112,6 +171,11 @@ public class DefaultResponse implements Response {
         return headers;
     }
 
+    /**
+     * Sets header.
+     *
+     * @param header the header
+     */
     public void setHeader(Header header) {
         headers.add(header);
     }

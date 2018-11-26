@@ -4,15 +4,39 @@ import com.sun.istack.internal.Nullable;
 
 import java.nio.charset.Charset;
 
+/**
+ * The type String utils.
+ *
+ * @author zido
+ */
 public class StringUtils {
+    /**
+     * Has length boolean.
+     *
+     * @param text the text
+     * @return the boolean
+     */
     public static boolean hasLength(@Nullable String text) {
         return text != null && text.length() > 0;
     }
 
+    /**
+     * Gets encode.
+     *
+     * @param bytes the bytes
+     * @return the encode
+     */
     public static String getEncode(byte[] bytes) {
         return getEncode(bytes, Charset.defaultCharset().name());
     }
 
+    /**
+     * Gets encode.
+     *
+     * @param bytes          the bytes
+     * @param defaultCharset the default charset
+     * @return the encode
+     */
     public static String getEncode(byte[] bytes, String defaultCharset) {
         String code;
         if (bytes == null || bytes.length < 2) {

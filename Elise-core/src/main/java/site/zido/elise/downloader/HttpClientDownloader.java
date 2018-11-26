@@ -118,14 +118,29 @@ public class HttpClientDownloader implements Downloader {
         httpClientGenerator.setPoolSize(thread);
     }
 
+    /**
+     * Sets http client generator.
+     *
+     * @param generator the generator
+     */
     public void setHttpClientGenerator(HttpClientGenerator generator) {
         this.httpClientGenerator = generator;
     }
 
+    /**
+     * Sets http uri request converter.
+     *
+     * @param httpUriRequestConverter the http uri request converter
+     */
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
         this.httpUriRequestConverter = httpUriRequestConverter;
     }
 
+    /**
+     * Sets proxy provider.
+     *
+     * @param proxyProvider the proxy provider
+     */
     public void setProxyProvider(ProxyProvider proxyProvider) {
         this.proxyProvider = proxyProvider;
     }

@@ -11,21 +11,21 @@ public interface Task {
     /**
      * Get task id
      *
-     * @return id
+     * @return id id
      */
     Long getId();
 
     /**
      * Get website configuration
      *
-     * @return site
+     * @return site site
      */
     Site getSite();
 
     /**
      * get the model extractor
      *
-     * @return extractors
+     * @return extractors model extractor
      */
     ModelExtractor modelExtractor();
 }

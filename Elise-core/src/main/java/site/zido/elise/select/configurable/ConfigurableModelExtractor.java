@@ -161,6 +161,11 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return value;
     }
 
+    /**
+     * Gets def root extractor.
+     *
+     * @return the def root extractor
+     */
     public DefRootExtractor getDefRootExtractor() {
         return defRootExtractor;
     }

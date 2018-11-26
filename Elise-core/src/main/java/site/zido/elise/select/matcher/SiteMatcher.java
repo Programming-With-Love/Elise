@@ -2,9 +2,19 @@ package site.zido.elise.select.matcher;
 
 import site.zido.elise.select.Matcher;
 
+/**
+ * The type Site matcher.
+ *
+ * @author zido
+ */
 public class SiteMatcher implements Matcher {
     private char[] express;
 
+    /**
+     * Instantiates a new Site matcher.
+     *
+     * @param express the express
+     */
     public SiteMatcher(String express) {
         this.express = express.toCharArray();
     }

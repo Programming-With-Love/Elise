@@ -8,22 +8,41 @@ import site.zido.elise.utils.ValidateUtils;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * The type Html.
+ *
+ * @author zido
+ */
 public class HTML implements ElementSelectable, Serializable {
     private static final long serialVersionUID = 3727961912145284879L;
     private String text;
     private String url;
     private transient Document document;
 
+    /**
+     * Instantiates a new Html.
+     */
     public HTML() {
 
     }
 
+    /**
+     * Instantiates a new Html.
+     *
+     * @param text the text
+     * @param url  the url
+     */
     public HTML(String text, String url) {
         this.text = text;
         this.url = url;
         getDocument();
     }
 
+    /**
+     * Gets document.
+     *
+     * @return the document
+     */
     public Document getDocument() {
         if (document == null) {
             document = Jsoup.parse(text, url);
@@ -54,18 +73,38 @@ public class HTML implements ElementSelectable, Serializable {
         return !ValidateUtils.isEmpty(selector.select(text));
     }
 
+    /**
+     * Gets text.
+     *
+     * @return the text
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Sets text.
+     *
+     * @param text the text
+     */
     public void setText(String text) {
         this.text = text;
     }
 
+    /**
+     * Gets url.
+     *
+     * @return the url
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Sets url.
+     *
+     * @param url the url
+     */
     public void setUrl(String url) {
         this.url = url;
     }

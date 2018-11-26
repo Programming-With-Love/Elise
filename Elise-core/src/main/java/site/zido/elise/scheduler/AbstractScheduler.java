@@ -25,6 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zido
  */
 public abstract class AbstractScheduler implements TaskScheduler {
+    /**
+     * The Logger.
+     */
     protected Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private Set<EventListener> listeners = new HashSet<>();
@@ -66,6 +69,13 @@ public abstract class AbstractScheduler implements TaskScheduler {
         seeds.add(seed);
     }
 
+    /**
+     * On process.
+     *
+     * @param task     the task
+     * @param request  the request
+     * @param response the response
+     */
     protected void onProcess(Task task, DefaultRequest request, DefaultResponse response) {
         //will no longer process any pages when the task is in the cancel_now state
         final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
@@ -124,6 +134,13 @@ public abstract class AbstractScheduler implements TaskScheduler {
         });
     }
 
+    /**
+     * On download default response.
+     *
+     * @param task    the task
+     * @param request the request
+     * @return the default response
+     */
     protected DefaultResponse onDownload(Task task, DefaultRequest request) {
         final DefaultResponse response = getDownloader().download(task, request);
 
@@ -135,6 +152,9 @@ public abstract class AbstractScheduler implements TaskScheduler {
         return response;
     }
 
+    /**
+     * On cancel.
+     */
     protected void onCancel() {
         EventUtils.mustNotifyListeners(listeners, EventListener::onCancel);
     }
@@ -226,11 +246,31 @@ public abstract class AbstractScheduler implements TaskScheduler {
         }
     }
 
+    /**
+     * Gets downloader.
+     *
+     * @return the downloader
+     */
     public abstract Downloader getDownloader();
 
+    /**
+     * Gets response handler.
+     *
+     * @return the response handler
+     */
     public abstract ResponseHandler getResponseHandler();
 
+    /**
+     * Gets count manager.
+     *
+     * @return the count manager
+     */
     public abstract CountManager getCountManager();
 
+    /**
+     * Gets duplication processor.
+     *
+     * @return the duplication processor
+     */
     public abstract DuplicationProcessor getDuplicationProcessor();
 }

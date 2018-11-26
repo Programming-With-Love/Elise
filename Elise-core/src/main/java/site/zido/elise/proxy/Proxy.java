@@ -16,11 +16,25 @@ public class Proxy {
 
     }
 
+    /**
+     * Instantiates a new Proxy.
+     *
+     * @param host the host
+     * @param port the port
+     */
     public Proxy(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
+    /**
+     * Instantiates a new Proxy.
+     *
+     * @param host     the host
+     * @param port     the port
+     * @param username the username
+     * @param password the password
+     */
     public Proxy(String host, int port, String username, String password) {
         this.host = host;
         this.port = port;
@@ -28,18 +42,38 @@ public class Proxy {
         this.password = password;
     }
 
+    /**
+     * Gets host.
+     *
+     * @return the host
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * Gets port.
+     *
+     * @return the port
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     * Gets username.
+     *
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Gets password.
+     *
+     * @return the password
+     */
     public String getPassword() {
         return password;
     }

@@ -22,6 +22,12 @@ public class HashSetDeduplicationProcessor implements DuplicationProcessor {
         return !urls.add(getUrl(request));
     }
 
+    /**
+     * Gets url.
+     *
+     * @param request the request
+     * @return the url
+     */
     protected String getUrl(DefaultRequest request) {
         return request.getUrl();
     }

@@ -23,10 +23,18 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
     private final ExecutorService rootExecutor = Executors.newFixedThreadPool(1, new ModuleNamedDefaultThreadFactory("task queue processor"));
     private final AtomicBoolean RUNNING = new AtomicBoolean(false);
 
+    /**
+     * Instantiates a new Default task scheduler.
+     */
     public DefaultTaskScheduler() {
         this(Runtime.getRuntime().availableProcessors() * 2);
     }
 
+    /**
+     * Instantiates a new Default task scheduler.
+     *
+     * @param threadNum the thread num
+     */
     public DefaultTaskScheduler(int threadNum) {
         this.executor = new ThreadPoolExecutor(threadNum,
                 threadNum,
@@ -37,12 +45,22 @@ public class DefaultTaskScheduler extends ConfigurableScheduler implements Runna
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
+    /**
+     * Pre start.
+     */
     public void preStart() {
         if (RUNNING.compareAndSet(false, true)) {
             rootExecutor.execute(this);
         }
     }
 
+    /**
+     * Process page.
+     *
+     * @param task     the task
+     * @param request  the request
+     * @param response the response
+     */
     public void processPage(Task task, DefaultRequest request, DefaultResponse response) {
         preStart();
         queue.offer(new Seed(task, request, response));

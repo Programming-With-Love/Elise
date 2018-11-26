@@ -18,10 +18,23 @@ public class NumberExpressMatcher implements Matcher {
     private List<Region> regions;
     private List<Integer> rows;
 
+    /**
+     * Instantiates a new Number express matcher.
+     *
+     * @param express the express
+     * @throws CompilerException the compiler exception
+     */
     public NumberExpressMatcher(String express) throws CompilerException {
         this(express, '<');
     }
 
+    /**
+     * Instantiates a new Number express matcher.
+     *
+     * @param express the express
+     * @param sep     the sep
+     * @throws CompilerException the compiler exception
+     */
     public NumberExpressMatcher(String express, char sep) throws CompilerException {
         if (!StringUtils.hasLength(express)) {
             throw new CompilerException("express can't be null or empty");

@@ -14,9 +14,18 @@ import java.util.Map;
 public class ResultItem {
     private Map<String, List<Fragment>> fields = new LinkedHashMap<>();
 
+    /**
+     * Instantiates a new Result item.
+     */
     public ResultItem() {
     }
 
+    /**
+     * Get object.
+     *
+     * @param key the key
+     * @return the object
+     */
     public Object get(String key) {
         Object o = fields.get(key);
         if (o == null) {
@@ -25,10 +34,22 @@ public class ResultItem {
         return fields.get(key);
     }
 
+    /**
+     * Gets all.
+     *
+     * @return the all
+     */
     public Map<String, List<Fragment>> getAll() {
         return fields;
     }
 
+    /**
+     * Put result item.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the result item
+     */
     public ResultItem put(String key, List<Fragment> value) {
         fields.put(key, value);
         return this;

@@ -17,7 +17,7 @@ public interface MonitorableScheduler {
     /**
      * Check if the message container is empty
      *
-     * @return true/false
+     * @return true /false
      */
     default boolean empty() {
         return blockSize() == 0;

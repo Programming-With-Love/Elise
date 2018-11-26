@@ -2,9 +2,19 @@ package site.zido.elise.select;
 
 import java.util.List;
 
+/**
+ * The type Text.
+ *
+ * @author zido
+ */
 public class Text implements Selectable {
     private String text;
 
+    /**
+     * Instantiates a new Text.
+     *
+     * @param text the text
+     */
     public Text(String text) {
         this.text = text;
     }

@@ -3,6 +3,11 @@ package site.zido.elise.processor;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
 
+/**
+ * The type Blank saver.
+ *
+ * @author zido
+ */
 public class BlankSaver implements Saver {
     @Override
     public void save(ResultItem resultItem, Task task) {

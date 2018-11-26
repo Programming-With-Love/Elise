@@ -20,6 +20,9 @@ import java.util.Map;
  * @author zido
  */
 public class SimpleHttpClient {
+    /**
+     * The constant CONTENT_TYPE.
+     */
     public static final String CONTENT_TYPE = "Content-Type";
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final SimpleHttpClient DEFAULT_HTTP;
@@ -39,30 +42,68 @@ public class SimpleHttpClient {
     private Map<String, Map<String, String>> cookie = new HashMap<>();
     private boolean holdCookie = true;
 
+    /**
+     * Builder http builder.
+     *
+     * @return the http builder
+     */
     public static HttpBuilder builder() {
         return new HttpBuilder();
     }
 
+    /**
+     * Get http result.
+     *
+     * @param url the url
+     * @return the http result
+     */
     public static HTTPResult get(String url) {
         return DEFAULT_HTTP.change().url(url).method(HTTPMethod.GET).clearBody().holdCookie(false).build().send();
     }
 
+    /**
+     * Post http result.
+     *
+     * @param url         the url
+     * @param paramMap    the param map
+     * @param contentType the content type
+     * @return the http result
+     */
     public static HTTPResult post(String url, Map<String, Object> paramMap, ContentType contentType) {
         HttpBuilder builder = DEFAULT_HTTP.change().method(HTTPMethod.POST).url(url).clearBody().contentType(contentType).holdCookie(false);
         builder.paramMap = paramMap;
         return builder.build().send();
     }
 
+    /**
+     * Delete http result.
+     *
+     * @param url the url
+     * @return the http result
+     */
     public static HTTPResult delete(String url) {
         return DEFAULT_HTTP.change().url(url).method(HTTPMethod.DELETE).holdCookie(false).clearBody().build().send();
     }
 
+    /**
+     * Patch http result.
+     *
+     * @param url         the url
+     * @param paramMap    the param map
+     * @param contentType the content type
+     * @return the http result
+     */
     public static HTTPResult patch(String url, Map<String, Object> paramMap, ContentType contentType) {
         HttpBuilder builder = DEFAULT_HTTP.change().method(HTTPMethod.PATCH).url(url).clearBody().contentType(contentType).holdCookie(false);
         builder.paramMap = paramMap;
         return builder.build().send();
     }
 
+    /**
+     * Send http result.
+     *
+     * @return the http result
+     */
     public HTTPResult send() {
         HttpURLConnection currentConnection = null;
         try {
@@ -123,16 +164,48 @@ public class SimpleHttpClient {
         }
     }
 
+    /**
+     * Change http builder.
+     *
+     * @return the http builder
+     */
     public HttpBuilder change() {
         return new HttpBuilder(this);
     }
 
+    /**
+     * The enum Http method.
+     */
     public enum HTTPMethod {
-        POST, GET, DELETE, PATCH
+        /**
+         * Post http method.
+         */
+        POST,
+        /**
+         * Get http method.
+         */
+        GET,
+        /**
+         * Delete http method.
+         */
+        DELETE,
+        /**
+         * Patch http method.
+         */
+        PATCH
     }
 
+    /**
+     * The enum Content type.
+     */
     public enum ContentType {
+        /**
+         * Json content type.
+         */
         JSON("application/json"),
+        /**
+         * Form content type.
+         */
         FORM("application/x-www-form-urlencoded");
         private String value;
 
@@ -141,27 +214,52 @@ public class SimpleHttpClient {
         }
     }
 
+    /**
+     * The type Http exception wrapper.
+     */
     public static class HttpExceptionWrapper extends RuntimeException {
         private static final long serialVersionUID = -5766019000294865930L;
 
+        /**
+         * Instantiates a new Http exception wrapper.
+         *
+         * @param e the e
+         */
         public HttpExceptionWrapper(Throwable e) {
             super(e);
         }
     }
 
+    /**
+     * The type Http builder.
+     */
     public static class HttpBuilder {
         private SimpleHttpClient http;
         private Map<String, Object> paramMap = new HashMap<>(6);
         private ContentType contentType;
 
+        /**
+         * Instantiates a new Http builder.
+         */
         public HttpBuilder() {
             this.http = new SimpleHttpClient();
         }
 
+        /**
+         * Instantiates a new Http builder.
+         *
+         * @param http the http
+         */
         public HttpBuilder(SimpleHttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Url http builder.
+         *
+         * @param url the url
+         * @return the http builder
+         */
         public HttpBuilder url(String url) {
             try {
                 http.url = new URL(url);
@@ -171,36 +269,78 @@ public class SimpleHttpClient {
             return this;
         }
 
+        /**
+         * Method http builder.
+         *
+         * @param method the method
+         * @return the http builder
+         */
         public HttpBuilder method(HTTPMethod method) {
             http.httpMethod = method.name();
             return this;
         }
 
+        /**
+         * Body http builder.
+         *
+         * @param key   the key
+         * @param value the value
+         * @return the http builder
+         */
         public HttpBuilder body(String key, Object value) {
             paramMap.put(key, value);
             return this;
         }
 
+        /**
+         * Content type http builder.
+         *
+         * @param contentType the content type
+         * @return the http builder
+         */
         public HttpBuilder contentType(ContentType contentType) {
             this.contentType = contentType;
             return this;
         }
 
+        /**
+         * Out charset http builder.
+         *
+         * @param charsetName the charset name
+         * @return the http builder
+         */
         public HttpBuilder outCharset(String charsetName) {
             http.outCharsetName = charsetName;
             return this;
         }
 
+        /**
+         * In charset http builder.
+         *
+         * @param charsetName the charset name
+         * @return the http builder
+         */
         public HttpBuilder inCharset(String charsetName) {
             http.inCharsetName = charsetName;
             return this;
         }
 
+        /**
+         * Hold cookie http builder.
+         *
+         * @param holdCookie the hold cookie
+         * @return the http builder
+         */
         public HttpBuilder holdCookie(boolean holdCookie) {
             http.holdCookie = holdCookie;
             return this;
         }
 
+        /**
+         * Build simple http client.
+         *
+         * @return the simple http client
+         */
         public SimpleHttpClient build() {
             if (contentType == null) {
                 contentType = ContentType.JSON;
@@ -228,6 +368,11 @@ public class SimpleHttpClient {
             return http;
         }
 
+        /**
+         * Clear body http builder.
+         *
+         * @return the http builder
+         */
         public HttpBuilder clearBody() {
             paramMap.clear();
             http.requestParams = null;
@@ -235,6 +380,9 @@ public class SimpleHttpClient {
         }
     }
 
+    /**
+     * The type Http result.
+     */
     public static class HTTPResult {
         private InputStream is;
         private Map<String, List<String>> header;
@@ -242,6 +390,14 @@ public class SimpleHttpClient {
         private String body;
         private SimpleHttpClient http;
 
+        /**
+         * Instantiates a new Http result.
+         *
+         * @param http   the http
+         * @param is     the is
+         * @param header the header
+         * @param code   the code
+         */
         public HTTPResult(SimpleHttpClient http, InputStream is, Map<String, List<String>> header, int code) {
             this.is = is;
             this.header = header;
@@ -249,22 +405,48 @@ public class SimpleHttpClient {
             this.http = http;
         }
 
+        /**
+         * Fail http result.
+         *
+         * @return the http result
+         */
         public static HTTPResult fail() {
             return new HTTPResult(null, null, null, -1);
         }
 
+        /**
+         * Success boolean.
+         *
+         * @return the boolean
+         */
         public boolean success() {
             return code >= 200 && code < 400;
         }
 
+        /**
+         * Code int.
+         *
+         * @return the int
+         */
         public int code() {
             return code;
         }
 
+        /**
+         * Cookie map.
+         *
+         * @return the map
+         */
         public Map<String, Map<String, String>> cookie() {
             return http.cookie;
         }
 
+        /**
+         * Cookie string.
+         *
+         * @param key the key
+         * @return the string
+         */
         public String cookie(String key) {
             Map<String, String> map = http.cookie.get(key);
             if (map != null)
@@ -272,6 +454,12 @@ public class SimpleHttpClient {
             return null;
         }
 
+        /**
+         * Body string.
+         *
+         * @return the string
+         * @throws IOException the io exception
+         */
         public String body() throws IOException {
             if (body != null) {
                 return body;
@@ -289,6 +477,11 @@ public class SimpleHttpClient {
             return body;
         }
 
+        /**
+         * Gets header.
+         *
+         * @return the header
+         */
         public Map<String, List<String>> getHeader() {
             return header;
         }

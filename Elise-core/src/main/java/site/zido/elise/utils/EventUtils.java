@@ -8,12 +8,24 @@ import java.util.EventListener;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * The type Event utils.
+ *
+ * @author zido
+ */
 public class EventUtils {
     private final static Logger LOGGER = LoggerFactory.getLogger(EventUtils.class);
 
     private EventUtils() {
     }
 
+    /**
+     * Must notify listeners.
+     *
+     * @param <T>       the type parameter
+     * @param listeners the listeners
+     * @param callback  the callback
+     */
     public static <T extends EventListener> void mustNotifyListeners(Set<T> listeners, Consumer<T> callback) {
         for (T listener : listeners) {
             try {
@@ -24,6 +36,13 @@ public class EventUtils {
         }
     }
 
+    /**
+     * Notify listeners.
+     *
+     * @param <T>       the type parameter
+     * @param listeners the listeners
+     * @param callback  the callback
+     */
     public static <T extends EventListener> void notifyListeners(Set<T> listeners, Consumer<T> callback) {
         for (T listener : listeners) {
             callback.accept(listener);

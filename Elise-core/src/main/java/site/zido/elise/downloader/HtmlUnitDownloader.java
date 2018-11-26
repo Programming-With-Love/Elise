@@ -8,9 +8,9 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.Task;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.Task;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
 import site.zido.elise.select.HTML;
@@ -23,7 +23,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * HtmlUnitDownloader
+ * The Html unit downloader.
  *
  * @author zido
  */
@@ -77,6 +77,12 @@ public class HtmlUnitDownloader implements Downloader {
 
     }
 
+    /**
+     * Sets proxy provider.
+     *
+     * @param proxyProvider the proxy provider
+     * @return the proxy provider
+     */
     public HtmlUnitDownloader setProxyProvider(ProxyProvider proxyProvider) {
         this.proxyProvider = proxyProvider;
         return this;

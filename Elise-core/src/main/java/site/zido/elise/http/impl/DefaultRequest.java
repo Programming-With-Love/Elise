@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
  * @author zido
  */
 public class DefaultRequest implements Request {
+    /**
+     * The constant CYCLE_TRIED_TIMES.
+     */
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
     private static final long serialVersionUID = 2018040215121L;
     /**
@@ -54,6 +57,11 @@ public class DefaultRequest implements Request {
      */
     private boolean binaryContent = false;
 
+    /**
+     * Instantiates a new Default request.
+     *
+     * @param request the request
+     */
     public DefaultRequest(DefaultRequest request) {
         this.url = request.url;
         this.method = request.method;
@@ -66,14 +74,28 @@ public class DefaultRequest implements Request {
         this.binaryContent = request.binaryContent;
     }
 
+    /**
+     * Instantiates a new Default request.
+     */
     public DefaultRequest() {
 
     }
 
+    /**
+     * Instantiates a new Default request.
+     *
+     * @param url the url
+     */
     public DefaultRequest(String url) {
         this.url = url;
     }
 
+    /**
+     * Gets extra.
+     *
+     * @param key the key
+     * @return the extra
+     */
     public Object getExtra(String key) {
         if (extras == null) {
             return null;
@@ -81,6 +103,13 @@ public class DefaultRequest implements Request {
         return extras.get(key);
     }
 
+    /**
+     * Put extra default request.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the default request
+     */
     public DefaultRequest putExtra(String key, Object value) {
         if (extras == null) {
             extras = new HashMap<>(3);
@@ -113,10 +142,21 @@ public class DefaultRequest implements Request {
         return method != null ? method.equals(request.method) : request.method == null;
     }
 
+    /**
+     * Add cookie.
+     *
+     * @param cookie the cookie
+     */
     public void addCookie(Cookie cookie) {
         this.cookies.add(cookie);
     }
 
+    /**
+     * Add header default request.
+     *
+     * @param header the header
+     * @return the default request
+     */
     public DefaultRequest addHeader(Header header) {
         headers.add(header);
         return this;
@@ -127,6 +167,11 @@ public class DefaultRequest implements Request {
         return url;
     }
 
+    /**
+     * Sets url.
+     *
+     * @param url the url
+     */
     public void setUrl(String url) {
         this.url = url;
     }
@@ -136,6 +181,11 @@ public class DefaultRequest implements Request {
         return method;
     }
 
+    /**
+     * Sets method.
+     *
+     * @param method the method
+     */
     public void setMethod(String method) {
         this.method = method;
     }
@@ -145,14 +195,29 @@ public class DefaultRequest implements Request {
         return body;
     }
 
+    /**
+     * Sets body.
+     *
+     * @param body the body
+     */
     public void setBody(HttpRequestBody body) {
         this.body = body;
     }
 
+    /**
+     * Gets extras.
+     *
+     * @return the extras
+     */
     public Map<String, Object> getExtras() {
         return extras;
     }
 
+    /**
+     * Sets extras.
+     *
+     * @param extras the extras
+     */
     public void setExtras(Map<String, Object> extras) {
         this.extras = extras;
     }
@@ -161,6 +226,11 @@ public class DefaultRequest implements Request {
         return cookies;
     }
 
+    /**
+     * Sets cookies.
+     *
+     * @param cookies the cookies
+     */
     public void setCookies(List<Cookie> cookies) {
         this.cookies = cookies;
     }
@@ -169,14 +239,29 @@ public class DefaultRequest implements Request {
         return headers;
     }
 
+    /**
+     * Sets headers.
+     *
+     * @param headers the headers
+     */
     public void setHeaders(List<Header> headers) {
         this.headers = headers;
     }
 
+    /**
+     * Gets charset.
+     *
+     * @return the charset
+     */
     public String getCharset() {
         return charset;
     }
 
+    /**
+     * Sets charset.
+     *
+     * @param charset the charset
+     */
     public void setCharset(String charset) {
         this.charset = charset;
     }

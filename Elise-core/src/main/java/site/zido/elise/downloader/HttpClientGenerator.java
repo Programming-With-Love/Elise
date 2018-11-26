@@ -37,6 +37,9 @@ public class HttpClientGenerator {
     private transient Logger logger = LoggerFactory.getLogger(getClass());
     private PoolingHttpClientConnectionManager connectionManager;
 
+    /**
+     * Instantiates a new Http client generator.
+     */
     public HttpClientGenerator() {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -81,11 +84,23 @@ public class HttpClientGenerator {
         return sc;
     }
 
+    /**
+     * Sets pool size.
+     *
+     * @param poolSize the pool size
+     * @return the pool size
+     */
     public HttpClientGenerator setPoolSize(int poolSize) {
         connectionManager.setMaxTotal(poolSize);
         return this;
     }
 
+    /**
+     * Gets client.
+     *
+     * @param site the site
+     * @return the client
+     */
     public CloseableHttpClient getClient(Site site) {
         return generateClient(site);
     }

@@ -11,9 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * A simple ProxyProvider. Provide proxy as round-robin without heartbeat and error check. It can be used when all proxies are stable.
  *
- * @author code4crafter@gmail.com
- * Date: 17/4/16
- * Time: 10:18
+ * @author code4crafter @gmail.com Date: 17/4/16 Time: 10:18
  * @since 0.7.0
  */
 public class SimpleProxyProvider implements ProxyProvider {
@@ -22,6 +20,11 @@ public class SimpleProxyProvider implements ProxyProvider {
 
     private final AtomicInteger pointer;
 
+    /**
+     * Instantiates a new Simple proxy provider.
+     *
+     * @param proxies the proxies
+     */
     public SimpleProxyProvider(List<Proxy> proxies) {
         this(proxies, new AtomicInteger(-1));
     }
@@ -31,6 +34,12 @@ public class SimpleProxyProvider implements ProxyProvider {
         this.pointer = pointer;
     }
 
+    /**
+     * From simple proxy provider.
+     *
+     * @param proxies the proxies
+     * @return the simple proxy provider
+     */
     public static SimpleProxyProvider from(Proxy... proxies) {
         List<Proxy> proxiesTemp = new ArrayList<>(proxies.length);
         Collections.addAll(proxiesTemp, proxies);

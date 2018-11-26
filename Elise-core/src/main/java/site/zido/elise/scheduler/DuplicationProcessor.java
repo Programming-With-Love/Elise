@@ -14,18 +14,16 @@ public interface DuplicationProcessor {
     /**
      * Determine if this request is duplicate
      *
-     * @param task
+     * @param task    the task
      * @param request request
-     * @return true/false
+     * @return true /false
      */
     boolean isDuplicate(Task task, DefaultRequest request);
 
     /**
      * Reset all non-repeating sets of this task so that the task can send the same request as before
      *
-     * @param task This is the task ID that needs to be cleared this time.
-     *             It can be set according to its internal rules.
-     *             try to ensure that this clearing is only relevant to the current task.
+     * @param task This is the task ID that needs to be cleared this time.             It can be set according to its internal rules.             try to ensure that this clearing is only relevant to the current task.
      */
     void resetDuplicateCheck(Task task);
 

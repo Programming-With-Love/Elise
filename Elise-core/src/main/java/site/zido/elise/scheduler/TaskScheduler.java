@@ -19,17 +19,46 @@ public interface TaskScheduler {
     /**
      * If you need to download, you can call this method (usually after the analysis is completed)
      *
+     * @param task    the task
      * @param request the request
      */
     void pushRequest(Task task, DefaultRequest request);
 
+    /**
+     * Add event listener.
+     *
+     * @param listener the listener
+     */
     void addEventListener(EventListener listener);
 
+    /**
+     * Cancel.
+     *
+     * @param ifRunning the if running
+     */
     void cancel(boolean ifRunning);
 
+    /**
+     * Cancel boolean.
+     *
+     * @param task      the task
+     * @param ifRunning the if running
+     * @return the boolean
+     */
     boolean cancel(Task task, boolean ifRunning);
 
+    /**
+     * Pause boolean.
+     *
+     * @param task the task
+     * @return the boolean
+     */
     boolean pause(Task task);
 
+    /**
+     * Recover.
+     *
+     * @param task the task
+     */
     void recover(Task task);
 }
