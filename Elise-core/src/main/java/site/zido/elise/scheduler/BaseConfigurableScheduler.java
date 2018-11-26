@@ -11,7 +11,7 @@ import site.zido.elise.processor.ResponseHandler;
  */
 public abstract class BaseConfigurableScheduler extends AbstractScheduler {
     private Downloader downloader;
-    private ResponseHandler ResponseHandler;
+    private ResponseHandler responsehandler;
     private CountManager countManager;
     private DuplicationProcessor duplicationProcessor;
 
@@ -30,17 +30,17 @@ public abstract class BaseConfigurableScheduler extends AbstractScheduler {
     }
 
     @Override
-    public ResponseHandler getResponseHandler() {
-        return ResponseHandler;
+    public ResponseHandler getResponsehandler() {
+        return responsehandler;
     }
 
     /**
      * Sets response handler.
      *
-     * @param responseHandler the response handler
+     * @param responsehandler the response handler
      */
-    public void setResponseHandler(ResponseHandler responseHandler) {
-        this.ResponseHandler = responseHandler;
+    public void setResponsehandler(ResponseHandler responsehandler) {
+        this.responsehandler = responsehandler;
     }
 
     @Override

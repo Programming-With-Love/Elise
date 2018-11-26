@@ -63,8 +63,8 @@ public class SpringKafkaTaskScheduler extends BaseConfigurableScheduler {
     }
 
     @Override
-    public synchronized void setResponseHandler(ResponseHandler responseHandler) {
-        super.setResponseHandler(responseHandler);
+    public synchronized void setResponsehandler(ResponseHandler responsehandler) {
+        super.setResponsehandler(responsehandler);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 Seed seed = message.value();

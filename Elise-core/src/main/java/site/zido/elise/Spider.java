@@ -44,7 +44,7 @@ public class Spider {
         final DefaultTaskScheduler scheduler = new DefaultTaskScheduler(threadNum);
         spider.scheduler = scheduler;
         scheduler.setDownloader(new AutoSwitchDownloader());
-        scheduler.setResponseHandler(new DefaultResponseHandler(new MemorySaver()));
+        scheduler.setResponsehandler(new DefaultResponseHandler(new MemorySaver()));
         scheduler.setDuplicationProcessor(new HashSetDeduplicationProcessor());
         scheduler.setCountManager(new DefaultMemoryCountManager());
         spider.taskManager = new DefaultMemoryTaskManager();

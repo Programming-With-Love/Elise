@@ -96,7 +96,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
                     throw new RuntimeException(e);
                 }
                 if (matcher.matches(response.getStatusCode())) {
-                    Set<String> links = getResponseHandler().process(task, response);
+                    Set<String> links = getResponsehandler().process(task, response);
                     //will no longer process any pages when the task is in the cancel_now state
                     if (state != STATE_CANCEL) {
                         for (String link : links) {
@@ -203,8 +203,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
     @Override
     public void addEventListener(EventListener listener) {
         listeners.add(listener);
-        if (getResponseHandler() instanceof ListenableResponseHandler) {
-            ((ListenableResponseHandler) getResponseHandler()).addEventListener(listener);
+        if (getResponsehandler() instanceof ListenableResponseHandler) {
+            ((ListenableResponseHandler) getResponsehandler()).addEventListener(listener);
         }
     }
 
@@ -261,7 +261,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
      *
      * @return the response handler
      */
-    public abstract ResponseHandler getResponseHandler();
+    public abstract ResponseHandler getResponsehandler();
 
     /**
      * Gets count manager.
