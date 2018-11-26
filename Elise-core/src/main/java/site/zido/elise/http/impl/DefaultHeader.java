@@ -28,11 +28,6 @@ public class DefaultHeader implements Header {
         return this.name;
     }
 
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
     /**
      * Sets name.
      *
@@ -40,6 +35,11 @@ public class DefaultHeader implements Header {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getValue() {
+        return this.value;
     }
 
     /**

@@ -2,7 +2,9 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.*;
+import site.zido.elise.EventListener;
+import site.zido.elise.Site;
+import site.zido.elise.Task;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.http.impl.DefaultResponse;
@@ -25,17 +27,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zido
  */
 public abstract class AbstractScheduler implements TaskScheduler {
-    /**
-     * The Logger.
-     */
-    protected Logger LOGGER = LoggerFactory.getLogger(getClass());
-
-    private Set<EventListener> listeners = new HashSet<>();
     private static final byte STATE_PAUSE = 1;
     private static final byte STATE_CANCEL = 2;
     private static final byte STATE_CANCEL_NOW = 3;
+    /**
+     * The Logger.
+     */
+    protected static Logger LOGGER = LoggerFactory.getLogger(TaskScheduler.class);
     private final Map<Long, Byte> stateMap = new HashMap<>();
     private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
+    private Set<EventListener> listeners = new HashSet<>();
 
     @Override
     public void pushRequest(Task task, DefaultRequest request) {
@@ -220,6 +221,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
         return true;
     }
 
+    @Override
     public synchronized boolean pause(Task task) {
         final Byte currentState = stateMap.get(task.getId());
         if (currentState != null) {
@@ -229,6 +231,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
         return true;
     }
 
+    @Override
     public synchronized void recover(Task task) {
         final Byte currentState = stateMap.get(task.getId());
         if (currentState == null) {

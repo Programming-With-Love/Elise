@@ -222,6 +222,7 @@ public class DefaultRequest implements Request {
         this.extras = extras;
     }
 
+    @Override
     public List<Cookie> getCookies() {
         return cookies;
     }
@@ -235,6 +236,7 @@ public class DefaultRequest implements Request {
         this.cookies = cookies;
     }
 
+    @Override
     public List<Header> getHeaders() {
         return headers;
     }

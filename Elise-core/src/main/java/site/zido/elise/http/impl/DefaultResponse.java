@@ -75,11 +75,6 @@ public class DefaultResponse implements Response {
         return statusCode;
     }
 
-    @Override
-    public String getReasonPhrase() {
-        return reasonPhrase;
-    }
-
     /**
      * Sets status code.
      *
@@ -87,6 +82,11 @@ public class DefaultResponse implements Response {
      */
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
+    }
+
+    @Override
+    public String getReasonPhrase() {
+        return reasonPhrase;
     }
 
     /**

@@ -6,7 +6,6 @@ package site.zido.elise.custom;
  * @author zido
  */
 public class GlobalConfig extends MappedConfig {
-    private static final long serialVersionUID = -6234664119002484979L;
     /**
      * The constant KEY_USER_AGENT.
      */
@@ -51,6 +50,7 @@ public class GlobalConfig extends MappedConfig {
      * The constant KEY_PROXY.
      */
     public static final String KEY_PROXY = "proxy";
+    private static final long serialVersionUID = -6234664119002484979L;
 
     /**
      * Sets user agent.

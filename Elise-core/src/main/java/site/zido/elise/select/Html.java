@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author zido
  */
-public class HTML implements ElementSelectable, Serializable {
+public class Html implements ElementSelectable, Serializable {
     private static final long serialVersionUID = 3727961912145284879L;
     private String text;
     private String url;
@@ -22,7 +22,7 @@ public class HTML implements ElementSelectable, Serializable {
     /**
      * Instantiates a new Html.
      */
-    public HTML() {
+    public Html() {
 
     }
 
@@ -32,7 +32,7 @@ public class HTML implements ElementSelectable, Serializable {
      * @param text the text
      * @param url  the url
      */
-    public HTML(String text, String url) {
+    public Html(String text, String url) {
         this.text = text;
         this.url = url;
         getDocument();

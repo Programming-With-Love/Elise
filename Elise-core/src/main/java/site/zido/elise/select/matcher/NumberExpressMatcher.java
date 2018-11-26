@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 public class NumberExpressMatcher implements Matcher {
 
     private static final Pattern CHECK_PATTERN = Pattern.compile("^[0-9,<-]*$");
+    private static final char DEFAULT_CHAR_TO = '<';
+    private static final String PATTERN_TEMPLATE = "^[0-9,%s-]*$";
     private List<Region> regions;
     private List<Integer> rows;
 
@@ -25,7 +27,7 @@ public class NumberExpressMatcher implements Matcher {
      * @throws CompilerException the compiler exception
      */
     public NumberExpressMatcher(String express) throws CompilerException {
-        this(express, '<');
+        this(express, DEFAULT_CHAR_TO);
     }
 
     /**
@@ -39,7 +41,9 @@ public class NumberExpressMatcher implements Matcher {
         if (!StringUtils.hasLength(express)) {
             throw new CompilerException("express can't be null or empty");
         }
-        if ((sep == '<' && !CHECK_PATTERN.matcher(express).find()) || !express.matches("^[0-9," + sep + "-]*$")) {
+        if (sep == DEFAULT_CHAR_TO && !CHECK_PATTERN.matcher(express).find()) {
+            throw new CompilerException("express only can contains [0-9," + sep + "-]");
+        } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
             throw new CompilerException("express only can contains [0-9," + sep + "-]");
         }
         regions = new ArrayList<>();

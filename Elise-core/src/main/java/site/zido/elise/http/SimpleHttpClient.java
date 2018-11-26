@@ -24,12 +24,12 @@ public class SimpleHttpClient {
      * The constant CONTENT_TYPE.
      */
     public static final String CONTENT_TYPE = "Content-Type";
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final SimpleHttpClient DEFAULT_HTTP;
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHttpClient.class);
 
     static {
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         DEFAULT_HTTP = new SimpleHttpClient();
     }
 
@@ -57,7 +57,7 @@ public class SimpleHttpClient {
      * @param url the url
      * @return the http result
      */
-    public static HTTPResult get(String url) {
+    public static HttpResult get(String url) {
         return DEFAULT_HTTP.change().url(url).method(HTTPMethod.GET).clearBody().holdCookie(false).build().send();
     }
 
@@ -69,7 +69,7 @@ public class SimpleHttpClient {
      * @param contentType the content type
      * @return the http result
      */
-    public static HTTPResult post(String url, Map<String, Object> paramMap, ContentType contentType) {
+    public static HttpResult post(String url, Map<String, Object> paramMap, ContentType contentType) {
         HttpBuilder builder = DEFAULT_HTTP.change().method(HTTPMethod.POST).url(url).clearBody().contentType(contentType).holdCookie(false);
         builder.paramMap = paramMap;
         return builder.build().send();
@@ -81,7 +81,7 @@ public class SimpleHttpClient {
      * @param url the url
      * @return the http result
      */
-    public static HTTPResult delete(String url) {
+    public static HttpResult delete(String url) {
         return DEFAULT_HTTP.change().url(url).method(HTTPMethod.DELETE).holdCookie(false).clearBody().build().send();
     }
 
@@ -93,7 +93,7 @@ public class SimpleHttpClient {
      * @param contentType the content type
      * @return the http result
      */
-    public static HTTPResult patch(String url, Map<String, Object> paramMap, ContentType contentType) {
+    public static HttpResult patch(String url, Map<String, Object> paramMap, ContentType contentType) {
         HttpBuilder builder = DEFAULT_HTTP.change().method(HTTPMethod.PATCH).url(url).clearBody().contentType(contentType).holdCookie(false);
         builder.paramMap = paramMap;
         return builder.build().send();
@@ -104,7 +104,7 @@ public class SimpleHttpClient {
      *
      * @return the http result
      */
-    public HTTPResult send() {
+    public HttpResult send() {
         HttpURLConnection currentConnection = null;
         try {
             currentConnection = (HttpURLConnection) url.openConnection();
@@ -134,7 +134,7 @@ public class SimpleHttpClient {
                 }
             }
         } catch (IOException e) {
-            throw new HttpExceptionWrapper(e);
+            throw new HttpWrapperException(e);
         } finally {
             if (currentConnection != null) {
                 currentConnection.disconnect();
@@ -157,10 +157,10 @@ public class SimpleHttpClient {
         }
 
         try {
-            return new HTTPResult(this, currentConnection.getInputStream(), fields, currentConnection.getResponseCode());
+            return new HttpResult(this, currentConnection.getInputStream(), fields, currentConnection.getResponseCode());
         } catch (IOException e) {
             LOGGER.warn("send http error:url[" + url + "]", e);
-            return HTTPResult.fail();
+            return HttpResult.fail();
         }
     }
 
@@ -217,7 +217,7 @@ public class SimpleHttpClient {
     /**
      * The type Http exception wrapper.
      */
-    public static class HttpExceptionWrapper extends RuntimeException {
+    public static class HttpWrapperException extends RuntimeException {
         private static final long serialVersionUID = -5766019000294865930L;
 
         /**
@@ -225,7 +225,7 @@ public class SimpleHttpClient {
          *
          * @param e the e
          */
-        public HttpExceptionWrapper(Throwable e) {
+        public HttpWrapperException(Throwable e) {
             super(e);
         }
     }
@@ -358,10 +358,11 @@ public class SimpleHttpClient {
                         break;
                     case JSON:
                         try {
-                            requestParams = mapper.writeValueAsString(paramMap);
+                            requestParams = MAPPER.writeValueAsString(paramMap);
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
                         }
+                    default:
                 }
             }
             http.requestParams = requestParams;
@@ -383,7 +384,7 @@ public class SimpleHttpClient {
     /**
      * The type Http result.
      */
-    public static class HTTPResult {
+    public static class HttpResult {
         private InputStream is;
         private Map<String, List<String>> header;
         private int code;
@@ -398,7 +399,7 @@ public class SimpleHttpClient {
          * @param header the header
          * @param code   the code
          */
-        public HTTPResult(SimpleHttpClient http, InputStream is, Map<String, List<String>> header, int code) {
+        public HttpResult(SimpleHttpClient http, InputStream is, Map<String, List<String>> header, int code) {
             this.is = is;
             this.header = header;
             this.code = code;
@@ -410,8 +411,8 @@ public class SimpleHttpClient {
          *
          * @return the http result
          */
-        public static HTTPResult fail() {
-            return new HTTPResult(null, null, null, -1);
+        public static HttpResult fail() {
+            return new HttpResult(null, null, null, -1);
         }
 
         /**
@@ -449,8 +450,9 @@ public class SimpleHttpClient {
          */
         public String cookie(String key) {
             Map<String, String> map = http.cookie.get(key);
-            if (map != null)
+            if (map != null) {
                 return map.get("value");
+            }
             return null;
         }
 

@@ -9,7 +9,7 @@ import site.zido.elise.processor.ResponseHandler;
  *
  * @author zido
  */
-public abstract class ConfigurableScheduler extends AbstractScheduler {
+public abstract class BaseConfigurableScheduler extends AbstractScheduler {
     private Downloader downloader;
     private ResponseHandler ResponseHandler;
     private CountManager countManager;
@@ -18,21 +18,6 @@ public abstract class ConfigurableScheduler extends AbstractScheduler {
     @Override
     public Downloader getDownloader() {
         return downloader;
-    }
-
-    @Override
-    public ResponseHandler getResponseHandler() {
-        return ResponseHandler;
-    }
-
-    @Override
-    public CountManager getCountManager() {
-        return countManager;
-    }
-
-    @Override
-    public DuplicationProcessor getDuplicationProcessor() {
-        return duplicationProcessor;
     }
 
     /**
@@ -44,6 +29,11 @@ public abstract class ConfigurableScheduler extends AbstractScheduler {
         this.downloader = downloader;
     }
 
+    @Override
+    public ResponseHandler getResponseHandler() {
+        return ResponseHandler;
+    }
+
     /**
      * Sets response handler.
      *
@@ -53,6 +43,11 @@ public abstract class ConfigurableScheduler extends AbstractScheduler {
         this.ResponseHandler = responseHandler;
     }
 
+    @Override
+    public CountManager getCountManager() {
+        return countManager;
+    }
+
     /**
      * Sets count manager.
      *
@@ -60,6 +55,11 @@ public abstract class ConfigurableScheduler extends AbstractScheduler {
      */
     public void setCountManager(CountManager countManager) {
         this.countManager = countManager;
+    }
+
+    @Override
+    public DuplicationProcessor getDuplicationProcessor() {
+        return duplicationProcessor;
     }
 
     /**

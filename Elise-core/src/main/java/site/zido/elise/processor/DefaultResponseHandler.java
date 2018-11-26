@@ -2,9 +2,9 @@ package site.zido.elise.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.ResultItem;
 import site.zido.elise.Task;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.select.configurable.ModelExtractor;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.ValidateUtils;
@@ -39,7 +39,7 @@ public class DefaultResponseHandler implements ListenableResponseHandler {
         Set<String> links = extractor.extractLinks(response);
         List<ResultItem> resultItems = extractor.extract(response);
         if (!ValidateUtils.isEmpty(resultItems)) {
-            for (ResultItem resultItem : resultItems)
+            for (ResultItem resultItem : resultItems) {
                 if (resultItem != null) {
                     try {
                         saver.save(resultItem, task);
@@ -49,6 +49,7 @@ public class DefaultResponseHandler implements ListenableResponseHandler {
                         LOGGER.error("saver have made a exception", e);
                     }
                 }
+            }
         } else {
             LOGGER.info("response not find anything, response {}", response.getUrl());
         }

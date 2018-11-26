@@ -51,7 +51,7 @@ public interface EventListener extends ProcessorEventListener, java.util.EventLi
      *
      * @param task the task
      */
-    default void onRecover(Task task){
+    default void onRecover(Task task) {
     }
 
     /**

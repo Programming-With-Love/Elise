@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author zido
  */
-public class XPathSelector extends AbstractElementSelector {
+public class XpathSelector extends AbstractElementSelector {
 
     private XpathEvaluator evaluator;
 
@@ -24,7 +24,7 @@ public class XPathSelector extends AbstractElementSelector {
      * @param xpathExpress the xpath express
      * @throws XpathSyntaxErrorException the xpath syntax error exception
      */
-    public XPathSelector(String xpathExpress) throws XpathSyntaxErrorException {
+    public XpathSelector(String xpathExpress) throws XpathSyntaxErrorException {
         evaluator = XpathParser.compile(xpathExpress);
     }
 

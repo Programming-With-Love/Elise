@@ -14,9 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ModuleNamedDefaultThreadFactory implements ThreadFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModuleNamedDefaultThreadFactory.class);
-    private static final AtomicInteger poolNumber = new AtomicInteger(1);
+    private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
     private final ThreadGroup group;
-    //will be a part of name
     private final String prefix;
     private volatile int threadNumber = 1;
     private boolean daemon;
@@ -41,7 +40,7 @@ public class ModuleNamedDefaultThreadFactory implements ThreadFactory {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
         moduleName = moduleName.trim();
-        prefix = moduleName + "-pool-" + poolNumber.getAndIncrement() + "-thread-";
+        prefix = moduleName + "-pool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
         this.daemon = daemon;
         this.moduleName = moduleName;
     }
@@ -58,8 +57,9 @@ public class ModuleNamedDefaultThreadFactory implements ThreadFactory {
         }
         t.setDaemon(daemon);
         sb.append(",daemon:").append(daemon);
-        if (t.getPriority() != Thread.NORM_PRIORITY)
+        if (t.getPriority() != Thread.NORM_PRIORITY) {
             t.setPriority(Thread.NORM_PRIORITY);
+        }
         LOGGER.debug(sb.toString());
         return t;
     }

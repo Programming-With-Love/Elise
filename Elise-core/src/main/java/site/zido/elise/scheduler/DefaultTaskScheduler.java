@@ -2,9 +2,9 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.Task;
+import site.zido.elise.http.impl.DefaultRequest;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
 import java.util.concurrent.*;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class DefaultTaskScheduler extends ConfigurableScheduler implements Runnable {
+public class DefaultTaskScheduler extends BaseConfigurableScheduler implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTaskScheduler.class);
     private final ThreadPoolExecutor executor;

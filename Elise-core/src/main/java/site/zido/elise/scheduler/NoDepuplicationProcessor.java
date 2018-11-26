@@ -1,7 +1,7 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.Task;
+import site.zido.elise.http.impl.DefaultRequest;
 
 /**
  * NoDepuplicationProcessor

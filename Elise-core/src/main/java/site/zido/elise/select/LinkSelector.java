@@ -65,7 +65,7 @@ public class LinkSelector extends AbstractElementSelector {
         }
         if (sourceRegion != null) {
             try {
-                this.regionSelector = new XPathSelector(sourceRegion);
+                this.regionSelector = new XpathSelector(sourceRegion);
             } catch (XpathSyntaxErrorException e) {
                 //TODO exception handle
                 throw new RuntimeException(e);

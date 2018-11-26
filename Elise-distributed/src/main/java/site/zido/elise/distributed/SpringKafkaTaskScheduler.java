@@ -19,7 +19,7 @@ import site.zido.elise.Task;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.processor.ResponseHandler;
-import site.zido.elise.scheduler.ConfigurableScheduler;
+import site.zido.elise.scheduler.BaseConfigurableScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @author zido
  */
-public class SpringKafkaTaskScheduler extends ConfigurableScheduler {
+public class SpringKafkaTaskScheduler extends BaseConfigurableScheduler {
     private String bootstrapServers;
     private String groupId = "Elise";
     private String topicAnalyzer = "__analyzer__";

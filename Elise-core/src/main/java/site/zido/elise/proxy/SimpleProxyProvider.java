@@ -1,7 +1,7 @@
 package site.zido.elise.proxy;
 
-import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.Task;
+import site.zido.elise.http.impl.DefaultResponse;
 
 import java.util.ArrayList;
 import java.util.Collections;

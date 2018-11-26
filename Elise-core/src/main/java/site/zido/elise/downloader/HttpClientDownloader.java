@@ -7,14 +7,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.http.impl.DefaultRequest;
-import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.Site;
 import site.zido.elise.Task;
 import site.zido.elise.http.Http;
+import site.zido.elise.http.Request;
+import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
-import site.zido.elise.select.HTML;
+import site.zido.elise.select.Html;
 import site.zido.elise.select.Text;
 import site.zido.elise.utils.HtmlUtils;
 
@@ -57,7 +57,7 @@ public class HttpClientDownloader implements Downloader {
     }
 
     @Override
-    public DefaultResponse download(Task task, DefaultRequest request) {
+    public DefaultResponse download(Task task, Request request) {
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
@@ -86,7 +86,7 @@ public class HttpClientDownloader implements Downloader {
         }
     }
 
-    private DefaultResponse handleResponse(DefaultRequest request, Task task, HttpResponse httpResponse) throws IOException {
+    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
         byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
 
@@ -97,7 +97,7 @@ public class HttpClientDownloader implements Downloader {
         if (charset == null) {
             charset = task.getSite().getCharset();
         }
-        response.setBody(new HTML(new String(bytes, charset), request.getUrl()));
+        response.setBody(new Html(new String(bytes, charset), request.getUrl()));
         response.setUrl(new Text(request.getUrl()));
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         response.setDownloadSuccess(true);

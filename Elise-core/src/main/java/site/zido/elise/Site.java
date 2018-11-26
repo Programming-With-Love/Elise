@@ -1,8 +1,8 @@
 package site.zido.elise;
 
+import site.zido.elise.select.configurable.ModelExtractor;
 import site.zido.elise.select.matcher.CompilerException;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
-import site.zido.elise.select.configurable.ModelExtractor;
 import site.zido.elise.utils.IdWorker;
 
 import java.util.HashMap;
@@ -407,26 +407,57 @@ public class Site {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Site site = (Site) o;
 
-        if (sleepTime != site.sleepTime) return false;
-        if (retryTimes != site.retryTimes) return false;
-        if (cycleRetryTimes != site.cycleRetryTimes) return false;
-        if (retrySleepTime != site.retrySleepTime) return false;
-        if (timeOut != site.timeOut) return false;
-        if (useGzip != site.useGzip) return false;
-        if (disableCookieManagement != site.disableCookieManagement) return false;
-        if (domain != null ? !domain.equals(site.domain) : site.domain != null) return false;
-        if (userAgent != null ? !userAgent.equals(site.userAgent) : site.userAgent != null) return false;
-        if (defaultCookies != null ? !defaultCookies.equals(site.defaultCookies) : site.defaultCookies != null)
+        if (sleepTime != site.sleepTime) {
             return false;
-        if (cookies != null ? !cookies.equals(site.cookies) : site.cookies != null) return false;
-        if (extras != null ? !extras.equals(site.extras) : site.extras != null) return false;
-        if (charset != null ? !charset.equals(site.charset) : site.charset != null) return false;
-        if (codeAccepter != null ? !codeAccepter.equals(site.codeAccepter) : site.codeAccepter != null) return false;
+        }
+        if (retryTimes != site.retryTimes) {
+            return false;
+        }
+        if (cycleRetryTimes != site.cycleRetryTimes) {
+            return false;
+        }
+        if (retrySleepTime != site.retrySleepTime) {
+            return false;
+        }
+        if (timeOut != site.timeOut) {
+            return false;
+        }
+        if (useGzip != site.useGzip) {
+            return false;
+        }
+        if (disableCookieManagement != site.disableCookieManagement) {
+            return false;
+        }
+        if (domain != null ? !domain.equals(site.domain) : site.domain != null) {
+            return false;
+        }
+        if (userAgent != null ? !userAgent.equals(site.userAgent) : site.userAgent != null) {
+            return false;
+        }
+        if (defaultCookies != null ? !defaultCookies.equals(site.defaultCookies) : site.defaultCookies != null) {
+            return false;
+        }
+        if (cookies != null ? !cookies.equals(site.cookies) : site.cookies != null) {
+            return false;
+        }
+        if (extras != null ? !extras.equals(site.extras) : site.extras != null) {
+            return false;
+        }
+        if (charset != null ? !charset.equals(site.charset) : site.charset != null) {
+            return false;
+        }
+        if (codeAccepter != null ? !codeAccepter.equals(site.codeAccepter) : site.codeAccepter != null) {
+            return false;
+        }
         return headers != null ? headers.equals(site.headers) : site.headers == null;
     }
 

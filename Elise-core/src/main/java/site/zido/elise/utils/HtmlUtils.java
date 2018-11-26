@@ -15,9 +15,14 @@ import java.util.regex.Pattern;
  * @author zido
  */
 public class HtmlUtils {
-    //html5 in meta
+    /**
+     * the meta charset pattern
+     */
     private static final Pattern META_CHARSET_PATTERN = Pattern.compile("<[mM][eE][tT][aA][^>]*([cC][Hh][Aa][Rr][Ss][Ee][Tt][\\s]*=[\\s\\\"']*)([\\w\\d-_]*)[^>]*>");
-    private static final char[] keywords = {'h', 'e', 'a', 'd', '>'};
+    /**
+     * the key words
+     */
+    private static final char[] KEYWORDS = {'h', 'e', 'a', 'd', '>'};
 
     /**
      * get the charset from html
@@ -75,10 +80,12 @@ public class HtmlUtils {
                 if (isStartTag) {
                     int keyIndex = 0;
                     for (int j = i + 1; j < chars.length; j++) {
-                        if ((keyIndex == 0 && chars[j] == ' ') || (keyIndex == 4 && chars[j] == ' ')) {
+                        if (keyIndex == 0 && chars[j] == ' ') {
+                            continue;
+                        } else if (keyIndex == 4 && chars[j] == ' ') {
                             continue;
                         }
-                        if (chars[j] == keywords[keyIndex]) {
+                        if (chars[j] == KEYWORDS[keyIndex]) {
                             keyIndex++;
                             if (keyIndex == 5) {
                                 isStartTag = false;
@@ -92,10 +99,12 @@ public class HtmlUtils {
                 } else if (chars[i + 1] == '/') {
                     int keyIndex = 0;
                     for (int j = i + 2; j < chars.length; j++) {
-                        if ((keyIndex == 0 && chars[j] == ' ') || ((keyIndex == 4) && chars[j] == ' ')) {
+                        if (keyIndex == 0 && chars[j] == ' ') {
+                            continue;
+                        } else if ((keyIndex == 4) && chars[j] == ' ') {
                             continue;
                         }
-                        if (chars[j] == keywords[keyIndex]) {
+                        if (chars[j] == KEYWORDS[keyIndex]) {
                             keyIndex++;
                             if (keyIndex == 5) {
                                 endIndex = j + 1;

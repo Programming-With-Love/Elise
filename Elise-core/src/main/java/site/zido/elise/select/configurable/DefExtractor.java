@@ -4,7 +4,7 @@ import com.virjar.sipsoup.exception.XpathSyntaxErrorException;
 import site.zido.elise.select.CssSelector;
 import site.zido.elise.select.RegexSelector;
 import site.zido.elise.select.Selector;
-import site.zido.elise.select.XPathSelector;
+import site.zido.elise.select.XpathSelector;
 
 /**
  * 抽取器描述
@@ -167,7 +167,7 @@ public class DefExtractor {
             case XPATH:
             default:
                 try {
-                    selector = new XPathSelector(this.value);
+                    selector = new XpathSelector(this.value);
                 } catch (XpathSyntaxErrorException e) {
                     //TODO exception handle
                     throw new RuntimeException(e);

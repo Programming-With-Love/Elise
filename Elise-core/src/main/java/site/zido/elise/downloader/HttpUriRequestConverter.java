@@ -18,7 +18,7 @@ import site.zido.elise.Site;
 import site.zido.elise.http.Cookie;
 import site.zido.elise.http.Header;
 import site.zido.elise.http.Http;
-import site.zido.elise.http.impl.DefaultRequest;
+import site.zido.elise.http.Request;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.utils.UrlUtils;
 
@@ -39,14 +39,14 @@ public class HttpUriRequestConverter {
      * @param proxy   the proxy
      * @return the http client request context
      */
-    public HttpClientRequestContext convert(DefaultRequest request, Site site, Proxy proxy) {
+    public HttpClientRequestContext convert(Request request, Site site, Proxy proxy) {
         HttpClientRequestContext httpClientRequestContext = new HttpClientRequestContext();
         httpClientRequestContext.setHttpUriRequest(convertHttpUriRequest(request, site, proxy));
         httpClientRequestContext.setHttpClientContext(convertHttpClientContext(request, proxy));
         return httpClientRequestContext;
     }
 
-    private HttpClientContext convertHttpClientContext(DefaultRequest request, Proxy proxy) {
+    private HttpClientContext convertHttpClientContext(Request request, Proxy proxy) {
         HttpClientContext httpContext = new HttpClientContext();
         if (proxy != null && proxy.getUsername() != null) {
             AuthState authState = new AuthState();
@@ -65,7 +65,7 @@ public class HttpUriRequestConverter {
         return httpContext;
     }
 
-    private HttpUriRequest convertHttpUriRequest(DefaultRequest request, Site site, Proxy proxy) {
+    private HttpUriRequest convertHttpUriRequest(Request request, Site site, Proxy proxy) {
         RequestBuilder requestBuilder = selectRequestMethod(request).setUri(UrlUtils.fixIllegalCharacterInUrl(request.getUrl()));
         if (site.getHeaders() != null) {
             for (Map.Entry<String, String> headerEntry : site.getHeaders().entrySet()) {
@@ -92,7 +92,7 @@ public class HttpUriRequestConverter {
         return httpUriRequest;
     }
 
-    private RequestBuilder selectRequestMethod(DefaultRequest request) {
+    private RequestBuilder selectRequestMethod(Request request) {
         String method = request.getMethod();
         if (method == null || method.equalsIgnoreCase(Http.Method.GET)) {
             //default get
@@ -111,7 +111,7 @@ public class HttpUriRequestConverter {
         throw new IllegalArgumentException("Illegal HTTP Method " + method);
     }
 
-    private RequestBuilder addFormParams(RequestBuilder requestBuilder, DefaultRequest request) {
+    private RequestBuilder addFormParams(RequestBuilder requestBuilder, Request request) {
         if (request.getBody() != null) {
             ByteArrayEntity entity = new ByteArrayEntity(request.getBody().getBody());
             entity.setContentType(request.getBody().getContentType().getType());

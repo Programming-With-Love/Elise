@@ -1,10 +1,11 @@
 package site.zido.elise.scheduler;
 
+import site.zido.elise.Task;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.Task;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * The type Seed.
@@ -93,5 +94,24 @@ public class Seed implements Serializable {
      */
     public void setResponse(DefaultResponse response) {
         this.response = response;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Seed seed = (Seed) o;
+        return Objects.equals(task, seed.task) &&
+                Objects.equals(request, seed.request) &&
+                Objects.equals(response, seed.response);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(task, request, response);
     }
 }

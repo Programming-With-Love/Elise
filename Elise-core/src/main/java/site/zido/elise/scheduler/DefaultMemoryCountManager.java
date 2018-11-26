@@ -13,8 +13,8 @@ import java.util.Map;
  * @author zido
  */
 public class DefaultMemoryCountManager implements CountManager {
-    private Map<Long, Integer> container = new HashMap<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMemoryCountManager.class);
+    private Map<Long, Integer> container = new HashMap<>();
 
     @Override
     public int count(Task task) {
