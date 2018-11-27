@@ -92,8 +92,7 @@ public class HttpClientDownloader implements Downloader {
 
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
-        String charset = request.getCharset();
-        charset = HtmlUtils.getHtmlCharset(bytes, charset);
+        String charset = HtmlUtils.getHtmlCharset(bytes);
         if (charset == null) {
             charset = task.getSite().getCharset();
         }

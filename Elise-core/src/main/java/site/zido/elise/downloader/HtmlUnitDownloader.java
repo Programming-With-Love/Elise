@@ -20,7 +20,6 @@ import site.zido.elise.utils.ValidateUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 /**
  * The Html unit downloader.
@@ -49,10 +48,6 @@ public class HtmlUnitDownloader implements Downloader {
             URL url = new URL(urlStr);
 
             WebRequest webRequest = new WebRequest(url);
-            String charset = request.getCharset();
-            if (!ValidateUtils.isEmpty(charset)) {
-                webRequest.setCharset(Charset.forName(charset));
-            }
             HtmlPage htmlPage = webClient.getPage(webRequest);
             int statusCode = htmlPage.getWebResponse().getStatusCode();
             response = new DefaultResponse();
