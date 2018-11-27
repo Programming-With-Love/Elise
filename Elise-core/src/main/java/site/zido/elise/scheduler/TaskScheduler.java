@@ -2,7 +2,7 @@ package site.zido.elise.scheduler;
 
 import site.zido.elise.EventListener;
 import site.zido.elise.Task;
-import site.zido.elise.http.impl.DefaultRequest;
+import site.zido.elise.http.Request;
 
 /**
  * the interface of message manager,it provide message service.
@@ -22,7 +22,7 @@ public interface TaskScheduler {
      * @param task    the task
      * @param request the request
      */
-    void pushRequest(Task task, DefaultRequest request);
+    void pushRequest(Task task, Request request);
 
     /**
      * Add event listener.

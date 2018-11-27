@@ -1,7 +1,7 @@
 package site.zido.elise.scheduler;
 
 import site.zido.elise.Task;
-import site.zido.elise.http.impl.DefaultRequest;
+import site.zido.elise.http.Request;
 
 /**
  * duplication processor,It is an extension of the scheduler{@link TaskScheduler}.
@@ -18,7 +18,7 @@ public interface DuplicationProcessor {
      * @param request request
      * @return true /false
      */
-    boolean isDuplicate(Task task, DefaultRequest request);
+    boolean isDuplicate(Task task, Request request);
 
     /**
      * Reset all non-repeating sets of this task so that the task can send the same request as before

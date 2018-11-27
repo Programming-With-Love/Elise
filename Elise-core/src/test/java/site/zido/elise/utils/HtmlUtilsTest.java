@@ -21,7 +21,7 @@ public class HtmlUtilsTest {
     public void testGetHtmlHead() {
         String head = "<head  > adwadefe</head >";
         String html = "<html>" + head + "<body> dwfrewg</body></html>";
-        String headStr = HtmlUtils.getHeadStr(html);
+        String headStr = HtmlUtils.getHeadStr(html.toCharArray());
         Assert.assertEquals(head, headStr);
     }
 }

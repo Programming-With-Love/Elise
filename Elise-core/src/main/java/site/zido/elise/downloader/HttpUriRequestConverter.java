@@ -14,7 +14,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import site.zido.elise.Site;
+import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.http.Cookie;
 import site.zido.elise.http.Header;
 import site.zido.elise.http.Http;
@@ -39,7 +39,7 @@ public class HttpUriRequestConverter {
      * @param proxy   the proxy
      * @return the http client request context
      */
-    public HttpClientRequestContext convert(Request request, Site site, Proxy proxy) {
+    public HttpClientRequestContext convert(Request request, SiteConfig site, Proxy proxy) {
         HttpClientRequestContext httpClientRequestContext = new HttpClientRequestContext();
         httpClientRequestContext.setHttpUriRequest(convertHttpUriRequest(request, site, proxy));
         httpClientRequestContext.setHttpClientContext(convertHttpClientContext(request, proxy));
@@ -65,7 +65,7 @@ public class HttpUriRequestConverter {
         return httpContext;
     }
 
-    private HttpUriRequest convertHttpUriRequest(Request request, Site site, Proxy proxy) {
+    private HttpUriRequest convertHttpUriRequest(Request request, SiteConfig site, Proxy proxy) {
         RequestBuilder requestBuilder = selectRequestMethod(request).setUri(UrlUtils.fixIllegalCharacterInUrl(request.getUrl()));
         if (site.getHeaders() != null) {
             for (Map.Entry<String, String> headerEntry : site.getHeaders().entrySet()) {

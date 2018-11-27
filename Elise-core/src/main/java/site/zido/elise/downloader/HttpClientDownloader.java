@@ -7,10 +7,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Site;
 import site.zido.elise.Task;
+import site.zido.elise.custom.GlobalConfig;
+import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
+import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
@@ -38,11 +40,12 @@ public class HttpClientDownloader implements Downloader {
 
     private ProxyProvider proxyProvider;
 
-    private CloseableHttpClient getHttpClient(Site site) {
+    private CloseableHttpClient getHttpClient(SiteConfig site) {
         if (site == null) {
             return httpClientGenerator.getClient(null);
         }
-        String domain = site.getDomain();
+        //TODO get domain
+        String domain = site.get(SiteConfig.KEY_SITE);
         CloseableHttpClient httpClient = httpClients.get(domain);
         if (httpClient == null) {
             synchronized (this) {
@@ -57,7 +60,7 @@ public class HttpClientDownloader implements Downloader {
     }
 
     @Override
-    public DefaultResponse download(Task task, Request request) {
+    public Response download(Task task, Request request) {
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
@@ -92,11 +95,7 @@ public class HttpClientDownloader implements Downloader {
 
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
-        String charset = request.getCharset();
-        charset = HtmlUtils.getHtmlCharset(bytes, charset);
-        if (charset == null) {
-            charset = task.getSite().getCharset();
-        }
+        String charset = HtmlUtils.getHtmlCharset(bytes, task.getSite().get(GlobalConfig.KEY_CHARSET));
         response.setBody(new Html(new String(bytes, charset), request.getUrl()));
         response.setUrl(new Text(request.getUrl()));
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());

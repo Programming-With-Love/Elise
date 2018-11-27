@@ -1,6 +1,7 @@
 package site.zido.elise;
 
 import site.zido.elise.downloader.AutoSwitchDownloader;
+import site.zido.elise.http.Request;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.DefaultResponseHandler;
 import site.zido.elise.processor.MemorySaver;
@@ -59,7 +60,7 @@ public class Spider {
      */
     public Spider addUrl(String url) {
         Asserts.hasLength(url);
-        DefaultRequest request = new DefaultRequest(url);
+        Request request = new DefaultRequest(url);
         scheduler.pushRequest(taskManager.lastTask(), request);
         return this;
     }
@@ -87,7 +88,7 @@ public class Spider {
         Asserts.notNull(task);
         Asserts.hasLength(url);
         taskManager.addTask(task);
-        DefaultRequest request = new DefaultRequest(url);
+        Request request = new DefaultRequest(url);
         scheduler.pushRequest(task, request);
         return this;
     }

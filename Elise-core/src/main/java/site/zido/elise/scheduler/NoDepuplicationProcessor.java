@@ -1,7 +1,7 @@
 package site.zido.elise.scheduler;
 
 import site.zido.elise.Task;
-import site.zido.elise.http.impl.DefaultRequest;
+import site.zido.elise.http.Request;
 
 /**
  * NoDepuplicationProcessor
@@ -10,7 +10,7 @@ import site.zido.elise.http.impl.DefaultRequest;
  */
 public class NoDepuplicationProcessor implements DuplicationProcessor {
     @Override
-    public boolean isDuplicate(Task task, DefaultRequest request) {
+    public boolean isDuplicate(Task task, Request request) {
         return false;
     }
 

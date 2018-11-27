@@ -1,7 +1,7 @@
 package site.zido.elise;
 
-import site.zido.elise.http.impl.DefaultRequest;
-import site.zido.elise.http.impl.DefaultResponse;
+import site.zido.elise.http.Request;
+import site.zido.elise.http.Response;
 import site.zido.elise.processor.ProcessorEventListener;
 
 /**
@@ -17,7 +17,7 @@ public interface EventListener extends ProcessorEventListener, java.util.EventLi
      * @param request  the request
      * @param response the response
      */
-    default void onDownloadSuccess(Task task, DefaultRequest request, DefaultResponse response) {
+    default void onDownloadSuccess(Task task, Request request, Response response) {
     }
 
     /**
@@ -27,7 +27,7 @@ public interface EventListener extends ProcessorEventListener, java.util.EventLi
      * @param request  the request
      * @param response the response
      */
-    default void onDownloadError(Task task, DefaultRequest request, DefaultResponse response) {
+    default void onDownloadError(Task task, Request request, Response response) {
     }
 
     /**

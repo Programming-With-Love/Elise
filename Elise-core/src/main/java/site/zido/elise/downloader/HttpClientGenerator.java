@@ -14,7 +14,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Site;
+import site.zido.elise.custom.SiteConfig;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -101,11 +101,11 @@ public class HttpClientGenerator {
      * @param site the site
      * @return the client
      */
-    public CloseableHttpClient getClient(Site site) {
+    public CloseableHttpClient getClient(SiteConfig site) {
         return generateClient(site);
     }
 
-    private CloseableHttpClient generateClient(Site site) {
+    private CloseableHttpClient generateClient(SiteConfig site) {
         HttpClientBuilder httpClientBuilder = HttpClients.custom();
 
         httpClientBuilder.setConnectionManager(connectionManager);
@@ -135,7 +135,7 @@ public class HttpClientGenerator {
         return httpClientBuilder.build();
     }
 
-    private void generateCookie(HttpClientBuilder httpClientBuilder, Site site) {
+    private void generateCookie(HttpClientBuilder httpClientBuilder, SiteConfig site) {
         if (site.isDisableCookieManagement()) {
             httpClientBuilder.disableCookieManagement();
             return;

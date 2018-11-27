@@ -1,7 +1,7 @@
 package site.zido.elise.select.configurable;
 
 import site.zido.elise.ResultItem;
-import site.zido.elise.http.impl.DefaultResponse;
+import site.zido.elise.http.Response;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +18,7 @@ public interface ModelExtractor {
      * @param response the response
      * @return the result item
      */
-    List<ResultItem> extract(DefaultResponse response);
+    List<ResultItem> extract(Response response);
 
     /**
      * Extract links list.
@@ -26,5 +26,5 @@ public interface ModelExtractor {
      * @param response the response
      * @return the list
      */
-    Set<String> extractLinks(DefaultResponse response);
+    Set<String> extractLinks(Response response);
 }

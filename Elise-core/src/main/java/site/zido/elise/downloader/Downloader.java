@@ -2,7 +2,7 @@ package site.zido.elise.downloader;
 
 import site.zido.elise.Task;
 import site.zido.elise.http.Request;
-import site.zido.elise.http.impl.DefaultResponse;
+import site.zido.elise.http.Response;
 
 /**
  * downloader interface
@@ -17,7 +17,7 @@ public interface Downloader {
      * @param request the request
      * @return the response
      */
-    DefaultResponse download(Task task, Request request);
+    Response download(Task task, Request request);
 
     /**
      * set thread number

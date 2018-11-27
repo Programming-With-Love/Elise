@@ -1,5 +1,6 @@
 package site.zido.elise;
 
+import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.select.configurable.ModelExtractor;
 
 /**
@@ -20,7 +21,7 @@ public interface Task {
      *
      * @return site site
      */
-    Site getSite();
+    SiteConfig getSite();
 
     /**
      * get the model extractor
