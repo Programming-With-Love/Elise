@@ -5,6 +5,7 @@ import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.ResultItem;
+import site.zido.elise.custom.Config;
 import site.zido.elise.http.Response;
 import site.zido.elise.select.*;
 import site.zido.elise.utils.ValidateUtils;
@@ -26,6 +27,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     private List<LinkSelector> targetUrlSelectors = new ArrayList<>();
     private List<LinkSelector> helpUrlSelectors = new ArrayList<>();
     private DefRootExtractor defRootExtractor;
+    private Config config;
 
     /**
      * construct by {@link DefRootExtractor}
@@ -48,6 +50,15 @@ public class ConfigurableModelExtractor implements ModelExtractor {
                 this.helpUrlSelectors.add(linkSelector);
             }
         }
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
+    @Override
+    public Config getConfig() {
+        return config;
     }
 
     @Override

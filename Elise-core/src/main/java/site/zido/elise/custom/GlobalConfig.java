@@ -23,7 +23,7 @@ public class GlobalConfig extends MappedConfig {
      */
     public static final String KEY_SLEEP_TIME = "sleepTime";
     /**
-     * The constant KEY_RETRY_TIMES.
+     * The number of times the request was retried when the download failed
      */
     public static final String KEY_RETRY_TIMES = "retryTimes";
     /**
@@ -50,6 +50,12 @@ public class GlobalConfig extends MappedConfig {
      * The constant KEY_PROXY.
      */
     public static final String KEY_PROXY = "proxy";
+
+    /**
+     * The number of retries that were added to the task scheduler when the download failed
+     */
+    public static final String KEY_SCHEDULE_RETRY_TIMES = "scheduleRetryTimes";
+
     private static final long serialVersionUID = -6234664119002484979L;
 
     /**

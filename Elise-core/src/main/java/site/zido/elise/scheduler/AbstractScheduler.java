@@ -4,7 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.EventListener;
 import site.zido.elise.Task;
-import site.zido.elise.custom.SiteConfig;
+import site.zido.elise.custom.Config;
+import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
@@ -14,7 +15,6 @@ import site.zido.elise.processor.ResponseHandler;
 import site.zido.elise.select.matcher.CompilerException;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
 import site.zido.elise.utils.EventUtils;
-import site.zido.elise.utils.UrlUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,10 +58,6 @@ public abstract class AbstractScheduler implements TaskScheduler {
             }
             LOGGER.debug("push to queue {}", request.getUrl());
             getCountManager().incr(task, 1);
-            SiteConfig site = task.getSite();
-            if (site.getDomain() == null && request.getUrl() != null) {
-                site.setDomain(UrlUtils.getDomain(request.getUrl()));
-            }
             pushWhenNoDuplicate(task, request);
         }
     }
@@ -86,12 +82,12 @@ public abstract class AbstractScheduler implements TaskScheduler {
             countEvent(state, task);
             return;
         }
+        final Config config = task.modelExtractor().getConfig();
         if (state != STATE_CANCEL_NOW) {
-            SiteConfig site = task.getSite();
-            String codeAccepter = site.getCodeAccepter();
+            String successCode = config.get(GlobalConfig.KEY_SUCCESS_CODE);
             NumberExpressMatcher matcher;
             try {
-                matcher = new NumberExpressMatcher(codeAccepter);
+                matcher = new NumberExpressMatcher(successCode);
             } catch (CompilerException e) {
                 throw new RuntimeException(e);
             }
@@ -104,15 +100,14 @@ public abstract class AbstractScheduler implements TaskScheduler {
                     }
                 }
                 countEvent(state, task);
-                sleep(site.getSleepTime());
+                sleep(config.get(config.get(GlobalConfig.KEY_SLEEP_TIME)));
                 return;
             }
         }
         countEvent(state, task);
         if (state == -1) {
-            SiteConfig site = task.getSite();
-            if (site.getCycleRetryTimes() == 0) {
-                sleep(site.getSleepTime());
+            if (config.<Integer>get(GlobalConfig.KEY_RETRY_TIMES) == 0) {
+                sleep(config.get(GlobalConfig.KEY_SLEEP_TIME));
             } else {
                 // for cycle retry
                 doCycleRetry(task, request);

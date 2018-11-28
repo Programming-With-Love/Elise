@@ -1,7 +1,8 @@
 package site.zido.elise.downloader;
 
 import site.zido.elise.Task;
-import site.zido.elise.custom.SiteConfig;
+import site.zido.elise.custom.Config;
+import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.proxy.ProxyProvider;
@@ -12,13 +13,6 @@ import site.zido.elise.proxy.ProxyProvider;
  * @author zido
  */
 public class AutoSwitchDownloader implements Downloader {
-    /**
-     * The constant DOWNLOAD_MODE.
-     */
-    public static final String DOWNLOAD_MODE = "downloadMode";
-    /**
-     * The constant DOWNLOAD_MODE_NORMAL.
-     */
     public static final String DOWNLOAD_MODE_NORMAL = "normal";
     /**
      * The constant DOWNLOAD_MODE_HTML_UNIT.
@@ -37,13 +31,14 @@ public class AutoSwitchDownloader implements Downloader {
 
     @Override
     public Response download(Task task, Request request) {
-        SiteConfig site = task.getSite();
-        Object extra = site.getExtra(DOWNLOAD_MODE);
-        if (DOWNLOAD_MODE_HTML_UNIT.equalsIgnoreCase(String.valueOf(extra))) {
+        final Config config = task.modelExtractor().getConfig();
+        String mode = config.get(GlobalConfig.KEY_DOWNLOAD_MODE);
+        if (DOWNLOAD_MODE_HTML_UNIT.equalsIgnoreCase(String.valueOf(mode))) {
             return htmlUnitDownloader.download(task, request);
-        } else {
+        } else if (DOWNLOAD_MODE_NORMAL.equalsIgnoreCase(String.valueOf(mode))) {
             return httpClientDownloader.download(task, request);
         }
+        return httpClientDownloader.download(task, request);
     }
 
     @Override
