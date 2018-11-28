@@ -138,8 +138,14 @@ public abstract class AbstractScheduler implements TaskScheduler {
      */
     protected Response onDownload(Task task, Request request) {
         final Response response = getDownloader().download(task, request);
-
-        if (response.isDownloadSuccess()) {
+        String successCode = task.modelExtractor().getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
+        NumberExpressMatcher matcher;
+        try {
+            matcher = new NumberExpressMatcher(successCode);
+        } catch (CompilerException e) {
+            throw new RuntimeException(e);
+        }
+        if (matcher.matches(response.getStatusCode())) {
             EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadSuccess(task, request, response));
         } else {
             EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadError(task, request, response));
@@ -155,17 +161,19 @@ public abstract class AbstractScheduler implements TaskScheduler {
     }
 
     private void doCycleRetry(Task task, Request request) {
-        Object cycleTriedTimesObject = request.getExtra(DefaultRequest.CYCLE_TRIED_TIMES);
+        Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
-            pushRequest(task, new DefaultRequest(request).putExtra(DefaultRequest.CYCLE_TRIED_TIMES, 1));
+            request.putExtra(Request.CYCLE_TRIED_TIMES, 1);
+            pushRequest(task, request);
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
             cycleTriedTimes++;
-            if (cycleTriedTimes < task.getSite().getCycleRetryTimes()) {
-                pushRequest(task, new DefaultRequest(request).putExtra(DefaultRequest.CYCLE_TRIED_TIMES, cycleTriedTimes));
+            if (cycleTriedTimes < task.modelExtractor().getConfig().<Integer>get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES)) {
+                request.putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes);
+                pushRequest(task, request);
             }
         }
-        sleep(task.getSite().getRetrySleepTime());
+        sleep(task.modelExtractor().getConfig().get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES));
     }
 
     private void sleep(int time) {
@@ -178,7 +186,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
 
 
     private boolean shouldReserved(Request request) {
-        return request.getExtra(DefaultRequest.CYCLE_TRIED_TIMES) != null;
+        return request.getExtra(Request.CYCLE_TRIED_TIMES) != null;
     }
 
     private boolean noNeedToRemoveDuplicate(Request request) {

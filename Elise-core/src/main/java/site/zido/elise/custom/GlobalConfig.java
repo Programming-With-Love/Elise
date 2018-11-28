@@ -1,5 +1,8 @@
 package site.zido.elise.custom;
 
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * The type Global config.
  *
@@ -155,5 +158,24 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setProxy(String proxy) {
         put(KEY_PROXY, proxy);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Map || o instanceof Config)) {
+            return false;
+        }
+        Object otherValue;
+        for (String s : this.keySet()) {
+            if (o instanceof Map) {
+                otherValue = ((Map) o).get(s);
+            } else {
+                otherValue = ((Config) o).get(s);
+            }
+            if (!Objects.equals(get(s), otherValue)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
