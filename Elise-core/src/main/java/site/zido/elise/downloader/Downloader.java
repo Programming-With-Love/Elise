@@ -19,10 +19,4 @@ public interface Downloader {
      */
     Response download(Task task, Request request);
 
-    /**
-     * set thread number
-     *
-     * @param threadNum the thread number
-     */
-    void setThread(int threadNum);
 }

@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.Task;
 import site.zido.elise.custom.GlobalConfig;
-import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
@@ -32,37 +31,18 @@ import java.util.Map;
  * @author zido
  */
 public class HttpClientDownloader implements Downloader {
-    private final Map<String, CloseableHttpClient> httpClients = new HashMap<>();
-    private Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
-    private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
-
-    private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
-
+    private static final Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
+    private CloseableHttpClient client;
     private ProxyProvider proxyProvider;
 
-    private CloseableHttpClient getHttpClient(SiteConfig site) {
-        if (site == null) {
-            return httpClientGenerator.getClient(null);
-        }
-        //TODO get domain
-        String domain = site.get(SiteConfig.KEY_SITE);
-        CloseableHttpClient httpClient = httpClients.get(domain);
-        if (httpClient == null) {
-            synchronized (this) {
-                httpClient = httpClients.get(domain);
-                if (httpClient == null) {
-                    httpClient = httpClientGenerator.getClient(site);
-                    httpClients.put(domain, httpClient);
-                }
-            }
-        }
-        return httpClient;
+    public HttpClientDownloader(CloseableHttpClient client, ProxyProvider proxyProvider) {
+        this.client = client;
+        this.proxyProvider = proxyProvider;
     }
 
     @Override
     public Response download(Task task, Request request) {
         CloseableHttpResponse httpResponse = null;
-        CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         HttpClientRequestContext requestContext = httpUriRequestConverter.convert(request, task.getSite(), proxy);
         DefaultResponse response = DefaultResponse.fail();
@@ -112,35 +92,4 @@ public class HttpClientDownloader implements Downloader {
         return results;
     }
 
-    @Override
-    public void setThread(int thread) {
-        httpClientGenerator.setPoolSize(thread);
-    }
-
-    /**
-     * Sets http client generator.
-     *
-     * @param generator the generator
-     */
-    public void setHttpClientGenerator(HttpClientGenerator generator) {
-        this.httpClientGenerator = generator;
-    }
-
-    /**
-     * Sets http uri request converter.
-     *
-     * @param httpUriRequestConverter the http uri request converter
-     */
-    public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
-        this.httpUriRequestConverter = httpUriRequestConverter;
-    }
-
-    /**
-     * Sets proxy provider.
-     *
-     * @param proxyProvider the proxy provider
-     */
-    public void setProxyProvider(ProxyProvider proxyProvider) {
-        this.proxyProvider = proxyProvider;
-    }
 }

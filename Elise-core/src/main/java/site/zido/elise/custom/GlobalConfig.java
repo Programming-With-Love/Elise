@@ -30,9 +30,9 @@ public class GlobalConfig extends MappedConfig {
      */
     public static final String KEY_RETRY_TIMES = "retryTimes";
     /**
-     * The constant KEY_OUT_TIME.
+     * The constant KEY_TIME_OUT.
      */
-    public static final String KEY_OUT_TIME = "outTime";
+    public static final String KEY_TIME_OUT = "outTime";
     /**
      * The constant KEY_DOWNLOAD_MODE.
      */
@@ -52,12 +52,16 @@ public class GlobalConfig extends MappedConfig {
     /**
      * The constant KEY_PROXY.
      */
-    public static final String KEY_PROXY = "proxy";
+    public static final String KEY_PROXIABLE = "proxiable";
 
     /**
      * The number of retries that were added to the task scheduler when the download failed
      */
     public static final String KEY_SCHEDULE_RETRY_TIMES = "scheduleRetryTimes";
+
+    public static final String KEY_POOL_SIZE = "poolSize";
+
+    public static final String KEY_USE_GZIP = "useGzip";
 
     private static final long serialVersionUID = -6234664119002484979L;
 
@@ -112,7 +116,7 @@ public class GlobalConfig extends MappedConfig {
      * @param outTime the out time
      */
     public void setOutTime(String outTime) {
-        put(KEY_OUT_TIME, outTime);
+        put(KEY_TIME_OUT, outTime);
     }
 
     /**
@@ -152,12 +156,16 @@ public class GlobalConfig extends MappedConfig {
     }
 
     /**
-     * Sets proxy.
+     * Sets proxiable.
      *
-     * @param proxy the proxy
+     * @param proxiable the proxiable
      */
-    public void setProxy(String proxy) {
-        put(KEY_PROXY, proxy);
+    public void setProxiable(boolean proxiable) {
+        put(KEY_PROXIABLE, proxiable);
+    }
+
+    public void setPoolSize(int poolSize) {
+        put(KEY_POOL_SIZE, poolSize);
     }
 
     @Override
