@@ -18,8 +18,6 @@ import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.proxy.Proxy;
-import site.zido.elise.proxy.ProxyProvider;
 import site.zido.elise.select.Html;
 import site.zido.elise.select.Text;
 import site.zido.elise.utils.HtmlUtils;
@@ -33,10 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author zido
  */
-public class HttpClientDownloader implements ProxiableDownloader {
+public class HttpClientDownloader implements Downloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloader.class);
     private CloseableHttpClient client;
-    private ProxyProvider proxyProvider;
     private ConcurrentHashMap<Long, HttpClientContext> contextContainer = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Long, HttpUriRequest> requestContainer = new ConcurrentHashMap<>();
 
@@ -47,7 +44,6 @@ public class HttpClientDownloader implements ProxiableDownloader {
     @Override
     public Response download(Task task, Request request) {
         CloseableHttpResponse httpResponse = null;
-        Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
         HttpClientContext context = getContext(task);
         HttpUriRequest httpUriRequest = buildRequest(task, request);
         DefaultResponse response = DefaultResponse.fail();
@@ -67,9 +63,6 @@ public class HttpClientDownloader implements ProxiableDownloader {
                 } catch (IOException e) {
                     LOGGER.error("http response close failed", e);
                 }
-            }
-            if (proxyProvider != null && proxy != null) {
-                proxyProvider.returnProxy(proxy, response, task);
             }
         }
     }
@@ -123,10 +116,5 @@ public class HttpClientDownloader implements ProxiableDownloader {
             }
             return builder.build();
         });
-    }
-
-    @Override
-    public void setProxyProvider(ProxyProvider provider) {
-        proxyProvider = provider;
     }
 }

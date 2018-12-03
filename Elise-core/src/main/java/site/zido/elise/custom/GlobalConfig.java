@@ -86,7 +86,7 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_USER_AGENT, userAgent);
     }
 
-    public String getUserAgen() {
+    public String getUserAgent() {
         return get(KEY_USER_AGENT);
     }
 
@@ -99,7 +99,7 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_COOKIE, cookie);
     }
 
-    public String getCookie() {
+    public Map<String, String> getCookies() {
         return get(KEY_COOKIE);
     }
 
@@ -214,5 +214,17 @@ public class GlobalConfig extends MappedConfig {
 
     public List<Header> getHeaders() {
         return (List<Header>) getOrDefault(KEY_HEADERS, Collections.EMPTY_LIST);
+    }
+
+    public boolean getUseGzip() {
+        return (boolean) getOrDefault(KEY_USE_GZIP, true);
+    }
+
+    public int getTimeout() {
+        return (int) getOrDefault(KEY_TIME_OUT, 5000);
+    }
+
+    public int getRetryTimes() {
+        return (int) getOrDefault(KEY_RETRY_TIMES, 3);
     }
 }

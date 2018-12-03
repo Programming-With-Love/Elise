@@ -18,7 +18,6 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.Task;
-import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.httpclient.CustomRedirectStrategy;
 
@@ -31,6 +30,11 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Http client downloader factory.
+ *
+ * @author zido
+ */
 public class HttpClientDownloaderFactory implements DownloaderFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloaderFactory.class);
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
@@ -38,6 +42,9 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
     private PoolingHttpClientConnectionManager connectionManager;
     private Map<Long, Downloader> downloaderContainer = new ConcurrentHashMap<>();
 
+    /**
+     * Instantiates a new Http client downloader factory.
+     */
     public HttpClientDownloaderFactory() {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -85,13 +92,13 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
     @Override
     public Downloader create(Task task) {
         return downloaderContainer.computeIfAbsent(task.getId(), key -> {
-            Config config = task.modelExtractor().getConfig();
             HttpClientBuilder builder = HttpClients.custom();
             builder.setConnectionManager(connectionManager);
-            String userAgent = config.get(GlobalConfig.KEY_USER_AGENT);
+            GlobalConfig config = new GlobalConfig(task.modelExtractor().getConfig());
+            String userAgent = config.getUserAgent();
             builder.setUserAgent(userAgent);
-            Boolean useGzip = config.get(GlobalConfig.KEY_USE_GZIP);
-            if (useGzip != null && useGzip) {
+            boolean useGzip = config.getUseGzip();
+            if (useGzip) {
                 builder.addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
                     if (!request.containsHeader(ACCEPT_ENCODING)) {
                         request.addHeader(ACCEPT_ENCODING, GZIP);
@@ -102,20 +109,19 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
 
             SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
             socketConfigBuilder.setSoKeepAlive(true).setTcpNoDelay(true);
-            int timeout = config.get(GlobalConfig.KEY_TIME_OUT);
+            int timeout = config.getTimeout();
             socketConfigBuilder.setSoTimeout(timeout);
             SocketConfig socketConfig = socketConfigBuilder.build();
             builder.setDefaultSocketConfig(socketConfig);
             connectionManager.setDefaultSocketConfig(socketConfig);
-            int retryTimes = config.get(GlobalConfig.KEY_RETRY_TIMES);
+            int retryTimes = config.getRetryTimes();
             builder.setRetryHandler(new StandardHttpRequestRetryHandler(retryTimes, true));
-
             boolean disableCookie = config.get(GlobalConfig.KEY_DISABLE_COOKIE);
             if (disableCookie) {
                 builder.disableCookieManagement();
             } else {
                 CookieStore store = new BasicCookieStore();
-                Map<String, String> cookies = config.get(GlobalConfig.KEY_COOKIE);
+                Map<String, String> cookies = config.getCookies();
                 for (Map.Entry<String, String> entry : cookies.entrySet()) {
                     BasicClientCookie cookie = new BasicClientCookie(entry.getKey(), entry.getValue());
                     store.addCookie(cookie);
