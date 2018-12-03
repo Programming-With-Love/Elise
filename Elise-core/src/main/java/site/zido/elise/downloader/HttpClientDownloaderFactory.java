@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.Task;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
+import site.zido.elise.downloader.httpclient.CustomRedirectStrategy;
+import site.zido.elise.proxy.ProxyProvider;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -34,14 +36,16 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
     private static final String GZIP = "gzip";
     private PoolingHttpClientConnectionManager connectionManager;
+    private final ProxyProvider proxyProvider;
 
-    public HttpClientDownloaderFactory() {
+    public HttpClientDownloaderFactory(ProxyProvider provider) {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
                 .register("https", buildSSLConnectionSocketFactory())
                 .build();
         connectionManager = new PoolingHttpClientConnectionManager();
         connectionManager.setDefaultMaxPerRoute(100);
+        this.proxyProvider = provider;
     }
 
     private SSLConnectionSocketFactory buildSSLConnectionSocketFactory() {
@@ -118,6 +122,6 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
             }
             builder.setDefaultCookieStore(store);
         }
-        new HttpClientDownloader();
+        return new HttpClientDownloader(builder.build(), proxyProvider);
     }
 }

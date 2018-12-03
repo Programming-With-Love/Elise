@@ -1,5 +1,9 @@
 package site.zido.elise.custom;
 
+import site.zido.elise.http.Header;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -62,8 +66,16 @@ public class GlobalConfig extends MappedConfig {
     public static final String KEY_POOL_SIZE = "poolSize";
 
     public static final String KEY_USE_GZIP = "useGzip";
+    public static final String KEY_PROXY = "proxy";
 
     private static final long serialVersionUID = -6234664119002484979L;
+
+    public GlobalConfig() {
+    }
+
+    public GlobalConfig(Map<String, Object> config) {
+        super(config);
+    }
 
     /**
      * Sets user agent.
@@ -72,6 +84,10 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setUserAgent(String userAgent) {
         put(KEY_USER_AGENT, userAgent);
+    }
+
+    public String getUserAgen() {
+        return get(KEY_USER_AGENT);
     }
 
     /**
@@ -83,6 +99,10 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_COOKIE, cookie);
     }
 
+    public String getCookie() {
+        return get(KEY_COOKIE);
+    }
+
     /**
      * Sets charset.
      *
@@ -90,6 +110,10 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setCharset(String charset) {
         put(KEY_CHARSET, charset);
+    }
+
+    public String getCharset() {
+        return get(KEY_CHARSET);
     }
 
     /**
@@ -100,6 +124,7 @@ public class GlobalConfig extends MappedConfig {
     public void setSleepTime(String sleepTime) {
         put(KEY_SLEEP_TIME, sleepTime);
     }
+
 
     /**
      * Sets retry times.
@@ -146,6 +171,10 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_DISABLE_COOKIE, disableCookie);
     }
 
+    public boolean getDisableCookie() {
+        return (boolean) getOrDefault(KEY_DISABLE_COOKIE, true);
+    }
+
     /**
      * Sets headers.
      *
@@ -170,20 +199,20 @@ public class GlobalConfig extends MappedConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Map || o instanceof Config)) {
+        if (!(o instanceof Map)) {
             return false;
         }
         Object otherValue;
         for (String s : this.keySet()) {
-            if (o instanceof Map) {
-                otherValue = ((Map) o).get(s);
-            } else {
-                otherValue = ((Config) o).get(s);
-            }
+            otherValue = ((Map) o).get(s);
             if (!Objects.equals(get(s), otherValue)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public List<Header> getHeaders() {
+        return (List<Header>) getOrDefault(KEY_HEADERS, Collections.EMPTY_LIST);
     }
 }

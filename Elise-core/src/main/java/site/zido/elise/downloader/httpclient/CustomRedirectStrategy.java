@@ -1,4 +1,4 @@
-package site.zido.elise.downloader;
+package site.zido.elise.downloader.httpclient;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;

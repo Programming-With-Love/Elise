@@ -1,5 +1,10 @@
 package site.zido.elise.custom;
 
+import site.zido.elise.proxy.Proxy;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConfigUtils {
     private ConfigUtils() {
     }
@@ -15,9 +20,9 @@ public class ConfigUtils {
         return result;
     }
 
-    public Config mergeConfig(MappedConfig... config) {
-        MappedConfig result = new MappedConfig();
-        for (MappedConfig c : config) {
+    public Config mergeConfig(Config... config) {
+        Map<String, Object> result = new HashMap<>();
+        for (Config c : config) {
             for (String s : c.keySet()) {
                 final Object value = c.get(s);
                 if (value != null) {
@@ -25,6 +30,6 @@ public class ConfigUtils {
                 }
             }
         }
-        return result;
+        return new MappedConfig(result);
     }
 }
