@@ -28,7 +28,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("description")
                 .setValue("p.blog-content")
                 .setType(ExpressionType.CSS));
-        DefaultTask task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
+        DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor);
         spider.addUrl(task, "http://zido.site");
         spider.addEventListener(new EventListener() {
             @Override
@@ -60,7 +60,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
+        Task task = new DefaultTask(IdWorker.nextId(), extractor);
         spider.addUrl(task, "http://github.com/zidoshare");
         spider.addEventListener(new EventListener() {
             @Override
@@ -92,7 +92,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
+        Task task = new DefaultTask(IdWorker.nextId(), extractor);
         spider.addEventListener(new EventListener() {
             @Override
             public void onCancel() {
@@ -121,7 +121,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        Task task = new DefaultTask(IdWorker.nextId(), new Site(), extractor);
+        Task task = new DefaultTask(IdWorker.nextId(), extractor);
         spider.addEventListener(new EventListener() {
             @Override
             public void onPause(Task task) {

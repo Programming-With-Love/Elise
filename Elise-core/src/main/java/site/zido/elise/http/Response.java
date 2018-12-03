@@ -1,5 +1,6 @@
 package site.zido.elise.http;
 
+import site.zido.elise.select.Selectable;
 import site.zido.elise.select.Text;
 
 /**
@@ -28,4 +29,11 @@ public interface Response extends HttpModel {
      * @return the url
      */
     Text getUrl();
+
+    /**
+     * get body from response
+     *
+     * @return body
+     */
+    Selectable getBody();
 }

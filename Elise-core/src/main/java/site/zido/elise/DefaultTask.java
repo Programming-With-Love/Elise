@@ -1,6 +1,5 @@
 package site.zido.elise;
 
-import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.select.configurable.ConfigurableModelExtractor;
 import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ModelExtractor;
@@ -13,7 +12,6 @@ import site.zido.elise.select.configurable.ModelExtractor;
  */
 public class DefaultTask implements Task {
     private Long id;
-    private SiteConfig site;
     private DefRootExtractor defExtractor;
 
     /**
@@ -27,12 +25,10 @@ public class DefaultTask implements Task {
      * Instantiates a new Default task.
      *
      * @param id        the id
-     * @param site      the site
      * @param extractor the extractor
      */
-    public DefaultTask(Long id, SiteConfig site, DefRootExtractor extractor) {
+    public DefaultTask(Long id, DefRootExtractor extractor) {
         this.id = id;
-        this.site = site;
         this.defExtractor = extractor;
     }
 
@@ -49,22 +45,6 @@ public class DefaultTask implements Task {
      */
     public DefaultTask setId(Long id) {
         this.id = id;
-        return this;
-    }
-
-    @Override
-    public SiteConfig getSite() {
-        return site;
-    }
-
-    /**
-     * Sets site.
-     *
-     * @param site the site
-     * @return the site
-     */
-    public DefaultTask setSite(SiteConfig site) {
-        this.site = site;
         return this;
     }
 

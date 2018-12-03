@@ -17,13 +17,6 @@ public interface Task {
     Long getId();
 
     /**
-     * Get website configuration
-     *
-     * @return site site
-     */
-    SiteConfig getSite();
-
-    /**
      * get the model extractor
      *
      * @return extractors model extractor

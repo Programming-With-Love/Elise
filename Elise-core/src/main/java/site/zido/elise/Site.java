@@ -1,6 +1,5 @@
 package site.zido.elise;
 
-import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.select.configurable.ModelExtractor;
 import site.zido.elise.select.matcher.CompilerException;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
@@ -309,11 +308,6 @@ public class Site {
             @Override
             public Long getId() {
                 return IdWorker.nextId();
-            }
-
-            @Override
-            public SiteConfig getSite() {
-                return Site.this;
             }
 
             @Override

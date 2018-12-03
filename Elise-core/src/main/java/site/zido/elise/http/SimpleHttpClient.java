@@ -52,54 +52,6 @@ public class SimpleHttpClient {
     }
 
     /**
-     * Get http result.
-     *
-     * @param url the url
-     * @return the http result
-     */
-    public static HttpResult get(String url) {
-        return DEFAULT_HTTP.change().url(url).method(HTTPMethod.GET).clearBody().holdCookie(false).build().send();
-    }
-
-    /**
-     * Post http result.
-     *
-     * @param url         the url
-     * @param paramMap    the param map
-     * @param contentType the content type
-     * @return the http result
-     */
-    public static HttpResult post(String url, Map<String, Object> paramMap, ContentType contentType) {
-        HttpBuilder builder = DEFAULT_HTTP.change().method(HTTPMethod.POST).url(url).clearBody().contentType(contentType).holdCookie(false);
-        builder.paramMap = paramMap;
-        return builder.build().send();
-    }
-
-    /**
-     * Delete http result.
-     *
-     * @param url the url
-     * @return the http result
-     */
-    public static HttpResult delete(String url) {
-        return DEFAULT_HTTP.change().url(url).method(HTTPMethod.DELETE).holdCookie(false).clearBody().build().send();
-    }
-
-    /**
-     * Patch http result.
-     *
-     * @param url         the url
-     * @param paramMap    the param map
-     * @param contentType the content type
-     * @return the http result
-     */
-    public static HttpResult patch(String url, Map<String, Object> paramMap, ContentType contentType) {
-        HttpBuilder builder = DEFAULT_HTTP.change().method(HTTPMethod.PATCH).url(url).clearBody().contentType(contentType).holdCookie(false);
-        builder.paramMap = paramMap;
-        return builder.build().send();
-    }
-
-    /**
      * Send http result.
      *
      * @return the http result

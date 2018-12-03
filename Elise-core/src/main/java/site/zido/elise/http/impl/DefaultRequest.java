@@ -55,23 +55,6 @@ public class DefaultRequest implements Request {
 
     /**
      * Instantiates a new Default request.
-     *
-     * @param request the request
-     */
-    public DefaultRequest(DefaultRequest request) {
-        this.url = request.url;
-        this.method = request.method;
-        this.extras = request.extras;
-        this.cookies = request.cookies;
-        this.headers = request.headers;
-        this.charset = request.charset;
-        this.body = request.body;
-        this.priority = request.priority;
-        this.binaryContent = request.binaryContent;
-    }
-
-    /**
-     * Instantiates a new Default request.
      */
     public DefaultRequest() {
 

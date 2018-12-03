@@ -1,5 +1,6 @@
 package site.zido.elise;
 
+import site.zido.elise.downloader.DefaultDownloaderFactory;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.DefaultResponseHandler;
@@ -43,8 +44,8 @@ public class Spider {
         Spider spider = new Spider();
         final DefaultTaskScheduler scheduler = new DefaultTaskScheduler(threadNum);
         spider.scheduler = scheduler;
-        //TODO set downloader factory
-        scheduler.setResponsehandler(new DefaultResponseHandler(new MemorySaver()));
+        scheduler.setDownloaderFactory(new DefaultDownloaderFactory());
+        scheduler.setResponseHandler(new DefaultResponseHandler(new MemorySaver()));
         scheduler.setDuplicationProcessor(new HashSetDeduplicationProcessor());
         scheduler.setCountManager(new DefaultMemoryCountManager());
         spider.taskManager = new DefaultMemoryTaskManager();

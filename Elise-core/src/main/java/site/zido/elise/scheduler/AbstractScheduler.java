@@ -92,7 +92,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 throw new RuntimeException(e);
             }
             if (matcher.matches(response.getStatusCode())) {
-                Set<String> links = getResponsehandler().process(task, response);
+                Set<String> links = getResponseHandler().process(task, response);
                 //will no longer process any pages when the task is in the cancel_now state
                 if (state != STATE_CANCEL) {
                     for (String link : links) {
@@ -137,7 +137,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
      * @return the default response
      */
     protected Response onDownload(Task task, Request request) {
-        final Response response = getDownloader().download(task, request);
+        final Response response = getDownloader(task).download(task, request);
         String successCode = task.modelExtractor().getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
         NumberExpressMatcher matcher;
         try {
@@ -205,8 +205,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
     @Override
     public void addEventListener(EventListener listener) {
         listeners.add(listener);
-        if (getResponsehandler() instanceof ListenableResponseHandler) {
-            ((ListenableResponseHandler) getResponsehandler()).addEventListener(listener);
+        if (getResponseHandler() instanceof ListenableResponseHandler) {
+            ((ListenableResponseHandler) getResponseHandler()).addEventListener(listener);
         }
     }
 
@@ -255,15 +255,16 @@ public abstract class AbstractScheduler implements TaskScheduler {
      * Gets downloader.
      *
      * @return the downloader
+     * @param task
      */
-    public abstract Downloader getDownloader();
+    public abstract Downloader getDownloader(Task task);
 
     /**
      * Gets response handler.
      *
      * @return the response handler
      */
-    public abstract ResponseHandler getResponsehandler();
+    public abstract ResponseHandler getResponseHandler();
 
     /**
      * Gets count manager.

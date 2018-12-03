@@ -21,7 +21,6 @@ import site.zido.elise.Task;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.httpclient.CustomRedirectStrategy;
-import site.zido.elise.proxy.ProxyProvider;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -30,22 +29,22 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpClientDownloaderFactory implements DownloaderFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloaderFactory.class);
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
     private static final String GZIP = "gzip";
     private PoolingHttpClientConnectionManager connectionManager;
-    private final ProxyProvider proxyProvider;
+    private Map<Long, Downloader> downloaderContainer = new ConcurrentHashMap<>();
 
-    public HttpClientDownloaderFactory(ProxyProvider provider) {
+    public HttpClientDownloaderFactory() {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
                 .register("https", buildSSLConnectionSocketFactory())
                 .build();
-        connectionManager = new PoolingHttpClientConnectionManager();
+        connectionManager = new PoolingHttpClientConnectionManager(reg);
         connectionManager.setDefaultMaxPerRoute(100);
-        this.proxyProvider = provider;
     }
 
     private SSLConnectionSocketFactory buildSSLConnectionSocketFactory() {
@@ -85,43 +84,45 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
 
     @Override
     public Downloader create(Task task) {
-        Config config = task.modelExtractor().getConfig();
-        HttpClientBuilder builder = HttpClients.custom();
-        builder.setConnectionManager(connectionManager);
-        String userAgent = config.get(GlobalConfig.KEY_USER_AGENT);
-        builder.setUserAgent(userAgent);
-        Boolean useGzip = config.get(GlobalConfig.KEY_USE_GZIP);
-        if (useGzip != null && useGzip) {
-            builder.addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
-                if (!request.containsHeader(ACCEPT_ENCODING)) {
-                    request.addHeader(ACCEPT_ENCODING, GZIP);
-                }
-            });
-        }
-        builder.setRedirectStrategy(new CustomRedirectStrategy());
-
-        SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
-        socketConfigBuilder.setSoKeepAlive(true).setTcpNoDelay(true);
-        int timeout = config.get(GlobalConfig.KEY_TIME_OUT);
-        socketConfigBuilder.setSoTimeout(timeout);
-        SocketConfig socketConfig = socketConfigBuilder.build();
-        builder.setDefaultSocketConfig(socketConfig);
-        connectionManager.setDefaultSocketConfig(socketConfig);
-        int retryTimes = config.get(GlobalConfig.KEY_RETRY_TIMES);
-        builder.setRetryHandler(new StandardHttpRequestRetryHandler(retryTimes, true));
-
-        boolean disableCookie = config.get(GlobalConfig.KEY_DISABLE_COOKIE);
-        if (disableCookie) {
-            builder.disableCookieManagement();
-        } else {
-            CookieStore store = new BasicCookieStore();
-            Map<String, String> cookies = config.get(GlobalConfig.KEY_COOKIE);
-            for (Map.Entry<String, String> entry : cookies.entrySet()) {
-                BasicClientCookie cookie = new BasicClientCookie(entry.getKey(), entry.getValue());
-                store.addCookie(cookie);
+        return downloaderContainer.computeIfAbsent(task.getId(), key -> {
+            Config config = task.modelExtractor().getConfig();
+            HttpClientBuilder builder = HttpClients.custom();
+            builder.setConnectionManager(connectionManager);
+            String userAgent = config.get(GlobalConfig.KEY_USER_AGENT);
+            builder.setUserAgent(userAgent);
+            Boolean useGzip = config.get(GlobalConfig.KEY_USE_GZIP);
+            if (useGzip != null && useGzip) {
+                builder.addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
+                    if (!request.containsHeader(ACCEPT_ENCODING)) {
+                        request.addHeader(ACCEPT_ENCODING, GZIP);
+                    }
+                });
             }
-            builder.setDefaultCookieStore(store);
-        }
-        return new HttpClientDownloader(builder.build(), proxyProvider);
+            builder.setRedirectStrategy(new CustomRedirectStrategy());
+
+            SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
+            socketConfigBuilder.setSoKeepAlive(true).setTcpNoDelay(true);
+            int timeout = config.get(GlobalConfig.KEY_TIME_OUT);
+            socketConfigBuilder.setSoTimeout(timeout);
+            SocketConfig socketConfig = socketConfigBuilder.build();
+            builder.setDefaultSocketConfig(socketConfig);
+            connectionManager.setDefaultSocketConfig(socketConfig);
+            int retryTimes = config.get(GlobalConfig.KEY_RETRY_TIMES);
+            builder.setRetryHandler(new StandardHttpRequestRetryHandler(retryTimes, true));
+
+            boolean disableCookie = config.get(GlobalConfig.KEY_DISABLE_COOKIE);
+            if (disableCookie) {
+                builder.disableCookieManagement();
+            } else {
+                CookieStore store = new BasicCookieStore();
+                Map<String, String> cookies = config.get(GlobalConfig.KEY_COOKIE);
+                for (Map.Entry<String, String> entry : cookies.entrySet()) {
+                    BasicClientCookie cookie = new BasicClientCookie(entry.getKey(), entry.getValue());
+                    store.addCookie(cookie);
+                }
+                builder.setDefaultCookieStore(store);
+            }
+            return new HttpClientDownloader(builder.build());
+        });
     }
 }
