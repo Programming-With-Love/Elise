@@ -1,5 +1,6 @@
 package site.zido.elise;
 
+import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.select.configurable.ConfigurableModelExtractor;
 import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ModelExtractor;
@@ -12,7 +13,7 @@ import site.zido.elise.select.configurable.ModelExtractor;
  */
 public class DefaultTask implements Task {
     private Long id;
-    private Site site;
+    private SiteConfig site;
     private DefRootExtractor defExtractor;
 
     /**
@@ -29,7 +30,7 @@ public class DefaultTask implements Task {
      * @param site      the site
      * @param extractor the extractor
      */
-    public DefaultTask(Long id, Site site, DefRootExtractor extractor) {
+    public DefaultTask(Long id, SiteConfig site, DefRootExtractor extractor) {
         this.id = id;
         this.site = site;
         this.defExtractor = extractor;
@@ -52,7 +53,7 @@ public class DefaultTask implements Task {
     }
 
     @Override
-    public Site getSite() {
+    public SiteConfig getSite() {
         return site;
     }
 
@@ -62,7 +63,7 @@ public class DefaultTask implements Task {
      * @param site the site
      * @return the site
      */
-    public DefaultTask setSite(Site site) {
+    public DefaultTask setSite(SiteConfig site) {
         this.site = site;
         return this;
     }

@@ -1,5 +1,12 @@
 package site.zido.elise.custom;
 
+import site.zido.elise.http.Header;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * The type Global config.
  *
@@ -23,13 +30,13 @@ public class GlobalConfig extends MappedConfig {
      */
     public static final String KEY_SLEEP_TIME = "sleepTime";
     /**
-     * The constant KEY_RETRY_TIMES.
+     * The number of times the request was retried when the download failed
      */
     public static final String KEY_RETRY_TIMES = "retryTimes";
     /**
-     * The constant KEY_OUT_TIME.
+     * The constant KEY_TIME_OUT.
      */
-    public static final String KEY_OUT_TIME = "outTime";
+    public static final String KEY_TIME_OUT = "outTime";
     /**
      * The constant KEY_DOWNLOAD_MODE.
      */
@@ -49,8 +56,26 @@ public class GlobalConfig extends MappedConfig {
     /**
      * The constant KEY_PROXY.
      */
+    public static final String KEY_PROXIABLE = "proxiable";
+
+    /**
+     * The number of retries that were added to the task scheduler when the download failed
+     */
+    public static final String KEY_SCHEDULE_RETRY_TIMES = "scheduleRetryTimes";
+
+    public static final String KEY_POOL_SIZE = "poolSize";
+
+    public static final String KEY_USE_GZIP = "useGzip";
     public static final String KEY_PROXY = "proxy";
+
     private static final long serialVersionUID = -6234664119002484979L;
+
+    public GlobalConfig() {
+    }
+
+    public GlobalConfig(Map<String, Object> config) {
+        super(config);
+    }
 
     /**
      * Sets user agent.
@@ -59,6 +84,10 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setUserAgent(String userAgent) {
         put(KEY_USER_AGENT, userAgent);
+    }
+
+    public String getUserAgen() {
+        return get(KEY_USER_AGENT);
     }
 
     /**
@@ -70,6 +99,10 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_COOKIE, cookie);
     }
 
+    public String getCookie() {
+        return get(KEY_COOKIE);
+    }
+
     /**
      * Sets charset.
      *
@@ -77,6 +110,10 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setCharset(String charset) {
         put(KEY_CHARSET, charset);
+    }
+
+    public String getCharset() {
+        return get(KEY_CHARSET);
     }
 
     /**
@@ -87,6 +124,7 @@ public class GlobalConfig extends MappedConfig {
     public void setSleepTime(String sleepTime) {
         put(KEY_SLEEP_TIME, sleepTime);
     }
+
 
     /**
      * Sets retry times.
@@ -103,7 +141,7 @@ public class GlobalConfig extends MappedConfig {
      * @param outTime the out time
      */
     public void setOutTime(String outTime) {
-        put(KEY_OUT_TIME, outTime);
+        put(KEY_TIME_OUT, outTime);
     }
 
     /**
@@ -133,6 +171,10 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_DISABLE_COOKIE, disableCookie);
     }
 
+    public boolean getDisableCookie() {
+        return (boolean) getOrDefault(KEY_DISABLE_COOKIE, true);
+    }
+
     /**
      * Sets headers.
      *
@@ -143,11 +185,34 @@ public class GlobalConfig extends MappedConfig {
     }
 
     /**
-     * Sets proxy.
+     * Sets proxiable.
      *
-     * @param proxy the proxy
+     * @param proxiable the proxiable
      */
-    public void setProxy(String proxy) {
-        put(KEY_PROXY, proxy);
+    public void setProxiable(boolean proxiable) {
+        put(KEY_PROXIABLE, proxiable);
+    }
+
+    public void setPoolSize(int poolSize) {
+        put(KEY_POOL_SIZE, poolSize);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Map)) {
+            return false;
+        }
+        Object otherValue;
+        for (String s : this.keySet()) {
+            otherValue = ((Map) o).get(s);
+            if (!Objects.equals(get(s), otherValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<Header> getHeaders() {
+        return (List<Header>) getOrDefault(KEY_HEADERS, Collections.EMPTY_LIST);
     }
 }

@@ -1,7 +1,7 @@
 package site.zido.elise.processor;
 
 import site.zido.elise.Task;
-import site.zido.elise.http.impl.DefaultResponse;
+import site.zido.elise.http.Response;
 
 import java.util.Set;
 
@@ -18,5 +18,5 @@ public interface ResponseHandler {
      * @param response response.
      * @return results set
      */
-    Set<String> process(Task task, DefaultResponse response);
+    Set<String> process(Task task, Response response);
 }

@@ -50,7 +50,7 @@ public class HtmlUtils {
         } else {
             String headStr = getHeadStr(content);
             if (headStr == null) {
-                return null;
+                return defaultCharset;
             }
             Document head = Jsoup.parse(headStr);
             Elements links = head.select("meta");

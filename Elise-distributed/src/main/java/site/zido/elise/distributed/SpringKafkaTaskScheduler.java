@@ -14,7 +14,7 @@ import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import site.zido.elise.DefaultTask;
-import site.zido.elise.http.impl.DefaultRequest;
+import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.downloader.Downloader;
@@ -99,7 +99,7 @@ public class SpringKafkaTaskScheduler extends BaseConfigurableScheduler {
     }
 
     @Override
-    protected void pushWhenNoDuplicate(Task task, DefaultRequest request) {
+    protected void pushWhenNoDuplicate(Task task, Request request) {
         template.send(topicDownload, new Seed().setTask((DefaultTask) task).setRequest(request));
     }
 

@@ -3,13 +3,14 @@ package site.zido.elise.custom;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Map;
 
 /**
  * the config interface
  *
  * @author zido
  */
-public interface Config {
+public interface Config extends Map<String, Object> {
 
     /**
      * parse from reader.

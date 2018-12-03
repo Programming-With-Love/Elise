@@ -14,10 +14,6 @@ import java.util.stream.Collectors;
  * @author zido
  */
 public class DefaultRequest implements Request {
-    /**
-     * The constant CYCLE_TRIED_TIMES.
-     */
-    public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
     private static final long serialVersionUID = 2018040215121L;
     /**
      * url
@@ -96,6 +92,7 @@ public class DefaultRequest implements Request {
      * @param key the key
      * @return the extra
      */
+    @Override
     public Object getExtra(String key) {
         if (extras == null) {
             return null;
@@ -110,12 +107,12 @@ public class DefaultRequest implements Request {
      * @param value the value
      * @return the default request
      */
-    public DefaultRequest putExtra(String key, Object value) {
+    @Override
+    public void putExtra(String key, Object value) {
         if (extras == null) {
             extras = new HashMap<>(3);
         }
         extras.put(key, value);
-        return this;
     }
 
     @Override

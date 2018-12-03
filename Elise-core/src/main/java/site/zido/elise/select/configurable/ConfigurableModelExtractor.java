@@ -5,7 +5,8 @@ import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.ResultItem;
-import site.zido.elise.http.impl.DefaultResponse;
+import site.zido.elise.custom.Config;
+import site.zido.elise.http.Response;
 import site.zido.elise.select.*;
 import site.zido.elise.utils.ValidateUtils;
 
@@ -26,6 +27,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     private List<LinkSelector> targetUrlSelectors = new ArrayList<>();
     private List<LinkSelector> helpUrlSelectors = new ArrayList<>();
     private DefRootExtractor defRootExtractor;
+    private Config config;
 
     /**
      * construct by {@link DefRootExtractor}
@@ -50,8 +52,17 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         }
     }
 
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
     @Override
-    public List<ResultItem> extract(DefaultResponse response) {
+    public Config getConfig() {
+        return config;
+    }
+
+    @Override
+    public List<ResultItem> extract(Response response) {
         if (targetUrlSelectors.stream().noneMatch(linkSelector -> linkSelector.select(response.getUrl().toString()) != null)) {
             return new ArrayList<>();
         }
@@ -88,7 +99,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     @Override
-    public Set<String> extractLinks(DefaultResponse response) {
+    public Set<String> extractLinks(Response response) {
         Set<String> links;
 
         if (ValidateUtils.isEmpty(helpUrlSelectors)) {
@@ -120,7 +131,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return links;
     }
 
-    private Map<String, List<Fragment>> processSingle(DefaultResponse response, Object html) {
+    private Map<String, List<Fragment>> processSingle(Response response, Object html) {
         Map<String, List<Fragment>> map = new HashMap<>(defRootExtractor.getChildren().size());
         for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
             List<Fragment> results = processField(fieldExtractor, response, html);
@@ -132,7 +143,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return map;
     }
 
-    private List<Fragment> processField(DefExtractor fieldExtractor, DefaultResponse response, Object html) {
+    private List<Fragment> processField(DefExtractor fieldExtractor, Response response, Object html) {
         List<Fragment> value;
         Selector selector = fieldExtractor.compileSelector();
         switch (fieldExtractor.getSource()) {

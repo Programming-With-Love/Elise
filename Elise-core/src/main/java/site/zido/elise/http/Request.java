@@ -9,6 +9,19 @@ import java.util.List;
  */
 public interface Request extends HttpModel {
     /**
+     * The constant CYCLE_TRIED_TIMES.
+     */
+    String CYCLE_TRIED_TIMES = "_cycle_tried_times";
+
+    /**
+     * Gets extra.
+     *
+     * @param key the key
+     * @return the extra
+     */
+    Object getExtra(String key);
+
+    /**
      * Gets method.
      *
      * @return the method
@@ -42,4 +55,6 @@ public interface Request extends HttpModel {
      * @return the cookies
      */
     List<Cookie> getCookies();
+
+    void putExtra(String key, Object value);
 }

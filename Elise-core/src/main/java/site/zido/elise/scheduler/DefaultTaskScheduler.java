@@ -3,8 +3,8 @@ package site.zido.elise.scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.Task;
-import site.zido.elise.http.impl.DefaultRequest;
-import site.zido.elise.http.impl.DefaultResponse;
+import site.zido.elise.http.Request;
+import site.zido.elise.http.Response;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
 import java.util.concurrent.*;
@@ -61,13 +61,13 @@ public class DefaultTaskScheduler extends BaseConfigurableScheduler implements R
      * @param request  the request
      * @param response the response
      */
-    public void processPage(Task task, DefaultRequest request, DefaultResponse response) {
+    public void processPage(Task task, Request request, Response response) {
         preStart();
         queue.offer(new Seed(task, request, response));
     }
 
     @Override
-    protected void pushWhenNoDuplicate(Task task, DefaultRequest request) {
+    protected void pushWhenNoDuplicate(Task task, Request request) {
         preStart();
         queue.offer(new Seed(task, request));
     }
@@ -87,12 +87,12 @@ public class DefaultTaskScheduler extends BaseConfigurableScheduler implements R
                 break;
             }
             Task task = seed.getTask();
-            DefaultResponse pollResponse = seed.getResponse();
-            DefaultRequest request = seed.getRequest();
+            Response pollResponse = seed.getResponse();
+            Request request = seed.getRequest();
             if (pollResponse == null) {
                 try {
                     executor.execute(() -> {
-                        DefaultResponse response = super.onDownload(task, request);
+                        Response response = super.onDownload(task, request);
                         processPage(task, request, response);
                     });
                 } catch (RejectedExecutionException e) {

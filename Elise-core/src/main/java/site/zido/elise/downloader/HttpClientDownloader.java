@@ -3,14 +3,21 @@ package site.zido.elise.downloader;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Site;
 import site.zido.elise.Task;
+import site.zido.elise.custom.GlobalConfig;
+import site.zido.elise.custom.HttpClientConfig;
+import site.zido.elise.downloader.httpclient.HttpClientHeaderWrapper;
 import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
+import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
@@ -19,10 +26,12 @@ import site.zido.elise.select.Text;
 import site.zido.elise.utils.HtmlUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Downloader using http client framework
@@ -30,41 +39,26 @@ import java.util.Map;
  * @author zido
  */
 public class HttpClientDownloader implements Downloader {
-    private final Map<String, CloseableHttpClient> httpClients = new HashMap<>();
-    private Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
-    private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
-
-    private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
-
+    private static final Logger logger = LoggerFactory.getLogger(HttpClientDownloader.class);
+    private CloseableHttpClient client;
     private ProxyProvider proxyProvider;
+    private ConcurrentHashMap<Long, HttpClientContext> contextContainer = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long, HttpUriRequest> requestContainer = new ConcurrentHashMap<>();
 
-    private CloseableHttpClient getHttpClient(Site site) {
-        if (site == null) {
-            return httpClientGenerator.getClient(null);
-        }
-        String domain = site.getDomain();
-        CloseableHttpClient httpClient = httpClients.get(domain);
-        if (httpClient == null) {
-            synchronized (this) {
-                httpClient = httpClients.get(domain);
-                if (httpClient == null) {
-                    httpClient = httpClientGenerator.getClient(site);
-                    httpClients.put(domain, httpClient);
-                }
-            }
-        }
-        return httpClient;
+    public HttpClientDownloader(CloseableHttpClient client, ProxyProvider proxyProvider) {
+        this.client = client;
+        this.proxyProvider = proxyProvider;
     }
 
     @Override
-    public DefaultResponse download(Task task, Request request) {
+    public Response download(Task task, Request request) {
         CloseableHttpResponse httpResponse = null;
-        CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
-        HttpClientRequestContext requestContext = httpUriRequestConverter.convert(request, task.getSite(), proxy);
+        HttpClientContext context = getContext(task);
+        HttpUriRequest httpUriRequest = buildRequest(task, request);
         DefaultResponse response = DefaultResponse.fail();
         try {
-            httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
+            httpResponse = client.execute(httpUriRequest, context);
             response = handleResponse(request, task, httpResponse);
             logger.debug("downloading response success {}", request.getUrl());
             return response;
@@ -92,10 +86,7 @@ public class HttpClientDownloader implements Downloader {
 
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
-        String charset = HtmlUtils.getHtmlCharset(bytes);
-        if (charset == null) {
-            charset = task.getSite().getCharset();
-        }
+        String charset = HtmlUtils.getHtmlCharset(bytes, task.getSite().get(GlobalConfig.KEY_CHARSET));
         response.setBody(new Html(new String(bytes, charset), request.getUrl()));
         response.setUrl(new Text(request.getUrl()));
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
@@ -112,35 +103,41 @@ public class HttpClientDownloader implements Downloader {
         return results;
     }
 
-    @Override
-    public void setThread(int thread) {
-        httpClientGenerator.setPoolSize(thread);
+    /**
+     * Generate a context for the task
+     *
+     * @param task the task
+     * @return context
+     */
+    private HttpClientContext getContext(Task task) {
+        return contextContainer.computeIfAbsent(task.getId(), key -> {
+            final HttpClientContext context = HttpClientContext.create();
+            final HttpClientConfig config = new HttpClientConfig(task.modelExtractor().getConfig());
+            boolean disableCookie = config.getDisableCookie();
+            if (disableCookie) {
+                context.setCookieSpecRegistry(name -> null);
+            }
+            context.setCookieStore(new BasicCookieStore());
+            return context;
+        });
     }
 
-    /**
-     * Sets http client generator.
-     *
-     * @param generator the generator
-     */
-    public void setHttpClientGenerator(HttpClientGenerator generator) {
-        this.httpClientGenerator = generator;
+    private HttpUriRequest buildRequest(Task task, Request request) {
+        return requestContainer.compute(task.getId(), (key, httpUriRequest) -> {
+            RequestBuilder builder;
+            if (httpUriRequest != null && httpUriRequest.getMethod().equalsIgnoreCase(request.getMethod())) {
+                builder = RequestBuilder.copy(httpUriRequest);
+            } else {
+                builder = RequestBuilder.create(request.getMethod());
+            }
+            final HttpClientConfig config = new HttpClientConfig(task.modelExtractor().getConfig());
+            builder.setCharset(Charset.forName(config.getCharset()));
+            builder.setUri(request.getUrl());
+            for (site.zido.elise.http.Header header : config.getHeaders()) {
+                builder.addHeader(new HttpClientHeaderWrapper(header));
+            }
+            return builder.build();
+        });
     }
 
-    /**
-     * Sets http uri request converter.
-     *
-     * @param httpUriRequestConverter the http uri request converter
-     */
-    public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
-        this.httpUriRequestConverter = httpUriRequestConverter;
-    }
-
-    /**
-     * Sets proxy provider.
-     *
-     * @param proxyProvider the proxy provider
-     */
-    public void setProxyProvider(ProxyProvider proxyProvider) {
-        this.proxyProvider = proxyProvider;
-    }
 }

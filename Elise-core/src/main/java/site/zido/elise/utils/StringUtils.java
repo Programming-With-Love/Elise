@@ -40,7 +40,7 @@ public class StringUtils {
     public static String getEncode(byte[] bytes, String defaultCharset) {
         String code;
         if (bytes == null || bytes.length < 2) {
-            return null;
+            return defaultCharset;
         }
         int p = ((int) bytes[0] & 0x00ff) << 8 | ((int) bytes[1] & 0x00ff);
         switch (p) {

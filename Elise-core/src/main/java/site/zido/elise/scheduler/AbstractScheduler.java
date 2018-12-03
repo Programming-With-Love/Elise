@@ -3,17 +3,18 @@ package site.zido.elise.scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.EventListener;
-import site.zido.elise.Site;
 import site.zido.elise.Task;
+import site.zido.elise.custom.Config;
+import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.Downloader;
+import site.zido.elise.http.Request;
+import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
-import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.processor.ListenableResponseHandler;
 import site.zido.elise.processor.ResponseHandler;
 import site.zido.elise.select.matcher.CompilerException;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
 import site.zido.elise.utils.EventUtils;
-import site.zido.elise.utils.UrlUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
     private Set<EventListener> listeners = new HashSet<>();
 
     @Override
-    public void pushRequest(Task task, DefaultRequest request) {
+    public void pushRequest(Task task, Request request) {
         Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
         //will no longer receive new requests when the task is in the canceled state
         if (state >= STATE_CANCEL) {
@@ -57,10 +58,6 @@ public abstract class AbstractScheduler implements TaskScheduler {
             }
             LOGGER.debug("push to queue {}", request.getUrl());
             getCountManager().incr(task, 1);
-            Site site = task.getSite();
-            if (site.getDomain() == null && request.getUrl() != null) {
-                site.setDomain(UrlUtils.getDomain(request.getUrl()));
-            }
             pushWhenNoDuplicate(task, request);
         }
     }
@@ -77,43 +74,40 @@ public abstract class AbstractScheduler implements TaskScheduler {
      * @param request  the request
      * @param response the response
      */
-    protected void onProcess(Task task, DefaultRequest request, DefaultResponse response) {
+    protected void onProcess(Task task, Request request, Response response) {
         //will no longer process any pages when the task is in the cancel_now state
         final Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
         if (state == STATE_PAUSE) {
-            addToPauseMap(task.getId(), new Seed(task, request, response));
+            addToPauseMap(task.getId(), new Seed(task, request));
             countEvent(state, task);
             return;
         }
+        final Config config = task.modelExtractor().getConfig();
         if (state != STATE_CANCEL_NOW) {
-            if (response.isDownloadSuccess()) {
-                Site site = task.getSite();
-                String codeAccepter = site.getCodeAccepter();
-                NumberExpressMatcher matcher;
-                try {
-                    matcher = new NumberExpressMatcher(codeAccepter);
-                } catch (CompilerException e) {
-                    throw new RuntimeException(e);
-                }
-                if (matcher.matches(response.getStatusCode())) {
-                    Set<String> links = getResponsehandler().process(task, response);
-                    //will no longer process any pages when the task is in the cancel_now state
-                    if (state != STATE_CANCEL) {
-                        for (String link : links) {
-                            pushRequest(task, new DefaultRequest(link));
-                        }
+            String successCode = config.get(GlobalConfig.KEY_SUCCESS_CODE);
+            NumberExpressMatcher matcher;
+            try {
+                matcher = new NumberExpressMatcher(successCode);
+            } catch (CompilerException e) {
+                throw new RuntimeException(e);
+            }
+            if (matcher.matches(response.getStatusCode())) {
+                Set<String> links = getResponsehandler().process(task, response);
+                //will no longer process any pages when the task is in the cancel_now state
+                if (state != STATE_CANCEL) {
+                    for (String link : links) {
+                        pushRequest(task, new DefaultRequest(link));
                     }
-                    countEvent(state, task);
-                    sleep(site.getSleepTime());
-                    return;
                 }
+                countEvent(state, task);
+                sleep(config.get(config.get(GlobalConfig.KEY_SLEEP_TIME)));
+                return;
             }
         }
         countEvent(state, task);
         if (state == -1) {
-            Site site = task.getSite();
-            if (site.getCycleRetryTimes() == 0) {
-                sleep(site.getSleepTime());
+            if (config.<Integer>get(GlobalConfig.KEY_RETRY_TIMES) == 0) {
+                sleep(config.get(GlobalConfig.KEY_SLEEP_TIME));
             } else {
                 // for cycle retry
                 doCycleRetry(task, request);
@@ -142,10 +136,16 @@ public abstract class AbstractScheduler implements TaskScheduler {
      * @param request the request
      * @return the default response
      */
-    protected DefaultResponse onDownload(Task task, DefaultRequest request) {
-        final DefaultResponse response = getDownloader().download(task, request);
-
-        if (response.isDownloadSuccess()) {
+    protected Response onDownload(Task task, Request request) {
+        final Response response = getDownloader().download(task, request);
+        String successCode = task.modelExtractor().getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
+        NumberExpressMatcher matcher;
+        try {
+            matcher = new NumberExpressMatcher(successCode);
+        } catch (CompilerException e) {
+            throw new RuntimeException(e);
+        }
+        if (matcher.matches(response.getStatusCode())) {
             EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadSuccess(task, request, response));
         } else {
             EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadError(task, request, response));
@@ -160,18 +160,20 @@ public abstract class AbstractScheduler implements TaskScheduler {
         EventUtils.mustNotifyListeners(listeners, EventListener::onCancel);
     }
 
-    private void doCycleRetry(Task task, DefaultRequest request) {
-        Object cycleTriedTimesObject = request.getExtra(DefaultRequest.CYCLE_TRIED_TIMES);
+    private void doCycleRetry(Task task, Request request) {
+        Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
-            pushRequest(task, new DefaultRequest(request).putExtra(DefaultRequest.CYCLE_TRIED_TIMES, 1));
+            request.putExtra(Request.CYCLE_TRIED_TIMES, 1);
+            pushRequest(task, request);
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
             cycleTriedTimes++;
-            if (cycleTriedTimes < task.getSite().getCycleRetryTimes()) {
-                pushRequest(task, new DefaultRequest(request).putExtra(DefaultRequest.CYCLE_TRIED_TIMES, cycleTriedTimes));
+            if (cycleTriedTimes < task.modelExtractor().getConfig().<Integer>get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES)) {
+                request.putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes);
+                pushRequest(task, request);
             }
         }
-        sleep(task.getSite().getRetrySleepTime());
+        sleep(task.modelExtractor().getConfig().get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES));
     }
 
     private void sleep(int time) {
@@ -183,11 +185,11 @@ public abstract class AbstractScheduler implements TaskScheduler {
     }
 
 
-    private boolean shouldReserved(DefaultRequest request) {
-        return request.getExtra(DefaultRequest.CYCLE_TRIED_TIMES) != null;
+    private boolean shouldReserved(Request request) {
+        return request.getExtra(Request.CYCLE_TRIED_TIMES) != null;
     }
 
-    private boolean noNeedToRemoveDuplicate(DefaultRequest request) {
+    private boolean noNeedToRemoveDuplicate(Request request) {
         return "post".equalsIgnoreCase(request.getMethod());
     }
 
@@ -198,7 +200,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
      * @param task    the task
      * @param request request
      */
-    protected abstract void pushWhenNoDuplicate(Task task, DefaultRequest request);
+    protected abstract void pushWhenNoDuplicate(Task task, Request request);
 
     @Override
     public void addEventListener(EventListener listener) {

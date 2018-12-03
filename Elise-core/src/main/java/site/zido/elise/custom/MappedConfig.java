@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -20,6 +21,10 @@ public class MappedConfig extends HashMap<String, Object> implements Config {
      * Instantiates a new Mapped config.
      */
     public MappedConfig() {
+    }
+
+    public MappedConfig(Map<String, Object> map) {
+        super(map);
     }
 
     @Override
