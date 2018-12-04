@@ -248,6 +248,14 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     }
 
     @Override
+    public void removeEventListener(EventListener listener){
+        listeners.remove(listener);
+        if(responseHandler instanceof ListenableResponseHandler){
+            ((ListenableResponseHandler) responseHandler).removeEventListener(listener);
+        }
+    }
+
+    @Override
     public boolean cancel(Task task, boolean giveUpSeeds) {
         final byte newState = giveUpSeeds ? STATE_CANCEL_NOW : STATE_CANCEL;
         synchronized (stateMap) {
@@ -261,13 +269,23 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     }
 
     @Override
-    public synchronized boolean pause(Task task) {
+    public synchronized void pause(Task task) {
         final Byte currentState = stateMap.get(task.getId());
         if (currentState != null) {
-            return currentState == STATE_PAUSE;
+            return;
         }
         stateMap.put(task.getId(), STATE_PAUSE);
-        return true;
+    }
+
+    @Override
+    public boolean pause() {
+        //TODO pause support
+        return false;
+    }
+
+    @Override
+    public void recover() {
+        //TODO recover support
     }
 
     @Override

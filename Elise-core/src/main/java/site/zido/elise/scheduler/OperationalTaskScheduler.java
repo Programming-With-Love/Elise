@@ -25,7 +25,7 @@ public interface OperationalTaskScheduler extends TaskScheduler {
      * @param task the task
      * @return the boolean
      */
-    boolean pause(Task task);
+    void pause(Task task);
 
     /**
      * Recover.

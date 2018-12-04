@@ -1,26 +1,39 @@
 package site.zido.elise;
 
-import site.zido.elise.events.SingleEventSupport;
+import site.zido.elise.events.SingleEventListener;
 
-public interface Operator extends SingleEventSupport {
+/**
+ * The interface Operator.
+ *
+ * @author zido
+ */
+public interface Operator {
     /**
      * Cancel.
      *
      * @param ifRunning the if running
      */
-    void cancel(boolean ifRunning);
+     Operator cancel(boolean ifRunning);
 
     /**
      * Pause boolean.
      *
      * @return the boolean
      */
-    boolean pause();
+    Operator pause();
 
     /**
      * Recover.
      */
-    void recover();
+    Operator recover();
 
-    Operator addUrl(String... url);
+    /**
+     * Add url operator.
+     *
+     * @param url the url
+     * @return the operator
+     */
+    Operator execute(String... url);
+
+    Operator addEventListener(SingleEventListener listener);
 }

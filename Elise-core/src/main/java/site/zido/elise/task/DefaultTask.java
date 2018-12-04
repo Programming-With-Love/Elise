@@ -33,7 +33,7 @@ public class DefaultTask implements Task {
     }
 
     @Override
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
