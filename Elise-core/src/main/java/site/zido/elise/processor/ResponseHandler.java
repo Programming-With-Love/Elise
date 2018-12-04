@@ -1,6 +1,6 @@
 package site.zido.elise.processor;
 
-import site.zido.elise.Task;
+import site.zido.elise.task.Task;
 import site.zido.elise.http.Response;
 
 import java.util.Set;

@@ -1,10 +1,12 @@
 package site.zido.elise;
 
 import org.junit.Test;
+import site.zido.elise.events.EventListener;
 import site.zido.elise.select.configurable.ConfigurableUrlFinder;
 import site.zido.elise.select.configurable.DefExtractor;
 import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ExpressionType;
+import site.zido.elise.task.Task;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -27,7 +29,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("description")
                 .setValue("p.blog-content")
                 .setType(ExpressionType.CSS));
-        spider.crawl(extractor, "http://zido.site");
+        spider.of(extractor, "http://zido.site");
         spider.addEventListener(new EventListener() {
             @Override
             public void onSuccess(Task task) {
@@ -58,7 +60,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        spider.crawl(extractor, "http://github.com/zidoshare");
+        spider.of(extractor, "http://github.com/zidoshare");
         spider.addEventListener(new EventListener() {
             @Override
             public void onSuccess(Task task) {
@@ -95,7 +97,7 @@ public class SpiderTest {
                 latch.countDown();
             }
         });
-        spider.crawl(extractor, "http://github.com/zidoshare");
+        spider.of(extractor, "http://github.com/zidoshare");
         Thread.sleep(3000);
         spider.cancel(true);
         latch.await();
@@ -136,7 +138,7 @@ public class SpiderTest {
                 latch.countDown();
             }
         });
-        spider.crawl(extractor, "http://github.com/zidoshare");
+        spider.of(extractor, "http://github.com/zidoshare");
         Thread.sleep(3000);
 //        spider.pause(task);
         latch.await();

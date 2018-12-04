@@ -4,7 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.ResultItem;
+import site.zido.elise.processor.ResultItem;
 import site.zido.elise.custom.Config;
 import site.zido.elise.http.Response;
 import site.zido.elise.select.*;

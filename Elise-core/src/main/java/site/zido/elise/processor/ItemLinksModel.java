@@ -1,7 +1,5 @@
 package site.zido.elise.processor;
 
-import site.zido.elise.ResultItem;
-
 import java.util.List;
 
 /**

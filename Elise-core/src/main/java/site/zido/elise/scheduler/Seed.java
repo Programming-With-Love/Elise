@@ -1,6 +1,6 @@
 package site.zido.elise.scheduler;
 
-import site.zido.elise.Task;
+import site.zido.elise.task.Task;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;

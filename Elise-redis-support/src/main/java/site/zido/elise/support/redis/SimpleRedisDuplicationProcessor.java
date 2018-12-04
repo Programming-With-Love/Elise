@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
-import site.zido.elise.Task;
+import site.zido.elise.task.Task;
 import site.zido.elise.http.Request;
 import site.zido.elise.scheduler.DuplicationProcessor;
 import site.zido.elise.utils.ValidateUtils;

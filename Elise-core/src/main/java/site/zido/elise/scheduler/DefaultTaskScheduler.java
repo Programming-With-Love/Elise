@@ -2,7 +2,7 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Task;
+import site.zido.elise.task.Task;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;

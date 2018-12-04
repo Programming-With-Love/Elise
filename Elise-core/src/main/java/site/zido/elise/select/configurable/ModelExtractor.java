@@ -1,6 +1,6 @@
 package site.zido.elise.select.configurable;
 
-import site.zido.elise.ResultItem;
+import site.zido.elise.processor.ResultItem;
 import site.zido.elise.custom.Config;
 import site.zido.elise.http.Response;
 

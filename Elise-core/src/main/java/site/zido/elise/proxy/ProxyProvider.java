@@ -1,6 +1,6 @@
 package site.zido.elise.proxy;
 
-import site.zido.elise.Task;
+import site.zido.elise.task.Task;
 import site.zido.elise.http.impl.DefaultResponse;
 
 /**

@@ -1,6 +1,6 @@
 package site.zido.elise.distributed.pojo;
 
-import site.zido.elise.DefaultTask;
+import site.zido.elise.task.DefaultTask;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;

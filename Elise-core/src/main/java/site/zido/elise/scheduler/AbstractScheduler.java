@@ -2,20 +2,25 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.AbstractSpider;
-import site.zido.elise.EventListener;
-import site.zido.elise.Task;
+import site.zido.elise.Operator;
+import site.zido.elise.Spider;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.DownloaderFactory;
+import site.zido.elise.events.EventListener;
+import site.zido.elise.events.TaskEventListener;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.ListenableResponseHandler;
 import site.zido.elise.processor.ResponseHandler;
+import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.matcher.CompilerException;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
+import site.zido.elise.task.DefaultTask;
+import site.zido.elise.task.Task;
 import site.zido.elise.utils.EventUtils;
+import site.zido.elise.utils.IdWorker;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author zido
  */
-public abstract class AbstractScheduler extends AbstractSpider {
+public abstract class AbstractScheduler implements Spider, OperationalTaskScheduler {
     private static final byte STATE_PAUSE = 1;
     private static final byte STATE_CANCEL = 2;
     private static final byte STATE_CANCEL_NOW = 3;
@@ -44,6 +49,12 @@ public abstract class AbstractScheduler extends AbstractSpider {
     private CountManager countManager;
     private DuplicationProcessor duplicationProcessor;
     private DownloaderFactory downloaderFactory;
+
+    @Override
+    public Operator of(DefRootExtractor extractor) {
+        final DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor);
+        return new DefaultOperator(task, this);
+    }
 
     @Override
     public void pushRequest(Task task, Request request) {
@@ -125,11 +136,23 @@ public abstract class AbstractScheduler extends AbstractSpider {
         countManager.incr(task, -1, i -> {
             if (i == 0) {
                 if (state == -1) {
-                    EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
+                    EventUtils.notifyListeners(listeners, listener -> {
+                        if (listener instanceof TaskEventListener) {
+                            ((TaskEventListener) listener).onSuccess(task);
+                        }
+                    });
                 } else if (state > STATE_CANCEL) {
-                    EventUtils.notifyListeners(listeners, listener -> listener.onCancel(task));
+                    EventUtils.notifyListeners(listeners, listener -> {
+                        if (listener instanceof TaskEventListener) {
+                            ((TaskEventListener) listener).onCancel(task);
+                        }
+                    });
                 } else if (state == STATE_PAUSE) {
-                    EventUtils.notifyListeners(listeners, listeners -> listeners.onPause(task));
+                    EventUtils.notifyListeners(listeners, listener -> {
+                        if (listener instanceof TaskEventListener) {
+                            ((TaskEventListener) listener).onPause(task);
+                        }
+                    });
                 }
             }
         });
@@ -152,9 +175,17 @@ public abstract class AbstractScheduler extends AbstractSpider {
             throw new RuntimeException(e);
         }
         if (matcher.matches(response.getStatusCode())) {
-            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadSuccess(task, request, response));
+            EventUtils.mustNotifyListeners(listeners, listener -> {
+                if (listener instanceof TaskEventListener) {
+                    ((TaskEventListener) listener).onDownloadSuccess(task, request, response);
+                }
+            });
         } else {
-            EventUtils.mustNotifyListeners(listeners, listener -> listener.onDownloadError(task, request, response));
+            EventUtils.mustNotifyListeners(listeners, listener -> {
+                if (listener instanceof TaskEventListener) {
+                    ((TaskEventListener) listener).onDownloadError(task, request, response);
+                }
+            });
         }
         return response;
     }
@@ -245,7 +276,11 @@ public abstract class AbstractScheduler extends AbstractSpider {
         if (currentState == null) {
             return;
         }
-        EventUtils.notifyListeners(listeners, eventListener -> eventListener.onRecover(task));
+        EventUtils.notifyListeners(listeners, eventListener -> {
+            if (eventListener instanceof TaskEventListener) {
+                ((TaskEventListener) eventListener).onRecover(task);
+            }
+        });
         stateMap.remove(task.getId());
         Set<Seed> set = pauseMap.getOrDefault(task.getId(), new HashSet<>());
         for (Seed seed : set) {

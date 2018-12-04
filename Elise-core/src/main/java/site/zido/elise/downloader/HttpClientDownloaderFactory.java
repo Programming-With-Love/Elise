@@ -17,7 +17,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.Task;
+import site.zido.elise.task.Task;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.httpclient.CustomRedirectStrategy;
 

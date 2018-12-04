@@ -1,6 +1,6 @@
 package site.zido.elise.downloader;
 
-import site.zido.elise.Task;
+import site.zido.elise.task.Task;
 
 /**
  * The interface Downloader factory.

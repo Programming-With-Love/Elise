@@ -1,15 +1,10 @@
-package site.zido.elise;
+package site.zido.elise.events;
 
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
-import site.zido.elise.processor.ProcessorEventListener;
+import site.zido.elise.task.Task;
 
-/**
- * The interface Event listener.
- *
- * @author zido
- */
-public interface EventListener extends ProcessorEventListener, java.util.EventListener {
+public interface TaskEventListener extends EventListener{
     /**
      * On download success.
      *
@@ -60,17 +55,5 @@ public interface EventListener extends ProcessorEventListener, java.util.EventLi
      * @param task the task
      */
     default void onCancel(Task task) {
-    }
-
-    /**
-     * On pause.
-     */
-    default void onPause() {
-    }
-
-    /**
-     * On cancel.
-     */
-    default void onCancel() {
     }
 }
