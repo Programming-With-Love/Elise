@@ -1,7 +1,5 @@
 package site.zido.elise.custom;
 
-import site.zido.elise.proxy.Proxy;
-
 import java.util.HashMap;
 import java.util.Map;
 

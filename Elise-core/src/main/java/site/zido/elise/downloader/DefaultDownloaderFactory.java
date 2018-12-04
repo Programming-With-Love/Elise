@@ -6,6 +6,7 @@ import site.zido.elise.custom.GlobalConfig;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class DefaultDownloaderFactory implements DownloaderFactory {
     private Map<String, DownloaderFactory> factoryMap = new HashMap<>();
@@ -28,5 +29,9 @@ public final class DefaultDownloaderFactory implements DownloaderFactory {
     public DefaultDownloaderFactory registerFactory(String key, DownloaderFactory factory) {
         factoryMap.put(key, factory);
         return this;
+    }
+
+    public Set<String> keySet() {
+        return factoryMap.keySet();
     }
 }

@@ -11,41 +11,41 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * http request body,
+ * http request bytes,
  *
  * @author zido
  */
 public class HttpRequestBody implements Serializable {
     private static final long serialVersionUID = 2018040215121L;
-    private byte[] body;
+    private byte[] bytes;
     private Http.ContentType contentType;
     private String encoding;
 
     /**
-     * Instantiates a new Http request body.
+     * Instantiates a new Http request bytes.
      */
     public HttpRequestBody() {
     }
 
     /**
-     * Instantiates a new Http request body.
+     * Instantiates a new Http request bytes.
      *
-     * @param body        the body
+     * @param bytes        the bytes
      * @param contentType the content type
      * @param encoding    the encoding
      */
-    public HttpRequestBody(byte[] body, Http.ContentType contentType, String encoding) {
-        this.body = body;
+    public HttpRequestBody(byte[] bytes, Http.ContentType contentType, String encoding) {
+        this.bytes = bytes;
         this.contentType = contentType;
         this.encoding = encoding;
     }
 
     /**
-     * Json http request body.
+     * Json http request bytes.
      *
      * @param json     the json
      * @param encoding the encoding
-     * @return the http request body
+     * @return the http request bytes
      */
     public static HttpRequestBody json(String json, String encoding) {
         try {
@@ -56,11 +56,11 @@ public class HttpRequestBody implements Serializable {
     }
 
     /**
-     * Xml http request body.
+     * Xml http request bytes.
      *
      * @param xml      the xml
      * @param encoding the encoding
-     * @return the http request body
+     * @return the http request bytes
      */
     public static HttpRequestBody xml(String xml, String encoding) {
         try {
@@ -71,23 +71,23 @@ public class HttpRequestBody implements Serializable {
     }
 
     /**
-     * Custom http request body.
+     * Custom http request bytes.
      *
-     * @param body        the body
+     * @param body        the bytes
      * @param contentType the content type
      * @param encoding    the encoding
-     * @return the http request body
+     * @return the http request bytes
      */
     public static HttpRequestBody custom(byte[] body, Http.ContentType contentType, String encoding) {
         return new HttpRequestBody(body, contentType, encoding);
     }
 
     /**
-     * Form http request body.
+     * Form http request bytes.
      *
      * @param params   the params
      * @param encoding the encoding
-     * @return the http request body
+     * @return the http request bytes
      */
     public static HttpRequestBody form(Map<String, Object> params, String encoding) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(params.size());
@@ -102,21 +102,21 @@ public class HttpRequestBody implements Serializable {
     }
 
     /**
-     * Get body byte [ ].
+     * Get bytes byte [ ].
      *
      * @return the byte [ ]
      */
-    public byte[] getBody() {
-        return body;
+    public byte[] getBytes() {
+        return bytes;
     }
 
     /**
-     * Sets body.
+     * Sets bytes.
      *
-     * @param body the body
+     * @param bytes the bytes
      */
-    public void setBody(byte[] body) {
-        this.body = body;
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 
     /**

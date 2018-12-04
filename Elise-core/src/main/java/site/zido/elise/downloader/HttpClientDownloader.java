@@ -5,6 +5,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -15,6 +16,7 @@ import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.custom.HttpClientConfig;
 import site.zido.elise.downloader.httpclient.HttpClientHeaderWrapper;
 import site.zido.elise.http.Http;
+import site.zido.elise.http.HttpRequestBody;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;
@@ -35,7 +37,6 @@ public class HttpClientDownloader implements Downloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloader.class);
     private CloseableHttpClient client;
     private ConcurrentHashMap<Long, HttpClientContext> contextContainer = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Long, HttpUriRequest> requestContainer = new ConcurrentHashMap<>();
 
     public HttpClientDownloader(CloseableHttpClient client) {
         this.client = client;
@@ -101,20 +102,19 @@ public class HttpClientDownloader implements Downloader {
     }
 
     private HttpUriRequest buildRequest(Task task, Request request) {
-        return requestContainer.compute(task.getId(), (key, httpUriRequest) -> {
-            RequestBuilder builder;
-            if (httpUriRequest != null && httpUriRequest.getMethod().equalsIgnoreCase(request.getMethod())) {
-                builder = RequestBuilder.copy(httpUriRequest);
-            } else {
-                builder = RequestBuilder.create(request.getMethod());
-            }
-            final HttpClientConfig config = new HttpClientConfig(task.modelExtractor().getConfig());
-            builder.setCharset(Charset.forName(config.getCharset()));
-            builder.setUri(request.getUrl());
-            for (site.zido.elise.http.Header header : config.getHeaders()) {
-                builder.addHeader(new HttpClientHeaderWrapper(header));
-            }
-            return builder.build();
-        });
+        RequestBuilder builder = RequestBuilder.create(request.getMethod());
+        final HttpRequestBody body = request.getBody();
+        if (body != null) {
+            ByteArrayEntity bodyEntity = new ByteArrayEntity(body.getBytes());
+            bodyEntity.setContentType(body.getContentType().toString());
+            builder.setEntity(bodyEntity);
+        }
+        final HttpClientConfig config = new HttpClientConfig(task.modelExtractor().getConfig());
+        builder.setCharset(Charset.forName(config.getCharset()));
+        builder.setUri(request.getUrl());
+        for (site.zido.elise.http.Header header : config.getHeaders()) {
+            builder.addHeader(new HttpClientHeaderWrapper(header));
+        }
+        return builder.build();
     }
 }

@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class DefaultTaskScheduler extends BaseConfigurableScheduler implements Runnable {
+public class DefaultTaskScheduler extends AbstractScheduler implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTaskScheduler.class);
     private final ThreadPoolExecutor executor;

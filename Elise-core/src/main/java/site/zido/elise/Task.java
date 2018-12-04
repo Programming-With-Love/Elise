@@ -1,6 +1,5 @@
 package site.zido.elise;
 
-import site.zido.elise.custom.SiteConfig;
 import site.zido.elise.select.configurable.ModelExtractor;
 
 /**

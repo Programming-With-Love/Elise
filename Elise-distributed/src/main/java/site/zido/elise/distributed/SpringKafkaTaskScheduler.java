@@ -14,12 +14,12 @@ import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import site.zido.elise.DefaultTask;
-import site.zido.elise.http.Request;
 import site.zido.elise.Task;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.downloader.Downloader;
+import site.zido.elise.http.Request;
 import site.zido.elise.processor.ResponseHandler;
-import site.zido.elise.scheduler.BaseConfigurableScheduler;
+import site.zido.elise.scheduler.AbstractScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @author zido
  */
-public class SpringKafkaTaskScheduler extends BaseConfigurableScheduler {
+public class SpringKafkaTaskScheduler extends AbstractScheduler {
     private String bootstrapServers;
     private String groupId = "Elise";
     private String topicAnalyzer = "__analyzer__";
@@ -64,7 +64,7 @@ public class SpringKafkaTaskScheduler extends BaseConfigurableScheduler {
 
     @Override
     public synchronized void setResponseHandler(ResponseHandler responseHandler) {
-        super.setResponseHandler(responseHandler);
+//        super.setResponseHandler(responseHandler);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 Seed seed = message.value();
@@ -76,9 +76,8 @@ public class SpringKafkaTaskScheduler extends BaseConfigurableScheduler {
         }
     }
 
-    @Override
     public synchronized void setDownloader(Downloader downloader) {
-        super.setDownloader(downloader);
+        //super.setDownloader(downloader);
         if (this.downloaderContainer == null) {
             this.downloaderContainer = runContainer(topicDownload, message -> {
                 Seed seed = message.value();

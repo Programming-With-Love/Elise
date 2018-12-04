@@ -5,7 +5,6 @@ import site.zido.elise.select.configurable.ConfigurableUrlFinder;
 import site.zido.elise.select.configurable.DefExtractor;
 import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ExpressionType;
-import site.zido.elise.utils.IdWorker;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -18,7 +17,7 @@ public class SpiderTest {
     @Test
     public void testOnePage() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        Spider spider = Spider.defaults();
+        Spider spider = SpiderBuilder.defaults();
         DefRootExtractor extractor = new DefRootExtractor("article");
         extractor.setType(ExpressionType.CSS).setValue(".page-container>.blog");
         extractor.addTargetUrl(new ConfigurableUrlFinder("zido.site/?$"));
@@ -28,8 +27,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("description")
                 .setValue("p.blog-content")
                 .setType(ExpressionType.CSS));
-        DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor);
-        spider.addUrl(task, "http://zido.site");
+        spider.crawl(extractor, "http://zido.site");
         spider.addEventListener(new EventListener() {
             @Override
             public void onSuccess(Task task) {
@@ -47,7 +45,7 @@ public class SpiderTest {
     @Test
     public void testMultiPage() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        Spider spider = Spider.defaults();
+        Spider spider = SpiderBuilder.defaults();
         DefRootExtractor extractor = new DefRootExtractor("project");
         extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
         extractor.addHelpUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
@@ -60,8 +58,7 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        Task task = new DefaultTask(IdWorker.nextId(), extractor);
-        spider.addUrl(task, "http://github.com/zidoshare");
+        spider.crawl(extractor, "http://github.com/zidoshare");
         spider.addEventListener(new EventListener() {
             @Override
             public void onSuccess(Task task) {
@@ -79,7 +76,7 @@ public class SpiderTest {
     @Test
     public void testCancel() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        Spider spider = Spider.defaults();
+        Spider spider = SpiderBuilder.defaults();
         DefRootExtractor extractor = new DefRootExtractor("project");
         extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
         extractor.addHelpUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
@@ -92,14 +89,13 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        Task task = new DefaultTask(IdWorker.nextId(), extractor);
         spider.addEventListener(new EventListener() {
             @Override
             public void onCancel() {
                 latch.countDown();
             }
         });
-        spider.addUrl(task, "http://github.com/zidoshare");
+        spider.crawl(extractor, "http://github.com/zidoshare");
         Thread.sleep(3000);
         spider.cancel(true);
         latch.await();
@@ -108,7 +104,7 @@ public class SpiderTest {
     @Test
     public void testPause() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(2);
-        Spider spider = Spider.defaults();
+        Spider spider = SpiderBuilder.defaults();
         DefRootExtractor extractor = new DefRootExtractor("project");
         extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
         extractor.addHelpUrl(new ConfigurableUrlFinder("github.com/zidoshare"));
@@ -121,7 +117,6 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        Task task = new DefaultTask(IdWorker.nextId(), extractor);
         spider.addEventListener(new EventListener() {
             @Override
             public void onPause(Task task) {
@@ -141,9 +136,9 @@ public class SpiderTest {
                 latch.countDown();
             }
         });
-        spider.addUrl(task, "http://github.com/zidoshare");
+        spider.crawl(extractor, "http://github.com/zidoshare");
         Thread.sleep(3000);
-        spider.pause(task);
+//        spider.pause(task);
         latch.await();
     }
 }

@@ -2,7 +2,7 @@ package site.zido.elise.custom;
 
 import site.zido.elise.http.Header;
 
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,6 +13,7 @@ import java.util.Objects;
  * @author zido
  */
 public class GlobalConfig extends MappedConfig {
+    private static final List<Header> EMPTY_HEADERS = new LinkedList<>();
     /**
      * The constant KEY_USER_AGENT.
      */
@@ -53,10 +54,6 @@ public class GlobalConfig extends MappedConfig {
      * The constant KEY_HEADERS.
      */
     public static final String KEY_HEADERS = "headers";
-    /**
-     * The constant KEY_PROXY.
-     */
-    public static final String KEY_PROXIABLE = "proxiable";
 
     /**
      * The number of retries that were added to the task scheduler when the download failed
@@ -77,6 +74,10 @@ public class GlobalConfig extends MappedConfig {
         super(config);
     }
 
+    public String getUserAgent() {
+        return get(KEY_USER_AGENT);
+    }
+
     /**
      * Sets user agent.
      *
@@ -84,10 +85,6 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setUserAgent(String userAgent) {
         put(KEY_USER_AGENT, userAgent);
-    }
-
-    public String getUserAgent() {
-        return get(KEY_USER_AGENT);
     }
 
     /**
@@ -103,6 +100,10 @@ public class GlobalConfig extends MappedConfig {
         return get(KEY_COOKIE);
     }
 
+    public String getCharset() {
+        return get(KEY_CHARSET);
+    }
+
     /**
      * Sets charset.
      *
@@ -112,10 +113,6 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_CHARSET, charset);
     }
 
-    public String getCharset() {
-        return get(KEY_CHARSET);
-    }
-
     /**
      * Sets sleep time.
      *
@@ -123,16 +120,6 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setSleepTime(String sleepTime) {
         put(KEY_SLEEP_TIME, sleepTime);
-    }
-
-
-    /**
-     * Sets retry times.
-     *
-     * @param retryTimes the retry times
-     */
-    public void setRetryTimes(String retryTimes) {
-        put(KEY_RETRY_TIMES, retryTimes);
     }
 
     /**
@@ -162,6 +149,10 @@ public class GlobalConfig extends MappedConfig {
         put(KEY_SUCCESS_CODE, successCode);
     }
 
+    public boolean getDisableCookie() {
+        return (boolean) getOrDefault(KEY_DISABLE_COOKIE, true);
+    }
+
     /**
      * Sets disable cookie.
      *
@@ -169,28 +160,6 @@ public class GlobalConfig extends MappedConfig {
      */
     public void setDisableCookie(String disableCookie) {
         put(KEY_DISABLE_COOKIE, disableCookie);
-    }
-
-    public boolean getDisableCookie() {
-        return (boolean) getOrDefault(KEY_DISABLE_COOKIE, true);
-    }
-
-    /**
-     * Sets headers.
-     *
-     * @param headers the headers
-     */
-    public void setHeaders(String headers) {
-        put(KEY_HEADERS, headers);
-    }
-
-    /**
-     * Sets proxiable.
-     *
-     * @param proxiable the proxiable
-     */
-    public void setProxiable(boolean proxiable) {
-        put(KEY_PROXIABLE, proxiable);
     }
 
     public void setPoolSize(int poolSize) {
@@ -213,7 +182,16 @@ public class GlobalConfig extends MappedConfig {
     }
 
     public List<Header> getHeaders() {
-        return (List<Header>) getOrDefault(KEY_HEADERS, Collections.EMPTY_LIST);
+        return (List<Header>) getOrDefault(KEY_HEADERS, EMPTY_HEADERS);
+    }
+
+    /**
+     * Sets headers.
+     *
+     * @param headers the headers
+     */
+    public void setHeaders(String headers) {
+        put(KEY_HEADERS, headers);
     }
 
     public boolean getUseGzip() {
@@ -226,5 +204,14 @@ public class GlobalConfig extends MappedConfig {
 
     public int getRetryTimes() {
         return (int) getOrDefault(KEY_RETRY_TIMES, 3);
+    }
+
+    /**
+     * Sets retry times.
+     *
+     * @param retryTimes the retry times
+     */
+    public void setRetryTimes(String retryTimes) {
+        put(KEY_RETRY_TIMES, retryTimes);
     }
 }

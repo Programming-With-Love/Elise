@@ -2,11 +2,12 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.zido.elise.AbstractSpider;
 import site.zido.elise.EventListener;
 import site.zido.elise.Task;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
-import site.zido.elise.downloader.Downloader;
+import site.zido.elise.downloader.DownloaderFactory;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
@@ -27,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author zido
  */
-public abstract class AbstractScheduler implements TaskScheduler {
+public abstract class AbstractScheduler extends AbstractSpider {
     private static final byte STATE_PAUSE = 1;
     private static final byte STATE_CANCEL = 2;
     private static final byte STATE_CANCEL_NOW = 3;
@@ -39,6 +40,11 @@ public abstract class AbstractScheduler implements TaskScheduler {
     private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
     private Set<EventListener> listeners = new HashSet<>();
 
+    private ResponseHandler responseHandler;
+    private CountManager countManager;
+    private DuplicationProcessor duplicationProcessor;
+    private DownloaderFactory downloaderFactory;
+
     @Override
     public void pushRequest(Task task, Request request) {
         Byte state = stateMap.getOrDefault(task.getId(), (byte) -1);
@@ -49,7 +55,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
         LOGGER.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
                 || noNeedToRemoveDuplicate(request)
-                || !getDuplicationProcessor().isDuplicate(task, request)) {
+                || !duplicationProcessor.isDuplicate(task, request)) {
             if (state == STATE_PAUSE) {
                 LOGGER.debug(task.getId() + "[" + request.getUrl() + "] received pause");
                 addToPauseMap(task.getId(), new Seed(task, request));
@@ -57,7 +63,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 return;
             }
             LOGGER.debug("push to queue {}", request.getUrl());
-            getCountManager().incr(task, 1);
+            countManager.incr(task, 1);
             pushWhenNoDuplicate(task, request);
         }
     }
@@ -92,7 +98,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
                 throw new RuntimeException(e);
             }
             if (matcher.matches(response.getStatusCode())) {
-                Set<String> links = getResponseHandler().process(task, response);
+                Set<String> links = responseHandler.process(task, response);
                 //will no longer process any pages when the task is in the cancel_now state
                 if (state != STATE_CANCEL) {
                     for (String link : links) {
@@ -116,7 +122,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
     }
 
     private void countEvent(final byte state, Task task) {
-        getCountManager().incr(task, -1, i -> {
+        countManager.incr(task, -1, i -> {
             if (i == 0) {
                 if (state == -1) {
                     EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task));
@@ -137,7 +143,7 @@ public abstract class AbstractScheduler implements TaskScheduler {
      * @return the default response
      */
     protected Response onDownload(Task task, Request request) {
-        final Response response = getDownloader(task).download(task, request);
+        final Response response = downloaderFactory.create(task).download(task, request);
         String successCode = task.modelExtractor().getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
         NumberExpressMatcher matcher;
         try {
@@ -205,8 +211,8 @@ public abstract class AbstractScheduler implements TaskScheduler {
     @Override
     public void addEventListener(EventListener listener) {
         listeners.add(listener);
-        if (getResponseHandler() instanceof ListenableResponseHandler) {
-            ((ListenableResponseHandler) getResponseHandler()).addEventListener(listener);
+        if (responseHandler instanceof ListenableResponseHandler) {
+            ((ListenableResponseHandler) responseHandler).addEventListener(listener);
         }
     }
 
@@ -251,32 +257,34 @@ public abstract class AbstractScheduler implements TaskScheduler {
         }
     }
 
-    /**
-     * Gets downloader.
-     *
-     * @return the downloader
-     * @param task
-     */
-    public abstract Downloader getDownloader(Task task);
+    public void setDownloaderFactory(DownloaderFactory factory) {
+        this.downloaderFactory = factory;
+    }
 
     /**
-     * Gets response handler.
+     * Sets response handler.
      *
-     * @return the response handler
+     * @param responseHandler the response handler
      */
-    public abstract ResponseHandler getResponseHandler();
+    public void setResponseHandler(ResponseHandler responseHandler) {
+        this.responseHandler = responseHandler;
+    }
 
     /**
-     * Gets count manager.
+     * Sets count manager.
      *
-     * @return the count manager
+     * @param countManager the count manager
      */
-    public abstract CountManager getCountManager();
+    public void setCountManager(CountManager countManager) {
+        this.countManager = countManager;
+    }
 
     /**
-     * Gets duplication processor.
+     * Sets duplication processor.
      *
-     * @return the duplication processor
+     * @param duplicationProcessor the duplication processor
      */
-    public abstract DuplicationProcessor getDuplicationProcessor();
+    public void setDuplicationProcessor(DuplicationProcessor duplicationProcessor) {
+        this.duplicationProcessor = duplicationProcessor;
+    }
 }

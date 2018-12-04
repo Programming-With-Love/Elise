@@ -199,5 +199,11 @@ public class Http {
         public void setCharset(String charset) {
             this.charset = charset;
         }
+
+        @Override
+        public String toString() {
+            String charset = this.charset == null ? "" : "; charset:" + this.charset;
+            return type + charset;
+        }
     }
 }
