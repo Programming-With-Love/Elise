@@ -12,4 +12,6 @@ public interface ListenableResponseHandler extends ResponseHandler {
      * @param listener the listener
      */
     void addEventListener(ProcessorEventListener listener);
+
+    void removeEventListener(ProcessorEventListener listener);
 }

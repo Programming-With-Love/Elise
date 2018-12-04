@@ -13,7 +13,7 @@ public interface Task {
      *
      * @return id id
      */
-    Long getId();
+    long getId();
 
     /**
      * get the model extractor

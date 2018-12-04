@@ -60,4 +60,9 @@ public class DefaultResponseHandler implements ListenableResponseHandler {
     public void addEventListener(ProcessorEventListener listener) {
         listeners.add(listener);
     }
+
+    @Override
+    public void removeEventListener(ProcessorEventListener listener){
+        listeners.remove(listener);
+    }
 }

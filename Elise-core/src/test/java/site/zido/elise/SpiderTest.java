@@ -2,11 +2,11 @@ package site.zido.elise;
 
 import org.junit.Test;
 import site.zido.elise.events.EventListener;
+import site.zido.elise.events.SingleEventListener;
 import site.zido.elise.select.configurable.ConfigurableUrlFinder;
 import site.zido.elise.select.configurable.DefExtractor;
 import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ExpressionType;
-import site.zido.elise.task.Task;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -29,18 +29,18 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("description")
                 .setValue("p.blog-content")
                 .setType(ExpressionType.CSS));
-        spider.of(extractor, "http://zido.site");
-        spider.addEventListener(new EventListener() {
-            @Override
-            public void onSuccess(Task task) {
-                spider.cancel(true);
-            }
+        spider.of(extractor)
+                .addEventListener(new SingleEventListener() {
+                    @Override
+                    public void onSuccess() {
+                        spider.cancel(true);
+                    }
 
-            @Override
-            public void onCancel() {
-                latch.countDown();
-            }
-        });
+                    @Override
+                    public void onCancel() {
+                        latch.countDown();
+                    }
+                }).execute("http://zido.site");
         latch.await();
     }
 
@@ -60,18 +60,18 @@ public class SpiderTest {
         extractor.addChildren(new DefExtractor("readme")
                 .setType(ExpressionType.XPATH)
                 .setValue("//*[@id=\"readme\"]/div[2]"));
-        spider.of(extractor, "http://github.com/zidoshare");
-        spider.addEventListener(new EventListener() {
-            @Override
-            public void onSuccess(Task task) {
-                spider.cancel(true);
-            }
+        spider.of(extractor).execute("http://github.com/zidoshare")
+                .addEventListener(new SingleEventListener() {
+                    @Override
+                    public void onSuccess() {
+                        spider.cancel(true);
+                    }
 
-            @Override
-            public void onCancel() {
-                latch.countDown();
-            }
-        });
+                    @Override
+                    public void onCancel() {
+                        latch.countDown();
+                    }
+                });
         latch.await();
     }
 
@@ -97,50 +97,9 @@ public class SpiderTest {
                 latch.countDown();
             }
         });
-        spider.of(extractor, "http://github.com/zidoshare");
+        spider.of(extractor).execute("http://github.com/zidoshare");
         Thread.sleep(3000);
         spider.cancel(true);
-        latch.await();
-    }
-
-    @Test
-    public void testPause() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(2);
-        Spider spider = SpiderBuilder.defaults();
-        DefRootExtractor extractor = new DefRootExtractor("project");
-        extractor.addTargetUrl(new ConfigurableUrlFinder("github.com/zidoshare/[^/]*$"));
-        extractor.addHelpUrl(new ConfigurableUrlFinder("github.com/zidoshare"));
-        extractor.addChildren(new DefExtractor("title")
-                .setType(ExpressionType.XPATH)
-                .setValue("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a"));
-        extractor.addChildren(new DefExtractor("description")
-                .setType(ExpressionType.XPATH)
-                .setValue("//*[@id=\"repo-meta-edit\"]/summary/div[1]/div/span[1]/div/span"));
-        extractor.addChildren(new DefExtractor("readme")
-                .setType(ExpressionType.XPATH)
-                .setValue("//*[@id=\"readme\"]/div[2]"));
-        spider.addEventListener(new EventListener() {
-            @Override
-            public void onPause(Task task) {
-                System.out.println("pause");
-                latch.countDown();
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                spider.recover(task);
-            }
-
-            @Override
-            public void onRecover(Task task) {
-                System.out.println("recovered");
-                latch.countDown();
-            }
-        });
-        spider.of(extractor, "http://github.com/zidoshare");
-        Thread.sleep(3000);
-//        spider.pause(task);
         latch.await();
     }
 }
