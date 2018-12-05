@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Abstract Duplicate Removed Scheduler
+ * Abstract Scheduler,support most life cycle methods
  *
  * @author zido
  */
@@ -248,9 +248,9 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     }
 
     @Override
-    public void removeEventListener(EventListener listener){
+    public void removeEventListener(EventListener listener) {
         listeners.remove(listener);
-        if(responseHandler instanceof ListenableResponseHandler){
+        if (responseHandler instanceof ListenableResponseHandler) {
             ((ListenableResponseHandler) responseHandler).removeEventListener(listener);
         }
     }

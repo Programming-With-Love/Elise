@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class NumberExpressMatcher implements Matcher {
 
     private static final Pattern CHECK_PATTERN = Pattern.compile("^[0-9,<-]*$");
-    private static final char DEFAULT_CHAR_TO = '<';
+    private static final char DEFAULT_CHAR_SEP = '<';
     private static final String PATTERN_TEMPLATE = "^[0-9,%s-]*$";
     private List<Region> regions;
     private List<Integer> rows;
@@ -27,7 +27,23 @@ public class NumberExpressMatcher implements Matcher {
      * @throws CompilerException the compiler exception
      */
     public NumberExpressMatcher(String express) throws CompilerException {
-        this(express, DEFAULT_CHAR_TO);
+        this(express, DEFAULT_CHAR_SEP);
+    }
+
+    public static boolean isSupport(String express) {
+        return isSupport(express, DEFAULT_CHAR_SEP);
+    }
+
+    public static boolean isSupport(String express, char sep) {
+        if (!StringUtils.hasLength(express)) {
+            return false;
+        }
+        if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
+            return false;
+        } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -41,7 +57,7 @@ public class NumberExpressMatcher implements Matcher {
         if (!StringUtils.hasLength(express)) {
             throw new CompilerException("express can't be null or empty");
         }
-        if (sep == DEFAULT_CHAR_TO && !CHECK_PATTERN.matcher(express).find()) {
+        if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
             throw new CompilerException("express only can contains [0-9," + sep + "-]");
         } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
             throw new CompilerException("express only can contains [0-9," + sep + "-]");

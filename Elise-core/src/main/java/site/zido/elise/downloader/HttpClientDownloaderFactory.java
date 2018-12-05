@@ -17,9 +17,9 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.task.Task;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.httpclient.CustomRedirectStrategy;
+import site.zido.elise.task.Task;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -91,8 +91,10 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
 
     @Override
     public Downloader create(Task task) {
+        //The same task is only created once
         return downloaderContainer.computeIfAbsent(task.getId(), key -> {
             HttpClientBuilder builder = HttpClients.custom();
+            //all client use the same connection pool
             builder.setConnectionManager(connectionManager);
             GlobalConfig config = new GlobalConfig(task.modelExtractor().getConfig());
             String userAgent = config.getUserAgent();
@@ -105,6 +107,7 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
                     }
                 });
             }
+            //All requests can respond to the response code 302 by the same way
             builder.setRedirectStrategy(new CustomRedirectStrategy());
 
             SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
