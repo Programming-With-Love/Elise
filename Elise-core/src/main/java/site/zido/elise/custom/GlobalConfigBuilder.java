@@ -13,8 +13,9 @@ import java.util.List;
 
 import static site.zido.elise.custom.GlobalConfig.*;
 
-public class GlobalConfigBuilder {
-    private MappedConfig config = new MappedConfig();
+public class GlobalConfigBuilder extends MappedConfig {
+
+    private static final long serialVersionUID = 6226554722300087924L;
 
     protected GlobalConfigBuilder() {
     }
@@ -29,7 +30,7 @@ public class GlobalConfigBuilder {
      * @param userAgent the user agent
      */
     public GlobalConfigBuilder setUserAgent(String userAgent) {
-        config.put(KEY_USER_AGENT, userAgent);
+        put(KEY_USER_AGENT, userAgent);
         return this;
     }
 
@@ -39,7 +40,7 @@ public class GlobalConfigBuilder {
      * @param cookie the cookie
      */
     public GlobalConfigBuilder setCookie(List<Cookie> cookie) {
-        config.put(KEY_COOKIE, cookie);
+        put(KEY_COOKIE, cookie);
         return this;
     }
 
@@ -60,12 +61,12 @@ public class GlobalConfigBuilder {
         if (!Charset.isSupported(charset)) {
             throw new IllegalCharsetNameException(charset);
         }
-        config.put(KEY_CHARSET, charset);
+        put(KEY_CHARSET, charset);
         return this;
     }
 
     public GlobalConfigBuilder setCharset(Charset charset) {
-        config.put(KEY_CHARSET, charset.name());
+        put(KEY_CHARSET, charset.name());
         return this;
     }
 
@@ -75,7 +76,7 @@ public class GlobalConfigBuilder {
      * @param sleepTime the sleep time
      */
     public GlobalConfigBuilder setSleepTime(int sleepTime) {
-        config.put(KEY_SLEEP_TIME, sleepTime);
+        put(KEY_SLEEP_TIME, sleepTime);
         return this;
     }
 
@@ -85,7 +86,7 @@ public class GlobalConfigBuilder {
      * @param timeout the out time
      */
     public GlobalConfigBuilder setTimeout(int timeout) {
-        config.put(KEY_TIME_OUT, timeout);
+        put(KEY_TIME_OUT, timeout);
         return this;
     }
 
@@ -95,7 +96,7 @@ public class GlobalConfigBuilder {
      * @param downloadMode the download mode
      */
     public GlobalConfigBuilder setDownloadMode(String downloadMode) {
-        config.put(KEY_DOWNLOAD_MODE, downloadMode);
+        put(KEY_DOWNLOAD_MODE, downloadMode);
         return this;
     }
 
@@ -108,7 +109,7 @@ public class GlobalConfigBuilder {
         if (!NumberExpressMatcher.isSupport(codeExpress)) {
             throw new IllegalArgumentException("code match express:" + codeExpress + " no support");
         }
-        config.put(KEY_SUCCESS_CODE, codeExpress);
+        put(KEY_SUCCESS_CODE, codeExpress);
         return this;
     }
 
@@ -118,12 +119,12 @@ public class GlobalConfigBuilder {
      * @param disableCookie the disable cookie
      */
     public GlobalConfigBuilder setDisableCookie(boolean disableCookie) {
-        config.put(KEY_DISABLE_COOKIE, disableCookie);
+        put(KEY_DISABLE_COOKIE, disableCookie);
         return this;
     }
 
     public GlobalConfigBuilder setPoolSize(int poolSize) {
-        config.put(KEY_POOL_SIZE, poolSize);
+        put(KEY_POOL_SIZE, poolSize);
         return this;
     }
 
@@ -133,7 +134,7 @@ public class GlobalConfigBuilder {
      * @param headers the headers
      */
     public GlobalConfigBuilder setHeaders(List<Header> headers) {
-        config.put(KEY_HEADERS, headers);
+        put(KEY_HEADERS, headers);
         return this;
     }
 
@@ -142,10 +143,10 @@ public class GlobalConfigBuilder {
     }
 
     private GlobalConfigBuilder addHeaderByKey(String key, Header[] header) {
-        List<Header> headers = config.get(key);
+        List<Header> headers = get(key);
         if (headers == null) {
             headers = new ArrayList<>();
-            config.put(key, headers);
+            put(key, headers);
         }
         headers.addAll(Arrays.asList(header));
         return this;
@@ -157,16 +158,47 @@ public class GlobalConfigBuilder {
      * @param retryTimes the retry times
      */
     public GlobalConfigBuilder setRetryTimes(int retryTimes) {
-        config.put(KEY_RETRY_TIMES, retryTimes);
+        put(KEY_RETRY_TIMES, retryTimes);
         return this;
     }
 
     public GlobalConfig build() {
-        return new GlobalConfig(config);
+        final GlobalConfig config = new GlobalConfig(this);
+        if (!config.containsKey(KEY_USER_AGENT)) {
+            config.put(KEY_USER_AGENT, "Mozilla/5.0");
+        }
+        if (!config.containsKey(KEY_SLEEP_TIME)) {
+            config.put(KEY_SLEEP_TIME, 0);
+        }
+        if (!config.containsKey(KEY_RETRY_TIMES)) {
+            config.put(KEY_RETRY_TIMES, 3);
+        }
+        if (!config.containsKey(KEY_TIME_OUT)) {
+            config.put(KEY_TIME_OUT, 5000);
+        }
+        if (!config.containsKey(KEY_DOWNLOAD_MODE)) {
+            config.put(KEY_DOWNLOAD_MODE, "httpclient");
+        }
+        if (!config.containsKey(KEY_SUCCESS_CODE)) {
+            config.put(KEY_SUCCESS_CODE, "200");
+        }
+        if (!config.containsKey(KEY_DISABLE_COOKIE)) {
+            config.put(KEY_DISABLE_COOKIE, false);
+        }
+        if (!config.containsKey(KEY_SCHEDULE_RETRY_TIMES)) {
+            config.put(KEY_SCHEDULE_RETRY_TIMES, 3);
+        }
+        if (!config.containsKey(KEY_POOL_SIZE)) {
+            config.put(KEY_POOL_SIZE, 500);
+        }
+        if (!config.containsKey(KEY_USE_GZIP)) {
+            config.put(KEY_USE_GZIP, false);
+        }
+        return config;
     }
 
     public static GlobalConfig defaults() {
-        return create().setCharset("utf-8").build();
+        return create().build();
     }
 
 }

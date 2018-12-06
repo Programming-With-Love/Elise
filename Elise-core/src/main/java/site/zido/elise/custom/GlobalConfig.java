@@ -1,6 +1,7 @@
 package site.zido.elise.custom;
 
 import site.zido.elise.http.Header;
+import site.zido.elise.proxy.Proxy;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -78,24 +79,6 @@ public class GlobalConfig extends MappedConfig {
         return get(KEY_USER_AGENT);
     }
 
-    /**
-     * Sets user agent.
-     *
-     * @param userAgent the user agent
-     */
-    public void setUserAgent(String userAgent) {
-        put(KEY_USER_AGENT, userAgent);
-    }
-
-    /**
-     * Sets cookie.
-     *
-     * @param cookie the cookie
-     */
-    public void setCookie(String cookie) {
-        put(KEY_COOKIE, cookie);
-    }
-
     public Map<String, String> getCookies() {
         return get(KEY_COOKIE);
     }
@@ -104,66 +87,8 @@ public class GlobalConfig extends MappedConfig {
         return get(KEY_CHARSET);
     }
 
-    /**
-     * Sets charset.
-     *
-     * @param charset the charset
-     */
-    public void setCharset(String charset) {
-        put(KEY_CHARSET, charset);
-    }
-
-    /**
-     * Sets sleep time.
-     *
-     * @param sleepTime the sleep time
-     */
-    public void setSleepTime(String sleepTime) {
-        put(KEY_SLEEP_TIME, sleepTime);
-    }
-
-    /**
-     * Sets out time.
-     *
-     * @param outTime the out time
-     */
-    public void setOutTime(String outTime) {
-        put(KEY_TIME_OUT, outTime);
-    }
-
-    /**
-     * Sets download mode.
-     *
-     * @param downloadMode the download mode
-     */
-    public void setDownloadMode(String downloadMode) {
-        put(KEY_DOWNLOAD_MODE, downloadMode);
-    }
-
-    /**
-     * Sets success code.
-     *
-     * @param successCode the success code
-     */
-    public void setSuccessCode(String successCode) {
-        put(KEY_SUCCESS_CODE, successCode);
-    }
-
     public boolean getDisableCookie() {
-        return (boolean) getOrDefault(KEY_DISABLE_COOKIE, true);
-    }
-
-    /**
-     * Sets disable cookie.
-     *
-     * @param disableCookie the disable cookie
-     */
-    public void setDisableCookie(String disableCookie) {
-        put(KEY_DISABLE_COOKIE, disableCookie);
-    }
-
-    public void setPoolSize(int poolSize) {
-        put(KEY_POOL_SIZE, poolSize);
+        return (boolean) get(KEY_DISABLE_COOKIE);
     }
 
     @Override
@@ -182,36 +107,23 @@ public class GlobalConfig extends MappedConfig {
     }
 
     public List<Header> getHeaders() {
-        return (List<Header>) getOrDefault(KEY_HEADERS, EMPTY_HEADERS);
-    }
-
-    /**
-     * Sets headers.
-     *
-     * @param headers the headers
-     */
-    public void setHeaders(String headers) {
-        put(KEY_HEADERS, headers);
+        return get(KEY_HEADERS);
     }
 
     public boolean getUseGzip() {
-        return (boolean) getOrDefault(KEY_USE_GZIP, true);
+        return (boolean) get(KEY_USE_GZIP);
     }
 
     public int getTimeout() {
-        return (int) getOrDefault(KEY_TIME_OUT, 5000);
+        return (int) get(KEY_TIME_OUT);
     }
 
     public int getRetryTimes() {
-        return (int) getOrDefault(KEY_RETRY_TIMES, 3);
+        return (int) get(KEY_RETRY_TIMES);
     }
 
-    /**
-     * Sets retry times.
-     *
-     * @param retryTimes the retry times
-     */
-    public void setRetryTimes(String retryTimes) {
-        put(KEY_RETRY_TIMES, retryTimes);
+    public Proxy getProxy() {
+        return get(KEY_PROXY);
     }
+
 }

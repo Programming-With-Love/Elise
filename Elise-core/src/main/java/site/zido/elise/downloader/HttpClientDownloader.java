@@ -11,7 +11,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.task.Task;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.custom.HttpClientConfig;
 import site.zido.elise.downloader.httpclient.HttpClientHeaderWrapper;
@@ -22,10 +21,12 @@ import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.select.Html;
 import site.zido.elise.select.Text;
+import site.zido.elise.task.Task;
 import site.zido.elise.utils.HtmlUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
