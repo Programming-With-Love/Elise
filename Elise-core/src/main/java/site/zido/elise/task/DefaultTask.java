@@ -1,7 +1,7 @@
 package site.zido.elise.task;
 
+import site.zido.elise.custom.Config;
 import site.zido.elise.select.configurable.ConfigurableModelExtractor;
-import site.zido.elise.select.configurable.DefRootExtractor;
 import site.zido.elise.select.configurable.ModelExtractor;
 
 /**
@@ -12,7 +12,8 @@ import site.zido.elise.select.configurable.ModelExtractor;
  */
 public class DefaultTask implements Task {
     private Long id;
-    private DefRootExtractor defExtractor;
+    private ModelExtractor extractor;
+    private Config config;
 
     /**
      * Instantiates a new Default task.
@@ -27,9 +28,10 @@ public class DefaultTask implements Task {
      * @param id        the id
      * @param extractor the extractor
      */
-    public DefaultTask(Long id, DefRootExtractor extractor) {
+    public DefaultTask(Long id, ModelExtractor extractor, Config config) {
         this.id = id;
-        this.defExtractor = extractor;
+        this.extractor = extractor;
+        this.config = config;
     }
 
     @Override
@@ -50,7 +52,12 @@ public class DefaultTask implements Task {
 
     @Override
     public ModelExtractor modelExtractor() {
-        return new ConfigurableModelExtractor(defExtractor);
+        return extractor;
+    }
+
+    @Override
+    public Config getConfig() {
+        return config;
     }
 
     /**
@@ -58,18 +65,23 @@ public class DefaultTask implements Task {
      *
      * @return the def extractor
      */
-    public DefRootExtractor getDefExtractor() {
-        return defExtractor;
+    public ModelExtractor getExtractor() {
+        return extractor;
     }
 
     /**
      * Sets def extractor.
      *
-     * @param defExtractor the def extractor
+     * @param extractor the def extractor
      * @return the def extractor
      */
-    public DefaultTask setDefExtractor(DefRootExtractor defExtractor) {
-        this.defExtractor = defExtractor;
+    public DefaultTask setExtractor(ConfigurableModelExtractor extractor) {
+        this.extractor = extractor;
+        return this;
+    }
+
+    public DefaultTask setConfig(Config config) {
+        this.config = config;
         return this;
     }
 }

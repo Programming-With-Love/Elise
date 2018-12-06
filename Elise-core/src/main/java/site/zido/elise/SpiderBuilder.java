@@ -1,5 +1,8 @@
 package site.zido.elise;
 
+import site.zido.elise.custom.Config;
+import site.zido.elise.custom.GlobalConfig;
+import site.zido.elise.custom.GlobalConfigBuilder;
 import site.zido.elise.downloader.DefaultDownloaderFactory;
 import site.zido.elise.downloader.DownloaderFactory;
 import site.zido.elise.downloader.HttpClientDownloaderFactory;
@@ -21,6 +24,7 @@ public class SpiderBuilder {
     private DuplicationProcessor duplicationProcessor;
     private DownloaderFactory downloaderFactory;
     private int threadNum;
+    private Config globalConfig;
 
     protected SpiderBuilder() {
         super();
@@ -65,11 +69,16 @@ public class SpiderBuilder {
         return this;
     }
 
+    public SpiderBuilder config(GlobalConfig globalConfig) {
+        this.globalConfig = globalConfig;
+        return this;
+    }
+
     public Spider build() {
         if (saver == null) {
             saver = new MemorySaver();
         }
-        if (responseHandler != null) {
+        if (responseHandler == null) {
             responseHandler = new DefaultResponseHandler(saver);
         }
         if (countManager == null) {
@@ -93,6 +102,10 @@ public class SpiderBuilder {
         } else {
             scheduler = new DefaultTaskScheduler();
         }
+        if (globalConfig == null) {
+            globalConfig = GlobalConfigBuilder.defaults();
+        }
+        scheduler.setConfig(globalConfig);
         scheduler.setResponseHandler(responseHandler);
         scheduler.setCountManager(countManager);
         scheduler.setDuplicationProcessor(duplicationProcessor);

@@ -26,7 +26,6 @@ import site.zido.elise.utils.HtmlUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -75,7 +74,7 @@ public class HttpClientDownloader implements Downloader {
 
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
-        String charset = HtmlUtils.getHtmlCharset(bytes, task.modelExtractor().getConfig().get(GlobalConfig.KEY_CHARSET));
+        String charset = HtmlUtils.getHtmlCharset(bytes, task.getConfig().get(GlobalConfig.KEY_CHARSET));
         response.setBody(new Html(new String(bytes, charset), request.getUrl()));
         response.setUrl(new Text(request.getUrl()));
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
@@ -92,7 +91,7 @@ public class HttpClientDownloader implements Downloader {
     private HttpClientContext getContext(Task task) {
         return contextContainer.computeIfAbsent(task.getId(), key -> {
             final HttpClientContext context = HttpClientContext.create();
-            final HttpClientConfig config = new HttpClientConfig(task.modelExtractor().getConfig());
+            final HttpClientConfig config = new HttpClientConfig(task.getConfig());
             boolean disableCookie = config.getDisableCookie();
             if (disableCookie) {
                 context.setCookieSpecRegistry(name -> null);
@@ -110,11 +109,16 @@ public class HttpClientDownloader implements Downloader {
             bodyEntity.setContentType(body.getContentType().toString());
             builder.setEntity(bodyEntity);
         }
-        final HttpClientConfig config = new HttpClientConfig(task.modelExtractor().getConfig());
-        builder.setCharset(Charset.forName(config.getCharset()));
+        final HttpClientConfig config = new HttpClientConfig(task.getConfig());
+        final String charset = config.getCharset();
+        if (charset != null) {
+            builder.setCharset(Charset.forName(charset));
+        }
         builder.setUri(request.getUrl());
-        for (site.zido.elise.http.Header header : config.getHeaders()) {
-            builder.addHeader(new HttpClientHeaderWrapper(header));
+        if (config.getHeaders() != null) {
+            for (site.zido.elise.http.Header header : config.getHeaders()) {
+                builder.addHeader(new HttpClientHeaderWrapper(header));
+            }
         }
         return builder.build();
     }

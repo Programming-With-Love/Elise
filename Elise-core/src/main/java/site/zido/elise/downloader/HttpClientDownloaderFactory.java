@@ -96,7 +96,7 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
             HttpClientBuilder builder = HttpClients.custom();
             //all client use the same connection pool
             builder.setConnectionManager(connectionManager);
-            GlobalConfig config = new GlobalConfig(task.modelExtractor().getConfig());
+            GlobalConfig config = new GlobalConfig(task.getConfig());
             String userAgent = config.getUserAgent();
             builder.setUserAgent(userAgent);
             boolean useGzip = config.getUseGzip();
@@ -125,9 +125,11 @@ public class HttpClientDownloaderFactory implements DownloaderFactory {
             } else {
                 CookieStore store = new BasicCookieStore();
                 Map<String, String> cookies = config.getCookies();
-                for (Map.Entry<String, String> entry : cookies.entrySet()) {
-                    BasicClientCookie cookie = new BasicClientCookie(entry.getKey(), entry.getValue());
-                    store.addCookie(cookie);
+                if (cookies != null) {
+                    for (Map.Entry<String, String> entry : cookies.entrySet()) {
+                        BasicClientCookie cookie = new BasicClientCookie(entry.getKey(), entry.getValue());
+                        store.addCookie(cookie);
+                    }
                 }
                 builder.setDefaultCookieStore(store);
             }

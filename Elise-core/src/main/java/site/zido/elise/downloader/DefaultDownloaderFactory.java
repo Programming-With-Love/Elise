@@ -17,7 +17,7 @@ public final class DefaultDownloaderFactory implements DownloaderFactory {
 
     @Override
     public Downloader create(Task task) {
-        final Config config = task.modelExtractor().getConfig();
+        final Config config = task.getConfig();
         final String key = config.get(GlobalConfig.KEY_DOWNLOAD_MODE);
         final DownloaderFactory factory = factoryMap.get(key);
         if (key == null) {

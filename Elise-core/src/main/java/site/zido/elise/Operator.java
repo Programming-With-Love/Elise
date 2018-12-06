@@ -1,6 +1,7 @@
 package site.zido.elise;
 
 import site.zido.elise.events.SingleEventListener;
+import site.zido.elise.http.Request;
 
 /**
  * The interface Operator.
@@ -13,7 +14,7 @@ public interface Operator {
      *
      * @param ifRunning the if running
      */
-     Operator cancel(boolean ifRunning);
+    Operator cancel(boolean ifRunning);
 
     /**
      * Pause boolean.
@@ -34,6 +35,8 @@ public interface Operator {
      * @return the operator
      */
     Operator execute(String... url);
+
+    Operator execute(Request request);
 
     Operator addEventListener(SingleEventListener listener);
 }

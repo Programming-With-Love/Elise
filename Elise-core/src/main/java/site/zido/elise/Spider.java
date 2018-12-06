@@ -1,7 +1,8 @@
 package site.zido.elise;
 
+import site.zido.elise.custom.Config;
 import site.zido.elise.events.EventSupport;
-import site.zido.elise.select.configurable.DefRootExtractor;
+import site.zido.elise.select.configurable.ModelExtractor;
 
 /**
  * The interface Spider.
@@ -15,7 +16,10 @@ public interface Spider extends EventSupport {
      * @param extractor the extractor
      * @return the operator
      */
-    Operator of(DefRootExtractor extractor);
+    Operator of(ModelExtractor extractor, Config config);
+
+    Operator of(ModelExtractor extractor);
+
 
     /**
      * Cancel.

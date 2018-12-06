@@ -8,6 +8,7 @@ import org.jsoup.nodes.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The type X path selector.
@@ -16,7 +17,9 @@ import java.util.List;
  */
 public class XpathSelector extends AbstractElementSelector {
 
-    private XpathEvaluator evaluator;
+    private String xpathExpress;
+    private transient AtomicBoolean needCompile = new AtomicBoolean(true);
+    private transient XpathEvaluator evaluator;
 
     /**
      * Instantiates a new X path selector.
@@ -24,12 +27,23 @@ public class XpathSelector extends AbstractElementSelector {
      * @param xpathExpress the xpath express
      * @throws XpathSyntaxErrorException the xpath syntax error exception
      */
-    public XpathSelector(String xpathExpress) throws XpathSyntaxErrorException {
-        evaluator = XpathParser.compile(xpathExpress);
+    public XpathSelector(String xpathExpress) {
+        this.xpathExpress = xpathExpress;
+    }
+
+    private void compile() {
+        if (needCompile.compareAndSet(true, false)) {
+            try {
+                evaluator = XpathParser.compile(xpathExpress);
+            } catch (XpathSyntaxErrorException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
     public List<Node> selectAsNode(Element element) {
+        compile();
         return new ArrayList<>(evaluator.evaluateToElement(element));
     }
 

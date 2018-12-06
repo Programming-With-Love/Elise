@@ -27,7 +27,6 @@ public class CssSelector extends AbstractElementSelector {
     @Override
     public List<Node> selectAsNode(Element element) {
         Elements elements = element.select(cssExpress);
-        List<Node> results = new ArrayList<>(elements);
-        return results;
+        return new ArrayList<>(elements);
     }
 }

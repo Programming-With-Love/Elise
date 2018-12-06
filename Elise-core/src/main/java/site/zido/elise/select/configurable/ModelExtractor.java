@@ -14,8 +14,6 @@ import java.util.Set;
  */
 public interface ModelExtractor {
 
-    Config getConfig();
-
     /**
      * Extract result item.
      *

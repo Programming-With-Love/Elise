@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.Operator;
 import site.zido.elise.Spider;
 import site.zido.elise.custom.Config;
+import site.zido.elise.custom.ConfigUtils;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.downloader.DownloaderFactory;
 import site.zido.elise.events.EventListener;
@@ -14,7 +15,7 @@ import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.ListenableResponseHandler;
 import site.zido.elise.processor.ResponseHandler;
-import site.zido.elise.select.configurable.DefRootExtractor;
+import site.zido.elise.select.configurable.ModelExtractor;
 import site.zido.elise.select.matcher.CompilerException;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
 import site.zido.elise.task.DefaultTask;
@@ -49,10 +50,17 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     private CountManager countManager;
     private DuplicationProcessor duplicationProcessor;
     private DownloaderFactory downloaderFactory;
+    private Config config;
 
     @Override
-    public Operator of(DefRootExtractor extractor) {
-        final DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor);
+    public Operator of(ModelExtractor extractor, Config config) {
+        final DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor, ConfigUtils.mergeConfig(config, this.config));
+        return new DefaultOperator(task, this);
+    }
+
+    @Override
+    public Operator of(ModelExtractor extractor) {
+        final DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor, config);
         return new DefaultOperator(task, this);
     }
 
@@ -99,7 +107,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
             countEvent(state, task);
             return;
         }
-        final Config config = task.modelExtractor().getConfig();
+        final Config config = task.getConfig();
         if (state != STATE_CANCEL_NOW) {
             String successCode = config.get(GlobalConfig.KEY_SUCCESS_CODE);
             NumberExpressMatcher matcher;
@@ -117,7 +125,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
                     }
                 }
                 countEvent(state, task);
-                sleep(config.get(config.get(GlobalConfig.KEY_SLEEP_TIME)));
+                sleep(config.get(GlobalConfig.KEY_SLEEP_TIME));
                 return;
             }
         }
@@ -167,7 +175,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
      */
     protected Response onDownload(Task task, Request request) {
         final Response response = downloaderFactory.create(task).download(task, request);
-        String successCode = task.modelExtractor().getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
+        String successCode = task.getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
         NumberExpressMatcher matcher;
         try {
             matcher = new NumberExpressMatcher(successCode);
@@ -205,12 +213,12 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
             cycleTriedTimes++;
-            if (cycleTriedTimes < task.modelExtractor().getConfig().<Integer>get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES)) {
+            if (cycleTriedTimes < task.getConfig().<Integer>get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES)) {
                 request.putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes);
                 pushRequest(task, request);
             }
         }
-        sleep(task.modelExtractor().getConfig().get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES));
+        sleep(task.getConfig().get(GlobalConfig.KEY_SCHEDULE_RETRY_TIMES));
     }
 
     private void sleep(int time) {
@@ -339,5 +347,10 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
      */
     public void setDuplicationProcessor(DuplicationProcessor duplicationProcessor) {
         this.duplicationProcessor = duplicationProcessor;
+    }
+
+    public AbstractScheduler setConfig(Config config) {
+        this.config = config;
+        return this;
     }
 }

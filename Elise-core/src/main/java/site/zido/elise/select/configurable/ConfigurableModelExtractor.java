@@ -4,9 +4,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.processor.ResultItem;
-import site.zido.elise.custom.Config;
 import site.zido.elise.http.Response;
+import site.zido.elise.processor.ResultItem;
 import site.zido.elise.select.*;
 import site.zido.elise.utils.ValidateUtils;
 
@@ -24,60 +23,78 @@ public class ConfigurableModelExtractor implements ModelExtractor {
 
     private static final String HTTP_LABEL = "http";
     private static Logger logger = LoggerFactory.getLogger(ConfigurableModelExtractor.class);
-    private List<LinkSelector> targetUrlSelectors = new ArrayList<>();
-    private List<LinkSelector> helpUrlSelectors = new ArrayList<>();
-    private DefRootExtractor defRootExtractor;
-    private Config config;
+    private List<LinkSelector> targetUrlSelectors;
+    private List<LinkSelector> helpUrlSelectors;
+    private String name;
+    private Selector sourceSelector;
+    private List<FieldExtractor> fieldExtractors;
 
-    /**
-     * construct by {@link DefRootExtractor}
-     *
-     * @param defRootExtractor def root extractor
-     */
-    public ConfigurableModelExtractor(DefRootExtractor defRootExtractor) {
-        this.defRootExtractor = defRootExtractor;
-        List<ConfigurableUrlFinder> targetUrlFinder = defRootExtractor.getTargetUrl();
-        if (!ValidateUtils.isEmpty(targetUrlFinder)) {
-            for (ConfigurableUrlFinder configurableUrlFinder : targetUrlFinder) {
-                LinkSelector linkSelector = new LinkSelector(configurableUrlFinder);
-                this.targetUrlSelectors.add(linkSelector);
-            }
-        }
-        List<ConfigurableUrlFinder> helpUrlFinder = defRootExtractor.getHelpUrl();
-        if (!ValidateUtils.isEmpty(helpUrlFinder)) {
-            for (ConfigurableUrlFinder configurableUrlFinder : helpUrlFinder) {
-                LinkSelector linkSelector = new LinkSelector(configurableUrlFinder);
-                this.helpUrlSelectors.add(linkSelector);
-            }
-        }
+    public ConfigurableModelExtractor() {
     }
 
-    @Override
-    public Config getConfig() {
-        return config;
+    public List<LinkSelector> getTargetUrlSelectors() {
+        return targetUrlSelectors;
     }
 
-    public void setConfig(Config config) {
-        this.config = config;
+    public ConfigurableModelExtractor setTargetUrlSelectors(List<LinkSelector> targetUrlSelectors) {
+        this.targetUrlSelectors = targetUrlSelectors;
+        return this;
+    }
+
+    public List<LinkSelector> getHelpUrlSelectors() {
+        return helpUrlSelectors;
+    }
+
+    public ConfigurableModelExtractor setHelpUrlSelectors(List<LinkSelector> helpUrlSelectors) {
+        this.helpUrlSelectors = helpUrlSelectors;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ConfigurableModelExtractor setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Selector getSourceSelector() {
+        return sourceSelector;
+    }
+
+    public ConfigurableModelExtractor setSourceSelector(Selector sourceSelector) {
+        this.sourceSelector = sourceSelector;
+        return this;
+    }
+
+    public List<FieldExtractor> getFieldExtractors() {
+        return fieldExtractors;
+    }
+
+    public ConfigurableModelExtractor setFieldExtractors(List<FieldExtractor> fieldExtractors) {
+        this.fieldExtractors = fieldExtractors;
+        return this;
     }
 
     @Override
     public List<ResultItem> extract(Response response) {
-        if (targetUrlSelectors.stream().noneMatch(linkSelector -> linkSelector.select(response.getUrl().toString()) != null)) {
-            return new ArrayList<>();
+        if (!ValidateUtils.isEmpty(targetUrlSelectors)) {
+            if (targetUrlSelectors.stream().noneMatch(linkSelector -> linkSelector.select(response.getUrl().toString()) != null)) {
+                return new ArrayList<>();
+            }
         }
         List<ResultItem> results = new ArrayList<>();
         Selectable body = response.getBody();
-        Selector selector = defRootExtractor.compileSelector();
-        if (body instanceof ElementSelectable && selector instanceof ElementSelector) {
-            List<Node> list = ((ElementSelectable) body).selectAsNode((ElementSelector) selector);
+        if (body instanceof ElementSelectable && sourceSelector instanceof ElementSelector) {
+            List<Node> list = ((ElementSelectable) body).selectAsNode((ElementSelector) sourceSelector);
             //select from region
             for (Node node : list) {
                 Map<String, List<Fragment>> item = processSingle(response, node);
                 toResults(results, item);
             }
         } else {
-            List<Fragment> list = body.select(selector);
+            List<Fragment> list = body.select(sourceSelector);
             //get region
             for (Fragment fragment : list) {
                 String html = fragment.toString();
@@ -132,8 +149,8 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     }
 
     private Map<String, List<Fragment>> processSingle(Response response, Object html) {
-        Map<String, List<Fragment>> map = new HashMap<>(defRootExtractor.getChildren().size());
-        for (DefExtractor fieldExtractor : defRootExtractor.getChildren()) {
+        Map<String, List<Fragment>> map = new HashMap<>(fieldExtractors.size());
+        for (FieldExtractor fieldExtractor : fieldExtractors) {
             List<Fragment> results = processField(fieldExtractor, response, html);
             if (ValidateUtils.isEmpty(results) && !fieldExtractor.getNullable()) {
                 return null;
@@ -143,9 +160,9 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return map;
     }
 
-    private List<Fragment> processField(DefExtractor fieldExtractor, Response response, Object html) {
+    private List<Fragment> processField(FieldExtractor fieldExtractor, Response response, Object html) {
         List<Fragment> value;
-        Selector selector = fieldExtractor.compileSelector();
+        Selector selector = fieldExtractor.getSelector();
         switch (fieldExtractor.getSource()) {
             case RAW_HTML:
                 value = response.getBody().select(selector);
@@ -170,14 +187,5 @@ public class ConfigurableModelExtractor implements ModelExtractor {
 
         }
         return value;
-    }
-
-    /**
-     * Gets def root extractor.
-     *
-     * @return the def root extractor
-     */
-    public DefRootExtractor getDefRootExtractor() {
-        return defRootExtractor;
     }
 }

@@ -7,7 +7,7 @@ public class ConfigUtils {
     private ConfigUtils() {
     }
 
-    public <T> T mergeConfig(String key, Config... config) {
+    public static <T> T mergeConfig(String key, Config... config) {
         T result = null;
         for (Config c : config) {
             final T o = c.get(key);
@@ -18,7 +18,7 @@ public class ConfigUtils {
         return result;
     }
 
-    public Config mergeConfig(Config... config) {
+    public static Config mergeConfig(Config... config) {
         Map<String, Object> result = new HashMap<>();
         for (Config c : config) {
             for (String s : c.keySet()) {
