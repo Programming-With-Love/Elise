@@ -60,6 +60,11 @@ public class DefaultTask implements Task {
         return config;
     }
 
+    public DefaultTask setConfig(Config config) {
+        this.config = config;
+        return this;
+    }
+
     /**
      * Gets def extractor.
      *
@@ -77,11 +82,6 @@ public class DefaultTask implements Task {
      */
     public DefaultTask setExtractor(ConfigurableModelExtractor extractor) {
         this.extractor = extractor;
-        return this;
-    }
-
-    public DefaultTask setConfig(Config config) {
-        this.config = config;
         return this;
     }
 }

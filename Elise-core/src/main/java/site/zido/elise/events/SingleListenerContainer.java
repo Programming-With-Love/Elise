@@ -27,11 +27,6 @@ public final class SingleListenerContainer implements TaskEventListener {
         this.callback = callback;
     }
 
-    @FunctionalInterface
-    public interface RecyclingCallback {
-        void onRecycling();
-    }
-
     /**
      * Add listener.
      *
@@ -58,7 +53,7 @@ public final class SingleListenerContainer implements TaskEventListener {
     @Override
     public void onSuccess(Task task) {
         if (this.taskId == task.getId()) {
-            EventUtils.notifyListeners(listeners, SingleEventListener::onSuccess);
+            EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task.modelExtractor().getName()));
         }
         callback.onRecycling();
     }
@@ -99,7 +94,8 @@ public final class SingleListenerContainer implements TaskEventListener {
         }
     }
 
-    public void onRecycling() {
-
+    @FunctionalInterface
+    public interface RecyclingCallback {
+        void onRecycling();
     }
 }

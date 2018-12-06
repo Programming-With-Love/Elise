@@ -2,7 +2,6 @@ package site.zido.elise.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.events.SingleProcessorEventListener;
 import site.zido.elise.http.Response;
 import site.zido.elise.select.configurable.ModelExtractor;
 import site.zido.elise.task.Task;
@@ -62,7 +61,7 @@ public class DefaultResponseHandler implements ListenableResponseHandler {
     }
 
     @Override
-    public void removeEventListener(ProcessorEventListener listener){
+    public void removeEventListener(ProcessorEventListener listener) {
         listeners.remove(listener);
     }
 }

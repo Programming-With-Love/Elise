@@ -10,6 +10,9 @@ import site.zido.elise.task.Task;
 import site.zido.elise.utils.Asserts;
 
 import java.nio.charset.Charset;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * default operator.
@@ -20,6 +23,8 @@ public class DefaultOperator implements Operator, SingleListenerContainer.Recycl
     private final Task task;
     private final AbstractScheduler scheduler;
     private final SingleListenerContainer container;
+    private Lock lock = new ReentrantLock();
+    private Condition condition = lock.newCondition();
 
     /**
      * Instantiates a new Default operator.
@@ -57,6 +62,17 @@ public class DefaultOperator implements Operator, SingleListenerContainer.Recycl
     }
 
     @Override
+    public Operator block() throws InterruptedException {
+        lock.lock();
+        try {
+            condition.await();
+        } finally {
+            lock.unlock();
+        }
+        return this;
+    }
+
+    @Override
     public Operator execute(String... url) {
         for (String s : url) {
             final DefaultRequest request = new DefaultRequest(s);
@@ -81,6 +97,12 @@ public class DefaultOperator implements Operator, SingleListenerContainer.Recycl
 
     @Override
     public void onRecycling() {
-        scheduler.removeEventListener(container);
+        lock.lock();
+        try {
+            scheduler.removeEventListener(container);
+            condition.signal();
+        } finally {
+            lock.unlock();
+        }
     }
 }

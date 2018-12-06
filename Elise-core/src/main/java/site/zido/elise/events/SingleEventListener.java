@@ -25,7 +25,7 @@ public interface SingleEventListener extends SingleProcessorEventListener {
     /**
      * On success.
      */
-    default void onSuccess() {
+    default void onSuccess(String name) {
     }
 
     /**

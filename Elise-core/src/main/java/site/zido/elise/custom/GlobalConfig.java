@@ -14,7 +14,6 @@ import java.util.Objects;
  * @author zido
  */
 public class GlobalConfig extends MappedConfig {
-    private static final List<Header> EMPTY_HEADERS = new LinkedList<>();
     /**
      * The constant KEY_USER_AGENT.
      */
@@ -55,17 +54,14 @@ public class GlobalConfig extends MappedConfig {
      * The constant KEY_HEADERS.
      */
     public static final String KEY_HEADERS = "headers";
-
     /**
      * The number of retries that were added to the task scheduler when the download failed
      */
     public static final String KEY_SCHEDULE_RETRY_TIMES = "scheduleRetryTimes";
-
     public static final String KEY_POOL_SIZE = "poolSize";
-
     public static final String KEY_USE_GZIP = "useGzip";
     public static final String KEY_PROXY = "proxy";
-
+    private static final List<Header> EMPTY_HEADERS = new LinkedList<>();
     private static final long serialVersionUID = -6234664119002484979L;
 
     public GlobalConfig() {

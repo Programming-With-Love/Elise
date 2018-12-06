@@ -30,22 +30,6 @@ public class NumberExpressMatcher implements Matcher {
         this(express, DEFAULT_CHAR_SEP);
     }
 
-    public static boolean isSupport(String express) {
-        return isSupport(express, DEFAULT_CHAR_SEP);
-    }
-
-    public static boolean isSupport(String express, char sep) {
-        if (!StringUtils.hasLength(express)) {
-            return false;
-        }
-        if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
-            return false;
-        } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Instantiates a new Number express matcher.
      *
@@ -111,6 +95,22 @@ public class NumberExpressMatcher implements Matcher {
                 region.max = region.max ^ region.min;
             }
         }
+    }
+
+    public static boolean isSupport(String express) {
+        return isSupport(express, DEFAULT_CHAR_SEP);
+    }
+
+    public static boolean isSupport(String express, char sep) {
+        if (!StringUtils.hasLength(express)) {
+            return false;
+        }
+        if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
+            return false;
+        } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
+            return false;
+        }
+        return true;
     }
 
     @Override

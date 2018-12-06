@@ -24,6 +24,10 @@ public class GlobalConfigBuilder extends MappedConfig {
         return new GlobalConfigBuilder();
     }
 
+    public static GlobalConfig defaults() {
+        return create().build();
+    }
+
     /**
      * Sets user agent.
      *
@@ -195,10 +199,6 @@ public class GlobalConfigBuilder extends MappedConfig {
             config.put(KEY_USE_GZIP, false);
         }
         return config;
-    }
-
-    public static GlobalConfig defaults() {
-        return create().build();
     }
 
 }

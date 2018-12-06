@@ -7,8 +7,8 @@ import site.zido.elise.downloader.DefaultDownloaderFactory;
 import site.zido.elise.downloader.DownloaderFactory;
 import site.zido.elise.downloader.HttpClientDownloaderFactory;
 import site.zido.elise.events.EventListener;
+import site.zido.elise.processor.BlankSaver;
 import site.zido.elise.processor.DefaultResponseHandler;
-import site.zido.elise.processor.MemorySaver;
 import site.zido.elise.processor.ResponseHandler;
 import site.zido.elise.processor.Saver;
 import site.zido.elise.scheduler.*;
@@ -32,6 +32,10 @@ public class SpiderBuilder {
 
     public static SpiderBuilder create() {
         return new SpiderBuilder();
+    }
+
+    public static Spider defaults() {
+        return create().build();
     }
 
     public SpiderBuilder addEventListener(EventListener listener) {
@@ -76,7 +80,7 @@ public class SpiderBuilder {
 
     public Spider build() {
         if (saver == null) {
-            saver = new MemorySaver();
+            saver = new BlankSaver();
         }
         if (responseHandler == null) {
             responseHandler = new DefaultResponseHandler(saver);
@@ -116,9 +120,5 @@ public class SpiderBuilder {
             }
         }
         return scheduler;
-    }
-
-    public static Spider defaults() {
-        return create().build();
     }
 }

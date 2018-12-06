@@ -2,9 +2,9 @@ package site.zido.elise.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.task.Task;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
+import site.zido.elise.task.Task;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
 import java.util.concurrent.*;
@@ -130,15 +130,18 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
             Thread.currentThread().interrupt();
         }
         super.onCancel();
+        RUNNING.set(false);
     }
 
     @Override
     public void cancel(boolean ifRunning) {
-        rootExecutor.shutdownNow();
-        if (ifRunning) {
-            executor.shutdown();
-        } else {
-            executor.shutdownNow();
+        if (RUNNING.compareAndSet(true, false)) {
+            rootExecutor.shutdownNow();
+            if (ifRunning) {
+                executor.shutdown();
+            } else {
+                executor.shutdownNow();
+            }
         }
     }
 

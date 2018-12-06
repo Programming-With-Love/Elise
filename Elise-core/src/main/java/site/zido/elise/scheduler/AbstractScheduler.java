@@ -149,7 +149,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
                             ((TaskEventListener) listener).onSuccess(task);
                         }
                     });
-                } else if (state > STATE_CANCEL) {
+                } else if (state >= STATE_CANCEL) {
                     EventUtils.notifyListeners(listeners, listener -> {
                         if (listener instanceof TaskEventListener) {
                             ((TaskEventListener) listener).onCancel(task);

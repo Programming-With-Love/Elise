@@ -4,7 +4,7 @@ import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.task.Task;
 
-public interface TaskEventListener extends EventListener{
+public interface TaskEventListener extends EventListener {
     /**
      * On download success.
      *

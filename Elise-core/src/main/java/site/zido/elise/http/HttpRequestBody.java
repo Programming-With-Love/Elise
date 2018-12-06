@@ -30,7 +30,7 @@ public class HttpRequestBody implements Serializable {
     /**
      * Instantiates a new Http request bytes.
      *
-     * @param bytes        the bytes
+     * @param bytes       the bytes
      * @param contentType the content type
      * @param encoding    the encoding
      */

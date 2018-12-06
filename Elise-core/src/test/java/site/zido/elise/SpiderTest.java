@@ -1,11 +1,15 @@
 package site.zido.elise;
 
+import org.junit.Assert;
 import org.junit.Test;
 import site.zido.elise.events.EventListener;
 import site.zido.elise.events.SingleEventListener;
+import site.zido.elise.scheduler.NoDepuplicationProcessor;
 import site.zido.elise.select.CssSelector;
 import site.zido.elise.select.LinkSelector;
-import site.zido.elise.select.configurable.*;
+import site.zido.elise.select.configurable.ExtractorBuilder;
+import site.zido.elise.select.configurable.FieldExtractorBuilder;
+import site.zido.elise.select.configurable.ModelExtractor;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -20,11 +24,9 @@ public class SpiderTest {
      */
     @Test
     public void testOnePage() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-
         //构造爬虫
         //爬虫默认为异步运行
-        Spider spider = SpiderBuilder.defaults();
+        Spider spider = SpiderBuilder.create().setDuplicationProcessor(new NoDepuplicationProcessor()).build();
 
         //构造抓取器
         final ModelExtractor extractor = ExtractorBuilder.create("article")
@@ -43,16 +45,18 @@ public class SpiderTest {
                      * 当任务完成之后，测试线程停止等待
                      */
                     @Override
-                    public void onSuccess() {
-                        latch.countDown();
+                    public void onSuccess(String name) {
+                        Assert.assertEquals("article", name);
                     }
                 })
                 //为该任务添加一个入口
                 .execute("http://zido.site")
                 //让爬虫抓取完该任务后取消运行，如果传入true会立即取消运行
-                .cancel(false);
-
-        latch.await();
+                .block()
+                //为该任务添加一个入口
+                .execute("http://zido.site")
+                //让爬虫抓取完该任务后取消运行，如果传入true会立即取消运行
+                .block();
     }
 
     @Test

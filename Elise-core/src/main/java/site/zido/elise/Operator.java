@@ -29,6 +29,14 @@ public interface Operator {
     Operator recover();
 
     /**
+     * waiting until the task success or cancel
+     *
+     * @return this
+     * @throws InterruptedException thread interrupted
+     */
+    Operator block() throws InterruptedException;
+
+    /**
      * Add url operator.
      *
      * @param url the url
