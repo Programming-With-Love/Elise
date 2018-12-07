@@ -25,6 +25,8 @@ Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版
 
 ## 贡献
 
+> 请务必注意，项目开发分支为dev分支。进行开发时务必在dev分支进行开发。master为稳定分支。
+
 仅接受github的[pull request](https://help.github.com/articles/about-pull-requests/)工作流程。
 
 因作者本人能力水平原因，近期会尽可能的学习github开发指南。也希望能有人提出意见或建议。
