@@ -40,7 +40,7 @@ public interface Request extends HttpModel {
      *
      * @return the body
      */
-    HttpRequestBody getBody();
+    RequestBody getBody();
 
     /**
      * Gets headers.

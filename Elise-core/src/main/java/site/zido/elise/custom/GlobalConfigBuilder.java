@@ -198,6 +198,10 @@ public class GlobalConfigBuilder extends MappedConfig {
         if (!config.containsKey(KEY_USE_GZIP)) {
             config.put(KEY_USE_GZIP, false);
         }
+
+        if (!config.containsKey(KEY_CHARSET)) {
+            config.put(KEY_CHARSET, "utf-8");
+        }
         return config;
     }
 

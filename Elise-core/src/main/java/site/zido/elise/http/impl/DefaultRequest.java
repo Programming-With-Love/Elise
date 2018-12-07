@@ -2,8 +2,8 @@ package site.zido.elise.http.impl;
 
 import site.zido.elise.http.Cookie;
 import site.zido.elise.http.Header;
-import site.zido.elise.http.HttpRequestBody;
 import site.zido.elise.http.Request;
+import site.zido.elise.http.RequestBody;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class DefaultRequest implements Request {
      * <p>
      * If other methods are used, the request body will be ignored
      */
-    private HttpRequestBody body;
+    private RequestBody body;
     /**
      * Store additional information in extras.
      */
@@ -42,16 +42,6 @@ public class DefaultRequest implements Request {
 
 
     private String charset;
-
-    /**
-     * Priority of the request.
-     * The bigger will be processed earlier.
-     */
-    private long priority;
-    /**
-     * When it is set to TRUE, the downloader will not try to parse response body to text.
-     */
-    private boolean binaryContent = false;
 
     /**
      * Instantiates a new Default request.
@@ -116,10 +106,10 @@ public class DefaultRequest implements Request {
 
         DefaultRequest request = (DefaultRequest) o;
 
-        if (url != null ? !url.equals(request.url) : request.url != null) {
+        if (!Objects.equals(url, request.url)) {
             return false;
         }
-        return method != null ? method.equals(request.method) : request.method == null;
+        return Objects.equals(method, request.method);
     }
 
     /**
@@ -171,7 +161,7 @@ public class DefaultRequest implements Request {
     }
 
     @Override
-    public HttpRequestBody getBody() {
+    public RequestBody getBody() {
         return body;
     }
 
@@ -180,7 +170,7 @@ public class DefaultRequest implements Request {
      *
      * @param body the body
      */
-    public void setBody(HttpRequestBody body) {
+    public void setBody(RequestBody body) {
         this.body = body;
     }
 
@@ -228,24 +218,6 @@ public class DefaultRequest implements Request {
      */
     public void setHeaders(List<Header> headers) {
         this.headers = headers;
-    }
-
-    /**
-     * Gets charset.
-     *
-     * @return the charset
-     */
-    public String getCharset() {
-        return charset;
-    }
-
-    /**
-     * Sets charset.
-     *
-     * @param charset the charset
-     */
-    public void setCharset(String charset) {
-        this.charset = charset;
     }
 
     @Override

@@ -4,6 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import site.zido.elise.events.EventListener;
 import site.zido.elise.events.SingleEventListener;
+import site.zido.elise.http.Http;
+import site.zido.elise.http.RequestBody;
+import site.zido.elise.http.RequestBuilder;
+import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.scheduler.NoDepuplicationProcessor;
 import site.zido.elise.select.CssSelector;
 import site.zido.elise.select.LinkSelector;
@@ -113,5 +117,14 @@ public class SpiderTest {
         Thread.sleep(3000);
         spider.cancel(true);
         latch.await();
+    }
+
+    @Test
+    public void testSpider() throws InterruptedException {
+        final Spider spider = SpiderBuilder.defaults();
+        spider.of(ExtractorBuilder.create("login").build()).execute(RequestBuilder
+                .post("http://my.scu.edu.cn/userPasswordValidate.portal")
+                .bodyForm("Login.Token1=xxx&Login.Token2=xxx.&goto=http://my.scu.edu.cn/loginSuccess.portal&gotoOnFail=http://my.scu.edu.cn/loginFailure.portal")
+                .build()).block();
     }
 }

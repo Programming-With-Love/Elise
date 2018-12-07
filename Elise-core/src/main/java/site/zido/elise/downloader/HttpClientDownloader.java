@@ -15,7 +15,7 @@ import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.custom.HttpClientConfig;
 import site.zido.elise.downloader.httpclient.HttpClientHeaderWrapper;
 import site.zido.elise.http.Http;
-import site.zido.elise.http.HttpRequestBody;
+import site.zido.elise.http.RequestBody;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;
@@ -103,7 +103,7 @@ public class HttpClientDownloader implements Downloader {
 
     private HttpUriRequest buildRequest(Task task, Request request) {
         RequestBuilder builder = RequestBuilder.create(request.getMethod());
-        final HttpRequestBody body = request.getBody();
+        final RequestBody body = request.getBody();
         if (body != null) {
             ByteArrayEntity bodyEntity = new ByteArrayEntity(body.getBytes());
             bodyEntity.setContentType(body.getContentType().toString());

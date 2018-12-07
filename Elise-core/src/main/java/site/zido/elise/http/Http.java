@@ -38,10 +38,8 @@ public class Http {
          * The constant DELETE.
          */
         public static final String DELETE = "DELETE";
-        /**
-         * The constant TRACE.
-         */
-        public static final String TRACE = "TRACE";
+
+        public static final String PATCH = "PATCH";
 
         private Method() {
         }

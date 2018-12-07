@@ -3,13 +3,11 @@ package site.zido.elise.scheduler;
 import site.zido.elise.Operator;
 import site.zido.elise.events.SingleEventListener;
 import site.zido.elise.events.SingleListenerContainer;
-import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
-import site.zido.elise.http.impl.DefaultRequest;
+import site.zido.elise.http.RequestBuilder;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.Asserts;
 
-import java.nio.charset.Charset;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -75,10 +73,7 @@ public class DefaultOperator implements Operator, SingleListenerContainer.Recycl
     @Override
     public Operator execute(String... url) {
         for (String s : url) {
-            final DefaultRequest request = new DefaultRequest(s);
-            request.setCharset(Charset.defaultCharset().name());
-            request.setMethod(Http.Method.GET);
-            scheduler.pushRequest(task, request);
+            scheduler.pushRequest(task, RequestBuilder.get(s).build());
         }
         return this;
     }
