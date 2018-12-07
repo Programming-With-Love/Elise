@@ -46,7 +46,7 @@ Elise的优势：
 
 目前还没能达到正式版本的状态。不过已经能基本保证正常运行，可以自行clone代码构建运行。
 
-开发路线参考 [roadmap.md](./roadmap.md)。
+开发路线参考 [roadmap.md](./docs/roadmap.md)。
 
 ## 贡献
 
