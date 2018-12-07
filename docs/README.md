@@ -1,13 +1,39 @@
-# 代码设计理念
+# 贡献说明
 
-> 注意：非常非常欢迎任何意见或者建议在[issues](https://github.com/zidoshare/Elise/issues)中提出
+> 注意：非常非常欢迎任何意见或者建议在[issues](https://github.com/zidoshare/Elise/issues)中提出，也可以[发送email给我](mailto:wuhongxu1208@gmail.com)，谢谢
 
-* api设计参考 [api.md](./api.md)。许多api暂未实现
 * 开发路线参考 [roadmap.md](./roadmap.md)。
 
-> 请尽可能阅读并理解本设计理念，如果问题欢迎讨论，谢谢！
+> 如果想要贡献代码，请尽可能阅读并理解本文档，如有问题欢迎讨论，谢谢！
 
-## 使用体验很重要，常规使用者绝不接触任何多余api
+## 构建指北
+
+Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版本为8以上。
+
+获取源码：
+
+`git clone https://github.com/zidoshare/Elise.git`
+`cd Elise`
+
+因为作者是使用idea进行开发，所以推荐的开发编辑器为IntelliJ IDEA。
+
+如果你在其他编辑器中开发，请确保你的编辑器中的配置文件/构建文件/缓存等不会出现在提交目录中。这可以在[.gitignore](https://git-scm.com/docs/gitignore)文件中进行设置，也欢迎提交类似的pr
+
+### FAQ
+
+暂无...
+
+## 贡献
+
+仅接受github的[pull request](https://help.github.com/articles/about-pull-requests/)工作流程。
+
+因作者本人能力水平原因，近期会尽可能的学习github开发指南。也希望能有人提出意见或建议。
+
+## 关于代码
+
+关于代码编写，有以下准则：
+
+### 使用体验很重要，常规使用者绝不接触任何多余api
 
 尽可能让api更流畅。
 
@@ -72,13 +98,13 @@ SpiderBuilder.defaults()
 //构建目标爬虫的规则
 .of(ExtractorBuilder.create("login").build())
 //添加爬虫入口 也可以直接使用execute(url),这里为了尽可能详细展示，使用了RequestBuilder来构建更具体的请求
-.execute(RequestBuilder.post("http://xxx").bodyForm("Login.Token1=xxx&Login.Token2=xxx.goto=http://my.scu.edu.cn/loginSuccess.portalgotoOnFail=http://my.scu.edu.cn/loginFailure.portal").build())
+.execute(RequestBuilder.post("http://xxx").bodyForm("username=xxx&password=xxx").build())
 //阻塞任务直到完成
 .block();
 
 ```
 
-## 编写代码时必须考虑分布式下的场景
+### 编写代码时必须考虑分布式下的场景
 
 本框架在设计时必定遵循的规则是分布式下拥有统一的使用体验并且完全可以向各个方向衍生。
 
@@ -135,5 +161,4 @@ DistributedSpiderBuilder.defaults()
 
 * 抽象类不必使用Abstract/Base开头，尽可能的参考本抽象类的功能。例如在httpclient中出现的抽象类`CloseableHttpClient`。
 
-* 字符串不要求提升为`static final`的。也可以直接出现代码中，`alibaba`开发手册称之为`魔法字符串`。但是仍然推荐提升。
-
+* 字符串不要求提升为`static final`。也可以直接出现代码中，`alibaba`开发手册称之为`魔法字符串`。但是仍然推荐提升。
