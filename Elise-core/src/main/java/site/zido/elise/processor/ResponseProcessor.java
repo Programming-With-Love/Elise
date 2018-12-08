@@ -10,7 +10,7 @@ import java.util.Set;
  *
  * @author zido
  */
-public interface ResponseHandler {
+public interface ResponseProcessor {
     /**
      * process the response, extract urls to fetch, extract the data and store.
      *

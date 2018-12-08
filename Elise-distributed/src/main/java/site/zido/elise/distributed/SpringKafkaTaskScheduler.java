@@ -18,7 +18,7 @@ import site.zido.elise.task.Task;
 import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.http.Request;
-import site.zido.elise.processor.ResponseHandler;
+import site.zido.elise.processor.ResponseProcessor;
 import site.zido.elise.scheduler.AbstractScheduler;
 
 import java.util.HashMap;
@@ -63,8 +63,8 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
     }
 
     @Override
-    public synchronized void setResponseHandler(ResponseHandler responseHandler) {
-//        super.setResponseHandler(responseHandler);
+    public synchronized void setResponseProcessor(ResponseProcessor responseProcessor) {
+//        super.setResponseProcessor(responseProcessor);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 Seed seed = message.value();

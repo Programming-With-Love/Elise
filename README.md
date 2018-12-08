@@ -8,9 +8,15 @@ Elise一个开源的商业友好的java爬虫框架。从功能设计上来说�
 
 Elise的优势：
 
+* 流畅、优雅的体验，致力于体验
+
 * 多线程，速度快
 
-* 模块化设计，扩展性高，支持分布式
+* 自动cookie和会话处理
+
+* 扩展性高
+
+* 支持分布式
 
 * 提供生命周期回调，任务完成，任务取消,下载成功，下载失败等等一系列回调支持
 
@@ -20,11 +26,9 @@ Elise的优势：
 
 * 支持xpath/regex/css多模式组合爬取
 
-* 定时爬取(未完成/待讨论)
-
-* 代理支持
-
 * html unit模拟浏览器
+
+* 商业友好（采用 AGPL-3.0 协议）
 
 ...
 
@@ -46,13 +50,13 @@ Elise的优势：
 
 目前还没能达到正式版本的状态。不过已经能基本保证正常运行，可以自行clone代码构建运行。
 
-开发路线参考 [roadmap.md](./docs/roadmap.md)。
+开发路线参考 [ROADMAP.md](./ROADMAP.md)。
 
 ## 贡献
 
 行为准则请参阅[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 
-请查看[贡献说明](./docs/README.md)。请注意，梳理后作者发现开发难度略高，请在拥有一定多线程经验的情况下加入到贡献中。当然也非常欢迎所有程序员们查看本框架的代码，共同交流提高。
+请查看[贡献说明](./CONTRIBUTING.md)。
 
 ## 使用说明
 
@@ -61,6 +65,20 @@ Elise的优势：
 ## maven仓库
 
 暂无（不稳定，请期待第一个版本的诞生，一定会惊艳到你）
+
+## 构建指北
+
+Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版本为8以上。
+
+获取源码：
+
+`git clone https://github.com/zidoshare/Elise.git`
+
+`cd Elise`
+
+因为作者是使用idea进行开发，所以推荐的开发编辑器为IntelliJ IDEA。
+
+如果你在其他编辑器中开发，请确保你的编辑器中的配置文件/构建文件/缓存等不会出现在提交目录中。这可以在[.gitignore](https://git-scm.com/docs/gitignore)文件中进行设置，也欢迎提交类似的pr
 
 ## 交流反馈
 
@@ -77,3 +95,5 @@ Elise的优势：
 * [webmagic](https://github.com/code4craft/webmagic):一个开源的Java垂直爬虫框架.
 
 * [Spiderman2](https://gitee.com/l-weiwei/Spiderman2):简单的说，这是一个网页爬虫工具，专门对网页内容进行抓取和解析
+
+* [colly](https://github.com/gocolly/colly):优雅快速的go语言爬虫框架
