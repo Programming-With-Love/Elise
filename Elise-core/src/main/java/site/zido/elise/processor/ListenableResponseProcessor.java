@@ -5,7 +5,7 @@ package site.zido.elise.processor;
  *
  * @author zido
  */
-public interface ListenableResponseHandler extends ResponseHandler {
+public interface ListenableResponseProcessor extends ResponseProcessor {
     /**
      * Add event listener.
      *

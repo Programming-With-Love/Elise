@@ -8,8 +8,8 @@ import site.zido.elise.downloader.DownloaderFactory;
 import site.zido.elise.downloader.HttpClientDownloaderFactory;
 import site.zido.elise.events.EventListener;
 import site.zido.elise.processor.BlankSaver;
-import site.zido.elise.processor.DefaultResponseHandler;
-import site.zido.elise.processor.ResponseHandler;
+import site.zido.elise.processor.DefaultResponseProcessor;
+import site.zido.elise.processor.ResponseProcessor;
 import site.zido.elise.processor.Saver;
 import site.zido.elise.scheduler.*;
 
@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class SpiderBuilder {
     private Set<EventListener> listeners = new HashSet<>();
-    private ResponseHandler responseHandler;
+    private ResponseProcessor responseProcessor;
     private Saver saver;
     private CountManager countManager;
     private DuplicationProcessor duplicationProcessor;
@@ -43,8 +43,8 @@ public class SpiderBuilder {
         return this;
     }
 
-    public SpiderBuilder setResponseHandler(ResponseHandler responseHandler) {
-        this.responseHandler = responseHandler;
+    public SpiderBuilder setResponseProcessor(ResponseProcessor responseProcessor) {
+        this.responseProcessor = responseProcessor;
         return this;
     }
 
@@ -82,8 +82,8 @@ public class SpiderBuilder {
         if (saver == null) {
             saver = new BlankSaver();
         }
-        if (responseHandler == null) {
-            responseHandler = new DefaultResponseHandler(saver);
+        if (responseProcessor == null) {
+            responseProcessor = new DefaultResponseProcessor(saver);
         }
         if (countManager == null) {
             countManager = new DefaultMemoryCountManager();
@@ -110,7 +110,7 @@ public class SpiderBuilder {
             globalConfig = GlobalConfigBuilder.defaults();
         }
         scheduler.setConfig(globalConfig);
-        scheduler.setResponseHandler(responseHandler);
+        scheduler.setResponseProcessor(responseProcessor);
         scheduler.setCountManager(countManager);
         scheduler.setDuplicationProcessor(duplicationProcessor);
         scheduler.setDownloaderFactory(downloaderFactory);
