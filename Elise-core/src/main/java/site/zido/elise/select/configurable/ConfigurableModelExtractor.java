@@ -50,6 +50,7 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return this;
     }
 
+    @Override
     public String getName() {
         return name;
     }

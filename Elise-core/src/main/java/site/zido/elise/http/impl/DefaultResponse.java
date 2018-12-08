@@ -148,6 +148,7 @@ public class DefaultResponse implements Response {
      *
      * @return the body
      */
+    @Override
     public Selectable getBody() {
         return body;
     }
