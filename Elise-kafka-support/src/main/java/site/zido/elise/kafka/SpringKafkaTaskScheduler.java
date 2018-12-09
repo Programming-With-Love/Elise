@@ -1,4 +1,4 @@
-package site.zido.elise.distributed;
+package site.zido.elise.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -13,13 +13,13 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.listener.config.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import site.zido.elise.task.DefaultTask;
-import site.zido.elise.task.Task;
-import site.zido.elise.distributed.pojo.Seed;
 import site.zido.elise.downloader.Downloader;
 import site.zido.elise.http.Request;
-import site.zido.elise.processor.ResponseHandler;
+import site.zido.elise.kafka.pojo.Seed;
+import site.zido.elise.processor.ResponseProcessor;
 import site.zido.elise.scheduler.AbstractScheduler;
+import site.zido.elise.task.DefaultTask;
+import site.zido.elise.task.Task;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +63,9 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
     }
 
     @Override
-    public synchronized void setResponseHandler(ResponseHandler responseHandler) {
-//        super.setResponseHandler(responseHandler);
+    public synchronized void setResponseProcessor(ResponseProcessor responseProcessor) {
+        //TODO not work,and fix this
+//        super.setResponseProcessor(responseProcessor);
         if (this.analyzerContainer == null) {
             this.analyzerContainer = runContainer(topicAnalyzer, message -> {
                 Seed seed = message.value();
@@ -77,6 +78,7 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
     }
 
     public synchronized void setDownloader(Downloader downloader) {
+        //TODO not work,and fix this
         //super.setDownloader(downloader);
         if (this.downloaderContainer == null) {
             this.downloaderContainer = runContainer(topicDownload, message -> {
@@ -129,7 +131,7 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "site.zido.elise.distributed.pojo");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "site.zido.elise.kafka.pojo");
         return props;
     }
 

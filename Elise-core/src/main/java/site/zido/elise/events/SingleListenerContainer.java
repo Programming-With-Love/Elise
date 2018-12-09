@@ -19,10 +19,20 @@ public final class SingleListenerContainer implements TaskEventListener {
     private long taskId;
     private RecyclingCallback callback;
 
+    /**
+     * Instantiates a new Single listener container.
+     *
+     * @param taskId the task id
+     */
     public SingleListenerContainer(long taskId) {
         this.taskId = taskId;
     }
 
+    /**
+     * Sets callback.
+     *
+     * @param callback the callback
+     */
     public void setCallback(RecyclingCallback callback) {
         this.callback = callback;
     }
@@ -94,8 +104,16 @@ public final class SingleListenerContainer implements TaskEventListener {
         }
     }
 
+    /**
+     * The interface Recycling callback.
+     *
+     * @author zido
+     */
     @FunctionalInterface
     public interface RecyclingCallback {
+        /**
+         * On recycling.
+         */
         void onRecycling();
     }
 }

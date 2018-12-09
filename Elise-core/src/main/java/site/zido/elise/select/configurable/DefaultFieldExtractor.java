@@ -2,6 +2,11 @@ package site.zido.elise.select.configurable;
 
 import site.zido.elise.select.Selector;
 
+/**
+ * The type Default field extractor.
+ *
+ * @author zido
+ */
 public class DefaultFieldExtractor implements FieldExtractor {
     /**
      * 字段名
@@ -34,6 +39,7 @@ public class DefaultFieldExtractor implements FieldExtractor {
      *
      * @return the name
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -42,7 +48,6 @@ public class DefaultFieldExtractor implements FieldExtractor {
      * Sets name.
      *
      * @param name the name
-     * @return the name
      */
     public void setName(String name) {
         this.name = name;
@@ -53,6 +58,7 @@ public class DefaultFieldExtractor implements FieldExtractor {
      *
      * @return the nullable
      */
+    @Override
     public boolean getNullable() {
         return nullable;
     }
@@ -61,7 +67,6 @@ public class DefaultFieldExtractor implements FieldExtractor {
      * Sets nullable.
      *
      * @param nullable the nullable
-     * @return the nullable
      */
     public void setNullable(Boolean nullable) {
         this.nullable = nullable;
@@ -72,6 +77,7 @@ public class DefaultFieldExtractor implements FieldExtractor {
      *
      * @return the source
      */
+    @Override
     public Source getSource() {
         return source;
     }
@@ -80,7 +86,6 @@ public class DefaultFieldExtractor implements FieldExtractor {
      * Sets source.
      *
      * @param source the source
-     * @return the source
      */
     public void setSource(Source source) {
         this.source = source;
@@ -91,10 +96,16 @@ public class DefaultFieldExtractor implements FieldExtractor {
      *
      * @return the selector
      */
+    @Override
     public Selector getSelector() {
         return selector;
     }
 
+    /**
+     * Sets selector.
+     *
+     * @param selector the selector
+     */
     public void setSelector(Selector selector) {
         this.selector = selector;
     }

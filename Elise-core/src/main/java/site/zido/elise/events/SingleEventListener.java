@@ -3,6 +3,11 @@ package site.zido.elise.events;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 
+/**
+ * The interface Single event listener.
+ *
+ * @author zido
+ */
 public interface SingleEventListener extends SingleProcessorEventListener {
     /**
      * On download success.
@@ -24,6 +29,8 @@ public interface SingleEventListener extends SingleProcessorEventListener {
 
     /**
      * On success.
+     *
+     * @param name the name
      */
     default void onSuccess(String name) {
     }

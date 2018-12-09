@@ -17,8 +17,8 @@ import java.util.Set;
  *
  * @author zido
  */
-public class DefaultResponseHandler implements ListenableResponseHandler {
-    private static Logger LOGGER = LoggerFactory.getLogger(DefaultResponseHandler.class);
+public class DefaultResponseProcessor implements ListenableResponseProcessor {
+    private static Logger LOGGER = LoggerFactory.getLogger(DefaultResponseProcessor.class);
 
     private Set<ProcessorEventListener> listeners = new HashSet<>();
     private Saver saver;
@@ -28,7 +28,7 @@ public class DefaultResponseHandler implements ListenableResponseHandler {
      *
      * @param saver the saver
      */
-    public DefaultResponseHandler(Saver saver) {
+    public DefaultResponseProcessor(Saver saver) {
         this.saver = saver;
     }
 

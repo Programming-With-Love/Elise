@@ -20,7 +20,7 @@ public class HtmlUtils {
      */
     private static final Pattern META_CHARSET_PATTERN = Pattern.compile("<[mM][eE][tT][aA][^>]*([cC][Hh][Aa][Rr][Ss][Ee][Tt][\\s]*=[\\s\\\"']*)([\\w\\d-_]*)[^>]*>");
     /**
-     * the key words
+     * the key words of head
      */
     private static final char[] KEYWORDS = {'h', 'e', 'a', 'd', '>'};
 

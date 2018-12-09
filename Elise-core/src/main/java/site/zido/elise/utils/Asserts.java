@@ -3,7 +3,7 @@ package site.zido.elise.utils;
 import java.util.Collection;
 
 /**
- * The type Asserts.
+ * Assertion tool.
  *
  * @author zido
  */

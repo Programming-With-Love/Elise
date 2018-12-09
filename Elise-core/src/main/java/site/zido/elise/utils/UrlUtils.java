@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * The type Url utils.
+ * Url utils.
  *
  * @author zido
  */
@@ -129,10 +129,25 @@ public class UrlUtils {
         URIC.or(UNRESERVED);
     }
 
+    /**
+     * Encode format string.
+     *
+     * @param parameters the parameters
+     * @param charset    the charset
+     * @return the string
+     */
     public static String encodeFormat(final List<? extends Pair> parameters, final Charset charset) {
         return encodeFormat(parameters, AND_SEPARATOR, charset);
     }
 
+    /**
+     * Encode format string.
+     *
+     * @param parameters         the parameters
+     * @param parameterSeparator the parameter separator
+     * @param charset            the charset
+     * @return the string
+     */
     public static String encodeFormat(final List<? extends Pair> parameters,
                                       final char parameterSeparator,
                                       final Charset charset) {
@@ -159,6 +174,13 @@ public class UrlUtils {
         return urlEncode(content, charset != null ? charset : E.UTF_8, URLENCODER, true);
     }
 
+    /**
+     * Url encode string.
+     *
+     * @param content the content
+     * @param charset the charset
+     * @return the string
+     */
     public static String urlEncode(final String content, final Charset charset) {
         return urlEncode(content, charset != null ? charset : E.UTF_8, URLENCODER, true);
     }

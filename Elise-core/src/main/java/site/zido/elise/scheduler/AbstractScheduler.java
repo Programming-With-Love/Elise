@@ -13,8 +13,8 @@ import site.zido.elise.events.TaskEventListener;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
-import site.zido.elise.processor.ListenableResponseHandler;
-import site.zido.elise.processor.ResponseHandler;
+import site.zido.elise.processor.ListenableResponseProcessor;
+import site.zido.elise.processor.ResponseProcessor;
 import site.zido.elise.select.configurable.ModelExtractor;
 import site.zido.elise.select.matcher.CompilerException;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
@@ -46,7 +46,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
     private Set<EventListener> listeners = new HashSet<>();
 
-    private ResponseHandler responseHandler;
+    private ResponseProcessor responseProcessor;
     private CountManager countManager;
     private DuplicationProcessor duplicationProcessor;
     private DownloaderFactory downloaderFactory;
@@ -117,7 +117,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
                 throw new RuntimeException(e);
             }
             if (matcher.matches(response.getStatusCode())) {
-                Set<String> links = responseHandler.process(task, response);
+                Set<String> links = responseProcessor.process(task, response);
                 //will no longer process any pages when the task is in the cancel_now state
                 if (state != STATE_CANCEL) {
                     for (String link : links) {
@@ -250,16 +250,16 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     @Override
     public void addEventListener(EventListener listener) {
         listeners.add(listener);
-        if (responseHandler instanceof ListenableResponseHandler) {
-            ((ListenableResponseHandler) responseHandler).addEventListener(listener);
+        if (responseProcessor instanceof ListenableResponseProcessor) {
+            ((ListenableResponseProcessor) responseProcessor).addEventListener(listener);
         }
     }
 
     @Override
     public void removeEventListener(EventListener listener) {
         listeners.remove(listener);
-        if (responseHandler instanceof ListenableResponseHandler) {
-            ((ListenableResponseHandler) responseHandler).removeEventListener(listener);
+        if (responseProcessor instanceof ListenableResponseProcessor) {
+            ((ListenableResponseProcessor) responseProcessor).removeEventListener(listener);
         }
     }
 
@@ -318,6 +318,11 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         }
     }
 
+    /**
+     * Sets downloader factory.
+     *
+     * @param factory the factory
+     */
     public void setDownloaderFactory(DownloaderFactory factory) {
         this.downloaderFactory = factory;
     }
@@ -325,10 +330,10 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     /**
      * Sets response handler.
      *
-     * @param responseHandler the response handler
+     * @param responseProcessor the response handler
      */
-    public void setResponseHandler(ResponseHandler responseHandler) {
-        this.responseHandler = responseHandler;
+    public void setResponseProcessor(ResponseProcessor responseProcessor) {
+        this.responseProcessor = responseProcessor;
     }
 
     /**
@@ -349,6 +354,12 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         this.duplicationProcessor = duplicationProcessor;
     }
 
+    /**
+     * Sets config.
+     *
+     * @param config the config
+     * @return the config
+     */
     public AbstractScheduler setConfig(Config config) {
         this.config = config;
         return this;

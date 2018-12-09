@@ -4,6 +4,11 @@ import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.task.Task;
 
+/**
+ * The interface Task event listener.
+ *
+ * @author zido
+ */
 public interface TaskEventListener extends EventListener {
     /**
      * On download success.

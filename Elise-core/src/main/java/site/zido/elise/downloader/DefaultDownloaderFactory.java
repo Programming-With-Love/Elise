@@ -8,9 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The type Default downloader factory.
+ *
+ * @author zido
+ */
 public final class DefaultDownloaderFactory implements DownloaderFactory {
     private Map<String, DownloaderFactory> factoryMap = new HashMap<>();
 
+    /**
+     * Instantiates a new Default downloader factory.
+     */
     public DefaultDownloaderFactory() {
         registerFactory("httpclient", new HttpClientDownloaderFactory());
     }
@@ -26,11 +34,23 @@ public final class DefaultDownloaderFactory implements DownloaderFactory {
         return factory.create(task);
     }
 
+    /**
+     * Register factory default downloader factory.
+     *
+     * @param key     the key
+     * @param factory the factory
+     * @return the default downloader factory
+     */
     public DefaultDownloaderFactory registerFactory(String key, DownloaderFactory factory) {
         factoryMap.put(key, factory);
         return this;
     }
 
+    /**
+     * Key set set.
+     *
+     * @return the set
+     */
     public Set<String> keySet() {
         return factoryMap.keySet();
     }

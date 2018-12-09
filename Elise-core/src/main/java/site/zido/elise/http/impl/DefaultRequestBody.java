@@ -5,6 +5,11 @@ import site.zido.elise.http.RequestBody;
 
 import java.nio.charset.Charset;
 
+/**
+ * The type Default request body.
+ *
+ * @author zido
+ */
 public class DefaultRequestBody implements RequestBody {
     private static final long serialVersionUID = 2018040215121L;
     private byte[] bytes;

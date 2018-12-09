@@ -5,7 +5,9 @@ import site.zido.elise.events.EventSupport;
 import site.zido.elise.select.configurable.ModelExtractor;
 
 /**
- * The interface Spider.
+ * The Spider Interface.
+ * <p>
+ * Is the core of the operation of the entire crawler.
  *
  * @author zido
  */
@@ -14,29 +16,37 @@ public interface Spider extends EventSupport {
      * Of operator.
      *
      * @param extractor the extractor
+     * @param config    the config
      * @return the operator
      */
     Operator of(ModelExtractor extractor, Config config);
 
+    /**
+     * Of operator.
+     *
+     * @param extractor the extractor
+     * @return the operator
+     */
     Operator of(ModelExtractor extractor);
 
 
     /**
-     * Cancel.
+     * Cancel the spider.The Spider will no longer accept any new tasks/requests.
      *
-     * @param ifRunning the if running
+     * @param ifRunning If true,the Spider will wait until the existing task is completed before ending the crawler.
+     *                  and else,will end all tasks immediately.
      */
     void cancel(boolean ifRunning);
 
     /**
-     * Pause boolean.
+     * Pause the spider.
      *
      * @return the boolean
      */
     boolean pause();
 
     /**
-     * Recover.
+     * Recover the spider.
      */
     void recover();
 }

@@ -58,31 +58,68 @@ public class GlobalConfig extends MappedConfig {
      * The number of retries that were added to the task scheduler when the download failed
      */
     public static final String KEY_SCHEDULE_RETRY_TIMES = "scheduleRetryTimes";
+    /**
+     * The constant KEY_POOL_SIZE.
+     */
     public static final String KEY_POOL_SIZE = "poolSize";
+    /**
+     * The constant KEY_USE_GZIP.
+     */
     public static final String KEY_USE_GZIP = "useGzip";
+    /**
+     * The constant KEY_PROXY.
+     */
     public static final String KEY_PROXY = "proxy";
     private static final List<Header> EMPTY_HEADERS = new LinkedList<>();
     private static final long serialVersionUID = -6234664119002484979L;
 
+    /**
+     * Instantiates a new Global config.
+     */
     public GlobalConfig() {
     }
 
+    /**
+     * Instantiates a new Global config.
+     *
+     * @param config the config
+     */
     public GlobalConfig(Map<String, Object> config) {
         super(config);
     }
 
+    /**
+     * Gets user agent.
+     *
+     * @return the user agent
+     */
     public String getUserAgent() {
         return get(KEY_USER_AGENT);
     }
 
+    /**
+     * Gets cookies.
+     *
+     * @return the cookies
+     */
     public Map<String, String> getCookies() {
         return get(KEY_COOKIE);
     }
 
+    /**
+     * Gets charset.
+     *
+     * @return the charset
+     */
     public String getCharset() {
         return get(KEY_CHARSET);
     }
 
+    /**
+     * Gets disable cookie.
+     *
+     * @return the disable cookie
+     */
     public boolean getDisableCookie() {
         return (boolean) get(KEY_DISABLE_COOKIE);
     }
@@ -102,22 +139,47 @@ public class GlobalConfig extends MappedConfig {
         return true;
     }
 
+    /**
+     * Gets headers.
+     *
+     * @return the headers
+     */
     public List<Header> getHeaders() {
         return get(KEY_HEADERS);
     }
 
+    /**
+     * Gets use gzip.
+     *
+     * @return the use gzip
+     */
     public boolean getUseGzip() {
         return (boolean) get(KEY_USE_GZIP);
     }
 
+    /**
+     * Gets timeout.
+     *
+     * @return the timeout
+     */
     public int getTimeout() {
         return (int) get(KEY_TIME_OUT);
     }
 
+    /**
+     * Gets retry times.
+     *
+     * @return the retry times
+     */
     public int getRetryTimes() {
         return (int) get(KEY_RETRY_TIMES);
     }
 
+    /**
+     * Gets proxy.
+     *
+     * @return the proxy
+     */
     public Proxy getProxy() {
         return get(KEY_PROXY);
     }

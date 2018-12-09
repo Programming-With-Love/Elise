@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * the user thread factory.
+ * the default thread factory for elise.It can receive the module name to form a more appropriate thread name.
  *
  * @author zido
  */

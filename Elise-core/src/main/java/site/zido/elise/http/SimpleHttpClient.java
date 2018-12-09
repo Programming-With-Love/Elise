@@ -127,6 +127,8 @@ public class SimpleHttpClient {
 
     /**
      * The enum Http method.
+     *
+     * @author zido
      */
     public enum HTTPMethod {
         /**
@@ -149,6 +151,8 @@ public class SimpleHttpClient {
 
     /**
      * The enum Content type.
+     *
+     * @author zido
      */
     public enum ContentType {
         /**
@@ -168,6 +172,8 @@ public class SimpleHttpClient {
 
     /**
      * The type Http exception wrapper.
+     *
+     * @author zido
      */
     public static class HttpWrapperException extends RuntimeException {
         private static final long serialVersionUID = -5766019000294865930L;
@@ -184,6 +190,8 @@ public class SimpleHttpClient {
 
     /**
      * The type Http builder.
+     *
+     * @author zido
      */
     public static class HttpBuilder {
         private SimpleHttpClient http;
@@ -335,6 +343,8 @@ public class SimpleHttpClient {
 
     /**
      * The type Http result.
+     *
+     * @author zido
      */
     public static class HttpResult {
         private InputStream is;

@@ -38,6 +38,11 @@ public class HttpClientDownloader implements Downloader {
     private CloseableHttpClient client;
     private ConcurrentHashMap<Long, HttpClientContext> contextContainer = new ConcurrentHashMap<>();
 
+    /**
+     * Instantiates a new Http client downloader.
+     *
+     * @param client the client
+     */
     public HttpClientDownloader(CloseableHttpClient client) {
         this.client = client;
     }

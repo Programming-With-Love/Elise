@@ -27,6 +27,7 @@ public class DefaultTask implements Task {
      *
      * @param id        the id
      * @param extractor the extractor
+     * @param config    the config
      */
     public DefaultTask(Long id, ModelExtractor extractor, Config config) {
         this.id = id;
@@ -60,6 +61,12 @@ public class DefaultTask implements Task {
         return config;
     }
 
+    /**
+     * Sets config.
+     *
+     * @param config the config
+     * @return the config
+     */
     public DefaultTask setConfig(Config config) {
         this.config = config;
         return this;

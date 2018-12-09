@@ -56,5 +56,11 @@ public interface Request extends HttpModel {
      */
     List<Cookie> getCookies();
 
+    /**
+     * Put extra.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     void putExtra(String key, Object value);
 }

@@ -23,5 +23,10 @@ public interface Task {
      */
     ModelExtractor modelExtractor();
 
+    /**
+     * Gets config.
+     *
+     * @return the config
+     */
     Config getConfig();
 }

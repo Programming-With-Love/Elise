@@ -39,6 +39,9 @@ public class Http {
          */
         public static final String DELETE = "DELETE";
 
+        /**
+         * The constant PATCH.
+         */
         public static final String PATCH = "PATCH";
 
         private Method() {
@@ -49,6 +52,8 @@ public class Http {
      * 简单的content-type表示，仅包含type和charset
      * <p>
      * type已经包含了http中定义的type和subtype字段，也即是说类似'application/json'
+     *
+     * @author zido
      */
     public static class ContentType {
         /**

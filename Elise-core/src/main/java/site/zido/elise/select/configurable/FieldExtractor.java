@@ -12,11 +12,31 @@ import site.zido.elise.select.Selector;
  * @author zido
  */
 public interface FieldExtractor {
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     String getName();
 
+    /**
+     * Gets source.
+     *
+     * @return the source
+     */
     Source getSource();
 
+    /**
+     * Gets selector.
+     *
+     * @return the selector
+     */
     Selector getSelector();
 
+    /**
+     * Gets nullable.
+     *
+     * @return the nullable
+     */
     boolean getNullable();
 }
