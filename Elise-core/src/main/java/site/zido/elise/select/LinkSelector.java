@@ -4,7 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import site.zido.elise.select.configurable.ConfigurableUrlFinder;
+import site.zido.elise.select.configurable.Type;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
@@ -20,10 +20,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LinkSelector extends AbstractElementSelector {
     private static final String EMPTY_URL_PATTERN = "https?://.*";
     private transient Selector targetSelector;
-    private transient ElementSelector regionSelector;
+    private transient Selector regionSelector;
     private List<LinkProperty> linkProperties = new ArrayList<>();
     private String target;
-    private ConfigurableUrlFinder.Type type;
+    private Type type;
     private String sourceRegion;
     private transient AtomicBoolean needCompile = new AtomicBoolean(true);
 
@@ -43,7 +43,7 @@ public class LinkSelector extends AbstractElementSelector {
      * @param type         the type
      * @param sourceRegion the source region
      */
-    public LinkSelector(String target, ConfigurableUrlFinder.Type type, String sourceRegion) {
+    public LinkSelector(String target, Type type, String sourceRegion) {
         this.target = target;
         this.type = type;
         this.sourceRegion = sourceRegion;
@@ -59,7 +59,7 @@ public class LinkSelector extends AbstractElementSelector {
             pattern = EMPTY_URL_PATTERN;
         }
         if (type == null) {
-            type = ConfigurableUrlFinder.Type.REGEX;
+            type = Type.REGEX;
         }
 
         switch (type) {

@@ -3,7 +3,7 @@ package site.zido.elise.processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.http.Response;
-import site.zido.elise.select.configurable.ModelExtractor;
+import site.zido.elise.select.ModelExtractor;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.ValidateUtils;

@@ -10,11 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultBody;
 import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.proxy.Proxy;
 import site.zido.elise.proxy.ProxyProvider;
-import site.zido.elise.select.Html;
-import site.zido.elise.select.Text;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.ValidateUtils;
 
@@ -53,8 +52,9 @@ public class HtmlUnitDownloader implements Downloader {
             int statusCode = htmlPage.getWebResponse().getStatusCode();
             response = new DefaultResponse();
             response.setStatusCode(statusCode);
-            response.setUrl(new Text(request.getUrl()));
-            response.setBody(new Html(htmlPage.asXml(), htmlPage.getUrl().toString()));
+            response.setUrl(request.getUrl());
+            //TODO set body
+            response.setBody(new DefaultBody());
             response.setDownloadSuccess(true);
         } catch (MalformedURLException e) {
             logger.error(String.format("url is invalid [%s]", request.getUrl()), e);

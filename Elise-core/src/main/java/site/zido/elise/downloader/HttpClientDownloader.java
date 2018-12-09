@@ -11,18 +11,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.custom.HttpClientConfig;
 import site.zido.elise.downloader.httpclient.HttpClientHeaderWrapper;
+import site.zido.elise.http.Body;
 import site.zido.elise.http.Http;
-import site.zido.elise.http.RequestBody;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultBody;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.select.Html;
-import site.zido.elise.select.Text;
+import site.zido.elise.http.impl.HttpClientBodyWrapper;
 import site.zido.elise.task.Task;
-import site.zido.elise.utils.HtmlUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -73,15 +71,13 @@ public class HttpClientDownloader implements Downloader {
         }
     }
 
-    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
-        byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
+    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse) {
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
-
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
-        String charset = HtmlUtils.getHtmlCharset(bytes, task.getConfig().get(GlobalConfig.KEY_CHARSET));
-        response.setBody(new Html(new String(bytes, charset), request.getUrl()));
-        response.setUrl(new Text(request.getUrl()));
+        response.setBody(new HttpClientBodyWrapper(httpResponse.getEntity()));
+        response.setBody(new DefaultBody());
+        response.setUrl(request.getUrl());
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         response.setDownloadSuccess(true);
         return response;
@@ -108,7 +104,7 @@ public class HttpClientDownloader implements Downloader {
 
     private HttpUriRequest buildRequest(Task task, Request request) {
         RequestBuilder builder = RequestBuilder.create(request.getMethod());
-        final RequestBody body = request.getBody();
+        final Body body = request.getBody();
         if (body != null) {
             ByteArrayEntity bodyEntity = new ByteArrayEntity(body.getBytes());
             bodyEntity.setContentType(body.getContentType().toString());

@@ -2,7 +2,7 @@ package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
 import site.zido.elise.select.configurable.ConfigurableModelExtractor;
-import site.zido.elise.select.configurable.ModelExtractor;
+import site.zido.elise.select.ModelExtractor;
 
 /**
  * default extractor task

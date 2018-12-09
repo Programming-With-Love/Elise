@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
  *
  * @author zido
  */
-public interface RequestBody extends Serializable {
+public interface Body extends Serializable {
     /**
      * Get bytes byte [ ].
      *

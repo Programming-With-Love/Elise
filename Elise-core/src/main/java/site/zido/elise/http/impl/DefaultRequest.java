@@ -3,7 +3,7 @@ package site.zido.elise.http.impl;
 import site.zido.elise.http.Cookie;
 import site.zido.elise.http.Header;
 import site.zido.elise.http.Request;
-import site.zido.elise.http.RequestBody;
+import site.zido.elise.http.Body;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class DefaultRequest implements Request {
      * <p>
      * If other methods are used, the request body will be ignored
      */
-    private RequestBody body;
+    private Body body;
     /**
      * Store additional information in extras.
      */
@@ -160,7 +160,7 @@ public class DefaultRequest implements Request {
     }
 
     @Override
-    public RequestBody getBody() {
+    public Body getBody() {
         return body;
     }
 
@@ -169,7 +169,7 @@ public class DefaultRequest implements Request {
      *
      * @param body the body
      */
-    public void setBody(RequestBody body) {
+    public void setBody(Body body) {
         this.body = body;
     }
 

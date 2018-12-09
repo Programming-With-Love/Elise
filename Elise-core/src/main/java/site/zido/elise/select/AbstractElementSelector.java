@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author zido
  */
-public abstract class AbstractElementSelector implements ElementSelector {
+public abstract class AbstractElementSelector implements Selector {
     @Override
     public List<Fragment> select(Element element) {
         List<Node> elements = selectAsNode(element);

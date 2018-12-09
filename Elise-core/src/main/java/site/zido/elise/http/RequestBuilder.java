@@ -4,7 +4,7 @@ import site.zido.elise.E;
 import site.zido.elise.http.impl.DefaultCookie;
 import site.zido.elise.http.impl.DefaultHeader;
 import site.zido.elise.http.impl.DefaultRequest;
-import site.zido.elise.http.impl.DefaultRequestBody;
+import site.zido.elise.http.impl.DefaultBody;
 import site.zido.elise.utils.Asserts;
 import site.zido.elise.utils.UrlUtils;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 public class RequestBuilder {
     private String url;
     private String method;
-    private RequestBody body;
+    private Body body;
     private List<Cookie> cookies = new ArrayList<>();
 
     private List<Header> headers = new ArrayList<>();
@@ -264,7 +264,7 @@ public class RequestBuilder {
      * @return the request builder
      */
     public RequestBuilder bodyCustom(byte[] bytes, Http.ContentType contentType, Charset encoding) {
-        DefaultRequestBody body = new DefaultRequestBody();
+        DefaultBody body = new DefaultBody();
         body.setBytes(bytes);
         body.setContentType(contentType);
         body.setEncoding(encoding);

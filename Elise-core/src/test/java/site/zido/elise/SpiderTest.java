@@ -4,16 +4,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import site.zido.elise.events.EventListener;
 import site.zido.elise.events.SingleEventListener;
-import site.zido.elise.http.Http;
-import site.zido.elise.http.RequestBody;
 import site.zido.elise.http.RequestBuilder;
-import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.scheduler.NoDepuplicationProcessor;
 import site.zido.elise.select.CssSelector;
 import site.zido.elise.select.LinkSelector;
 import site.zido.elise.select.configurable.ExtractorBuilder;
 import site.zido.elise.select.configurable.FieldExtractorBuilder;
-import site.zido.elise.select.configurable.ModelExtractor;
+import site.zido.elise.select.ModelExtractor;
 
 import java.util.concurrent.CountDownLatch;
 

@@ -1,6 +1,7 @@
 package site.zido.elise.select.configurable;
 
 import site.zido.elise.select.LinkSelector;
+import site.zido.elise.select.ModelExtractor;
 import site.zido.elise.select.NullElementSelector;
 import site.zido.elise.select.Selector;
 import site.zido.elise.utils.IdWorker;

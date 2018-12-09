@@ -1,5 +1,8 @@
 package site.zido.elise.select;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -60,6 +63,18 @@ public class RegexSelector implements Selector {
             results.add(new Fragment(matcher.group(group)));
         }
         return results;
+    }
+
+    @Override
+    public List<Fragment> select(Element element) {
+        //TODO regex select
+        return null;
+    }
+
+    @Override
+    public List<Node> selectAsNode(Element element) {
+        //TODO regex select
+        return null;
     }
 
     /**

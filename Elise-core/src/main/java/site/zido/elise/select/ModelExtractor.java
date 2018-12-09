@@ -1,4 +1,4 @@
-package site.zido.elise.select.configurable;
+package site.zido.elise.select;
 
 import site.zido.elise.http.Response;
 import site.zido.elise.processor.ResultItem;
