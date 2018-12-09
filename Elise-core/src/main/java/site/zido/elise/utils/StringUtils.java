@@ -1,11 +1,9 @@
 package site.zido.elise.utils;
 
-import com.sun.istack.internal.Nullable;
-
 import java.nio.charset.Charset;
 
 /**
- * The type String utils.
+ * String utils.
  *
  * @author zido
  */
@@ -16,7 +14,7 @@ public class StringUtils {
      * @param text the text
      * @return the boolean
      */
-    public static boolean hasLength(@Nullable String text) {
+    public static boolean hasLength(String text) {
         return text != null && text.length() > 0;
     }
 

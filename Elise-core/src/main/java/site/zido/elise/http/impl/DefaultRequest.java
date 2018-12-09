@@ -78,7 +78,6 @@ public class DefaultRequest implements Request {
      *
      * @param key   the key
      * @param value the value
-     * @return the default request
      */
     @Override
     public void putExtra(String key, Object value) {

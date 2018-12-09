@@ -29,22 +29,47 @@ public class ConfigurableModelExtractor implements ModelExtractor {
     private Selector sourceSelector;
     private List<FieldExtractor> fieldExtractors;
 
+    /**
+     * Instantiates a new Configurable model extractor.
+     */
     public ConfigurableModelExtractor() {
     }
 
+    /**
+     * Gets target url selectors.
+     *
+     * @return the target url selectors
+     */
     public List<LinkSelector> getTargetUrlSelectors() {
         return targetUrlSelectors;
     }
 
+    /**
+     * Sets target url selectors.
+     *
+     * @param targetUrlSelectors the target url selectors
+     * @return the target url selectors
+     */
     public ConfigurableModelExtractor setTargetUrlSelectors(List<LinkSelector> targetUrlSelectors) {
         this.targetUrlSelectors = targetUrlSelectors;
         return this;
     }
 
+    /**
+     * Gets help url selectors.
+     *
+     * @return the help url selectors
+     */
     public List<LinkSelector> getHelpUrlSelectors() {
         return helpUrlSelectors;
     }
 
+    /**
+     * Sets help url selectors.
+     *
+     * @param helpUrlSelectors the help url selectors
+     * @return the help url selectors
+     */
     public ConfigurableModelExtractor setHelpUrlSelectors(List<LinkSelector> helpUrlSelectors) {
         this.helpUrlSelectors = helpUrlSelectors;
         return this;
@@ -55,24 +80,52 @@ public class ConfigurableModelExtractor implements ModelExtractor {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     * @return the name
+     */
     public ConfigurableModelExtractor setName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Gets source selector.
+     *
+     * @return the source selector
+     */
     public Selector getSourceSelector() {
         return sourceSelector;
     }
 
+    /**
+     * Sets source selector.
+     *
+     * @param sourceSelector the source selector
+     * @return the source selector
+     */
     public ConfigurableModelExtractor setSourceSelector(Selector sourceSelector) {
         this.sourceSelector = sourceSelector;
         return this;
     }
 
+    /**
+     * Gets field extractors.
+     *
+     * @return the field extractors
+     */
     public List<FieldExtractor> getFieldExtractors() {
         return fieldExtractors;
     }
 
+    /**
+     * Sets field extractors.
+     *
+     * @param fieldExtractors the field extractors
+     * @return the field extractors
+     */
     public ConfigurableModelExtractor setFieldExtractors(List<FieldExtractor> fieldExtractors) {
         this.fieldExtractors = fieldExtractors;
         return this;

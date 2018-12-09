@@ -33,7 +33,7 @@ public interface Response extends HttpModel {
     /**
      * get body from response
      *
-     * @return body
+     * @return body body
      */
     Selectable getBody();
 }

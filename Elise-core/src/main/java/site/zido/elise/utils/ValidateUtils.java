@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 校验工具类
+ * validate util
  *
  * @author zido
  * @since 2017 /5/25 0025

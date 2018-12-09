@@ -13,5 +13,10 @@ public interface ListenableResponseProcessor extends ResponseProcessor {
      */
     void addEventListener(ProcessorEventListener listener);
 
+    /**
+     * Remove event listener.
+     *
+     * @param listener the listener
+     */
     void removeEventListener(ProcessorEventListener listener);
 }

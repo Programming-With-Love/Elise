@@ -1,4 +1,4 @@
-package site.zido.elise.distributed.pojo;
+package site.zido.elise.kafka.pojo;
 
 import site.zido.elise.task.DefaultTask;
 import site.zido.elise.http.Request;

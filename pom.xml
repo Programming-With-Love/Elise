@@ -11,7 +11,7 @@
     <groupId>site.zido</groupId>
     <artifactId>Elise-build</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <description>Elise分布式爬虫系统</description>
     <url>https://github.com/zidoshare/Elise</url>
     <modelVersion>4.0.0</modelVersion>
@@ -44,6 +44,7 @@
         <module>Elise-distributed</module>
         <module>Elise-redis-support</module>
         <module>Elise-jedis-support</module>
+        <module>Elise-kafka-support</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -65,7 +66,7 @@
             <dependency>
                 <groupId>site.zido</groupId>
                 <artifactId>Elise-distributed</artifactId>
-                <version>0.1.1-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>site.zido</groupId>
@@ -85,7 +86,7 @@
             <dependency>
                 <groupId>site.zido</groupId>
                 <artifactId>Elise-core</artifactId>
-                <version>0.1.1-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.virjar</groupId>
@@ -149,18 +150,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <distributionManagement>
-        <repository>
-            <id>z-releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://112.74.29.8:8081/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>z-snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://112.74.29.8:8081/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
     <build>
         <plugins>
             <plugin>
@@ -182,6 +171,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

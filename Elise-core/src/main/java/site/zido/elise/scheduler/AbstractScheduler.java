@@ -318,6 +318,11 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         }
     }
 
+    /**
+     * Sets downloader factory.
+     *
+     * @param factory the factory
+     */
     public void setDownloaderFactory(DownloaderFactory factory) {
         this.downloaderFactory = factory;
     }
@@ -349,6 +354,12 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         this.duplicationProcessor = duplicationProcessor;
     }
 
+    /**
+     * Sets config.
+     *
+     * @param config the config
+     * @return the config
+     */
     public AbstractScheduler setConfig(Config config) {
         this.config = config;
         return this;

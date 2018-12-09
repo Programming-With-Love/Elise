@@ -97,10 +97,23 @@ public class NumberExpressMatcher implements Matcher {
         }
     }
 
+    /**
+     * Is support boolean.
+     *
+     * @param express the express
+     * @return the boolean
+     */
     public static boolean isSupport(String express) {
         return isSupport(express, DEFAULT_CHAR_SEP);
     }
 
+    /**
+     * Is support boolean.
+     *
+     * @param express the express
+     * @param sep     the sep
+     * @return the boolean
+     */
     public static boolean isSupport(String express, char sep) {
         if (!StringUtils.hasLength(express)) {
             return false;

@@ -25,7 +25,6 @@ public class XpathSelector extends AbstractElementSelector {
      * Instantiates a new X path selector.
      *
      * @param xpathExpress the xpath express
-     * @throws XpathSyntaxErrorException the xpath syntax error exception
      */
     public XpathSelector(String xpathExpress) {
         this.xpathExpress = xpathExpress;

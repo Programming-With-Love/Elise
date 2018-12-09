@@ -3,10 +3,23 @@ package site.zido.elise.custom;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Config utils.
+ *
+ * @author zido
+ */
 public class ConfigUtils {
     private ConfigUtils() {
     }
 
+    /**
+     * Merge config t.
+     *
+     * @param <T>    the type parameter
+     * @param key    the key
+     * @param config the config
+     * @return the t
+     */
     public static <T> T mergeConfig(String key, Config... config) {
         T result = null;
         for (Config c : config) {
@@ -18,6 +31,12 @@ public class ConfigUtils {
         return result;
     }
 
+    /**
+     * Merge config config.
+     *
+     * @param config the config
+     * @return the config
+     */
     public static Config mergeConfig(Config... config) {
         Map<String, Object> result = new HashMap<>();
         for (Config c : config) {

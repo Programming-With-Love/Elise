@@ -4,6 +4,11 @@ import site.zido.elise.processor.ResultItem;
 
 import java.util.EventListener;
 
+/**
+ * The interface Single processor event listener.
+ *
+ * @author zido
+ */
 public interface SingleProcessorEventListener extends EventListener {
     /**
      * On save success.

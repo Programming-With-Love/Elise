@@ -2,6 +2,11 @@ package site.zido.elise.scheduler;
 
 import site.zido.elise.task.Task;
 
+/**
+ * The interface Operational task scheduler.
+ *
+ * @author zido
+ */
 public interface OperationalTaskScheduler extends TaskScheduler {
     /**
      * Cancel.
@@ -23,7 +28,6 @@ public interface OperationalTaskScheduler extends TaskScheduler {
      * Pause boolean.
      *
      * @param task the task
-     * @return the boolean
      */
     void pause(Task task);
 

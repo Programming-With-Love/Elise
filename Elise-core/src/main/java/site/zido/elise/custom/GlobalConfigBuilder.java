@@ -13,17 +13,35 @@ import java.util.List;
 
 import static site.zido.elise.custom.GlobalConfig.*;
 
+/**
+ * The type Global config builder.
+ *
+ * @author zido
+ */
 public class GlobalConfigBuilder extends MappedConfig {
 
     private static final long serialVersionUID = 6226554722300087924L;
 
+    /**
+     * Instantiates a new Global config builder.
+     */
     protected GlobalConfigBuilder() {
     }
 
+    /**
+     * Create global config builder.
+     *
+     * @return the global config builder
+     */
     public static GlobalConfigBuilder create() {
         return new GlobalConfigBuilder();
     }
 
+    /**
+     * Defaults global config.
+     *
+     * @return the global config
+     */
     public static GlobalConfig defaults() {
         return create().build();
     }
@@ -32,6 +50,7 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets user agent.
      *
      * @param userAgent the user agent
+     * @return the user agent
      */
     public GlobalConfigBuilder setUserAgent(String userAgent) {
         put(KEY_USER_AGENT, userAgent);
@@ -42,16 +61,30 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets cookie.
      *
      * @param cookie the cookie
+     * @return the cookie
      */
     public GlobalConfigBuilder setCookie(List<Cookie> cookie) {
         put(KEY_COOKIE, cookie);
         return this;
     }
 
+    /**
+     * Add cookie global config builder.
+     *
+     * @param cookies the cookies
+     * @return the global config builder
+     */
     public GlobalConfigBuilder addCookie(Cookie... cookies) {
         return addHeaderByKey(KEY_COOKIE, cookies);
     }
 
+    /**
+     * Add cookie global config builder.
+     *
+     * @param name  the name
+     * @param value the value
+     * @return the global config builder
+     */
     public GlobalConfigBuilder addCookie(String name, String value) {
         return addCookie(new DefaultCookie(name, value));
     }
@@ -60,6 +93,7 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets charset.
      *
      * @param charset the charset
+     * @return the charset
      */
     public GlobalConfigBuilder setCharset(String charset) {
         if (!Charset.isSupported(charset)) {
@@ -69,6 +103,12 @@ public class GlobalConfigBuilder extends MappedConfig {
         return this;
     }
 
+    /**
+     * Sets charset.
+     *
+     * @param charset the charset
+     * @return the charset
+     */
     public GlobalConfigBuilder setCharset(Charset charset) {
         put(KEY_CHARSET, charset.name());
         return this;
@@ -78,6 +118,7 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets sleep time.
      *
      * @param sleepTime the sleep time
+     * @return the sleep time
      */
     public GlobalConfigBuilder setSleepTime(int sleepTime) {
         put(KEY_SLEEP_TIME, sleepTime);
@@ -88,6 +129,7 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets out time.
      *
      * @param timeout the out time
+     * @return the timeout
      */
     public GlobalConfigBuilder setTimeout(int timeout) {
         put(KEY_TIME_OUT, timeout);
@@ -98,6 +140,7 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets download mode.
      *
      * @param downloadMode the download mode
+     * @return the download mode
      */
     public GlobalConfigBuilder setDownloadMode(String downloadMode) {
         put(KEY_DOWNLOAD_MODE, downloadMode);
@@ -108,6 +151,7 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets success code.
      *
      * @param codeExpress the success code
+     * @return the success code
      */
     public GlobalConfigBuilder setSuccessCode(String codeExpress) {
         if (!NumberExpressMatcher.isSupport(codeExpress)) {
@@ -121,12 +165,19 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets disable cookie.
      *
      * @param disableCookie the disable cookie
+     * @return the disable cookie
      */
     public GlobalConfigBuilder setDisableCookie(boolean disableCookie) {
         put(KEY_DISABLE_COOKIE, disableCookie);
         return this;
     }
 
+    /**
+     * Sets pool size.
+     *
+     * @param poolSize the pool size
+     * @return the pool size
+     */
     public GlobalConfigBuilder setPoolSize(int poolSize) {
         put(KEY_POOL_SIZE, poolSize);
         return this;
@@ -136,12 +187,19 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets headers.
      *
      * @param headers the headers
+     * @return the headers
      */
     public GlobalConfigBuilder setHeaders(List<Header> headers) {
         put(KEY_HEADERS, headers);
         return this;
     }
 
+    /**
+     * Add header global config builder.
+     *
+     * @param header the header
+     * @return the global config builder
+     */
     public GlobalConfigBuilder addHeader(Header... header) {
         return addHeaderByKey(KEY_HEADERS, header);
     }
@@ -160,12 +218,18 @@ public class GlobalConfigBuilder extends MappedConfig {
      * Sets retry times.
      *
      * @param retryTimes the retry times
+     * @return the retry times
      */
     public GlobalConfigBuilder setRetryTimes(int retryTimes) {
         put(KEY_RETRY_TIMES, retryTimes);
         return this;
     }
 
+    /**
+     * Build global config.
+     *
+     * @return the global config
+     */
     public GlobalConfig build() {
         final GlobalConfig config = new GlobalConfig(this);
         if (!config.containsKey(KEY_USER_AGENT)) {

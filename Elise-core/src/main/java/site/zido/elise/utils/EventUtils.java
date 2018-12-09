@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * The type Event utils.
+ * Event utils.
  *
  * @author zido
  */

@@ -23,6 +23,11 @@ public class MappedConfig extends HashMap<String, Object> implements Config {
     public MappedConfig() {
     }
 
+    /**
+     * Instantiates a new Mapped config.
+     *
+     * @param map the map
+     */
     public MappedConfig(Map<String, Object> map) {
         super(map);
     }
