@@ -1,6 +1,10 @@
 ---
 name: 缺陷反馈
 about: 报告缺陷以帮助我们改进
+title: ''
+labels: bug
+assignees: zidoshare
+
 ---
 
 ### 描述问题

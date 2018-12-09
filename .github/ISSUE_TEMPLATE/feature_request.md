@@ -1,6 +1,10 @@
 ---
 name: 意见或建议
 about: 提出你期待的功能特性或者对已有功能的意见或者建议
+title: ''
+labels: help wanted
+assignees: zidoshare
+
 ---
 
 ### 你在什么场景下需要该功能？
