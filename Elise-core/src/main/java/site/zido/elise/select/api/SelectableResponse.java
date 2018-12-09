@@ -5,7 +5,7 @@ public interface SelectableResponse {
 
     Text cookie();
 
-    StatusCode statusCode();
+    Code statusCode();
 
     Text url();
 

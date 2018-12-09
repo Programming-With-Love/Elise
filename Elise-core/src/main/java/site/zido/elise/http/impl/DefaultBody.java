@@ -3,6 +3,8 @@ package site.zido.elise.http.impl;
 import site.zido.elise.http.Body;
 import site.zido.elise.http.Http;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 
 /**
@@ -68,6 +70,11 @@ public class DefaultBody implements Body {
     @Override
     public Charset getEncoding() {
         return encoding;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(bytes);
     }
 
     /**

@@ -1,10 +1,9 @@
 package site.zido.elise.http.impl;
 
 import site.zido.elise.E;
-import site.zido.elise.http.Body;
-import site.zido.elise.http.Header;
-import site.zido.elise.http.Http;
-import site.zido.elise.http.Response;
+import site.zido.elise.http.*;
+import site.zido.elise.select.api.SelectableResponse;
+import site.zido.elise.select.api.impl.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,8 @@ public class DefaultResponse implements Response {
     private Http.ContentType contentType;
 
     private List<Header> headers;
+
+    private List<Cookie> cookies;
 
     /**
      * Instantiates a new Default response.
@@ -153,6 +154,34 @@ public class DefaultResponse implements Response {
         return body;
     }
 
+    @Override
+    public List<Cookie> getCookies() {
+        return this.cookies;
+    }
+
+    @Override
+    public SelectableResponse forSelect() {
+        DefaultSelectableResponse response = new DefaultSelectableResponse();
+        //set headers
+        DefaultSelectableHeader selectableHeader = new DefaultSelectableHeader();
+        selectableHeader.addAll(headers);
+        response.setHeader(selectableHeader);
+        //set url
+        DefaultText url = new DefaultText(this.url);
+        response.setUrl(url);
+        //set cookies
+        DefaultSelectableHeader cookies = new DefaultSelectableHeader();
+        cookies.addAll(this.cookies);
+        response.setCookies(cookies);
+        //set status code
+        DefaultCode code = new DefaultCode(this.statusCode);
+        response.setCode(code);
+        //set body
+        DefaultSelectableBody body = new DefaultSelectableBody(this.body, this.url);
+        response.setBody(body);
+        return response;
+    }
+
     /**
      * Sets body.
      *
@@ -181,4 +210,7 @@ public class DefaultResponse implements Response {
         headers.add(header);
     }
 
+    public void setCookies(List<Cookie> cookies) {
+        this.cookies = cookies;
+    }
 }

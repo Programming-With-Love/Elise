@@ -1,9 +1,6 @@
 package site.zido.elise.select.configurable;
 
-import site.zido.elise.select.LinkSelector;
-import site.zido.elise.select.ModelExtractor;
-import site.zido.elise.select.NullElementSelector;
-import site.zido.elise.select.Selector;
+import site.zido.elise.select.*;
 import site.zido.elise.utils.IdWorker;
 
 import java.util.ArrayList;
@@ -18,7 +15,7 @@ public class ExtractorBuilder {
     private List<LinkSelector> targetUrlSelectors = new ArrayList<>();
     private List<LinkSelector> helpUrlSelectors = new ArrayList<>();
     private String name;
-    private Selector sourceSelector;
+    private ElementSelector sourceSelector;
     private List<FieldExtractor> fieldExtractors = new ArrayList<>();
 
     /**
@@ -84,7 +81,7 @@ public class ExtractorBuilder {
      * @param sourceSelector the source selector
      * @return the extractor builder
      */
-    public ExtractorBuilder source(Selector sourceSelector) {
+    public ExtractorBuilder source(ElementSelector sourceSelector) {
         this.sourceSelector = sourceSelector;
         return this;
     }
@@ -115,7 +112,7 @@ public class ExtractorBuilder {
             fieldExtractor.setName("html");
             fieldExtractor.setNullable(false);
             fieldExtractor.setSource(Source.RAW_HTML);
-            fieldExtractor.setSelector(new NullElementSelector());
+            fieldExtractor.setSelector(new NullSelector());
             fieldExtractors.add(fieldExtractor);
         }
         extractor.setFieldExtractors(fieldExtractors);

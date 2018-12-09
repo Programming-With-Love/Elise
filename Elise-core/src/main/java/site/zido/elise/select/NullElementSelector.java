@@ -11,9 +11,9 @@ import java.util.List;
  *
  * @author zido
  */
-public class NullElementSelector extends AbstractElementSelector {
+public class NullElementSelector implements ElementSelector {
     @Override
-    public List<Node> selectAsNode(Element element) {
+    public List<Node> select(Element element) {
         return Collections.singletonList(element);
     }
 }

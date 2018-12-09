@@ -40,7 +40,7 @@ public abstract class AbstractModelExtractor implements ModelExtractor {
      *
      * @return the source selector
      */
-    protected abstract Selector getSourceSelector();
+    protected abstract ElementSelector getSourceSelector();
 
     /**
      * Gets help url selectors.
@@ -56,7 +56,7 @@ public abstract class AbstractModelExtractor implements ModelExtractor {
      */
     protected abstract List<FieldExtractor> getFieldExtractors();
 
-    protected boolean judgeElementSelect(Body body, Selector selector) {
+    protected boolean judgeElementSelect(Body body, ElementSelector selector) {
         Http.ContentType contentType = body.getContentType();
         String type = contentType.getType();
         return XML_LIKED_PATTERN.matcher(type).find();
@@ -72,9 +72,9 @@ public abstract class AbstractModelExtractor implements ModelExtractor {
         }
         List<ResultItem> results = new ArrayList<>();
         Body body = response.getBody();
-        Selector sourceSelector = getSourceSelector();
+        ElementSelector sourceSelector = getSourceSelector();
         if (judgeElementSelect(body, sourceSelector)) {
-            List<Node> list = sourceSelector.selectAsNode(Jsoup.parse(body.toString(), response.getUrl()));
+            List<Node> list = sourceSelector.select(Jsoup.parse(body.toString(), response.getUrl()));
             //select from region
             for (Node node : list) {
                 Map<String, List<Fragment>> item = processSingle(response, node);

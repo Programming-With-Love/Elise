@@ -17,10 +17,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class LinkSelector extends AbstractElementSelector {
+public class LinkSelector {
     private static final String EMPTY_URL_PATTERN = "https?://.*";
     private transient Selector targetSelector;
-    private transient Selector regionSelector;
+    private transient ElementSelector regionSelector;
     private List<LinkProperty> linkProperties = new ArrayList<>();
     private String target;
     private Type type;
@@ -83,10 +83,9 @@ public class LinkSelector extends AbstractElementSelector {
         return linkProperties;
     }
 
-    @Override
-    public List<Node> selectAsNode(Element element) {
+    public List<Node> select(Element element) {
         compile();
-        List<Node> regions = regionSelector.selectAsNode(element);
+        List<Node> regions = regionSelector.select(element);
         if (ValidateUtils.isEmpty(regions)) {
             return Collections.emptyList();
         }

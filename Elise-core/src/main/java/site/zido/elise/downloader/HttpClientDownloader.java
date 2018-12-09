@@ -5,6 +5,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -18,12 +19,15 @@ import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultBody;
+import site.zido.elise.http.impl.DefaultCookie;
 import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.impl.HttpClientBodyWrapper;
 import site.zido.elise.task.Task;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -53,7 +57,7 @@ public class HttpClientDownloader implements Downloader {
         DefaultResponse response = DefaultResponse.fail();
         try {
             httpResponse = client.execute(httpUriRequest, context);
-            response = handleResponse(request, task, httpResponse);
+            response = handleResponse(request, task, httpResponse, context);
             LOGGER.debug("downloading response success {}", request.getUrl());
             return response;
         } catch (IOException e) {
@@ -71,7 +75,7 @@ public class HttpClientDownloader implements Downloader {
         }
     }
 
-    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse) {
+    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse, HttpClientContext context) {
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
@@ -80,6 +84,12 @@ public class HttpClientDownloader implements Downloader {
         response.setUrl(request.getUrl());
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         response.setDownloadSuccess(true);
+        List<Cookie> cookies = context.getCookieStore().getCookies();
+        List<site.zido.elise.http.Cookie> wrapCookies = new ArrayList<>();
+        for (Cookie cookie : cookies) {
+            wrapCookies.add(new DefaultCookie(cookie.getName(), cookie.getValue()));
+        }
+        response.setCookies(wrapCookies);
         return response;
     }
 

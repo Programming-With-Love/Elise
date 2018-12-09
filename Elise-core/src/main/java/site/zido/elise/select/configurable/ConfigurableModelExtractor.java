@@ -1,6 +1,7 @@
 package site.zido.elise.select.configurable;
 
 import site.zido.elise.select.AbstractModelExtractor;
+import site.zido.elise.select.ElementSelector;
 import site.zido.elise.select.LinkSelector;
 import site.zido.elise.select.Selector;
 
@@ -15,7 +16,7 @@ public class ConfigurableModelExtractor extends AbstractModelExtractor {
     private List<LinkSelector> targetUrlSelectors;
     private List<LinkSelector> helpUrlSelectors;
     private String name;
-    private Selector sourceSelector;
+    private ElementSelector sourceSelector;
     private List<FieldExtractor> fieldExtractors;
 
     /**
@@ -58,11 +59,11 @@ public class ConfigurableModelExtractor extends AbstractModelExtractor {
     }
 
     @Override
-    public Selector getSourceSelector() {
+    public ElementSelector getSourceSelector() {
         return sourceSelector;
     }
 
-    public void setSourceSelector(Selector sourceSelector) {
+    public void setSourceSelector(ElementSelector sourceSelector) {
         this.sourceSelector = sourceSelector;
     }
 

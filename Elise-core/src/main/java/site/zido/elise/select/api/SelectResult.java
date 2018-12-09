@@ -5,11 +5,7 @@ import site.zido.elise.select.Selector;
 public interface SelectResult {
     SelectResult as(String fieldName);
 
-    SelectResult text();
-
-    SelectResult richText();
-
-    SelectResult origin();
+    SelectResult saveText();
 
     SelectResult select(Selector selector);
 

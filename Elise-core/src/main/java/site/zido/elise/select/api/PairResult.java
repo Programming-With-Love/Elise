@@ -8,7 +8,7 @@ public interface PairResult {
 
     MatchResult matchValue(Matcher matcher);
 
-    SelectResult selectKey(Selector selector);
+    Text selectKey(Selector selector);
 
-    SelectResult selectValue(Selector selector);
+    Text selectValue(Selector selector);
 }

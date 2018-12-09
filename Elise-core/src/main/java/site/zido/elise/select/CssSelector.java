@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author zido
  */
-public class CssSelector extends AbstractElementSelector {
+public class CssSelector implements ElementSelector {
     private String cssExpress;
 
     /**
@@ -25,7 +25,7 @@ public class CssSelector extends AbstractElementSelector {
     }
 
     @Override
-    public List<Node> selectAsNode(Element element) {
+    public List<Node> select(Element element) {
         Elements elements = element.select(cssExpress);
         return new ArrayList<>(elements);
     }

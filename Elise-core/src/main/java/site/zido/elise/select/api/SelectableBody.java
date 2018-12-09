@@ -1,5 +1,10 @@
 package site.zido.elise.select.api;
 
-public interface SelectableBody extends Selectable {
+import site.zido.elise.select.api.body.Bytes;
+import site.zido.elise.select.api.body.Html;
 
+public interface SelectableBody {
+    Html html();
+
+    Bytes bytes();
 }
