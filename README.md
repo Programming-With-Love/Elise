@@ -66,7 +66,17 @@ Elise的优势：
 
 ## maven仓库
 
-暂无（不稳定，请期待第一个版本的诞生，一定会惊艳到你）
+```
+<dependency>
+    <groupId>site.zido</groupId>
+    <artifactId>Elise-core</artifactId>
+    <version>{version}</version>
+</dependency>
+```
+
+暂无稳定版本，你可以使用`1.0.0-SNAPSHOT`做为版本号来预先体验开发版本
+
+> 请注意：不稳定且许多api暂未实现，请持续关注[ROADMAP.md](./ROADMAP.md)开发路线文档，期待第一个版本的诞生，一定会惊艳到你
 
 ## 构建指北
 

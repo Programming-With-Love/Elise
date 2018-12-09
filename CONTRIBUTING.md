@@ -28,7 +28,7 @@
 
 你提交的代码应当尽可能的包含测试。
 
-> 请务必注意，项目开发分支为dev分支。进行开发时务必在dev分支进行开发。master为稳定分支。
+> 请务必注意，项目开发分支为master分支。进行开发时务必确保你的master分支为最新
 
 仅接受github的[pull request](https://help.github.com/articles/about-pull-requests/)工作流程。
 
