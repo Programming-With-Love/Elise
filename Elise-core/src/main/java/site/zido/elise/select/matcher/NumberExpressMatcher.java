@@ -1,6 +1,5 @@
 package site.zido.elise.select.matcher;
 
-import site.zido.elise.select.Matcher;
 import site.zido.elise.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -24,9 +23,8 @@ public class NumberExpressMatcher implements Matcher {
      * Instantiates a new Number express matcher.
      *
      * @param express the express
-     * @throws CompilerException the compiler exception
      */
-    public NumberExpressMatcher(String express) throws CompilerException {
+    public NumberExpressMatcher(String express) {
         this(express, DEFAULT_CHAR_SEP);
     }
 
@@ -35,16 +33,15 @@ public class NumberExpressMatcher implements Matcher {
      *
      * @param express the express
      * @param sep     the sep
-     * @throws CompilerException the compiler exception
      */
-    public NumberExpressMatcher(String express, char sep) throws CompilerException {
+    public NumberExpressMatcher(String express, char sep) {
         if (!StringUtils.hasLength(express)) {
-            throw new CompilerException("express can't be null or empty");
+            throw new RuntimeException("express can't be null or empty");
         }
         if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
-            throw new CompilerException("express only can contains [0-9," + sep + "-]");
+            throw new RuntimeException("express only can contains [0-9," + sep + "-]");
         } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
-            throw new CompilerException("express only can contains [0-9," + sep + "-]");
+            throw new RuntimeException("express only can contains [0-9," + sep + "-]");
         }
         regions = new ArrayList<>();
         rows = new ArrayList<>();
@@ -72,7 +69,7 @@ public class NumberExpressMatcher implements Matcher {
                         for (++i; i < chars.length; i++) {
                             char ch = chars[i];
                             if (ch == sep) {
-                                throw new CompilerException("a child express can not contains two or more [" + sep + "] character");
+                                throw new RuntimeException("a child express can not contains two or more [" + sep + "] character");
                             }
                             tempNumberBuilder.append(ch);
                         }
@@ -83,7 +80,7 @@ public class NumberExpressMatcher implements Matcher {
                 regions.add(region);
             } else {
                 if (!StringUtils.hasLength(segment)) {
-                    throw new CompilerException("every number or segment must be split by [,]");
+                    throw new RuntimeException("every number or segment must be split by [,]");
                 }
                 rows.add(Integer.valueOf(segment));
             }

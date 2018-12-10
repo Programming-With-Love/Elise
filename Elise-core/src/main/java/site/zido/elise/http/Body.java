@@ -1,5 +1,7 @@
 package site.zido.elise.http;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 
@@ -8,7 +10,7 @@ import java.nio.charset.Charset;
  *
  * @author zido
  */
-public interface RequestBody extends Serializable {
+public interface Body extends Serializable {
     /**
      * Get bytes byte [ ].
      *
@@ -21,7 +23,7 @@ public interface RequestBody extends Serializable {
      *
      * @return the content type
      */
-    Http.ContentType getContentType();
+    Http.ContentType contentType();
 
 
     /**
@@ -30,5 +32,6 @@ public interface RequestBody extends Serializable {
      * @return the encoding
      */
     Charset getEncoding();
+
 
 }

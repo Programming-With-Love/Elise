@@ -1,7 +1,7 @@
 package site.zido.elise.http.impl;
 
+import site.zido.elise.http.Body;
 import site.zido.elise.http.Http;
-import site.zido.elise.http.RequestBody;
 
 import java.nio.charset.Charset;
 
@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
  *
  * @author zido
  */
-public class DefaultRequestBody implements RequestBody {
+public class DefaultBody implements Body {
     private static final long serialVersionUID = 2018040215121L;
     private byte[] bytes;
     private Http.ContentType contentType;
@@ -19,7 +19,7 @@ public class DefaultRequestBody implements RequestBody {
     /**
      * Instantiates a new Http request bytes.
      */
-    public DefaultRequestBody() {
+    public DefaultBody() {
     }
 
     /**
@@ -47,7 +47,7 @@ public class DefaultRequestBody implements RequestBody {
      * @return the content type
      */
     @Override
-    public Http.ContentType getContentType() {
+    public Http.ContentType contentType() {
         return contentType;
     }
 

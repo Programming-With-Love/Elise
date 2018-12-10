@@ -1,13 +1,19 @@
 package site.zido.elise.select.matcher;
 
-import site.zido.elise.select.Matcher;
-
 /**
  * The type Site matcher.
  *
  * @author zido
  */
 public class SiteMatcher implements Matcher {
+    /**
+     * a character can match any single character
+     */
+    private static final char SINGLE_MATCH_CHAR = '?';
+    /**
+     * a character can match any number of characters
+     */
+    private static final char MORE_MATCH_CHAR = '*';
     private char[] express;
 
     /**
@@ -35,16 +41,16 @@ public class SiteMatcher implements Matcher {
         if (expressIndex == express.length) {
             return false;
         }
-        if (express[expressIndex] == '*' && express[expressIndex] + 1 != express.length && originIndex == origin.length) {
+        if (express[expressIndex] == MORE_MATCH_CHAR && express[expressIndex] + 1 != express.length && originIndex == origin.length) {
             return false;
         }
         if (originIndex == origin.length) {
             return false;
         }
-        if (express[expressIndex] == '?' || express[expressIndex] == origin[originIndex]) {
+        if (express[expressIndex] == SINGLE_MATCH_CHAR || express[expressIndex] == origin[originIndex]) {
             return match(origin, express, originIndex + 1, expressIndex + 1);
         }
-        if (express[expressIndex] == '*') {
+        if (express[expressIndex] == MORE_MATCH_CHAR) {
             return match(origin, express, originIndex + 1, expressIndex) || match(origin, express, originIndex, expressIndex + 1);
         }
         return false;

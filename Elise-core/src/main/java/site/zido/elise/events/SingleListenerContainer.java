@@ -63,7 +63,7 @@ public final class SingleListenerContainer implements TaskEventListener {
     @Override
     public void onSuccess(Task task) {
         if (this.taskId == task.getId()) {
-            EventUtils.notifyListeners(listeners, listener -> listener.onSuccess(task.modelExtractor().getName()));
+            EventUtils.notifyListeners(listeners, SingleEventListener::onSuccess);
         }
         callback.onRecycling();
     }
@@ -94,13 +94,6 @@ public final class SingleListenerContainer implements TaskEventListener {
     public void onSaveSuccess(Task task, ResultItem resultItem) {
         if (this.taskId == task.getId()) {
             EventUtils.notifyListeners(listeners, listener -> listener.onSaveSuccess(resultItem));
-        }
-    }
-
-    @Override
-    public void onSaveError(Task task, ResultItem resultItem) {
-        if (this.taskId == task.getId()) {
-            EventUtils.notifyListeners(listeners, listener -> listener.onSaveError(resultItem));
         }
     }
 

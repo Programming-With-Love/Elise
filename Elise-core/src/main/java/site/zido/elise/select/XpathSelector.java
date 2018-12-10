@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class XpathSelector extends AbstractElementSelector {
+public class XpathSelector implements ElementSelector {
 
     private String xpathExpress;
     private transient AtomicBoolean needCompile = new AtomicBoolean(true);
@@ -41,9 +41,8 @@ public class XpathSelector extends AbstractElementSelector {
     }
 
     @Override
-    public List<Node> selectAsNode(Element element) {
+    public List<Node> select(Element element) {
         compile();
         return new ArrayList<>(evaluator.evaluateToElement(element));
     }
-
 }

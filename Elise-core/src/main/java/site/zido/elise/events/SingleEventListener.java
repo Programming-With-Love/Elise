@@ -30,9 +30,8 @@ public interface SingleEventListener extends SingleProcessorEventListener {
     /**
      * On success.
      *
-     * @param name the name
      */
-    default void onSuccess(String name) {
+    default void onSuccess() {
     }
 
     /**

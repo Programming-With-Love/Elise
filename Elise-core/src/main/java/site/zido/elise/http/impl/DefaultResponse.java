@@ -1,10 +1,9 @@
 package site.zido.elise.http.impl;
 
-import site.zido.elise.http.Header;
-import site.zido.elise.http.Http;
-import site.zido.elise.http.Response;
-import site.zido.elise.select.Selectable;
-import site.zido.elise.select.Text;
+import site.zido.elise.E;
+import site.zido.elise.http.*;
+import site.zido.elise.select.api.SelectableResponse;
+import site.zido.elise.select.api.impl.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +17,19 @@ import java.util.stream.Collectors;
  */
 public class DefaultResponse implements Response {
     private static final long serialVersionUID = 8652625484193923483L;
-    private Text url;
-    private int statusCode = 200;
+    private String url;
+    private int statusCode = E.StatusCode.CODE_200;
     private String reasonPhrase;
 
-    private Selectable body;
+    private Body body;
 
     private boolean downloadSuccess = true;
 
     private Http.ContentType contentType;
 
     private List<Header> headers;
+
+    private List<Cookie> cookies;
 
     /**
      * Instantiates a new Default response.
@@ -45,7 +46,7 @@ public class DefaultResponse implements Response {
     public static DefaultResponse fail() {
         DefaultResponse response = new DefaultResponse();
         response.setDownloadSuccess(false);
-        response.setStatusCode(-1);
+        response.setStatusCode(E.StatusCode.CODE_DOWNLOAD_ERROR);
         return response;
     }
 
@@ -55,7 +56,7 @@ public class DefaultResponse implements Response {
      * @return url of current page
      */
     @Override
-    public Text getUrl() {
+    public String getUrl() {
         return url;
     }
 
@@ -65,7 +66,7 @@ public class DefaultResponse implements Response {
      * @param url the url
      * @return the url
      */
-    public DefaultResponse setUrl(Text url) {
+    public DefaultResponse setUrl(String url) {
         this.url = url;
         return this;
     }
@@ -149,8 +150,13 @@ public class DefaultResponse implements Response {
      * @return the body
      */
     @Override
-    public Selectable getBody() {
+    public Body getBody() {
         return body;
+    }
+
+    @Override
+    public List<Cookie> getCookies() {
+        return this.cookies;
     }
 
     /**
@@ -158,7 +164,7 @@ public class DefaultResponse implements Response {
      *
      * @param body the body
      */
-    public void setBody(Selectable body) {
+    public void setBody(Body body) {
         this.body = body;
     }
 
@@ -181,4 +187,7 @@ public class DefaultResponse implements Response {
         headers.add(header);
     }
 
+    public void setCookies(List<Cookie> cookies) {
+        this.cookies = cookies;
+    }
 }

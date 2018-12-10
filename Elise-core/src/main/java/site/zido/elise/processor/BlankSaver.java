@@ -1,6 +1,5 @@
 package site.zido.elise.processor;
 
-import site.zido.elise.select.Fragment;
 import site.zido.elise.task.Task;
 
 import java.util.List;
@@ -14,9 +13,13 @@ import java.util.Map;
 public class BlankSaver implements Saver {
     @Override
     public void save(ResultItem resultItem, Task task) {
-        Map<String, List<Fragment>> all = resultItem.getAll();
-        for (Map.Entry<String, List<Fragment>> entry : all.entrySet()) {
-            System.out.println(entry.getKey() + ":\t" + entry.getValue());
+        Map<String, List<Object>> all = resultItem.getAll();
+        for (Map.Entry<String, List<Object>> entry : all.entrySet()) {
+            if (entry.getValue().size() == 1) {
+                System.out.println(entry.getKey() + ":\t" + entry.getValue().get(0));
+            } else {
+                System.out.println(entry.getKey() + ":\t" + entry.getValue());
+            }
             //LOGGER.debug(entry.getKey() + ":\t" + entry.getValue());
         }
     }

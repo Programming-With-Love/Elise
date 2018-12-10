@@ -53,11 +53,11 @@ public class RegexSelector implements Selector {
     }
 
     @Override
-    public List<Fragment> select(String text) {
+    public List<String> select(String text) {
         Matcher matcher = pattern.matcher(text);
-        List<Fragment> results = new ArrayList<>();
+        List<String> results = new ArrayList<>();
         while (matcher.find()) {
-            results.add(new Fragment(matcher.group(group)));
+            results.add(matcher.group(group));
         }
         return results;
     }

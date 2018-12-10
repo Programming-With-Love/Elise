@@ -1,8 +1,7 @@
 package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
-import site.zido.elise.select.configurable.ConfigurableModelExtractor;
-import site.zido.elise.select.configurable.ModelExtractor;
+import site.zido.elise.select.configurable.ResponseHandler;
 
 /**
  * default extractor task
@@ -12,7 +11,7 @@ import site.zido.elise.select.configurable.ModelExtractor;
  */
 public class DefaultTask implements Task {
     private Long id;
-    private ModelExtractor extractor;
+    private ResponseHandler responseHandler;
     private Config config;
 
     /**
@@ -26,12 +25,12 @@ public class DefaultTask implements Task {
      * Instantiates a new Default task.
      *
      * @param id        the id
-     * @param extractor the extractor
+     * @param responseHandler the extractor
      * @param config    the config
      */
-    public DefaultTask(Long id, ModelExtractor extractor, Config config) {
+    public DefaultTask(Long id, ResponseHandler responseHandler, Config config) {
         this.id = id;
-        this.extractor = extractor;
+        this.responseHandler = responseHandler;
         this.config = config;
     }
 
@@ -52,8 +51,8 @@ public class DefaultTask implements Task {
     }
 
     @Override
-    public ModelExtractor modelExtractor() {
-        return extractor;
+    public ResponseHandler getHandler() {
+        return responseHandler;
     }
 
     @Override
@@ -77,18 +76,18 @@ public class DefaultTask implements Task {
      *
      * @return the def extractor
      */
-    public ModelExtractor getExtractor() {
-        return extractor;
+    public ResponseHandler getResponseHandler() {
+        return responseHandler;
     }
 
     /**
      * Sets def extractor.
      *
-     * @param extractor the def extractor
+     * @param responseHandler the def extractor
      * @return the def extractor
      */
-    public DefaultTask setExtractor(ConfigurableModelExtractor extractor) {
-        this.extractor = extractor;
+    public DefaultTask setResponseHandler(ResponseHandler responseHandler) {
+        this.responseHandler = responseHandler;
         return this;
     }
 }

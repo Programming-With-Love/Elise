@@ -5,27 +5,28 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.custom.HttpClientConfig;
 import site.zido.elise.downloader.httpclient.HttpClientHeaderWrapper;
+import site.zido.elise.http.Body;
 import site.zido.elise.http.Http;
-import site.zido.elise.http.RequestBody;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultCookie;
 import site.zido.elise.http.impl.DefaultResponse;
-import site.zido.elise.select.Html;
-import site.zido.elise.select.Text;
+import site.zido.elise.http.impl.HttpClientBodyWrapper;
 import site.zido.elise.task.Task;
-import site.zido.elise.utils.HtmlUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,7 +56,7 @@ public class HttpClientDownloader implements Downloader {
         DefaultResponse response = DefaultResponse.fail();
         try {
             httpResponse = client.execute(httpUriRequest, context);
-            response = handleResponse(request, task, httpResponse);
+            response = handleResponse(request, task, httpResponse, context);
             LOGGER.debug("downloading response success {}", request.getUrl());
             return response;
         } catch (IOException e) {
@@ -73,17 +74,20 @@ public class HttpClientDownloader implements Downloader {
         }
     }
 
-    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse) throws IOException {
-        byte[] bytes = EntityUtils.toByteArray(httpResponse.getEntity());
+    private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse, HttpClientContext context) {
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
-
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
-        String charset = HtmlUtils.getHtmlCharset(bytes, task.getConfig().get(GlobalConfig.KEY_CHARSET));
-        response.setBody(new Html(new String(bytes, charset), request.getUrl()));
-        response.setUrl(new Text(request.getUrl()));
+        response.setBody(new HttpClientBodyWrapper(httpResponse.getEntity()));
+        response.setUrl(request.getUrl());
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         response.setDownloadSuccess(true);
+        List<Cookie> cookies = context.getCookieStore().getCookies();
+        List<site.zido.elise.http.Cookie> wrapCookies = new ArrayList<>();
+        for (Cookie cookie : cookies) {
+            wrapCookies.add(new DefaultCookie(cookie.getName(), cookie.getValue()));
+        }
+        response.setCookies(wrapCookies);
         return response;
     }
 
@@ -108,10 +112,10 @@ public class HttpClientDownloader implements Downloader {
 
     private HttpUriRequest buildRequest(Task task, Request request) {
         RequestBuilder builder = RequestBuilder.create(request.getMethod());
-        final RequestBody body = request.getBody();
+        final Body body = request.getBody();
         if (body != null) {
             ByteArrayEntity bodyEntity = new ByteArrayEntity(body.getBytes());
-            bodyEntity.setContentType(body.getContentType().toString());
+            bodyEntity.setContentType(body.contentType().toString());
             builder.setEntity(bodyEntity);
         }
         final HttpClientConfig config = new HttpClientConfig(task.getConfig());

@@ -1,7 +1,8 @@
 package site.zido.elise.http;
 
-import site.zido.elise.select.Selectable;
-import site.zido.elise.select.Text;
+import site.zido.elise.select.api.SelectableResponse;
+
+import java.util.List;
 
 /**
  * The interface Response.
@@ -28,12 +29,15 @@ public interface Response extends HttpModel {
      *
      * @return the url
      */
-    Text getUrl();
+    String getUrl();
 
     /**
      * get body from response
      *
      * @return body body
      */
-    Selectable getBody();
+    Body getBody();
+
+    List<Cookie> getCookies();
+
 }

@@ -2,9 +2,8 @@ package site.zido.elise.select;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import site.zido.elise.select.configurable.ConfigurableUrlFinder;
+import site.zido.elise.select.configurable.Type;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
@@ -17,13 +16,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class LinkSelector extends AbstractElementSelector {
+public class LinkSelector implements ElementSelector, Selector {
     private static final String EMPTY_URL_PATTERN = "https?://.*";
     private transient Selector targetSelector;
     private transient ElementSelector regionSelector;
     private List<LinkProperty> linkProperties = new ArrayList<>();
     private String target;
-    private ConfigurableUrlFinder.Type type;
+    private Type type;
     private String sourceRegion;
     private transient AtomicBoolean needCompile = new AtomicBoolean(true);
 
@@ -43,7 +42,7 @@ public class LinkSelector extends AbstractElementSelector {
      * @param type         the type
      * @param sourceRegion the source region
      */
-    public LinkSelector(String target, ConfigurableUrlFinder.Type type, String sourceRegion) {
+    public LinkSelector(String target, Type type, String sourceRegion) {
         this.target = target;
         this.type = type;
         this.sourceRegion = sourceRegion;
@@ -59,7 +58,7 @@ public class LinkSelector extends AbstractElementSelector {
             pattern = EMPTY_URL_PATTERN;
         }
         if (type == null) {
-            type = ConfigurableUrlFinder.Type.REGEX;
+            type = Type.REGEX;
         }
 
         switch (type) {
@@ -84,13 +83,18 @@ public class LinkSelector extends AbstractElementSelector {
     }
 
     @Override
-    public List<Node> selectAsNode(Element element) {
+    public List<Node> select(Element element) {
+        throw new UnsupportedOperationException("can't select link as node");
+    }
+
+    @Override
+    public List<String> selectAsStr(Element element) {
         compile();
-        List<Node> regions = regionSelector.selectAsNode(element);
+        List<Node> regions = regionSelector.select(element);
         if (ValidateUtils.isEmpty(regions)) {
             return Collections.emptyList();
         }
-        List<Node> results = new ArrayList<>();
+        List<String> results = new ArrayList<>();
         for (Node region : regions) {
             for (LinkProperty linkProperty : linkProperties) {
                 if (!(region instanceof Element)) {
@@ -108,11 +112,17 @@ public class LinkSelector extends AbstractElementSelector {
                         href = linkElement.attr(linkProperty.getAttr());
                     }
                     if (!targetSelector.select(href).isEmpty()) {
-                        results.add(new TextNode(href, linkElement.baseUri()));
+                        results.add(href);
                     }
                 }
             }
         }
         return results;
+    }
+
+    @Override
+    public List<String> select(String text) {
+        compile();
+        return targetSelector.select(text);
     }
 }
