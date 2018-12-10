@@ -10,12 +10,12 @@ public class NumberExpressMatcherTest {
     public void testCompile() throws CompilerException {
         try {
             new NumberExpressMatcher("daw3484");
-        } catch (CompilerException e) {
+        } catch (RuntimeException e) {
             Assert.assertNotNull(e);
         }
         try {
             new NumberExpressMatcher(",,12");
-        } catch (CompilerException e) {
+        } catch (RuntimeException e) {
             Assert.assertNotNull(e);
         }
 

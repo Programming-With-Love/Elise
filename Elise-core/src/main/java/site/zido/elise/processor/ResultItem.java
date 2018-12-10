@@ -1,6 +1,6 @@
 package site.zido.elise.processor;
 
-import site.zido.elise.select.Fragment;
+import site.zido.elise.select.FieldType;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,7 +12,9 @@ import java.util.Map;
  * @author zido
  */
 public class ResultItem {
-    private Map<String, List<Fragment>> fields = new LinkedHashMap<>();
+    private String name;
+    private Map<String, List<Object>> fields = new LinkedHashMap<>();
+    private Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
 
     /**
      * Instantiates a new Result item.
@@ -34,12 +36,21 @@ public class ResultItem {
         return fields.get(key);
     }
 
+    public FieldType getType(String key) {
+        return fieldTypeMap.get(key);
+    }
+
+    public ResultItem setType(String key, FieldType type) {
+        fieldTypeMap.put(key, type);
+        return this;
+    }
+
     /**
      * Gets all.
      *
      * @return the all
      */
-    public Map<String, List<Fragment>> getAll() {
+    public Map<String, List<Object>> getAll() {
         return fields;
     }
 
@@ -50,10 +61,23 @@ public class ResultItem {
      * @param value the value
      * @return the result item
      */
-    public ResultItem put(String key, List<Fragment> value) {
+    public ResultItem put(String key, List<Object> value) {
         fields.put(key, value);
         return this;
     }
 
+    public ResultItem put(String key, List<Object> value, FieldType type) {
+        put(key, value);
+        setType(key, type);
+        return this;
+    }
 
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

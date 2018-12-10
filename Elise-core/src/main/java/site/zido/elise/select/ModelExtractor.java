@@ -1,7 +1,8 @@
 package site.zido.elise.select;
 
-import site.zido.elise.http.Response;
-import site.zido.elise.processor.ResultItem;
+import site.zido.elise.processor.ProcessorEventListener;
+import site.zido.elise.processor.Saver;
+import site.zido.elise.select.api.SelectableResponse;
 
 import java.util.List;
 import java.util.Set;
@@ -16,23 +17,11 @@ public interface ModelExtractor {
     /**
      * Extract result item.
      *
-     * @param response the response
+     * @param response  the response
+     * @param saver
+     * @param listeners
      * @return the result item
      */
-    List<ResultItem> extract(Response response);
+    List<String> extract(SelectableResponse response, Saver saver, Set<ProcessorEventListener> listeners);
 
-    /**
-     * Extract links list.
-     *
-     * @param response the response
-     * @return the list
-     */
-    Set<String> extractLinks(Response response);
-
-    /**
-     * get the task name
-     *
-     * @return task name
-     */
-    String getName();
 }

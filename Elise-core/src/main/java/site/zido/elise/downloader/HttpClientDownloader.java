@@ -18,7 +18,6 @@ import site.zido.elise.http.Body;
 import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
-import site.zido.elise.http.impl.DefaultBody;
 import site.zido.elise.http.impl.DefaultCookie;
 import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.impl.HttpClientBodyWrapper;
@@ -80,7 +79,6 @@ public class HttpClientDownloader implements Downloader {
         DefaultResponse response = new DefaultResponse();
         response.setContentType(Http.ContentType.parse(contentType));
         response.setBody(new HttpClientBodyWrapper(httpResponse.getEntity()));
-        response.setBody(new DefaultBody());
         response.setUrl(request.getUrl());
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         response.setDownloadSuccess(true);
@@ -117,7 +115,7 @@ public class HttpClientDownloader implements Downloader {
         final Body body = request.getBody();
         if (body != null) {
             ByteArrayEntity bodyEntity = new ByteArrayEntity(body.getBytes());
-            bodyEntity.setContentType(body.getContentType().toString());
+            bodyEntity.setContentType(body.contentType().toString());
             builder.setEntity(bodyEntity);
         }
         final HttpClientConfig config = new HttpClientConfig(task.getConfig());

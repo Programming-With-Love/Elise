@@ -1,7 +1,7 @@
 package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
-import site.zido.elise.select.ModelExtractor;
+import site.zido.elise.select.configurable.ResponseHandler;
 
 /**
  * Task interface
@@ -21,7 +21,7 @@ public interface Task {
      *
      * @return extractors model extractor
      */
-    ModelExtractor modelExtractor();
+    ResponseHandler getHandler();
 
     /**
      * Gets config.

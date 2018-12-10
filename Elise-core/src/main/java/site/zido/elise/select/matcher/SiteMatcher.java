@@ -1,7 +1,5 @@
 package site.zido.elise.select.matcher;
 
-import site.zido.elise.select.Matcher;
-
 /**
  * The type Site matcher.
  *

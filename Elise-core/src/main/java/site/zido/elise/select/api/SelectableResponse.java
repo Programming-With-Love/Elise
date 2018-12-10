@@ -1,13 +1,12 @@
 package site.zido.elise.select.api;
 
 public interface SelectableResponse {
-    SelectableHeader header();
 
-    Text cookie();
+    SelectableResponse modelName(String name);
 
-    Code statusCode();
+    TargetDescriptor asTarget();
 
-    Text url();
+    HelpDescriptor asHelper();
 
-    SelectableBody body();
+    DataDescriptor asContent();
 }

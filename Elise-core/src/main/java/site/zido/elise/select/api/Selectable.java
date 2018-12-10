@@ -7,6 +7,6 @@ import site.zido.elise.select.Selector;
  *
  * @author zido
  */
-public interface Selectable extends Matchable {
-    SelectResult select(Selector selector);
+public interface Selectable {
+    Selectable select(Selector selector);
 }

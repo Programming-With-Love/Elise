@@ -15,8 +15,7 @@ import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.ListenableResponseProcessor;
 import site.zido.elise.processor.ResponseProcessor;
-import site.zido.elise.select.ModelExtractor;
-import site.zido.elise.select.matcher.CompilerException;
+import site.zido.elise.select.configurable.ResponseHandler;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
 import site.zido.elise.task.DefaultTask;
 import site.zido.elise.task.Task;
@@ -53,14 +52,14 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     private Config config;
 
     @Override
-    public Operator of(ModelExtractor extractor, Config config) {
-        final DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor, ConfigUtils.mergeConfig(config, this.config));
+    public Operator of(ResponseHandler handler, Config config) {
+        final DefaultTask task = new DefaultTask(IdWorker.nextId(), handler, ConfigUtils.mergeConfig(config, this.config));
         return new DefaultOperator(task, this);
     }
 
     @Override
-    public Operator of(ModelExtractor extractor) {
-        final DefaultTask task = new DefaultTask(IdWorker.nextId(), extractor, config);
+    public Operator of(ResponseHandler handler) {
+        final DefaultTask task = new DefaultTask(IdWorker.nextId(), handler, config);
         return new DefaultOperator(task, this);
     }
 
@@ -109,25 +108,16 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         }
         final Config config = task.getConfig();
         if (state != STATE_CANCEL_NOW) {
-            String successCode = config.get(GlobalConfig.KEY_SUCCESS_CODE);
-            NumberExpressMatcher matcher;
-            try {
-                matcher = new NumberExpressMatcher(successCode);
-            } catch (CompilerException e) {
-                throw new RuntimeException(e);
-            }
-            if (matcher.matches(response.getStatusCode())) {
-                Set<String> links = responseProcessor.process(task, response);
-                //will no longer process any pages when the task is in the cancel_now state
-                if (state != STATE_CANCEL) {
-                    for (String link : links) {
-                        pushRequest(task, new DefaultRequest(link));
-                    }
+            Set<String> links = responseProcessor.process(task, response);
+            //will no longer process any pages when the task is in the cancel_now state
+            if (state != STATE_CANCEL) {
+                for (String link : links) {
+                    pushRequest(task, new DefaultRequest(link));
                 }
-                countEvent(state, task);
-                sleep(config.get(GlobalConfig.KEY_SLEEP_TIME));
-                return;
             }
+            countEvent(state, task);
+            sleep(config.get(GlobalConfig.KEY_SLEEP_TIME));
+            return;
         }
         countEvent(state, task);
         if (state == -1) {
@@ -177,11 +167,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         final Response response = downloaderFactory.create(task).download(task, request);
         String successCode = task.getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
         NumberExpressMatcher matcher;
-        try {
-            matcher = new NumberExpressMatcher(successCode);
-        } catch (CompilerException e) {
-            throw new RuntimeException(e);
-        }
+        matcher = new NumberExpressMatcher(successCode);
         if (matcher.matches(response.getStatusCode())) {
             EventUtils.mustNotifyListeners(listeners, listener -> {
                 if (listener instanceof TaskEventListener) {

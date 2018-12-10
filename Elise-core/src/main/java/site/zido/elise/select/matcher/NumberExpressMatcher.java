@@ -1,6 +1,5 @@
 package site.zido.elise.select.matcher;
 
-import site.zido.elise.select.Matcher;
 import site.zido.elise.utils.StringUtils;
 
 import java.util.ArrayList;

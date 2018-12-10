@@ -14,17 +14,17 @@ public interface ProcessorEventListener extends EventListener {
      * On save success.
      *
      * @param task        the task
-     * @param resultItems the result items
+     * @param resultItem the result items
      */
-    default void onSaveSuccess(Task task, ResultItem resultItems) {
+    default void onSaveSuccess(Task task, ResultItem resultItem) {
     }
 
     /**
      * On save error.
      *
      * @param task        the task
-     * @param resultItems the result items
+     * @param resultItem the result items
      */
-    default void onSaveError(Task task, ResultItem resultItems) {
+    default void onSaveError(Task task, ResultItem resultItem) {
     }
 }

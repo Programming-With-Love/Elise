@@ -1,9 +1,6 @@
 package site.zido.elise.http.impl;
 
-import site.zido.elise.http.Cookie;
-import site.zido.elise.http.Header;
-import site.zido.elise.http.Request;
-import site.zido.elise.http.Body;
+import site.zido.elise.http.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +19,7 @@ public class DefaultRequest implements Request {
     /**
      * request method,like GET/POST/PATCH/PUT/DELETE
      */
-    private String method;
+    private String method = Http.Method.GET;
     /**
      * Only the three verbs POST, PUT, and PATCH will include the request body.
      * <p>

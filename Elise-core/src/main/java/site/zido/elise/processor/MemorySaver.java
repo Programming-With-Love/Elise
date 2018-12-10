@@ -2,7 +2,6 @@ package site.zido.elise.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.select.Fragment;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.ValidateUtils;
 
@@ -16,19 +15,19 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author zido
  */
-public class MemorySaver implements Saver {
+public class MemorySaver extends BlankSaver implements Saver {
     private static Logger LOGGER = LoggerFactory.getLogger(MemorySaver.class);
     private Map<Long, List<ResultItem>> cup = new ConcurrentHashMap<>();
+
+    public Map<Long, List<ResultItem>> getCup() {
+        return cup;
+    }
 
     @Override
     public void save(ResultItem resultItem, Task task) {
         List<ResultItem> resultItems = cup.computeIfAbsent(task.getId(), k -> new ArrayList<>());
         resultItems.add(resultItem);
-        Map<String, List<Fragment>> all = resultItem.getAll();
-        for (Map.Entry<String, List<Fragment>> entry : all.entrySet()) {
-            System.out.println(entry.getKey() + ":\t" + entry.getValue());
-            //LOGGER.debug(entry.getKey() + ":\t" + entry.getValue());
-        }
+        super.save(resultItem, task);
     }
 
     @Override

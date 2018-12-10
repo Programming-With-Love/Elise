@@ -21,5 +21,9 @@ public enum Source {
     /**
      * 从文本中抽取
      */
-    RAW_TEXT
+    RAW_TEXT,
+    /**
+     * from status code
+     */
+    CODE,
 }

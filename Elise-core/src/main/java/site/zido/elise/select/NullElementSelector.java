@@ -12,6 +12,8 @@ import java.util.List;
  * @author zido
  */
 public class NullElementSelector implements ElementSelector {
+    public static final ElementSelector INSTANCE = new NullElementSelector();
+
     @Override
     public List<Node> select(Element element) {
         return Collections.singletonList(element);

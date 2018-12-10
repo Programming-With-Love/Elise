@@ -159,29 +159,6 @@ public class DefaultResponse implements Response {
         return this.cookies;
     }
 
-    @Override
-    public SelectableResponse forSelect() {
-        DefaultSelectableResponse response = new DefaultSelectableResponse();
-        //set headers
-        DefaultSelectableHeader selectableHeader = new DefaultSelectableHeader();
-        selectableHeader.addAll(headers);
-        response.setHeader(selectableHeader);
-        //set url
-        DefaultText url = new DefaultText(this.url);
-        response.setUrl(url);
-        //set cookies
-        DefaultSelectableHeader cookies = new DefaultSelectableHeader();
-        cookies.addAll(this.cookies);
-        response.setCookies(cookies);
-        //set status code
-        DefaultCode code = new DefaultCode(this.statusCode);
-        response.setCode(code);
-        //set body
-        DefaultSelectableBody body = new DefaultSelectableBody(this.body, this.url);
-        response.setBody(body);
-        return response;
-    }
-
     /**
      * Sets body.
      *

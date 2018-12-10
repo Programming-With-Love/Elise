@@ -40,5 +40,4 @@ public interface Response extends HttpModel {
 
     List<Cookie> getCookies();
 
-    SelectableResponse forSelect();
 }
