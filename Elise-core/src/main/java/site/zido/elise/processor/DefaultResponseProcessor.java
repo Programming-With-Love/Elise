@@ -59,6 +59,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         Set<String> links = new HashSet<>();
         String html = null;
         Document document = null;
+        String name = selectableResponse.getName();
         //select content from response
         boolean isTarget = false;
         List<ResultItem> resultItems = new ArrayList<>();
@@ -104,47 +105,23 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         }
 
         //save field
-        for (NotSafeSelectableResponse meta : metas) {
-            String name = meta.getName();
-            Source source = meta.getSource();
-            FieldType fieldType = meta.getValueType();
-            boolean nullable = meta.getNullable();
-            if (meta.getMode() == NotSafeSelectableResponse.MODE_DATA && source == Source.RAW_HTML) {
-                DefaultPartition fieldPair = meta.getPartition();
-                if (fieldPair == null && name != null) {
-                    ElementSelector fieldSelector = meta.getFieldSelector();
-                    List<Object> field = processField(document, fieldSelector, fieldType);
-                    ResultItem resultItem = new ResultItem();
-                    if (!nullable && ValidateUtils.isEmpty(field)) {
-                        continue;
-                    }
-                    resultItem.put(name, field, fieldType);
+        DefaultPartition fieldPair = selectableResponse.getPartition();
+        if (fieldPair == null) {
+            ResultItem resultItem = processModel(metas, document, name);
+            if (resultItem != null) {
+                resultItems.add(resultItem);
+            }
+        } else {
+            ElementSelector regionSelector = fieldPair.getRegionSelector();
+            List<Node> region = regionSelector.select(document);
+            for (Node node : region) {
+                ResultItem resultItem = processModel(metas, (Element) node, name);
+                if (resultItem != null) {
                     resultItems.add(resultItem);
-                } else {
-                    ElementSelector regionSelector = fieldPair.getRegionSelector();
-                    List<DefaultPartition.Pack> packs = fieldPair.getPacks();
-                    if (ValidateUtils.isEmpty(packs)) {
-                        continue;
-                    }
-                    List<Node> region = regionSelector.select(document);
-                    for (Node node : region) {
-                        ResultItem resultItem = new ResultItem();
-                        for (DefaultPartition.Pack pack : packs) {
-                            ElementSelector fieldSelector = pack.getFieldSelector();
-                            String fieldName = pack.getName();
-                            FieldType valueType = pack.getValueType();
-                            nullable = pack.getNullable();
-                            List<Object> field = processField(node, fieldSelector, valueType);
-                            if (!nullable && ValidateUtils.isEmpty(field)) {
-                                continue;
-                            }
-                            resultItem.put(fieldName, field, valueType);
-                        }
-                        resultItems.add(resultItem);
-                    }
                 }
             }
         }
+
         if (!ValidateUtils.isEmpty(resultItems)) {
             for (ResultItem resultItem : resultItems) {
                 if (resultItem != null) {
@@ -161,6 +138,26 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
             LOGGER.info("response not find anything, response {}", response.getUrl());
         }
         return links;
+    }
+
+    private ResultItem processModel(List<NotSafeSelectableResponse> metas, Element document, String modelName) {
+        ResultItem item = new ResultItem();
+        for (NotSafeSelectableResponse meta : metas) {
+            String name = meta.getName();
+            Source source = meta.getSource();
+            FieldType fieldType = meta.getValueType();
+            boolean nullable = meta.getNullable();
+            if (meta.getMode() == NotSafeSelectableResponse.MODE_DATA && source == Source.RAW_HTML) {
+                ElementSelector fieldSelector = meta.getFieldSelector();
+                List<Object> field = processField(document, fieldSelector, fieldType);
+                if (!nullable && ValidateUtils.isEmpty(field)) {
+                    return null;
+                }
+                item.put(name, field, fieldType);
+            }
+        }
+        item.setName(modelName);
+        return item;
     }
 
     private List<Object> processField(Node node, ElementSelector fieldElementSelector, FieldType fieldType) {

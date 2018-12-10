@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class BlankSaver implements Saver {
     @Override
-    public synchronized void save(ResultItem resultItem, Task task) {
+    public void save(ResultItem resultItem, Task task) {
         Map<String, List<Object>> all = resultItem.getAll();
         for (Map.Entry<String, List<Object>> entry : all.entrySet()) {
             if (entry.getValue().size() == 1) {
