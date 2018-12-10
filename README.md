@@ -46,24 +46,6 @@ Elise的优势：
 | spring-boot-elise-starter | 爬虫的spring boot自动配置组件，用于配合spring boot框架                                                                        |
 | ....                      | 更多模块实现，欢迎讨论                                                                                                        |
 
-## 状态
-
-进行中（每天都在努力的编码中）...一个人的力量有限，希望有人能加入:smile:
-
-目前还没能达到正式版本的状态。不过已经能基本保证正常运行，可以自行clone代码构建运行。
-
-开发路线参考 [ROADMAP.md](./ROADMAP.md)。
-
-## 贡献
-
-行为准则请参阅[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
-
-请查看[贡献说明](./CONTRIBUTING.md)。
-
-## 使用说明
-
-暂无(目前的api可能不稳定,可自行clone探索)
-
 ## maven仓库
 
 ```
@@ -78,6 +60,29 @@ Elise的优势：
 
 > 请注意：不稳定且许多api暂未实现，请持续关注[ROADMAP.md](./ROADMAP.md)开发路线文档，期待第一个版本的诞生，一定会惊艳到你
 
+## 快速试用
+
+轻松利用response回调句柄像说话一样简单的爬取一个网站,语义化api，使用绝不迷茫！
+
+优雅的api,让你乐在其中：
+
+> 尝试以舒爽的api爬取我的github仓库吧：
+
+```java
+SpiderBuilder.defaults().of(response -> {
+    response.modelName("project");
+    response.asTarget().matchUrl(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+    response.asHelper().filter(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+    response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
+    response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
+    response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
+}).execute("http://github.com/zidoshare").block();
+```
+
+框架的核心需编程逻辑仅在response的回掉中。response提供了url/html等供你快速的匹配内容
+
+依靠高度封装的api,试着写下`response.`你能轻松的知道接下来可以做什么。
+
 ## 构建指北
 
 Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版本为8以上。
@@ -91,6 +96,20 @@ Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版
 因为作者是使用idea进行开发，所以推荐的开发编辑器为IntelliJ IDEA。
 
 如果你在其他编辑器中开发，请确保你的编辑器中的配置文件/构建文件/缓存等不会出现在提交目录中。这可以在[.gitignore](https://git-scm.com/docs/gitignore)文件中进行设置，也欢迎提交类似的pr
+
+## 状态
+
+进行中（每天都在努力的编码中）...一个人的力量有限，希望有人能加入:smile:
+
+目前还没能达到正式版本的状态。不过已经能基本保证正常运行，可以自行clone代码构建运行。
+
+开发路线参考 [ROADMAP.md](./ROADMAP.md)。
+
+## 贡献
+
+行为准则请参阅[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
+请查看[贡献说明](./CONTRIBUTING.md)。
 
 ## 交流反馈
 
