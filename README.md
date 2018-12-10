@@ -79,7 +79,7 @@ SpiderBuilder.defaults().of(response -> {
 }).execute("http://github.com/zidoshare").block();
 ```
 
-框架的核心需编程逻辑仅在response的回掉中。response提供了url/html等供你快速的匹配内容
+框架的核心需编程逻辑仅在response的回调中。response提供了url/html等供你快速的匹配内容
 
 依靠高度封装的api,试着写下`response.`你能轻松的知道接下来可以做什么。
 

@@ -18,45 +18,17 @@ API和功能请求应作为PR提交到本文档。
 
 * 爬取结果的处理，目前使用Saver的机制，并不能很好的配合使用者，需要进行讨论。
 
-* ResponseHandler支持。
+* (已完成)ResponseHandler支持。
 
     ```java
-    Spider.defaults()
-    .of("taskName",new ResponseHandler(){
-        void onHandle(Response response){
-            //url必须匹配到目标表达式才能被确定为是需要采集的页面
-            response.url().regex("https://a.b.c").asTarget()
-            //url必须匹配到目标表达式才能被确定为是辅助采集的页面
-            response.url().regex("https://a.b.c").asHelp()
-            //从body中选择
-            response.body()
-            //使用xpath匹配
-            .select(new XpathSelector("xxx"))
-            //使用name作为属性名
-            .as("name")
-            //选中文字作为内容
-            .text();
-            //从url中选择
-            response.url()
-            //使用regex匹配
-            .select(new RegexSelector("xxx"))
-            .nullable(false)
-            //使用url作为属性名
-            .as("url")
-            //选中文字作为内容
-            .text();
-            //从body中选择
-            response.body()
-            //使用xpath匹配
-            .select(new XpathSelector("xxx"))
-            //使用name作为属性名
-            .as("description")
-            //选中富文本作为内容
-            .richText();
-        }
-    })
-    //添加入口
-    .execute("https://xxx");
+    SpiderBuilder.defaults().of(response -> {
+        response.modelName("project");
+        response.asTarget().matchUrl(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+        response.asHelper().filter(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+        response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
+        response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
+        response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
+    }).execute("http://github.com/zidoshare").block();
     ```
     api化的构建抓取器
 
