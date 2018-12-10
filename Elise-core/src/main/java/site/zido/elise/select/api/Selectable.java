@@ -8,5 +8,11 @@ import site.zido.elise.select.Selector;
  * @author zido
  */
 public interface Selectable {
+    /**
+     * Select selectable.
+     *
+     * @param selector the selector
+     * @return the selectable
+     */
     Selectable select(Selector selector);
 }

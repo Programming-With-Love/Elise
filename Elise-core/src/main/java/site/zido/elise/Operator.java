@@ -12,8 +12,7 @@ public interface Operator {
     /**
      * Cancel task of the operator.The Spider will no longer accept any new requests of the task.
      *
-     * @param ifRunning If true,the task will wait until the existing request is completed before ending the crawler.
-     *                  and else,will end all request immediately.
+     * @param ifRunning If true,the task will wait until the existing request is completed before ending the crawler.                  and else,will end all request immediately.
      * @return the operator
      */
     Operator cancel(boolean ifRunning);

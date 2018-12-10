@@ -18,8 +18,8 @@ public interface ModelExtractor {
      * Extract result item.
      *
      * @param response  the response
-     * @param saver
-     * @param listeners
+     * @param saver     the saver
+     * @param listeners the listeners
      * @return the result item
      */
     List<String> extract(SelectableResponse response, Saver saver, Set<ProcessorEventListener> listeners);

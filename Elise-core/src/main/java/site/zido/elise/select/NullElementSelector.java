@@ -12,6 +12,9 @@ import java.util.List;
  * @author zido
  */
 public class NullElementSelector implements ElementSelector {
+    /**
+     * The constant INSTANCE.
+     */
     public static final ElementSelector INSTANCE = new NullElementSelector();
 
     @Override

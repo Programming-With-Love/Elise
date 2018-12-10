@@ -187,6 +187,11 @@ public class DefaultResponse implements Response {
         headers.add(header);
     }
 
+    /**
+     * Sets cookies.
+     *
+     * @param cookies the cookies
+     */
     public void setCookies(List<Cookie> cookies) {
         this.cookies = cookies;
     }

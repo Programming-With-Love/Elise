@@ -22,6 +22,11 @@ public class HttpClientBodyWrapper implements Body {
     private Http.ContentType contentType;
     private byte[] bytes;
 
+    /**
+     * Instantiates a new Http client body wrapper.
+     *
+     * @param entity the entity
+     */
     public HttpClientBodyWrapper(HttpEntity entity) {
         this.entity = new HttpEntityWrapper(entity);
         this.contentType = Http.ContentType.parse(entity.getContentType().getValue());

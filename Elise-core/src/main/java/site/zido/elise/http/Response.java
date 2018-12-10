@@ -38,6 +38,11 @@ public interface Response extends HttpModel {
      */
     Body getBody();
 
+    /**
+     * Gets cookies.
+     *
+     * @return the cookies
+     */
     List<Cookie> getCookies();
 
 }

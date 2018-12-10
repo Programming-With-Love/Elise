@@ -12,6 +12,11 @@ import site.zido.elise.utils.Asserts;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Not safe selectable response.
+ *
+ * @author zido
+ */
 public class NotSafeSelectableResponse implements SelectableResponse,
         TargetDescriptor,
         HelpDescriptor,
@@ -20,8 +25,17 @@ public class NotSafeSelectableResponse implements SelectableResponse,
         Value,
         ElementValue {
 
+    /**
+     * The constant MODE_TARGET.
+     */
     public static final int MODE_TARGET = 1;
+    /**
+     * The constant MODE_HELP.
+     */
     public static final int MODE_HELP = 2;
+    /**
+     * The constant MODE_DATA.
+     */
     public static final int MODE_DATA = 3;
     private List<NotSafeSelectableResponse> metas = new ArrayList<>();
 
@@ -35,6 +49,9 @@ public class NotSafeSelectableResponse implements SelectableResponse,
     private FieldType valueType;
     private boolean nullable;
 
+    /**
+     * Instantiates a new Not safe selectable response.
+     */
     public NotSafeSelectableResponse() {
 
     }
@@ -71,6 +88,11 @@ public class NotSafeSelectableResponse implements SelectableResponse,
         return faSelectableResponse;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
@@ -168,38 +190,83 @@ public class NotSafeSelectableResponse implements SelectableResponse,
         return this;
     }
 
+    /**
+     * Gets metas.
+     *
+     * @return the metas
+     */
     public List<NotSafeSelectableResponse> getMetas() {
         return metas;
     }
 
+    /**
+     * Gets source.
+     *
+     * @return the source
+     */
     public Source getSource() {
         return source;
     }
 
+    /**
+     * Gets link selectors.
+     *
+     * @return the link selectors
+     */
     public List<LinkSelector> getLinkSelectors() {
         return linkSelectors;
     }
 
+    /**
+     * Gets matchers.
+     *
+     * @return the matchers
+     */
     public List<Matcher> getMatchers() {
         return matchers;
     }
 
+    /**
+     * Gets value type.
+     *
+     * @return the value type
+     */
     public FieldType getValueType() {
         return valueType;
     }
 
+    /**
+     * Gets mode.
+     *
+     * @return the mode
+     */
     public int getMode() {
         return mode;
     }
 
+    /**
+     * Gets partition.
+     *
+     * @return the partition
+     */
     public DefaultPartition getPartition() {
         return fieldPair;
     }
 
+    /**
+     * Gets field selector.
+     *
+     * @return the field selector
+     */
     public ElementSelector getFieldSelector() {
         return fieldSelector;
     }
 
+    /**
+     * Gets nullable.
+     *
+     * @return the nullable
+     */
     public boolean getNullable() {
         return nullable;
     }

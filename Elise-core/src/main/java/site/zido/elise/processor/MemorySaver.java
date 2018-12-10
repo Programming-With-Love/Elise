@@ -19,6 +19,11 @@ public class MemorySaver extends BlankSaver implements Saver {
     private static Logger LOGGER = LoggerFactory.getLogger(MemorySaver.class);
     private Map<Long, List<ResultItem>> cup = new ConcurrentHashMap<>();
 
+    /**
+     * Gets cup.
+     *
+     * @return the cup
+     */
     public Map<Long, List<ResultItem>> getCup() {
         return cup;
     }

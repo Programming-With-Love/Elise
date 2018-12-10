@@ -13,7 +13,7 @@ public interface ProcessorEventListener extends EventListener {
     /**
      * On save success.
      *
-     * @param task        the task
+     * @param task       the task
      * @param resultItem the result items
      */
     default void onSaveSuccess(Task task, ResultItem resultItem) {
@@ -22,7 +22,7 @@ public interface ProcessorEventListener extends EventListener {
     /**
      * On save error.
      *
-     * @param task        the task
+     * @param task       the task
      * @param resultItem the result items
      */
     default void onSaveError(Task task, ResultItem resultItem) {

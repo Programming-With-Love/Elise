@@ -24,9 +24,9 @@ public class DefaultTask implements Task {
     /**
      * Instantiates a new Default task.
      *
-     * @param id        the id
+     * @param id              the id
      * @param responseHandler the extractor
-     * @param config    the config
+     * @param config          the config
      */
     public DefaultTask(Long id, ResponseHandler responseHandler, Config config) {
         this.id = id;

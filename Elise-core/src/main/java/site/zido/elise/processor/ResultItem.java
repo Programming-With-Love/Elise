@@ -36,10 +36,23 @@ public class ResultItem {
         return fields.get(key);
     }
 
+    /**
+     * Gets type.
+     *
+     * @param key the key
+     * @return the type
+     */
     public FieldType getType(String key) {
         return fieldTypeMap.get(key);
     }
 
+    /**
+     * Sets type.
+     *
+     * @param key  the key
+     * @param type the type
+     * @return the type
+     */
     public ResultItem setType(String key, FieldType type) {
         fieldTypeMap.put(key, type);
         return this;
@@ -66,6 +79,14 @@ public class ResultItem {
         return this;
     }
 
+    /**
+     * Put result item.
+     *
+     * @param key   the key
+     * @param value the value
+     * @param type  the type
+     * @return the result item
+     */
     public ResultItem put(String key, List<Object> value, FieldType type) {
         put(key, value);
         setType(key, type);
@@ -73,10 +94,20 @@ public class ResultItem {
     }
 
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }

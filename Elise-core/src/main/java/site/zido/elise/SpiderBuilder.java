@@ -31,6 +31,9 @@ public class SpiderBuilder {
     private int threadNum;
     private Config globalConfig;
 
+    /**
+     * Instantiates a new Spider builder.
+     */
     protected SpiderBuilder() {
         super();
     }
