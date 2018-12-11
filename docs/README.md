@@ -58,7 +58,7 @@ Elise的优势：
 
 暂无稳定版本，你可以使用`1.0.0-SNAPSHOT`做为版本号来预先体验开发版本
 
-> 请注意：不稳定且许多api暂未实现，请持续关注[ROADMAP.md](./docs/ROADMAP.md)开发路线文档，期待第一个版本的诞生，一定会惊艳到你
+> 请注意：不稳定且许多api暂未实现，请持续关注[ROADMAP.md](./ROADMAP.md)开发路线文档，期待第一个版本的诞生，一定会惊艳到你
 
 ## 快速试用
 
@@ -83,7 +83,7 @@ SpiderBuilder.defaults().of(response -> {
 
 依靠高度封装的api,试着写下`response.`你能轻松的知道接下来可以做什么。
 
-或者转到[使用文档](./docs/TUTORIAL.md)，详细的看看Elise的使用吧
+或者转到[使用文档](./TUTORIAL.md)，详细的看看Elise的使用吧
 
 ## 构建指北
 
@@ -97,7 +97,7 @@ Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版
 
 因为作者是使用idea进行开发，所以推荐的开发编辑器为IntelliJ IDEA。
 
-如果你在其他编辑器中开发，请确保你的编辑器中的配置文件/构建文件/缓存等不会出现在提交目录中。这可以在[.gitignore](https://git-scm.com/docs/gitignore)文件中进行设置，也欢迎提交类似的pr
+如果你在其他编辑器中开发，请确保你的编辑器中的配置文件/构建文件/缓存等不会出现在提交目录中。这可以在[.gitignore](https://git-scm.com/gitignore)文件中进行设置，也欢迎提交类似的pr
 
 ## 状态
 
@@ -105,13 +105,13 @@ Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版
 
 目前还没能达到正式版本的状态。不过已经能基本保证正常运行，可以自行clone代码构建运行。
 
-开发路线参考 [ROADMAP.md](./docs/ROADMAP.md)。
+开发路线参考 [ROADMAP.md](./ROADMAP.md)。
 
 ## 贡献
 
-行为准则请参阅[CODE_OF_CONDUCT.md](./docs/CODE_OF_CONDUCT.md)
+行为准则请参阅[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 
-请查看[贡献说明](./docs/CONTRIBUTING.md)。
+请查看[贡献说明](./CONTRIBUTING.md)。
 
 ## 交流反馈
 
