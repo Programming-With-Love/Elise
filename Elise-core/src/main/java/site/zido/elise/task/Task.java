@@ -2,6 +2,7 @@ package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
 import site.zido.elise.select.configurable.ResponseHandler;
+import site.zido.elise.task.model.Model;
 
 /**
  * Task interface
@@ -22,6 +23,8 @@ public interface Task {
      * @return extractors model extractor
      */
     ResponseHandler getHandler();
+
+    Model getModel();
 
     /**
      * Gets config.

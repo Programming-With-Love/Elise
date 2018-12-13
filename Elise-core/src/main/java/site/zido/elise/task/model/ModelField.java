@@ -1,5 +1,7 @@
 package site.zido.elise.task.model;
 
+import site.zido.elise.select.FieldType;
+
 /**
  * The Model field.
  *
@@ -16,6 +18,8 @@ public final class ModelField {
     private String source;
 
     private boolean nullable;
+
+    private FieldType valueType;
 
     private Action action;
 
@@ -59,5 +63,13 @@ public final class ModelField {
 
     public void setExtra(Object[] extra) {
         this.extra = extra;
+    }
+
+    public FieldType getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(FieldType valueType) {
+        this.valueType = valueType;
     }
 }

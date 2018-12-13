@@ -4,9 +4,9 @@ import java.util.List;
 
 public final class Model {
     private String name;
-    private List<Target> targets;
-    private List<Helper> helpers;
-    private Action region;
+    private List<Action> targets;
+    private List<Action> helpers;
+    private Partition partition;
     private List<ModelField> fields;
 
     public String getName() {
@@ -17,28 +17,28 @@ public final class Model {
         this.name = name;
     }
 
-    public List<Target> getTargets() {
+    public List<Action> getTargets() {
         return targets;
     }
 
-    public void setTargets(List<Target> targets) {
+    public void setTargets(List<Action> targets) {
         this.targets = targets;
     }
 
-    public List<Helper> getHelpers() {
+    public List<Action> getHelpers() {
         return helpers;
     }
 
-    public void setHelpers(List<Helper> helpers) {
+    public void setHelpers(List<Action> helpers) {
         this.helpers = helpers;
     }
 
-    public Action getRegion() {
-        return region;
+    public Partition getPartition() {
+        return partition;
     }
 
-    public void setRegion(Action region) {
-        this.region = region;
+    public void setPartition(Partition partition) {
+        this.partition = partition;
     }
 
     public List<ModelField> getFields() {

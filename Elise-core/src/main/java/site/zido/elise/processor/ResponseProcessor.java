@@ -1,6 +1,7 @@
 package site.zido.elise.processor;
 
 import site.zido.elise.http.Response;
+import site.zido.elise.select.SelectorMatchException;
 import site.zido.elise.task.Task;
 
 import java.util.Set;
@@ -18,5 +19,5 @@ public interface ResponseProcessor {
      * @param response response.
      * @return results set
      */
-    Set<String> process(Task task, Response response);
+    Set<String> process(Task task, Response response) throws SelectorMatchException;
 }

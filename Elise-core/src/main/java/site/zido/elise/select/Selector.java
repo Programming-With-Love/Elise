@@ -19,6 +19,8 @@ public interface Selector extends Matcher {
      */
     List<String> select(String text);
 
+    List<Object> selectObj(Object object, Object[] extras) throws SelectorMatchException;
+
     @Override
     default boolean matches(Object target) {
         if (target instanceof String) {
