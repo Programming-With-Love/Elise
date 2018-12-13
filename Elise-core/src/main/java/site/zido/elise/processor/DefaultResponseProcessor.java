@@ -1,29 +1,22 @@
 package site.zido.elise.processor;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.http.Response;
 import site.zido.elise.select.*;
-import site.zido.elise.select.api.impl.DefaultPartition;
-import site.zido.elise.select.api.impl.NotSafeSelectableResponse;
-import site.zido.elise.select.configurable.ResponseHandler;
-import site.zido.elise.select.configurable.Source;
-import site.zido.elise.select.matcher.Matcher;
+import site.zido.elise.task.api.Source;
 import site.zido.elise.task.Task;
 import site.zido.elise.task.model.Action;
 import site.zido.elise.task.model.Model;
+import site.zido.elise.task.model.ModelField;
 import site.zido.elise.task.model.Partition;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -106,11 +99,11 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         ResponseBodyContentHolder holder = new ResponseBodyContentHolder(response, task.getConfig());
         //find helpers
         List<Action> helpers = model.getHelpers();
-        Set<String> urls = new HashSet<>();
+        Set<String> links = new HashSet<>();
         for (Action helper : helpers) {
             List<Object> results = processSelectors(response, holder, helper, null);
             if (!ValidateUtils.isEmpty(results)) {
-                urls.addAll(processLinks(results, response.getUrl()));
+                links.addAll(processLinks(results, response.getUrl()));
             }
         }
         //judge target
@@ -123,11 +116,11 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
             }
         }
         if (!isT) {
-            return urls;
+            return links;
         }
         // match field
-        ResultItem item = new ResultItem();
         Partition partition = model.getPartition();
+        List<ResultItem> resultItems = new LinkedList<>();
         if (partition != null) {
             Action action = partition.getAction();
             List<Object> partitions = null;
@@ -135,90 +128,61 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                 partitions = processSelectors(response, holder, action, null);
             }
             if (!ValidateUtils.isEmpty(partitions)) {
-                List<Object> fields = new LinkedList<>();
                 for (Object part : partitions) {
-                    List<Object> field = processSelectors(response, holder, action, part);
-                    if (field != null) {
-                        fields.add(field);
-                    }
-                }
-            }
-        }
-
-
-        //compile response to selectable response
-        NotSafeSelectableResponse selectableResponse = new NotSafeSelectableResponse();
-        ResponseHandler handler = task.getHandler();
-        handler.onHandle(selectableResponse);
-        List<NotSafeSelectableResponse> metas = selectableResponse.getMetas();
-        byte[] bytes = response.getBody().getBytes();
-        Charset encoding = response.getBody().getEncoding();
-        Set<String> links = new HashSet<>();
-        String html = null;
-        Document document = null;
-        String name = selectableResponse.getName();
-        //select content from response
-        boolean isTarget = false;
-        List<ResultItem> resultItems = new ArrayList<>();
-        for (NotSafeSelectableResponse meta : metas) {
-            Source source = meta.getSource();
-            List<LinkSelector> linkSelectors = meta.getLinkSelectors();
-            if (html == null) {
-                String charset = task.getConfig().get(GlobalConfig.KEY_CHARSET);
-                html = new String(bytes, encoding == null ? Charset.forName(charset) : encoding);
-            }
-            if (document == null) {
-                document = Jsoup.parse(html, response.getUrl());
-            }
-            Set<String> newLinks = extractLinks(linkSelectors, document, response.getUrl());
-            links.addAll(newLinks);
-            if (!isTarget && meta.getMode() == NotSafeSelectableResponse.MODE_TARGET) {
-                // Determine if it is a target link
-                List<Matcher> matchers = meta.getMatchers();
-                if (!ValidateUtils.isEmpty(matchers)) {
-                    //determine from url or code
-                    if (source == Source.CODE) {
-                        if (matchers
-                                .stream()
-                                .anyMatch(matcher ->
-                                        matcher.matches(response.getStatusCode())
-                                )) {
-                            isTarget = true;
+                    for (ModelField field : partition.getFields()) {
+                        List<Action> actions = field.getActions();
+                        List<Object> values = new LinkedList<>();
+                        for (Action fieldAction : actions) {
+                            List<Object> results = processSelectors(response, holder, fieldAction, part);
+                            if (!ValidateUtils.isEmpty(results)) {
+                                values.addAll(results);
+                            }
                         }
-                    } else {
-                        if (matchers
-                                .stream()
-                                .anyMatch(matcher ->
-                                        matcher.matches(response.getUrl())
-                                )) {
-                            isTarget = true;
+                        if (!ValidateUtils.isEmpty(values)) {
+                            values = processField(values, field.getValueType());
+                            if (!ValidateUtils.isEmpty(values)) {
+                                ResultItem item = new ResultItem();
+                                item.put(field.getName(), values, field.getValueType());
+                                resultItems.add(item);
+                            } else if (field.isNullable()) {
+                                resultItems.add(new ResultItem());
+                            }
                         }
                     }
                 }
             }
         }
-        if (!isTarget) {
-            return links;
-        }
-
-        //save field
-        DefaultPartition fieldPair = selectableResponse.getPartition();
-        if (fieldPair == null) {
-            ResultItem resultItem = processModel(metas, document, name);
-            if (resultItem != null) {
-                resultItems.add(resultItem);
-            }
-        } else {
-            ElementSelector regionSelector = fieldPair.getRegionSelector();
-            List<Node> region = regionSelector.select(document);
-            for (Node node : region) {
-                ResultItem resultItem = processModel(metas, (Element) node, name);
-                if (resultItem != null) {
-                    resultItems.add(resultItem);
+        List<ModelField> fields = model.getFields();
+        if (fields != null) {
+            boolean isAddNew = ValidateUtils.isEmpty(resultItems);
+            ResultItem item = null;
+            for (ModelField field : fields) {
+                List<Action> actions = field.getActions();
+                List<Object> values = new LinkedList<>();
+                for (Action action : actions) {
+                    List<Object> results = processSelectors(response, holder, action, null);
+                    if (!ValidateUtils.isEmpty(results)) {
+                        values.addAll(results);
+                    }
+                }
+                if (!ValidateUtils.isEmpty(values)) {
+                    values = processField(values, field.getValueType());
+                    if (!isAddNew && !ValidateUtils.isEmpty(values)) {
+                        for (ResultItem resultItem : resultItems) {
+                            resultItem.put(field.getName(), values, field.getValueType());
+                        }
+                    } else if (!ValidateUtils.isEmpty(values)) {
+                        if (item == null) {
+                            item = new ResultItem();
+                        }
+                        item.put(field.getName(), values, field.getValueType());
+                    }
                 }
             }
+            if (isAddNew && item != null) {
+                resultItems.add(item);
+            }
         }
-
         if (!ValidateUtils.isEmpty(resultItems)) {
             for (ResultItem resultItem : resultItems) {
                 if (resultItem != null) {
@@ -237,44 +201,45 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         return links;
     }
 
-    private ResultItem processModel(List<NotSafeSelectableResponse> metas, Element document, String modelName) {
-        ResultItem item = new ResultItem();
-        for (NotSafeSelectableResponse meta : metas) {
-            String name = meta.getName();
-            Source source = meta.getSource();
-            FieldType fieldType = meta.getValueType();
-            boolean nullable = meta.getNullable();
-            if (meta.getMode() == NotSafeSelectableResponse.MODE_DATA && source == Source.RAW_HTML) {
-                ElementSelector fieldSelector = meta.getFieldSelector();
-                List<Object> field = processField(document, fieldSelector, fieldType);
-                if (!nullable && ValidateUtils.isEmpty(field)) {
-                    return null;
-                }
-                item.put(name, field, fieldType);
-            }
-        }
-        item.setName(modelName);
-        return item;
-    }
 
-    private List<Object> processField(Node node, ElementSelector fieldElementSelector, FieldType fieldType) {
-        List<Node> values = fieldElementSelector.select((Element) node);
+    private List<Object> processField(List<Object> values, FieldType fieldType) {
         if (!values.isEmpty()) {
             switch (fieldType) {
                 case RICH:
-                    return values.stream().map(v -> {
+                    return values.stream().filter(v -> v instanceof Node).map(value -> {
+                        Node v = (Node) value;
                         Fragment fragment = new Fragment();
                         fragment.add(v);
                         return fragment;
                     }).collect(Collectors.toList());
                 case TEXT:
+                    return values.stream().map(v -> {
+                        if (v instanceof Element) {
+                            return ((Element) v).text();
+                        } else {
+                            return v.toString();
+                        }
+                    }).collect(Collectors.toList());
                 case NUMBER:
-                    return values.stream().map(v -> ((Element) v).text()).collect(Collectors.toList());
+                    return values.stream().map(v -> {
+                        String text;
+                        if (v instanceof Element) {
+                            text = ((Element) v).text();
+                        } else {
+                            text = v.toString();
+                        }
+                        if (text.matches("[0-9]")) {
+                            return Integer.parseInt(text);
+                        } else {
+                            return null;
+                        }
+                    }).filter(Objects::nonNull).collect(Collectors.toList());
                 case ORIGIN:
+                    return values;
                 case XML:
                 case HTML:
                 default:
-                    return values.stream().map(Node::toString).collect(Collectors.toList());
+                    return values.stream().filter(node -> node instanceof Node).map(v -> ((Node) v).outerHtml()).collect(Collectors.toList());
             }
         }
         return null;
@@ -295,29 +260,6 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                 return null;
             }
         }).filter(link -> !ValidateUtils.isEmpty(link)).collect(Collectors.toSet());
-    }
-
-    private Set<String> extractLinks(List<LinkSelector> selectors, Document target, String url) {
-        if (!ValidateUtils.isEmpty(selectors)) {
-            Set<String> helps = new HashSet<>();
-            selectors.forEach(linkSelector -> {
-                linkSelector.selectAsStr(target).stream().map(link -> {
-                    link = link.replaceAll("#.*$", "").replace("&amp;", "&");
-                    if (link.startsWith(HTTP_LABEL)) {
-                        //已经是绝对路径的，不再处理
-                        return link;
-                    }
-                    try {
-                        return new URL(new URL(url), link).toString();
-                    } catch (MalformedURLException e) {
-                        LOGGER.error("An error occurred while processing the link,base:[{}],spec:[{}]", url, link);
-                    }
-                    return link;
-                }).forEach(helps::add);
-            });
-            return helps;
-        }
-        return Collections.EMPTY_SET;
     }
 
     @Override

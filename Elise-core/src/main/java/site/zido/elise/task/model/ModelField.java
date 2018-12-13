@@ -2,6 +2,8 @@ package site.zido.elise.task.model;
 
 import site.zido.elise.select.FieldType;
 
+import java.util.List;
+
 /**
  * The Model field.
  *
@@ -12,18 +14,12 @@ public final class ModelField {
      * field name
      */
     private String name;
-    /**
-     * where to get it from
-     */
-    private String source;
 
     private boolean nullable;
 
     private FieldType valueType;
 
-    private Action action;
-
-    private Object[] extra;
+    private List<Action> actions;
 
     public String getName() {
         return name;
@@ -31,14 +27,6 @@ public final class ModelField {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 
     public boolean isNullable() {
@@ -49,20 +37,12 @@ public final class ModelField {
         this.nullable = nullable;
     }
 
-    public Action getAction() {
-        return action;
+    public List<Action> getActions() {
+        return actions;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
-    }
-
-    public Object[] getExtra() {
-        return extra;
-    }
-
-    public void setExtra(Object[] extra) {
-        this.extra = extra;
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
     }
 
     public FieldType getValueType() {
