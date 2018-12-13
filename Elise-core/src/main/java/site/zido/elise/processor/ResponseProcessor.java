@@ -1,6 +1,7 @@
 package site.zido.elise.processor;
 
 import site.zido.elise.http.Response;
+import site.zido.elise.select.SelectFactory;
 import site.zido.elise.task.Task;
 
 import java.util.Set;
@@ -19,4 +20,6 @@ public interface ResponseProcessor {
      * @return results set
      */
     Set<String> process(Task task, Response response);
+
+    void registerSelector(String token, SelectFactory factory);
 }

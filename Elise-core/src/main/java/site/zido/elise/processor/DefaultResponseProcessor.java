@@ -8,16 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.http.Response;
-import site.zido.elise.select.ElementSelector;
-import site.zido.elise.select.FieldType;
-import site.zido.elise.select.Fragment;
-import site.zido.elise.select.LinkSelector;
+import site.zido.elise.select.*;
 import site.zido.elise.select.api.impl.DefaultPartition;
 import site.zido.elise.select.api.impl.NotSafeSelectableResponse;
 import site.zido.elise.select.configurable.ResponseHandler;
 import site.zido.elise.select.configurable.Source;
 import site.zido.elise.select.matcher.Matcher;
 import site.zido.elise.task.Task;
+import site.zido.elise.task.model.Action;
+import site.zido.elise.task.model.Model;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.ValidateUtils;
 
@@ -37,6 +36,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
     private static final String HTTP_LABEL = "http";
     private Set<ProcessorEventListener> listeners = new HashSet<>();
     private Saver saver;
+    private Map<String, SelectFactory> selectors = new HashMap<>();
 
     /**
      * Instantiates a new Default response handler.
@@ -49,13 +49,42 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
 
     @Override
     public Set<String> process(Task task, final Response response) {
+
+        Model model = task.getModel();
+        List<Action> target = model.getTarget();
+        Charset encoding = response.getBody().getEncoding();
+        String charset = task.getConfig().get(GlobalConfig.KEY_CHARSET);
+        encoding = encoding == null ? Charset.forName(charset) : encoding;
+        ResponseHolder responseHolder = ResponseHolder.create(response.getUrl(), response.getBody().getBytes(), encoding);
+
+        for (Action action : target) {
+            String token = action.getToken();
+            SelectFactory selector = selectors.get(token);
+            if (selector == null) {
+                continue;
+            }
+            String source = action.getSource();
+            switch (source) {
+                case Source.CODE_:
+                    selector.select(response.getStatusCode(), action.getExtra());
+                    break;
+                case Source.HTML_:
+                    selector.selectElements(responseHolder.getDocument(), action.getExtra());
+                    break;
+                case Source.URL_:
+                    selector.select(response.getUrl(), action.getExtra());
+                    break;
+            }
+        }
+
+
         //compile response to selectable response
         NotSafeSelectableResponse selectableResponse = new NotSafeSelectableResponse();
         ResponseHandler handler = task.getHandler();
         handler.onHandle(selectableResponse);
         List<NotSafeSelectableResponse> metas = selectableResponse.getMetas();
         byte[] bytes = response.getBody().getBytes();
-        Charset encoding = response.getBody().getEncoding();
+
         Set<String> links = new HashSet<>();
         String html = null;
         Document document = null;
@@ -67,7 +96,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
             Source source = meta.getSource();
             List<LinkSelector> linkSelectors = meta.getLinkSelectors();
             if (html == null) {
-                String charset = task.getConfig().get(GlobalConfig.KEY_CHARSET);
+//                String charset = task.getConfig().get(GlobalConfig.KEY_CHARSET);
                 html = new String(bytes, encoding == null ? Charset.forName(charset) : encoding);
             }
             if (document == null) {
@@ -138,6 +167,11 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
             LOGGER.info("response not find anything, response {}", response.getUrl());
         }
         return links;
+    }
+
+    @Override
+    public void registerSelector(String token, SelectFactory factory) {
+        this.selectors.put(token, factory);
     }
 
     private ResultItem processModel(List<NotSafeSelectableResponse> metas, Element document, String modelName) {

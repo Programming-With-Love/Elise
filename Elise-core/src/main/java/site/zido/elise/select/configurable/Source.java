@@ -25,5 +25,11 @@ public enum Source {
     /**
      * from status code
      */
-    CODE,
+    CODE;
+
+    public static final String REGION_ = "region";
+    public static final String HTML_ = "html";
+    public static final String URL_ = "url";
+    public static final String TEXT_ = "text";
+    public static final String CODE_ = "code";
 }

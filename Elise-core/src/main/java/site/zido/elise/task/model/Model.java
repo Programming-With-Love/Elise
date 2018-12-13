@@ -4,8 +4,8 @@ import java.util.List;
 
 public final class Model {
     private String name;
-    private List<Target> targets;
-    private List<Helper> helpers;
+    private List<Action> targets;
+    private List<Action> helpers;
     private Action region;
     private List<ModelField> fields;
 
@@ -15,22 +15,6 @@ public final class Model {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Target> getTargets() {
-        return targets;
-    }
-
-    public void setTargets(List<Target> targets) {
-        this.targets = targets;
-    }
-
-    public List<Helper> getHelpers() {
-        return helpers;
-    }
-
-    public void setHelpers(List<Helper> helpers) {
-        this.helpers = helpers;
     }
 
     public Action getRegion() {
@@ -47,5 +31,21 @@ public final class Model {
 
     public void setFields(List<ModelField> fields) {
         this.fields = fields;
+    }
+
+    public List<Action> getTarget() {
+        return targets;
+    }
+
+    public void setTargets(List<Action> targets) {
+        this.targets = targets;
+    }
+
+    public List<Action> getHelpers() {
+        return helpers;
+    }
+
+    public void setHelpers(List<Action> helpers) {
+        this.helpers = helpers;
     }
 }
