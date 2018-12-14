@@ -1,31 +1,25 @@
 package site.zido.elise.select;
 
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+import site.zido.elise.processor.ResponseContextHolder;
 import site.zido.elise.select.configurable.Type;
+import site.zido.elise.task.model.Action;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * link selector
  *
  * @author zido
  */
-public class LinkSelector implements ElementSelector, Selector {
+public class LinkSelector implements Selector {
     private static final String EMPTY_URL_PATTERN = "https?://.*";
-    private transient Selector targetSelector;
-    private transient ElementSelector regionSelector;
-    private List<LinkProperty> linkProperties = new ArrayList<>();
-    private String target;
-    private Type type;
-    private String sourceRegion;
-    private transient AtomicBoolean needCompile = new AtomicBoolean(true);
-
     /**
      * Instantiates a new Link selector.
      *
@@ -121,8 +115,37 @@ public class LinkSelector implements ElementSelector, Selector {
     }
 
     @Override
-    public List<String> select(String text) {
-        compile();
-        return targetSelector.select(text);
+    public List<Object> selectObj(Object object, Object[] extras) throws SelectorMatchException {
+        if(!(object instanceof Document)){
+            return null;
+        }
+
+    }
+
+    @Override
+    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+        Document document = response.getDocument();
+        Object[] extras = action.getExtras();
+
+        for (LinkProperty linkProperty : linkProperties) {
+            if (!(region instanceof Element)) {
+                continue;
+            }
+            Elements elements = ((Element) region).select(linkProperty.getTag());
+            if (elements.isEmpty()) {
+                continue;
+            }
+            for (Element linkElement : elements) {
+                String href;
+                if (!ValidateUtils.isEmpty(linkElement.baseUri())) {
+                    href = linkElement.attr("abs:" + linkProperty.getAttr());
+                } else {
+                    href = linkElement.attr(linkProperty.getAttr());
+                }
+                if (!targetSelector.select(href).isEmpty()) {
+                    results.add(href);
+                }
+            }
+        }
     }
 }

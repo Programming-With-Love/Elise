@@ -1,7 +1,7 @@
 package site.zido.elise.select;
 
-import site.zido.elise.select.matcher.Matcher;
-import site.zido.elise.utils.ValidateUtils;
+import site.zido.elise.processor.ResponseContextHolder;
+import site.zido.elise.task.model.Action;
 
 import java.util.List;
 
@@ -10,22 +10,6 @@ import java.util.List;
  *
  * @author zido
  */
-public interface Selector extends Matcher {
-    /**
-     * Select list.
-     *
-     * @param text the text
-     * @return the list
-     */
-    List<String> select(String text);
-
-    List<Object> selectObj(Object object, Object[] extras) throws SelectorMatchException;
-
-    @Override
-    default boolean matches(Object target) {
-        if (target instanceof String) {
-            return !ValidateUtils.isEmpty(select((String) target));
-        }
-        return false;
-    }
+public interface Selector {
+    List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException;
 }
