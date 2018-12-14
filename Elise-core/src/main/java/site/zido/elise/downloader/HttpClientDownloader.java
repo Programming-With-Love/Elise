@@ -75,9 +75,7 @@ public class HttpClientDownloader implements Downloader {
     }
 
     private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse, HttpClientContext context) {
-        String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         DefaultResponse response = new DefaultResponse();
-        response.setContentType(Http.ContentType.parse(contentType));
         response.setBody(new HttpClientBodyWrapper(httpResponse.getEntity()));
         response.setUrl(request.getUrl());
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());

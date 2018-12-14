@@ -6,28 +6,29 @@ import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.http.Body;
 import site.zido.elise.http.Response;
+import site.zido.elise.http.impl.DefaultResponse;
 
 import java.nio.charset.Charset;
 
-public class ResponseBodyContentHolder {
+public class ResponseContextHolder extends DefaultResponse {
     private String html;
-    private String url;
     private Document document;
-    private byte[] bytes;
     private Charset charset;
 
-    public ResponseBodyContentHolder(Response response, Config config) {
+    public ResponseContextHolder(Response response, Config config) {
+        super(response);
         Body body = response.getBody();
-        this.bytes = body.getBytes();
         Charset encoding = body.getEncoding();
         String configCharset = config.get(GlobalConfig.KEY_CHARSET);
         this.charset = encoding == null ? Charset.forName(configCharset) : encoding;
-        this.url = response.getUrl();
     }
 
     public String getHtml() {
+        if (getBody() == null) {
+            return "";
+        }
         if (html == null) {
-            html = new String(bytes, charset);
+            html = new String(getBody().getBytes(), charset);
         }
         return html;
     }
@@ -37,10 +38,6 @@ public class ResponseBodyContentHolder {
             document = Jsoup.parse(html);
         }
         return document;
-    }
-
-    public byte[] getBytes() {
-        return bytes;
     }
 
 }
