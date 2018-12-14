@@ -1,8 +1,15 @@
-package site.zido.elise.select.matcher;
+package site.zido.elise.select;
 
+import site.zido.elise.processor.ResponseContextHolder;
+import site.zido.elise.select.Selector;
+import site.zido.elise.select.SelectorMatchException;
+import site.zido.elise.task.api.Source;
+import site.zido.elise.task.model.Action;
+import site.zido.elise.utils.Safe;
 import site.zido.elise.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -11,40 +18,63 @@ import java.util.regex.Pattern;
  *
  * @author zido
  */
-public class NumberExpressMatcher implements Matcher {
+public class NumberMatcherSelector implements Selector {
 
     private static final Pattern CHECK_PATTERN = Pattern.compile("^[0-9,<-]*$");
     private static final char DEFAULT_CHAR_SEP = '<';
     private static final String PATTERN_TEMPLATE = "^[0-9,%s-]*$";
-    private List<Region> regions;
-    private List<Integer> rows;
 
     /**
-     * Instantiates a new Number express matcher.
+     * Is support boolean.
      *
      * @param express the express
+     * @return the boolean
      */
-    public NumberExpressMatcher(String express) {
-        this(express, DEFAULT_CHAR_SEP);
+    public static boolean isSupport(String express) {
+        return isSupport(express, DEFAULT_CHAR_SEP);
     }
 
     /**
-     * Instantiates a new Number express matcher.
+     * Is support boolean.
      *
      * @param express the express
      * @param sep     the sep
+     * @return the boolean
      */
-    public NumberExpressMatcher(String express, char sep) {
+    public static boolean isSupport(String express, char sep) {
         if (!StringUtils.hasLength(express)) {
-            throw new RuntimeException("express can't be null or empty");
+            return false;
         }
         if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
-            throw new RuntimeException("express only can contains [0-9," + sep + "-]");
+            return false;
         } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
-            throw new RuntimeException("express only can contains [0-9," + sep + "-]");
+            return false;
         }
-        regions = new ArrayList<>();
-        rows = new ArrayList<>();
+        return true;
+    }
+
+    @Override
+    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+        Object[] extras = action.getExtras();
+        String express = Safe.getStrFromArray(extras, 0);
+        if ("".equals(express)) {
+            throw new SelectorMatchException(String.format("the action: [%s] need a string express like [200<300] means [ 200 <= number <= 300] but get %s", action.getToken(), extras[0]));
+        }
+        String source = action.getSource();
+        Integer target;
+        if (Source.matchSource(source, Source.CODE)) {
+            target = response.getStatusCode();
+        } else {
+            throw new SelectorMatchException("match number just support response code");
+        }
+        char sep = Safe.getCharFromArray(extras, 0, '<');
+        if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
+            throw new SelectorMatchException("express only can contains [0-9," + sep + "-]");
+        } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
+            throw new SelectorMatchException("express only can contains [0-9," + sep + "-]");
+        }
+        List<Region> regions = new ArrayList<>();
+        List<Integer> rows = new ArrayList<>();
         String[] segments = express.split(",");
         for (String segment : segments) {
             if (segment.indexOf(sep) >= 0) {
@@ -92,53 +122,17 @@ public class NumberExpressMatcher implements Matcher {
                 region.max = region.max ^ region.min;
             }
         }
-    }
-
-    /**
-     * Is support boolean.
-     *
-     * @param express the express
-     * @return the boolean
-     */
-    public static boolean isSupport(String express) {
-        return isSupport(express, DEFAULT_CHAR_SEP);
-    }
-
-    /**
-     * Is support boolean.
-     *
-     * @param express the express
-     * @param sep     the sep
-     * @return the boolean
-     */
-    public static boolean isSupport(String express, char sep) {
-        if (!StringUtils.hasLength(express)) {
-            return false;
-        }
-        if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
-            return false;
-        } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean matches(Object target) {
-        if (!(target instanceof java.lang.Number)) {
-            return false;
-        }
         for (Integer row : rows) {
             if (row.equals(target)) {
-                return true;
+                return Collections.singletonList(target);
             }
         }
         for (Region region : regions) {
-            if (region.min <= (Integer) target && region.max >= (Integer) target) {
-                return true;
+            if (region.min <= target && region.max >= target) {
+                return Collections.singletonList(target);
             }
         }
-        return false;
+        return null;
     }
 
     private static class Region {

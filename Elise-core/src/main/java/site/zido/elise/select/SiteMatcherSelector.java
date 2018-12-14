@@ -1,11 +1,19 @@
-package site.zido.elise.select.matcher;
+package site.zido.elise.select;
+
+import site.zido.elise.processor.ResponseContextHolder;
+import site.zido.elise.task.api.Source;
+import site.zido.elise.task.model.Action;
+import site.zido.elise.utils.Safe;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The type Site matcher.
  *
  * @author zido
  */
-public class SiteMatcher implements Matcher {
+public class SiteMatcherSelector implements Selector {
     /**
      * a character can match any single character
      */
@@ -14,26 +22,6 @@ public class SiteMatcher implements Matcher {
      * a character can match any number of characters
      */
     private static final char MORE_MATCH_CHAR = '*';
-    private char[] express;
-
-    /**
-     * Instantiates a new Site matcher.
-     *
-     * @param express the express
-     */
-    public SiteMatcher(String express) {
-        this.express = express.toCharArray();
-    }
-
-    @Override
-    public boolean matches(Object target) {
-        if (!(target instanceof String)) {
-            return false;
-        }
-        char[] origin = ((String) target).toCharArray();
-        return match(origin, express, 0, 0);
-    }
-
     private boolean match(char[] origin, char[] express, int originIndex, int expressIndex) {
         if (originIndex == origin.length && expressIndex == express.length) {
             return true;
@@ -54,5 +42,25 @@ public class SiteMatcher implements Matcher {
             return match(origin, express, originIndex + 1, expressIndex) || match(origin, express, originIndex, expressIndex + 1);
         }
         return false;
+    }
+
+    @Override
+    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+        Object[] extras = action.getExtras();
+        String express = Safe.getStrFromArray(extras, 0);
+        if ("".equals(express)) {
+            throw new SelectorMatchException(String.format("the action: [%s] need a string express like [site.zido.*] but get %s", action.getToken(), extras[0]));
+        }
+        String source = action.getSource();
+        String target;
+        if (Source.matchSource(source, Source.URL)) {
+            target = response.getUrl();
+        } else {
+            throw new SelectorMatchException("match site just support response url");
+        }
+        if (match(target.toCharArray(), express.toCharArray(), 0, 0)) {
+            return Collections.singletonList(target);
+        }
+        return null;
     }
 }

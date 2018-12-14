@@ -6,7 +6,7 @@ import site.zido.elise.select.LinkSelector;
 import site.zido.elise.task.api.*;
 import site.zido.elise.task.api.Source;
 import site.zido.elise.select.matcher.Matcher;
-import site.zido.elise.select.matcher.NumberExpressMatcher;
+import site.zido.elise.select.NumberMatcherSelector;
 import site.zido.elise.utils.Asserts;
 
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public class NotSafeSelectableResponse implements SelectableResponse,
     }
 
     @Override
-    public TargetDescriptor statusCode(NumberExpressMatcher matcher) {
+    public TargetDescriptor statusCode(NumberMatcherSelector matcher) {
         Asserts.notNull(matcher, "can't match by null");
         return matchUrl(matcher);
     }

@@ -16,7 +16,7 @@ import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.ListenableResponseProcessor;
 import site.zido.elise.processor.ResponseProcessor;
 import site.zido.elise.task.api.ResponseHandler;
-import site.zido.elise.select.matcher.NumberExpressMatcher;
+import site.zido.elise.select.NumberMatcherSelector;
 import site.zido.elise.task.DefaultTask;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.EventUtils;
@@ -166,8 +166,8 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     protected Response onDownload(Task task, Request request) {
         final Response response = downloaderFactory.create(task).download(task, request);
         String successCode = task.getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
-        NumberExpressMatcher matcher;
-        matcher = new NumberExpressMatcher(successCode);
+        NumberMatcherSelector matcher;
+        matcher = new NumberMatcherSelector(successCode);
         if (matcher.matches(response.getStatusCode())) {
             EventUtils.mustNotifyListeners(listeners, listener -> {
                 if (listener instanceof TaskEventListener) {

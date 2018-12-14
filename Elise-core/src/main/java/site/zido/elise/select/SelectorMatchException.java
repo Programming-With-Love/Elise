@@ -6,4 +6,8 @@ public class SelectorMatchException extends Exception {
     public SelectorMatchException(String msg) {
         super(msg);
     }
+
+    public SelectorMatchException(Throwable e) {
+        super(e);
+    }
 }

@@ -35,4 +35,12 @@ public class Safe {
         }
         return defaultValue;
     }
+
+    public static char getCharFromArray(Object[] objs, int index, char defaultValue) {
+        Object obj = getFromArray(objs, index);
+        if (obj instanceof Character) {
+            return (char) obj;
+        }
+        return defaultValue;
+    }
 }
