@@ -5,8 +5,10 @@ import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.http.Response;
-import site.zido.elise.select.*;
-import site.zido.elise.task.api.Source;
+import site.zido.elise.select.FieldType;
+import site.zido.elise.select.Fragment;
+import site.zido.elise.select.Selector;
+import site.zido.elise.select.SelectorMatchException;
 import site.zido.elise.task.Task;
 import site.zido.elise.task.model.Action;
 import site.zido.elise.task.model.Model;
@@ -41,40 +43,40 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         this.saver = saver;
     }
 
-    private List<Object> processSelectors(final Response response,
-                                          final ResponseBodyContentHolder holder,
+    private List<Object> processSelectors(final ResponseContextHolder holder,
                                           final Action action,
                                           Object partition) throws SelectorMatchException {
-        List<Object> partitions = new ArrayList<>();
+        List<Object> partitions;
         Selector selector = selectors.get(action.getToken());
         if (selector != null) {
-            switch (action.getSource()) {
-                case Source.URL:
-                    partitions = selector.selectObj(response.getUrl(), action.getExtras());
-                    break;
-                case Source.HTML:
-                    partitions = selector.selectObj(holder.getDocument(), action.getExtras());
-                    break;
-                case Source.BODY:
-                    partitions = selector.selectObj(response.getBody(), action.getExtras());
-                    break;
-                case Source.CODE:
-                    partitions = selector.selectObj(response.getStatusCode(), action.getExtras());
-                    break;
-                case Source.TEXT:
-                    partitions = selector.selectObj(holder.getHtml(), action.getExtras());
-                    break;
-                case Source.PARTITION:
-                    if (partition == null) {
-                        return null;
-                    }
-                    List<Object> result = selector.selectObj(partition, action.getExtras());
-                    if (!ValidateUtils.isEmpty(result)) {
-                        partitions.addAll(result);
-                    }
-                    break;
-                default:
-            }
+            partitions = selector.selectObj(holder, partition, action);
+//            switch (action.getSource()) {
+//                case Source.URL:
+//                    partitions = selector.selectObj(holder, action.getExtras());
+//                    break;
+//                case Source.HTML:
+//                    partitions = selector.selectObj((), action.getExtras());
+//                    break;
+//                case Source.BODY:
+//                    partitions = selector.selectObj(response.getUrl(), response.getBody(), action.getExtras());
+//                    break;
+//                case Source.CODE:
+//                    partitions = selector.selectObj(response.getUrl(), response.getStatusCode(), action.getExtras());
+//                    break;
+//                case Source.TEXT:
+//                    partitions = selector.selectObj(holder.getHtml(), action.getExtras());
+//                    break;
+//                case Source.PARTITION:
+//                    if (partition == null) {
+//                        return null;
+//                    }
+//                    List<Object> result = selector.selectObj(partition, action.getExtras());
+//                    if (!ValidateUtils.isEmpty(result)) {
+//                        partitions.addAll(result);
+//                    }
+//                    break;
+//                default:
+//            }
             if (ValidateUtils.isEmpty(partitions)) {
                 return null;
             }
@@ -82,7 +84,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
             List<Object> selectResults = new LinkedList<>();
             for (Object o : partitions) {
                 for (Action child : children) {
-                    List<Object> results = processSelectors(response, holder, child, o);
+                    List<Object> results = processSelectors(holder, child, o);
                     if (!ValidateUtils.isEmpty(results)) {
                         selectResults.addAll(results);
                     }
@@ -96,26 +98,26 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
     @Override
     public Set<String> process(Task task, final Response response) throws SelectorMatchException {
         Model model = task.getModel();
-        ResponseBodyContentHolder holder = new ResponseBodyContentHolder(response, task.getConfig());
+        ResponseContextHolder holder = new ResponseContextHolder(response, task.getConfig());
         //find helpers
         List<Action> helpers = model.getHelpers();
         Set<String> links = new HashSet<>();
         for (Action helper : helpers) {
-            List<Object> results = processSelectors(response, holder, helper, null);
+            List<Object> results = processSelectors(holder, helper, null);
             if (!ValidateUtils.isEmpty(results)) {
                 links.addAll(processLinks(results, response.getUrl()));
             }
         }
         //judge target
         List<Action> targets = model.getTargets();
-        boolean isT = false;
+        boolean isTarget = false;
         for (Action target : targets) {
-            if (!ValidateUtils.isEmpty(processSelectors(response, holder, target, null))) {
-                isT = true;
+            if (!ValidateUtils.isEmpty(processSelectors(holder, target, null))) {
+                isTarget = true;
                 break;
             }
         }
-        if (!isT) {
+        if (!isTarget) {
             return links;
         }
         // match field
@@ -125,7 +127,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
             Action action = partition.getAction();
             List<Object> partitions = null;
             if (action != null) {
-                partitions = processSelectors(response, holder, action, null);
+                partitions = processSelectors(holder, action, null);
             }
             if (!ValidateUtils.isEmpty(partitions)) {
                 for (Object part : partitions) {
@@ -133,7 +135,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                         List<Action> actions = field.getActions();
                         List<Object> values = new LinkedList<>();
                         for (Action fieldAction : actions) {
-                            List<Object> results = processSelectors(response, holder, fieldAction, part);
+                            List<Object> results = processSelectors(holder, fieldAction, part);
                             if (!ValidateUtils.isEmpty(results)) {
                                 values.addAll(results);
                             }
@@ -160,7 +162,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                 List<Action> actions = field.getActions();
                 List<Object> values = new LinkedList<>();
                 for (Action action : actions) {
-                    List<Object> results = processSelectors(response, holder, action, null);
+                    List<Object> results = processSelectors(holder, action, null);
                     if (!ValidateUtils.isEmpty(results)) {
                         values.addAll(results);
                     }
