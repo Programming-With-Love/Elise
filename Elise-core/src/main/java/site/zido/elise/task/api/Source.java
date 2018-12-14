@@ -15,4 +15,19 @@ public class Source {
     public final static String HTML = "html";
     public final static String TEXT = "text";
     public final static String PARTITION = "partition";
+
+    public static boolean matchSource(String target, String... source) {
+        if (source.length == 0) {
+            return false;
+        }
+        if (target == null || "".equals(target)) {
+            return false;
+        }
+        for (String s : source) {
+            if (s.equalsIgnoreCase(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

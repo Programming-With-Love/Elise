@@ -1,17 +1,15 @@
 package site.zido.elise.select;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.select.Elements;
 import site.zido.elise.processor.ResponseContextHolder;
-import site.zido.elise.select.configurable.Type;
+import site.zido.elise.task.api.Source;
 import site.zido.elise.task.model.Action;
+import site.zido.elise.utils.Safe;
 import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * link selector
@@ -19,133 +17,55 @@ import java.util.List;
  * @author zido
  */
 public class LinkSelector implements Selector {
-    private static final String EMPTY_URL_PATTERN = "https?://.*";
-    /**
-     * Instantiates a new Link selector.
-     *
-     * @param target the target
-     */
-    public LinkSelector(String target) {
-        this(target, null, null);
-    }
-
-    /**
-     * Instantiates a new Link selector.
-     *
-     * @param target       the target
-     * @param type         the type
-     * @param sourceRegion the source region
-     */
-    public LinkSelector(String target, Type type, String sourceRegion) {
-        this.target = target;
-        this.type = type;
-        this.sourceRegion = sourceRegion;
-        linkProperties.add(new LinkProperty("a", "href"));
-    }
-
-    private void compile() {
-        if (!needCompile.compareAndSet(true, false)) {
-            return;
-        }
-        String pattern = target;
-        if (pattern == null) {
-            pattern = EMPTY_URL_PATTERN;
-        }
-        if (type == null) {
-            type = Type.REGEX;
-        }
-
-        switch (type) {
-            case REGEX:
-            default:
-                this.targetSelector = new RegexSelector(pattern);
-        }
-        if (sourceRegion != null) {
-            this.regionSelector = new XpathSelector(sourceRegion);
-        } else {
-            this.regionSelector = new NullElementSelector();
-        }
-    }
-
-    /**
-     * Gets link properties.
-     *
-     * @return the link properties
-     */
-    public List<LinkProperty> getLinkProperties() {
-        return linkProperties;
-    }
-
     @Override
-    public List<Node> select(Element element) {
-        throw new UnsupportedOperationException("can't select link as node");
-    }
-
-    @Override
-    public List<String> selectAsStr(Element element) {
-        compile();
-        List<Node> regions = regionSelector.select(element);
-        if (ValidateUtils.isEmpty(regions)) {
-            return Collections.emptyList();
+    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+        Object[] extras = action.getExtras();
+        String express = Safe.getStrFromArray(extras, 0);
+        if ("".equals(express)) {
+            throw new SelectorMatchException(String.format("the action: [%s] need a string express but get %s", action.getToken(), extras[0]));
         }
-        List<String> results = new ArrayList<>();
-        for (Node region : regions) {
-            for (LinkProperty linkProperty : linkProperties) {
-                if (!(region instanceof Element)) {
-                    continue;
-                }
-                Elements elements = ((Element) region).select(linkProperty.getTag());
-                if (elements.isEmpty()) {
-                    continue;
-                }
-                for (Element linkElement : elements) {
-                    String href;
-                    if (!ValidateUtils.isEmpty(linkElement.baseUri())) {
-                        href = linkElement.attr("abs:" + linkProperty.getAttr());
-                    } else {
-                        href = linkElement.attr(linkProperty.getAttr());
-                    }
-                    if (!targetSelector.select(href).isEmpty()) {
-                        results.add(href);
+        Pattern pattern = Pattern.compile(express);
+        Document document = null;
+        if (Source.matchSource(action.getSource(), Source.PARTITION)) {
+            List<Object> results = new ArrayList<>();
+            if (partition instanceof Document) {
+                document = (Document) partition;
+            } else if (partition instanceof List) {
+                for (Object str : (List) partition) {
+                    if (str instanceof String) {
+                        if (pattern.matcher((CharSequence) str).find()) {
+                            results.add(str);
+                        }
                     }
                 }
+                return results;
+            }
+        } else if (Source.matchSource(action.getSource(),Source.BODY,Source.HTML)) {
+            document = response.getDocument();
+        }
+        if (document == null) {
+            return null;
+        }
+        List<Object> results = new ArrayList<>();
+        for (int i = 1; i < extras.length; i++) {
+            if (!(extras[i] instanceof String)) {
+                throw new SelectorMatchException(String.format("the action: [%s] need param like [a:href] but get %s", action.getToken(), extras[i]));
+            }
+            String linkProp = (String) extras[i];
+            String[] split = linkProp.split(":");
+            if (split.length != 2) {
+                throw new SelectorMatchException(String.format("the action: [%s] need param like [a:href] but get %s", action.getToken(), linkProp));
+            }
+            String href;
+            if (!ValidateUtils.isEmpty(response.getUrl())) {
+                href = document.attr("abs:" + split[0]);
+            } else {
+                href = document.attr(split[1]);
+            }
+            if (pattern.matcher(href).find()) {
+                results.add(href);
             }
         }
         return results;
-    }
-
-    @Override
-    public List<Object> selectObj(Object object, Object[] extras) throws SelectorMatchException {
-        if(!(object instanceof Document)){
-            return null;
-        }
-
-    }
-
-    @Override
-    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
-        Document document = response.getDocument();
-        Object[] extras = action.getExtras();
-
-        for (LinkProperty linkProperty : linkProperties) {
-            if (!(region instanceof Element)) {
-                continue;
-            }
-            Elements elements = ((Element) region).select(linkProperty.getTag());
-            if (elements.isEmpty()) {
-                continue;
-            }
-            for (Element linkElement : elements) {
-                String href;
-                if (!ValidateUtils.isEmpty(linkElement.baseUri())) {
-                    href = linkElement.attr("abs:" + linkProperty.getAttr());
-                } else {
-                    href = linkElement.attr(linkProperty.getAttr());
-                }
-                if (!targetSelector.select(href).isEmpty()) {
-                    results.add(href);
-                }
-            }
-        }
     }
 }
