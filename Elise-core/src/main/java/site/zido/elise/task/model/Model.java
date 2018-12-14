@@ -6,7 +6,7 @@ public final class Model {
     private String name;
     private List<Action> targets;
     private List<Action> helpers;
-    private Action region;
+    private Partition partition;
     private List<ModelField> fields;
 
     public String getName() {
@@ -17,23 +17,7 @@ public final class Model {
         this.name = name;
     }
 
-    public Action getRegion() {
-        return region;
-    }
-
-    public void setRegion(Action region) {
-        this.region = region;
-    }
-
-    public List<ModelField> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<ModelField> fields) {
-        this.fields = fields;
-    }
-
-    public List<Action> getTarget() {
+    public List<Action> getTargets() {
         return targets;
     }
 
@@ -47,5 +31,21 @@ public final class Model {
 
     public void setHelpers(List<Action> helpers) {
         this.helpers = helpers;
+    }
+
+    public Partition getPartition() {
+        return partition;
+    }
+
+    public void setPartition(Partition partition) {
+        this.partition = partition;
+    }
+
+    public List<ModelField> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<ModelField> fields) {
+        this.fields = fields;
     }
 }

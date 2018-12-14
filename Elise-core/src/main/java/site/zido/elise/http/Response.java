@@ -1,7 +1,5 @@
 package site.zido.elise.http;
 
-import site.zido.elise.select.api.SelectableResponse;
-
 import java.util.List;
 
 /**

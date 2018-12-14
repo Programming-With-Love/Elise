@@ -1,5 +1,9 @@
 package site.zido.elise.task.model;
 
+import site.zido.elise.select.FieldType;
+
+import java.util.List;
+
 /**
  * The Model field.
  *
@@ -13,7 +17,9 @@ public final class ModelField {
 
     private boolean nullable;
 
-    private Action action;
+    private FieldType valueType;
+
+    private List<Action> actions;
 
     public String getName() {
         return name;
@@ -31,11 +37,19 @@ public final class ModelField {
         this.nullable = nullable;
     }
 
-    public Action getAction() {
-        return action;
+    public List<Action> getActions() {
+        return actions;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    public FieldType getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(FieldType valueType) {
+        this.valueType = valueType;
     }
 }

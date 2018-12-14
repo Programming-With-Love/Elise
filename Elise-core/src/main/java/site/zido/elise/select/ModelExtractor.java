@@ -2,7 +2,7 @@ package site.zido.elise.select;
 
 import site.zido.elise.processor.ProcessorEventListener;
 import site.zido.elise.processor.Saver;
-import site.zido.elise.select.api.SelectableResponse;
+import site.zido.elise.task.api.SelectableResponse;
 
 import java.util.List;
 import java.util.Set;

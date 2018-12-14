@@ -9,7 +9,7 @@ import site.zido.elise.scheduler.NoDepuplicationProcessor;
 import site.zido.elise.select.CssSelector;
 import site.zido.elise.select.LinkSelector;
 import site.zido.elise.select.RegexSelector;
-import site.zido.elise.select.api.ElementSelectable;
+import site.zido.elise.task.api.ElementSelectable;
 
 import java.util.List;
 import java.util.Map;

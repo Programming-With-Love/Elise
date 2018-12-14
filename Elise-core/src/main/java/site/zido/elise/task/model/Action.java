@@ -3,15 +3,10 @@ package site.zido.elise.task.model;
 import java.util.List;
 
 public class Action {
-    private String source;
     private String token;
-    private Object[] extra;
-    private List<Action> nextActions;
-
-    public Action(String token, Object[] extra) {
-        this.token = token;
-        this.extra = extra;
-    }
+    private Object[] extras;
+    private String source;
+    private List<Action> children;
 
     public String getToken() {
         return token;
@@ -21,12 +16,20 @@ public class Action {
         this.token = token;
     }
 
-    public Object[] getExtra() {
-        return extra;
+    public Object[] getExtras() {
+        return extras;
     }
 
-    public void setExtra(Object[] extra) {
-        this.extra = extra;
+    public void setExtras(Object[] extras) {
+        this.extras = extras;
+    }
+
+    public List<Action> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Action> children) {
+        this.children = children;
     }
 
     public String getSource() {
@@ -35,13 +38,5 @@ public class Action {
 
     public void setSource(String source) {
         this.source = source;
-    }
-
-    public List<Action> getNextActions() {
-        return nextActions;
-    }
-
-    public void setNextActions(List<Action> nextActions) {
-        this.nextActions = nextActions;
     }
 }

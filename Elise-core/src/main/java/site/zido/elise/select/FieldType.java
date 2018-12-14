@@ -33,6 +33,5 @@ public enum FieldType {
     /**
      * Bytes field type.
      */
-    BYTES,
-    ;
+    BYTES
 }

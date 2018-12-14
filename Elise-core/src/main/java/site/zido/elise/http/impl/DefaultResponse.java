@@ -2,8 +2,6 @@ package site.zido.elise.http.impl;
 
 import site.zido.elise.E;
 import site.zido.elise.http.*;
-import site.zido.elise.select.api.SelectableResponse;
-import site.zido.elise.select.api.impl.*;
 
 import java.util.ArrayList;
 import java.util.List;

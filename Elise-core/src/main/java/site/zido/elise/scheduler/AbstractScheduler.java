@@ -15,7 +15,7 @@ import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.ListenableResponseProcessor;
 import site.zido.elise.processor.ResponseProcessor;
-import site.zido.elise.select.configurable.ResponseHandler;
+import site.zido.elise.task.api.ResponseHandler;
 import site.zido.elise.select.matcher.NumberExpressMatcher;
 import site.zido.elise.task.DefaultTask;
 import site.zido.elise.task.Task;
