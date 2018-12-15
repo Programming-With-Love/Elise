@@ -6,9 +6,9 @@ import site.zido.elise.events.SingleEventListener;
 import site.zido.elise.processor.MemorySaver;
 import site.zido.elise.processor.ResultItem;
 import site.zido.elise.scheduler.NoDepuplicationProcessor;
-import site.zido.elise.select.CssSelector;
-import site.zido.elise.select.LinkSelector;
-import site.zido.elise.select.RegexSelector;
+import site.zido.elise.select.CssSelectHandler;
+import site.zido.elise.select.LinkSelectHandler;
+import site.zido.elise.select.RegexSelectHandler;
 import site.zido.elise.task.api.ElementSelectable;
 
 import java.util.List;
@@ -37,8 +37,8 @@ public class SpiderTest {
 
         //构造抓取器
 //        final ResponseHandler extractor = ExtractorBuilder.create("article")
-//                .source(new CssSelector(".page-container>.blog"))
-//                .addTargetUrl(new LinkSelector("zido.site/?$"))
+//                .source(new CssSelectHandler(".page-container>.blog"))
+//                .addTargetUrl(new LinkSelectHandler("zido.site/?$"))
 //                .addField(FieldExtractorBuilder.create("title")
 //                        .css("h2.blog-header-title").build())
 //                .addField(FieldExtractorBuilder.create("description")
@@ -47,10 +47,10 @@ public class SpiderTest {
         //为抓取器部署抓取任务
         spider.of(response -> {
             response.modelName("blog");
-            response.asTarget().matchUrl(new RegexSelector("zido.site/?$"));
+            response.asTarget().matchUrl(new RegexSelectHandler("zido.site/?$"));
             response.asContent().url().save("source_url");
             ElementSelectable partition = response.asContent().html()
-                    .partition(new CssSelector(".page-container>.blog"));
+                    .partition(new CssSelectHandler(".page-container>.blog"));
             partition.css("h2.blog-header-title").text().save("title");
             partition.css("p.blog-content").rich().save("description");
             //获取任务操作句柄后添加一个事件监听器
@@ -82,8 +82,8 @@ public class SpiderTest {
         Spider spider = SpiderBuilder.defaults();
         spider.of(response -> {
             response.modelName("project");
-            response.asTarget().matchUrl(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
-            response.asHelper().filter(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+            response.asTarget().matchUrl(new LinkSelectHandler("github\\.com/zidoshare/[^/]*$"));
+            response.asHelper().filter(new LinkSelectHandler("github\\.com/zidoshare/[^/]*$"));
             response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
             response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
             response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
@@ -95,8 +95,8 @@ public class SpiderTest {
 //        CountDownLatch latch = new CountDownLatch(1);
 //        Spider spider = SpiderBuilder.defaults();
 //        ResponseHandler extractor = ExtractorBuilder.create("project")
-//                .addTargetUrl(new LinkSelector("github.com/zidoshare/[^/]*$"))
-//                .addHelpUrl(new LinkSelector("github.com/zidoshare/[^/]*$"))
+//                .addTargetUrl(new LinkSelectHandler("github.com/zidoshare/[^/]*$"))
+//                .addHelpUrl(new LinkSelectHandler("github.com/zidoshare/[^/]*$"))
 //                .addField(FieldExtractorBuilder.create("title")
 //                        .xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a")
 //                        .build())

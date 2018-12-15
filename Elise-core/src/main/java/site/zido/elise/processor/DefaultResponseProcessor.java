@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.http.Response;
 import site.zido.elise.select.FieldType;
 import site.zido.elise.select.Fragment;
-import site.zido.elise.select.Selector;
+import site.zido.elise.select.SelectHandler;
 import site.zido.elise.select.SelectorMatchException;
 import site.zido.elise.task.Task;
 import site.zido.elise.task.model.Action;
@@ -32,7 +32,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
     private static final String HTTP_LABEL = "http";
     private Set<ProcessorEventListener> listeners = new HashSet<>();
     private Saver saver;
-    private Map<String, Selector> selectors = new HashMap<>();
+    private Map<String, SelectHandler> selectors = new HashMap<>();
 
     /**
      * Instantiates a new Default response handler.
@@ -47,30 +47,30 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                                           final Action action,
                                           Object partition) throws SelectorMatchException {
         List<Object> partitions;
-        Selector selector = selectors.get(action.getToken());
-        if (selector != null) {
-            partitions = selector.selectObj(holder, partition, action);
+        SelectHandler selectHandler = selectors.get(action.getToken());
+        if (selectHandler != null) {
+            partitions = selectHandler.select(holder, partition, action);
 //            switch (action.getSource()) {
 //                case Source.URL:
-//                    partitions = selector.selectObj(holder, action.getExtras());
+//                    partitions = selectHandler.select(holder, action.getExtras());
 //                    break;
 //                case Source.HTML:
-//                    partitions = selector.selectObj((), action.getExtras());
+//                    partitions = selectHandler.select((), action.getExtras());
 //                    break;
 //                case Source.BODY:
-//                    partitions = selector.selectObj(response.getUrl(), response.getBody(), action.getExtras());
+//                    partitions = selectHandler.select(response.getUrl(), response.getBody(), action.getExtras());
 //                    break;
 //                case Source.CODE:
-//                    partitions = selector.selectObj(response.getUrl(), response.getStatusCode(), action.getExtras());
+//                    partitions = selectHandler.select(response.getUrl(), response.getStatusCode(), action.getExtras());
 //                    break;
 //                case Source.TEXT:
-//                    partitions = selector.selectObj(holder.getHtml(), action.getExtras());
+//                    partitions = selectHandler.select(holder.getHtml(), action.getExtras());
 //                    break;
 //                case Source.PARTITION:
 //                    if (partition == null) {
 //                        return null;
 //                    }
-//                    List<Object> result = selector.selectObj(partition, action.getExtras());
+//                    List<Object> result = selectHandler.select(partition, action.getExtras());
 //                    if (!ValidateUtils.isEmpty(result)) {
 //                        partitions.addAll(result);
 //                    }
@@ -274,7 +274,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         listeners.remove(listener);
     }
 
-    public void registorSelector(String token, Selector selector) {
-        selectors.put(token, selector);
+    public void registorSelector(String token, SelectHandler selectHandler) {
+        selectors.put(token, selectHandler);
     }
 }

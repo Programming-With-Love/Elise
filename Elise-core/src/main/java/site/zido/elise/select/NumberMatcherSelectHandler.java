@@ -1,8 +1,6 @@
 package site.zido.elise.select;
 
 import site.zido.elise.processor.ResponseContextHolder;
-import site.zido.elise.select.Selector;
-import site.zido.elise.select.SelectorMatchException;
 import site.zido.elise.task.api.Source;
 import site.zido.elise.task.model.Action;
 import site.zido.elise.utils.Safe;
@@ -18,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * @author zido
  */
-public class NumberMatcherSelector implements Selector {
+public class NumberMatcherSelectHandler implements SelectHandler {
 
     private static final Pattern CHECK_PATTERN = Pattern.compile("^[0-9,<-]*$");
     private static final char DEFAULT_CHAR_SEP = '<';
@@ -54,7 +52,7 @@ public class NumberMatcherSelector implements Selector {
     }
 
     @Override
-    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+    public List<Object> select(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
         Object[] extras = action.getExtras();
         String express = Safe.getStrFromArray(extras, 0);
         if ("".equals(express)) {

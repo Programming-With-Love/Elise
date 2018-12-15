@@ -37,4 +37,8 @@ public class E {
         public static final int CODE_200 = 200;
     }
 
+    public static class Action {
+        public static final String MATCH_LINK = "match_link";
+        public static final String MATCH_NUMBER = "match_number";
+    }
 }

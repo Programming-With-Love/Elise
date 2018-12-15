@@ -1,5 +1,8 @@
 package site.zido.elise.select;
 
+import com.virjar.sipsoup.exception.XpathSyntaxErrorException;
+import com.virjar.sipsoup.model.XpathEvaluator;
+import com.virjar.sipsoup.parse.XpathParser;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -14,17 +17,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The type Css selector.
+ * The type X path selector.
  *
  * @author zido
  */
-public class CssSelector implements Selector {
+public class XpathSelectHandler implements SelectHandler {
     @Override
-    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+    public List<Object> select(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
         Object[] extras = action.getExtras();
         String express = Safe.getStrFromArray(extras, 0);
         if ("".equals(express)) {
-            throw new SelectorMatchException(String.format("the action: [%s] need a string css express but get %s", action.getToken(), extras[0]));
+            throw new SelectorMatchException(String.format("the action: [%s] need a xpath string express but get %s", action.getToken(), extras[0]));
+        }
+        XpathEvaluator evaluator;
+        try {
+            evaluator = XpathParser.compile(express);
+        } catch (XpathSyntaxErrorException e) {
+            throw new SelectorMatchException(e);
         }
         Document document = null;
         if (Source.matchSource(action.getSource(), Source.PARTITION)) {
@@ -34,7 +43,7 @@ public class CssSelector implements Selector {
             } else if (partition instanceof List) {
                 for (Object str : (List) partition) {
                     if (str instanceof Node) {
-                        Elements elements = ((Element) str).select(express);
+                        Elements elements = evaluator.evaluateToElements((Element) str);
                         results.addAll(elements);
                     }
                 }
@@ -46,6 +55,6 @@ public class CssSelector implements Selector {
         if (document == null) {
             return null;
         }
-        return document.select(express).stream().map(element -> (Object) element).collect(Collectors.toList());
+        return evaluator.evaluateToElement(document).stream().map(element -> (Object) element).collect(Collectors.toList());
     }
 }

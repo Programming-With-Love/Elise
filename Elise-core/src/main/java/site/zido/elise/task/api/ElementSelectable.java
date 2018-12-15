@@ -1,8 +1,8 @@
 package site.zido.elise.task.api;
 
-import site.zido.elise.select.CssSelector;
+import site.zido.elise.select.CssSelectHandler;
 import site.zido.elise.select.ElementSelector;
-import site.zido.elise.select.XpathSelector;
+import site.zido.elise.select.XpathSelectHandler;
 
 /**
  * The interface Element selectable.
@@ -33,7 +33,7 @@ public interface ElementSelectable {
      * @return the element value
      */
     default ElementValue css(String css) {
-        return select(new CssSelector(css));
+        return select(new CssSelectHandler(css));
     }
 
     /**
@@ -43,6 +43,6 @@ public interface ElementSelectable {
      * @return the element value
      */
     default ElementValue xpath(String xpath) {
-        return select(new XpathSelector(xpath));
+        return select(new XpathSelectHandler(xpath));
     }
 }

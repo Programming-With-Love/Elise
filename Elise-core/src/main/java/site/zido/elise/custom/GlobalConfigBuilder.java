@@ -3,7 +3,7 @@ package site.zido.elise.custom;
 import site.zido.elise.http.Cookie;
 import site.zido.elise.http.Header;
 import site.zido.elise.http.impl.DefaultCookie;
-import site.zido.elise.select.NumberMatcherSelector;
+import site.zido.elise.select.NumberMatcherSelectHandler;
 
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
@@ -154,7 +154,7 @@ public class GlobalConfigBuilder extends MappedConfig {
      * @return the success code
      */
     public GlobalConfigBuilder setSuccessCode(String codeExpress) {
-        if (!NumberMatcherSelector.isSupport(codeExpress)) {
+        if (!NumberMatcherSelectHandler.isSupport(codeExpress)) {
             throw new IllegalArgumentException("code match express:" + codeExpress + " no support");
         }
         put(KEY_SUCCESS_CODE, codeExpress);

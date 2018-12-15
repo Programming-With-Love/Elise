@@ -6,10 +6,10 @@ import site.zido.elise.task.model.Action;
 import java.util.List;
 
 /**
- * The interface Selector.
+ * The interface SelectHandler.
  *
  * @author zido
  */
-public interface Selector {
-    List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException;
+public interface SelectHandler {
+    List<Object> select(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException;
 }

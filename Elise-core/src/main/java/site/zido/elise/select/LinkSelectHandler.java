@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
  *
  * @author zido
  */
-public class LinkSelector implements Selector {
+public class LinkSelectHandler implements SelectHandler {
     @Override
-    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+    public List<Object> select(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
         Object[] extras = action.getExtras();
         String express = Safe.getStrFromArray(extras, 0);
         if ("".equals(express)) {

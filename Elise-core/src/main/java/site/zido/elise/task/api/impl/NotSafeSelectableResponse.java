@@ -1,12 +1,11 @@
 package site.zido.elise.task.api.impl;
 
-import site.zido.elise.select.ElementSelector;
-import site.zido.elise.select.FieldType;
-import site.zido.elise.select.LinkSelector;
+import site.zido.elise.select.*;
+import site.zido.elise.select.LinkSelectHandler;
 import site.zido.elise.task.api.*;
 import site.zido.elise.task.api.Source;
 import site.zido.elise.select.matcher.Matcher;
-import site.zido.elise.select.NumberMatcherSelector;
+import site.zido.elise.select.NumberMatcherSelectHandler;
 import site.zido.elise.utils.Asserts;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class NotSafeSelectableResponse implements SelectableResponse,
     private DefaultPartition fieldPair;
     private ElementSelector fieldSelector;
     private Source source;
-    private List<LinkSelector> linkSelectors;
+    private List<LinkSelectHandler> linkSelectors;
     private List<Matcher> matchers;
     private FieldType valueType;
     private boolean nullable;
@@ -116,7 +115,7 @@ public class NotSafeSelectableResponse implements SelectableResponse,
     }
 
     @Override
-    public HelpDescriptor filter(LinkSelector linkSelector) {
+    public HelpDescriptor filter(LinkSelectHandler linkSelector) {
         Asserts.notNull(linkSelector, "can't filter by null");
         if (linkSelectors == null) {
             linkSelectors = new ArrayList<>();
@@ -136,7 +135,7 @@ public class NotSafeSelectableResponse implements SelectableResponse,
     }
 
     @Override
-    public TargetDescriptor statusCode(NumberMatcherSelector matcher) {
+    public TargetDescriptor statusCode(NumberMatcherSelectHandler matcher) {
         Asserts.notNull(matcher, "can't match by null");
         return matchUrl(matcher);
     }
@@ -213,7 +212,7 @@ public class NotSafeSelectableResponse implements SelectableResponse,
      *
      * @return the link selectors
      */
-    public List<LinkSelector> getLinkSelectors() {
+    public List<LinkSelectHandler> getLinkSelectors() {
         return linkSelectors;
     }
 

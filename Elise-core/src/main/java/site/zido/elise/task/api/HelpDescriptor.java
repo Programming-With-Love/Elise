@@ -1,6 +1,6 @@
 package site.zido.elise.task.api;
 
-import site.zido.elise.select.LinkSelector;
+import site.zido.elise.select.LinkSelectHandler;
 
 /**
  * The interface Help descriptor.
@@ -14,5 +14,5 @@ public interface HelpDescriptor {
      * @param linkSelector the link selector
      * @return the help descriptor
      */
-    HelpDescriptor filter(LinkSelector linkSelector);
+    HelpDescriptor filter(LinkSelectHandler linkSelector);
 }

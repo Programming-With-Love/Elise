@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
  *
  * @author zido
  */
-public class RegexSelector implements Selector {
+public class RegexSelectHandler implements SelectHandler {
     @Override
-    public List<Object> selectObj(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
+    public List<Object> select(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
         String source = action.getSource();
         Object[] extras = action.getExtras();
         String regex = Safe.getStrFromArray(extras, 0);
