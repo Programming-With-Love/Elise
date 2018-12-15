@@ -3,20 +3,26 @@ package site.zido.elise.task.api;
 import site.zido.elise.select.CssSelectHandler;
 import site.zido.elise.select.ElementSelector;
 import site.zido.elise.select.XpathSelectHandler;
+import site.zido.elise.task.model.ModelField;
 
 /**
  * The interface Element selectable.
  *
  * @author zido
  */
-public interface ElementSelectable {
+public class ElementSelectable {
+    public ElementSelectable(ModelField field){
+        //TODO element selectable implement
+    }
     /**
      * Partition element selectable.
      *
      * @param elementSelector the element selector
      * @return the element selectable
      */
-    ElementSelectable partition(ElementSelector elementSelector);
+    public ElementSelectable partition(ElementSelector elementSelector){
+
+    }
 
     /**
      * Select element value.

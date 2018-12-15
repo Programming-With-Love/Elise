@@ -12,13 +12,10 @@ import java.util.List;
  * @author zido
  */
 public class TargetDescriptor {
-    //TODO support html?
-//    Matchable<TargetDescriptor> html();
-    private Action targetAction;
-    private TargetDescriptor top;
+    private List<Action> targetActions;
 
-    public TargetDescriptor(Action action) {
-        this.targetAction = action;
+    public TargetDescriptor(List<Action> action) {
+        this.targetActions = action;
     }
 
     /**
@@ -27,12 +24,11 @@ public class TargetDescriptor {
      * @return the target descriptor
      */
     public TargetDescriptor matchUrl(String regex) {
-        if(targetAction.getToken() != null){
-            throw new RepeatMatchException();
-        }
-        targetAction.setToken(E.Action.MATCH_LINK);
-        targetAction.setExtras(new Object[]{regex});
-        targetAction.setSource(Source.URL);
+        Action action = new Action();
+        action.setToken(E.Action.MATCH_LINK);
+        action.setExtras(new Object[]{regex});
+        action.setSource(Source.URL);
+        targetActions.add(action);
         return this;
     }
 
@@ -43,26 +39,25 @@ public class TargetDescriptor {
      * @return the target descriptor
      */
     public TargetDescriptor matchStatusCode(String numberMatchExpress) {
-        if(targetAction.getToken() != null){
-            throw new RepeatMatchException();
-        }
-        targetAction.setToken(E.Action.MATCH_NUMBER);
-        targetAction.setExtras(new Object[]{numberMatchExpress});
-        List<Action> actions = new LinkedList<>();
-        targetAction.setChildren(actions);
-        targetAction.setSource(Source.CODE);
+        Action action = new Action();
+        action.setToken(E.Action.MATCH_NUMBER);
+        action.setExtras(new Object[]{numberMatchExpress});
+        action.setSource(Source.CODE);
+        targetActions.add(action);
         return this;
     }
 
-    public TargetDescriptor and(){
-        Action action = new Action();
+    public TargetDescriptor and() {
+        if(targetActions.isEmpty()){
+            return this;
+        }
         List<Action> children = new LinkedList<>();
-        this.targetAction.setChildren(children);
-        children.add(action);
-        return new TargetDescriptor(action);
+        Action action = targetActions.get(targetActions.size() - 1);
+        action.setChildren(children);
+        return new TargetDescriptor(children);
     }
 
-    public TargetDescriptor or(){
-
+    public TargetDescriptor or() {
+        return this;
     }
 }

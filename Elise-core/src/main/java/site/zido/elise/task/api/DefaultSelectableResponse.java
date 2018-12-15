@@ -21,14 +21,16 @@ public class DefaultSelectableResponse implements SelectableResponse {
         if(targets == null){
             model.setTargets(new LinkedList<>());
         }
-        Action targetAction = new Action();
-        model.getTargets().add(targetAction);
-        return new TargetDescriptor(targetAction);
+        return new TargetDescriptor(targets);
     }
 
     @Override
     public HelpDescriptor asHelper() {
-        return null;
+        List<Action> helpers = model.getTargets();
+        if(helpers == null){
+            model.setHelpers(new LinkedList<>());
+        }
+        return new HelpDescriptor(helpers);
     }
 
     @Override
