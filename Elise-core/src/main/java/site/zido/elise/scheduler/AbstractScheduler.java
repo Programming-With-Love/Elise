@@ -7,6 +7,7 @@ import site.zido.elise.Spider;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.ConfigUtils;
 import site.zido.elise.custom.GlobalConfig;
+import site.zido.elise.downloader.DownloadException;
 import site.zido.elise.downloader.DownloaderFactory;
 import site.zido.elise.events.EventListener;
 import site.zido.elise.events.TaskEventListener;
@@ -15,10 +16,9 @@ import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.ListenableResponseProcessor;
 import site.zido.elise.processor.ResponseProcessor;
-import site.zido.elise.select.NumberMatcherSelectHandler;
-import site.zido.elise.task.api.ResponseHandler;
 import site.zido.elise.task.DefaultTask;
 import site.zido.elise.task.Task;
+import site.zido.elise.task.api.ResponseHandler;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.IdWorker;
 
@@ -164,17 +164,15 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
      * @return the default response
      */
     protected Response onDownload(Task task, Request request) {
-        final Response response = downloaderFactory.create(task).download(task, request);
-        String successCode = task.getConfig().get(GlobalConfig.KEY_SUCCESS_CODE);
-        NumberMatcherSelectHandler matcher;
-        matcher = new NumberMatcherSelectHandler(successCode);
-        if (matcher.matches(response.getStatusCode())) {
+        final Response response;
+        try {
+            response = downloaderFactory.create(task).download(task, request);
             EventUtils.mustNotifyListeners(listeners, listener -> {
                 if (listener instanceof TaskEventListener) {
                     ((TaskEventListener) listener).onDownloadSuccess(task, request, response);
                 }
             });
-        } else {
+        } catch (DownloadException e) {
             EventUtils.mustNotifyListeners(listeners, listener -> {
                 if (listener instanceof TaskEventListener) {
                     ((TaskEventListener) listener).onDownloadError(task, request, response);

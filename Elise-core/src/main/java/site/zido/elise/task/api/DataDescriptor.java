@@ -29,7 +29,8 @@ public class DataDescriptor {
         ModelField field = new ModelField();
         fields.add(field);
         List<Action> actions = new LinkedList<>();
-
+        field.setActions(actions);
+        return new ElementSelectable(Source.HTML, field, actions);
     }
 
     /**

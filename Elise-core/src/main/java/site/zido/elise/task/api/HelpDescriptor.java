@@ -25,7 +25,7 @@ public class HelpDescriptor {
      */
     public HelpDescriptor regex(String regex){
         Action action = new Action();
-        action.setToken(E.Action.SELECT_LINK);
+        action.setToken(E.Action.LINK_SELECTOR);
         action.setExtras(new Object[]{regex});
         action.setSource(Source.HTML);
         helpActions.add(action);

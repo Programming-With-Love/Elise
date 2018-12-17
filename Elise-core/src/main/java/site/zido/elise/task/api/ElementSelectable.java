@@ -1,9 +1,11 @@
 package site.zido.elise.task.api;
 
-import site.zido.elise.select.CssSelectHandler;
-import site.zido.elise.select.ElementSelector;
-import site.zido.elise.select.XpathSelectHandler;
+import site.zido.elise.select.*;
+import site.zido.elise.task.model.Action;
 import site.zido.elise.task.model.ModelField;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The interface Element selectable.
@@ -11,8 +13,13 @@ import site.zido.elise.task.model.ModelField;
  * @author zido
  */
 public class ElementSelectable {
-    public ElementSelectable(ModelField field){
-        //TODO element selectable implement
+    private String source;
+    private ModelField field;
+    private List<Action> actions;
+    public ElementSelectable(String source, ModelField field,List<Action> actions){
+        this.source = source;
+        this.field = field;
+        this.actions = actions;
     }
     /**
      * Partition element selectable.
@@ -21,7 +28,11 @@ public class ElementSelectable {
      * @return the element selectable
      */
     public ElementSelectable partition(ElementSelector elementSelector){
-
+        elementSelector.setSource(source);
+        elementSelector.setChildren(new LinkedList<>());
+        actions.add(elementSelector);
+        elementSelector.setChildren(new LinkedList<>());
+        return new ElementSelectable(Source.PARTITION,field,elementSelector.getChildren());
     }
 
     /**
@@ -30,7 +41,11 @@ public class ElementSelectable {
      * @param selector the selector
      * @return the element value
      */
-    ElementValue select(ElementSelector selector);
+    public ElementValue select(ElementSelector selector){
+        selector.setSource(source);
+        actions.add(selector);
+        return new ElementValue(field);
+    }
 
     /**
      * Css element value.
@@ -38,8 +53,8 @@ public class ElementSelectable {
      * @param css the css
      * @return the element value
      */
-    default ElementValue css(String css) {
-        return select(new CssSelectHandler(css));
+    public ElementValue css(String css) {
+        return select(new CssSelector(css));
     }
 
     /**
@@ -48,7 +63,7 @@ public class ElementSelectable {
      * @param xpath the xpath
      * @return the element value
      */
-    default ElementValue xpath(String xpath) {
-        return select(new XpathSelectHandler(xpath));
+    public ElementValue xpath(String xpath) {
+        return select(new XpathSelector(xpath));
     }
 }

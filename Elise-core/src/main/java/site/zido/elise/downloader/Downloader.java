@@ -17,6 +17,6 @@ public interface Downloader {
      * @param request the request
      * @return the response
      */
-    Response download(Task task, Request request);
+    Response download(Task task, Request request) throws DownloadException;
 
 }

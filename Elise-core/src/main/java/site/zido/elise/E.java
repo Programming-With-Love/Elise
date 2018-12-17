@@ -40,8 +40,10 @@ public class E {
     public static class Action {
         public static final String MATCH_LINK = "match_link";
         public static final String MATCH_NUMBER = "match_number";
-        public static final String SELECT_LINK = "select_link";
+        public static final String LINK_SELECTOR = "select_link";
         public static final String SELECT_URL = "select_url";
         public static final String SELECT_ORIGIN = "select_origin";
+        public static final String CSS_SELECTOR = "css_selector";
+        public static final String XPATH_SELECTOR = "xpath_selector";
     }
 }
