@@ -1,6 +1,7 @@
 package site.zido.elise.task.api;
 
 import site.zido.elise.E;
+import site.zido.elise.select.FieldType;
 import site.zido.elise.task.model.Action;
 import site.zido.elise.task.model.ModelField;
 
@@ -39,7 +40,7 @@ public class DataDescriptor {
      * @return the value
      */
     public Value url() {
-        return getValue(Source.URL);
+        return getValue(Source.URL, FieldType.TEXT);
     }
 
     /**
@@ -48,16 +49,17 @@ public class DataDescriptor {
      * @return the value
      */
     public Value statusCode() {
-        return getValue(Source.CODE);
+        return getValue(Source.CODE,FieldType.NUMBER);
     }
 
-    private Value getValue(String source) {
+    private Value getValue(String source, FieldType type) {
         ModelField field = new ModelField();
         fields.add(field);
         Action action = new Action();
         action.setSource(source);
         action.setToken(E.Action.SELECT_ORIGIN);
         field.setActions(Collections.singletonList(action));
+        field.setValueType(type);
         return new Value(field);
     }
 }

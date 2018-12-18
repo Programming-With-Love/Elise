@@ -1,6 +1,5 @@
 package site.zido.elise.select;
 
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
@@ -26,11 +25,11 @@ public class CssSelectHandler implements SelectHandler {
         if ("".equals(express)) {
             throw new SelectorMatchException(String.format("the action: [%s] need a string css express but get %s", action.getToken(), extras[0]));
         }
-        Document document = null;
+        Element document = null;
         if (Source.matchSource(action.getSource(), Source.PARTITION)) {
             List<Object> results = new ArrayList<>();
-            if (partition instanceof Document) {
-                document = (Document) partition;
+            if (partition instanceof Element) {
+                document = (Element) partition;
             } else if (partition instanceof List) {
                 for (Object str : (List) partition) {
                     if (str instanceof Node) {

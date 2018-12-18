@@ -25,6 +25,7 @@ public class ResponseContextHolder extends DefaultResponse {
 
     public String getHtml() {
         if (getBody() == null) {
+            this.html = "";
             return "";
         }
         if (html == null) {
@@ -34,8 +35,11 @@ public class ResponseContextHolder extends DefaultResponse {
     }
 
     public Document getDocument() {
+        if(html == null){
+            getHtml();
+        }
         if (document == null) {
-            document = Jsoup.parse(html);
+            document = Jsoup.parse(html,getUrl());
         }
         return document;
     }

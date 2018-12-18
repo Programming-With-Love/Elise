@@ -10,9 +10,11 @@ import site.zido.elise.task.model.ModelField;
  */
 public class ElementValue {
     private ModelField field;
+    private ElementSelectable top;
 
-    public ElementValue(ModelField field) {
+    public ElementValue(ElementSelectable top,ModelField field) {
         this.field = field;
+        this.top = top;
     }
 
     /**
@@ -43,5 +45,9 @@ public class ElementValue {
     public Value xml() {
         field.setValueType(FieldType.XML);
         return new Value(field);
+    }
+
+    public ElementSelectable or(){
+        return top;
     }
 }

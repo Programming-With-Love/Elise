@@ -121,6 +121,7 @@ public class DefaultResponse implements Response {
      *
      * @return the boolean
      */
+    @Override
     public boolean isDownloadSuccess() {
         return downloadSuccess;
     }

@@ -3,7 +3,6 @@ package site.zido.elise.select;
 import com.virjar.sipsoup.exception.XpathSyntaxErrorException;
 import com.virjar.sipsoup.model.XpathEvaluator;
 import com.virjar.sipsoup.parse.XpathParser;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
@@ -35,11 +34,11 @@ public class XpathSelectHandler implements SelectHandler {
         } catch (XpathSyntaxErrorException e) {
             throw new SelectorMatchException(e);
         }
-        Document document = null;
+        Element document = null;
         if (Source.matchSource(action.getSource(), Source.PARTITION)) {
             List<Object> results = new ArrayList<>();
-            if (partition instanceof Document) {
-                document = (Document) partition;
+            if (partition instanceof Element) {
+                document = (Element) partition;
             } else if (partition instanceof List) {
                 for (Object str : (List) partition) {
                     if (str instanceof Node) {

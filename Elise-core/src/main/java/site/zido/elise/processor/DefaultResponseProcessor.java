@@ -50,37 +50,13 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         SelectHandler selectHandler = selectors.get(action.getToken());
         if (selectHandler != null) {
             partitions = selectHandler.select(holder, partition, action);
-//            switch (action.getSource()) {
-//                case Source.URL:
-//                    partitions = selectHandler.select(holder, action.getExtras());
-//                    break;
-//                case Source.HTML:
-//                    partitions = selectHandler.select((), action.getExtras());
-//                    break;
-//                case Source.BODY:
-//                    partitions = selectHandler.select(response.getUrl(), response.getBody(), action.getExtras());
-//                    break;
-//                case Source.CODE:
-//                    partitions = selectHandler.select(response.getUrl(), response.getStatusCode(), action.getExtras());
-//                    break;
-//                case Source.TEXT:
-//                    partitions = selectHandler.select(holder.getHtml(), action.getExtras());
-//                    break;
-//                case Source.PARTITION:
-//                    if (partition == null) {
-//                        return null;
-//                    }
-//                    List<Object> result = selectHandler.select(partition, action.getExtras());
-//                    if (!ValidateUtils.isEmpty(result)) {
-//                        partitions.addAll(result);
-//                    }
-//                    break;
-//                default:
-//            }
             if (ValidateUtils.isEmpty(partitions)) {
                 return null;
             }
             List<Action> children = action.getChildren();
+            if (children == null) {
+                return partitions;
+            }
             List<Object> selectResults = new LinkedList<>();
             for (Object o : partitions) {
                 for (Action child : children) {
@@ -102,19 +78,23 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         //find helpers
         List<Action> helpers = model.getHelpers();
         Set<String> links = new HashSet<>();
-        for (Action helper : helpers) {
-            List<Object> results = processSelectors(holder, helper, null);
-            if (!ValidateUtils.isEmpty(results)) {
-                links.addAll(processLinks(results, response.getUrl()));
+        if (helpers != null) {
+            for (Action helper : helpers) {
+                List<Object> results = processSelectors(holder, helper, null);
+                if (!ValidateUtils.isEmpty(results)) {
+                    links.addAll(processLinks(results, response.getUrl()));
+                }
             }
         }
         //judge target
         List<Action> targets = model.getTargets();
         boolean isTarget = false;
-        for (Action target : targets) {
-            if (!ValidateUtils.isEmpty(processSelectors(holder, target, null))) {
-                isTarget = true;
-                break;
+        if (targets != null) {
+            for (Action target : targets) {
+                if (!ValidateUtils.isEmpty(processSelectors(holder, target, null))) {
+                    isTarget = true;
+                    break;
+                }
             }
         }
         if (!isTarget) {
@@ -131,6 +111,8 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
             }
             if (!ValidateUtils.isEmpty(partitions)) {
                 for (Object part : partitions) {
+                    ResultItem item = new ResultItem();
+                    boolean needAdd = false;
                     for (ModelField field : partition.getFields()) {
                         List<Action> actions = field.getActions();
                         List<Object> values = new LinkedList<>();
@@ -143,13 +125,15 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                         if (!ValidateUtils.isEmpty(values)) {
                             values = processField(values, field.getValueType());
                             if (!ValidateUtils.isEmpty(values)) {
-                                ResultItem item = new ResultItem();
                                 item.put(field.getName(), values, field.getValueType());
-                                resultItems.add(item);
+                                needAdd = true;
                             } else if (field.isNullable()) {
-                                resultItems.add(new ResultItem());
+                                needAdd = true;
                             }
                         }
+                    }
+                    if (needAdd) {
+                        resultItems.add(item);
                     }
                 }
             }
@@ -274,7 +258,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         listeners.remove(listener);
     }
 
-    public void registorSelector(String token, SelectHandler selectHandler) {
+    public void registerSelector(String token, SelectHandler selectHandler) {
         selectors.put(token, selectHandler);
     }
 }

@@ -40,10 +40,12 @@ public class ConfigUtils {
     public static Config mergeConfig(Config... config) {
         Map<String, Object> result = new HashMap<>();
         for (Config c : config) {
-            for (String s : c.keySet()) {
-                final Object value = c.get(s);
-                if (value != null) {
-                    result.put(s, value);
+            if (c != null) {
+                for (String s : c.keySet()) {
+                    final Object value = c.get(s);
+                    if (value != null) {
+                        result.put(s, value);
+                    }
                 }
             }
         }

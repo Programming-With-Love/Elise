@@ -7,9 +7,11 @@ import site.zido.elise.processor.MemorySaver;
 import site.zido.elise.processor.ResultItem;
 import site.zido.elise.scheduler.NoDepuplicationProcessor;
 import site.zido.elise.select.CssSelectHandler;
+import site.zido.elise.select.CssSelector;
 import site.zido.elise.select.LinkSelectHandler;
 import site.zido.elise.select.RegexSelectHandler;
 import site.zido.elise.task.api.ElementSelectable;
+import site.zido.elise.task.api.PartitionDescriptor;
 
 import java.util.List;
 import java.util.Map;
@@ -47,12 +49,11 @@ public class SpiderTest {
         //为抓取器部署抓取任务
         spider.of(response -> {
             response.modelName("blog");
-            response.asTarget().matchUrl(new RegexSelectHandler("zido.site/?$"));
+            response.asTarget().matchUrl("zido.site/?$");
             response.asContent().url().save("source_url");
-            ElementSelectable partition = response.asContent().html()
-                    .partition(new CssSelectHandler(".page-container>.blog"));
-            partition.css("h2.blog-header-title").text().save("title");
-            partition.css("p.blog-content").rich().save("description");
+            PartitionDescriptor partition = response.asPartition(new CssSelector(".page-container>.blog"));
+            partition.field().css("h2.blog-header-title").text().save("title");
+            partition.field().css("p.blog-content").text().save("description");
             //获取任务操作句柄后添加一个事件监听器
         }).addEventListener(new SingleEventListener() {
             /**
@@ -82,8 +83,8 @@ public class SpiderTest {
         Spider spider = SpiderBuilder.defaults();
         spider.of(response -> {
             response.modelName("project");
-            response.asTarget().matchUrl(new LinkSelectHandler("github\\.com/zidoshare/[^/]*$"));
-            response.asHelper().filter(new LinkSelectHandler("github\\.com/zidoshare/[^/]*$"));
+            response.asTarget().matchUrl("github\\.com/zidoshare/[^/]*$");
+            response.asHelper().regex("github\\.com/zidoshare/[^/]*$");
             response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
             response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
             response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");

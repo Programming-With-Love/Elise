@@ -3,6 +3,7 @@ package site.zido.elise.task.model;
 import site.zido.elise.select.FieldType;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The Model field.
@@ -51,5 +52,21 @@ public final class ModelField {
 
     public void setValueType(FieldType valueType) {
         this.valueType = valueType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ModelField that = (ModelField) o;
+        return nullable == that.nullable &&
+                Objects.equals(name, that.name) &&
+                valueType == that.valueType &&
+                Objects.equals(actions, that.actions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, nullable, valueType, actions);
     }
 }

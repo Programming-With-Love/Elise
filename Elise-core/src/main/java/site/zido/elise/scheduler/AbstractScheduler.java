@@ -7,7 +7,6 @@ import site.zido.elise.Spider;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.ConfigUtils;
 import site.zido.elise.custom.GlobalConfig;
-import site.zido.elise.downloader.DownloadException;
 import site.zido.elise.downloader.DownloaderFactory;
 import site.zido.elise.events.EventListener;
 import site.zido.elise.events.TaskEventListener;
@@ -16,9 +15,12 @@ import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultRequest;
 import site.zido.elise.processor.ListenableResponseProcessor;
 import site.zido.elise.processor.ResponseProcessor;
+import site.zido.elise.select.SelectorMatchException;
 import site.zido.elise.task.DefaultTask;
 import site.zido.elise.task.Task;
+import site.zido.elise.task.api.DefaultSelectableResponse;
 import site.zido.elise.task.api.ResponseHandler;
+import site.zido.elise.task.model.Model;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.IdWorker;
 
@@ -53,14 +55,16 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
 
     @Override
     public Operator of(ResponseHandler handler, Config config) {
-        final DefaultTask task = new DefaultTask(IdWorker.nextId(), handler, ConfigUtils.mergeConfig(config, this.config));
+        DefaultSelectableResponse response = new DefaultSelectableResponse();
+        handler.onHandle(response);
+        Model model = response.getModel();
+        final DefaultTask task = new DefaultTask(IdWorker.nextId(), model, ConfigUtils.mergeConfig(config, this.config));
         return new DefaultOperator(task, this);
     }
 
     @Override
     public Operator of(ResponseHandler handler) {
-        final DefaultTask task = new DefaultTask(IdWorker.nextId(), handler, config);
-        return new DefaultOperator(task, this);
+        return of(handler, null);
     }
 
     @Override
@@ -108,16 +112,20 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         }
         final Config config = task.getConfig();
         if (state != STATE_CANCEL_NOW) {
-            Set<String> links = responseProcessor.process(task, response);
-            //will no longer process any pages when the task is in the cancel_now state
-            if (state != STATE_CANCEL) {
-                for (String link : links) {
-                    pushRequest(task, new DefaultRequest(link));
+            try {
+                Set<String> links = responseProcessor.process(task, response);
+                //will no longer process any pages when the task is in the cancel_now state
+                if (state != STATE_CANCEL) {
+                    for (String link : links) {
+                        pushRequest(task, new DefaultRequest(link));
+                    }
                 }
+                countEvent(state, task);
+                sleep(config.get(GlobalConfig.KEY_SLEEP_TIME));
+                return;
+            } catch (SelectorMatchException e) {
+                e.printStackTrace();
             }
-            countEvent(state, task);
-            sleep(config.get(GlobalConfig.KEY_SLEEP_TIME));
-            return;
         }
         countEvent(state, task);
         if (state == -1) {
@@ -164,15 +172,14 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
      * @return the default response
      */
     protected Response onDownload(Task task, Request request) {
-        final Response response;
-        try {
-            response = downloaderFactory.create(task).download(task, request);
+        final Response response = downloaderFactory.create(task).download(task, request);
+        if (response.isDownloadSuccess()) {
             EventUtils.mustNotifyListeners(listeners, listener -> {
                 if (listener instanceof TaskEventListener) {
                     ((TaskEventListener) listener).onDownloadSuccess(task, request, response);
                 }
             });
-        } catch (DownloadException e) {
+        } else {
             EventUtils.mustNotifyListeners(listeners, listener -> {
                 if (listener instanceof TaskEventListener) {
                     ((TaskEventListener) listener).onDownloadError(task, request, response);

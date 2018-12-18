@@ -1,6 +1,7 @@
 package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
+import site.zido.elise.task.api.DefaultSelectableResponse;
 import site.zido.elise.task.api.ResponseHandler;
 import site.zido.elise.task.model.Model;
 
@@ -12,7 +13,6 @@ import site.zido.elise.task.model.Model;
  */
 public class DefaultTask implements Task {
     private Long id;
-    private ResponseHandler responseHandler;
     private Config config;
     private Model model;
 
@@ -26,13 +26,13 @@ public class DefaultTask implements Task {
     /**
      * Instantiates a new Default task.
      *
-     * @param id              the id
-     * @param responseHandler the extractor
-     * @param config          the config
+     * @param id     the id
+     * @param model  the extractor model
+     * @param config the config
      */
-    public DefaultTask(Long id, ResponseHandler responseHandler, Config config) {
+    public DefaultTask(Long id, Model model, Config config) {
         this.id = id;
-        this.responseHandler = responseHandler;
+        this.model = model;
         this.config = config;
     }
 
@@ -53,11 +53,6 @@ public class DefaultTask implements Task {
     }
 
     @Override
-    public ResponseHandler getHandler() {
-        return responseHandler;
-    }
-
-    @Override
     public Model getModel() {
         return this.model;
     }
@@ -75,26 +70,6 @@ public class DefaultTask implements Task {
      */
     public DefaultTask setConfig(Config config) {
         this.config = config;
-        return this;
-    }
-
-    /**
-     * Gets def extractor.
-     *
-     * @return the def extractor
-     */
-    public ResponseHandler getResponseHandler() {
-        return responseHandler;
-    }
-
-    /**
-     * Sets def extractor.
-     *
-     * @param responseHandler the def extractor
-     * @return the def extractor
-     */
-    public DefaultTask setResponseHandler(ResponseHandler responseHandler) {
-        this.responseHandler = responseHandler;
         return this;
     }
 

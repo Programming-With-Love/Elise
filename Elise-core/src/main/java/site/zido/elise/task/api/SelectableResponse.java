@@ -1,5 +1,7 @@
 package site.zido.elise.task.api;
 
+import site.zido.elise.select.ElementSelector;
+
 /**
  * The interface Selectable response.
  *
@@ -35,4 +37,6 @@ public interface SelectableResponse {
      * @return the data descriptor
      */
     DataDescriptor asContent();
+
+    PartitionDescriptor asPartition(ElementSelector selector);
 }

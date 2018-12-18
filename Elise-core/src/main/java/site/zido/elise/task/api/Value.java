@@ -18,7 +18,7 @@ public class Value {
      * @param name the name
      * @return the value
      */
-    Value save(String name){
+    public Value save(String name){
         field.setName(name);
         return this;
     }
@@ -29,7 +29,7 @@ public class Value {
      * @param nullable the nullable
      * @return the value
      */
-    Value nullable(boolean nullable){
+    public Value nullable(boolean nullable){
         field.setNullable(nullable);
         return this;
     }
