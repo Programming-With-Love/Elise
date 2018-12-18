@@ -2,7 +2,7 @@ package site.zido.elise;
 
 import site.zido.elise.custom.Config;
 import site.zido.elise.events.EventSupport;
-import site.zido.elise.select.configurable.ResponseHandler;
+import site.zido.elise.task.api.ResponseHandler;
 
 /**
  * The Spider Interface.

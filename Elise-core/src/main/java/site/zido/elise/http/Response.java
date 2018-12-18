@@ -1,7 +1,5 @@
 package site.zido.elise.http;
 
-import site.zido.elise.select.api.SelectableResponse;
-
 import java.util.List;
 
 /**
@@ -10,6 +8,7 @@ import java.util.List;
  * @author zido
  */
 public interface Response extends HttpModel {
+    boolean isDownloadSuccess();
     /**
      * Gets status code.
      *
