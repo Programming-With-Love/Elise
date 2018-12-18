@@ -71,8 +71,8 @@ Elise的优势：
 ```java
 SpiderBuilder.defaults().of(response -> {
     response.modelName("project");
-    response.asTarget().matchUrl(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
-    response.asHelper().filter(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+    response.asTarget().matchUrl("github\\.com/zidoshare/[^/]*$");
+    response.asHelper().regex("github\\.com/zidoshare/[^/]*$");
     response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
     response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
     response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
