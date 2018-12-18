@@ -1,9 +1,10 @@
 package site.zido.elise.http.impl;
 
 import site.zido.elise.E;
-import site.zido.elise.http.*;
-import site.zido.elise.select.api.SelectableResponse;
-import site.zido.elise.select.api.impl.*;
+import site.zido.elise.http.Body;
+import site.zido.elise.http.Cookie;
+import site.zido.elise.http.Header;
+import site.zido.elise.http.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,6 @@ public class DefaultResponse implements Response {
 
     private boolean downloadSuccess = true;
 
-    private Http.ContentType contentType;
-
     private List<Header> headers;
 
     private List<Cookie> cookies;
@@ -36,6 +35,15 @@ public class DefaultResponse implements Response {
      */
     public DefaultResponse() {
         this.headers = new ArrayList<>();
+    }
+
+    public DefaultResponse(Response response) {
+        this.url = response.getUrl();
+        this.statusCode = response.getStatusCode();
+        this.reasonPhrase = response.getReasonPhrase();
+        this.body = response.getBody();
+        this.headers = response.getAllHeaders();
+        this.cookies = response.getCookies();
     }
 
     /**
@@ -113,6 +121,7 @@ public class DefaultResponse implements Response {
      *
      * @return the boolean
      */
+    @Override
     public boolean isDownloadSuccess() {
         return downloadSuccess;
     }
@@ -124,24 +133,6 @@ public class DefaultResponse implements Response {
      */
     public void setDownloadSuccess(boolean downloadSuccess) {
         this.downloadSuccess = downloadSuccess;
-    }
-
-    /**
-     * Gets content type.
-     *
-     * @return the content type
-     */
-    public Http.ContentType getContentType() {
-        return contentType;
-    }
-
-    /**
-     * Sets content type.
-     *
-     * @param contentType the content type
-     */
-    public void setContentType(Http.ContentType contentType) {
-        this.contentType = contentType;
     }
 
     /**

@@ -1,7 +1,9 @@
 package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
-import site.zido.elise.select.configurable.ResponseHandler;
+import site.zido.elise.task.api.DefaultSelectableResponse;
+import site.zido.elise.task.api.ResponseHandler;
+import site.zido.elise.task.model.Model;
 
 /**
  * default extractor task
@@ -11,8 +13,8 @@ import site.zido.elise.select.configurable.ResponseHandler;
  */
 public class DefaultTask implements Task {
     private Long id;
-    private ResponseHandler responseHandler;
     private Config config;
+    private Model model;
 
     /**
      * Instantiates a new Default task.
@@ -24,13 +26,13 @@ public class DefaultTask implements Task {
     /**
      * Instantiates a new Default task.
      *
-     * @param id              the id
-     * @param responseHandler the extractor
-     * @param config          the config
+     * @param id     the id
+     * @param model  the extractor model
+     * @param config the config
      */
-    public DefaultTask(Long id, ResponseHandler responseHandler, Config config) {
+    public DefaultTask(Long id, Model model, Config config) {
         this.id = id;
-        this.responseHandler = responseHandler;
+        this.model = model;
         this.config = config;
     }
 
@@ -51,8 +53,8 @@ public class DefaultTask implements Task {
     }
 
     @Override
-    public ResponseHandler getHandler() {
-        return responseHandler;
+    public Model getModel() {
+        return this.model;
     }
 
     @Override
@@ -71,23 +73,7 @@ public class DefaultTask implements Task {
         return this;
     }
 
-    /**
-     * Gets def extractor.
-     *
-     * @return the def extractor
-     */
-    public ResponseHandler getResponseHandler() {
-        return responseHandler;
-    }
-
-    /**
-     * Sets def extractor.
-     *
-     * @param responseHandler the def extractor
-     * @return the def extractor
-     */
-    public DefaultTask setResponseHandler(ResponseHandler responseHandler) {
-        this.responseHandler = responseHandler;
-        return this;
+    public void setModel(Model model) {
+        this.model = model;
     }
 }

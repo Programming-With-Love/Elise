@@ -1,5 +1,10 @@
 package site.zido.elise.task.model;
 
+import site.zido.elise.select.FieldType;
+
+import java.util.List;
+import java.util.Objects;
+
 /**
  * The Model field.
  *
@@ -10,16 +15,12 @@ public final class ModelField {
      * field name
      */
     private String name;
-    /**
-     * where to get it from
-     */
-    private String source;
 
     private boolean nullable;
 
-    private Action action;
+    private FieldType valueType;
 
-    private Object[] extra;
+    private List<Action> actions;
 
     public String getName() {
         return name;
@@ -27,14 +28,6 @@ public final class ModelField {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 
     public boolean isNullable() {
@@ -45,19 +38,35 @@ public final class ModelField {
         this.nullable = nullable;
     }
 
-    public Action getAction() {
-        return action;
+    public List<Action> getActions() {
+        return actions;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
     }
 
-    public Object[] getExtra() {
-        return extra;
+    public FieldType getValueType() {
+        return valueType;
     }
 
-    public void setExtra(Object[] extra) {
-        this.extra = extra;
+    public void setValueType(FieldType valueType) {
+        this.valueType = valueType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ModelField that = (ModelField) o;
+        return nullable == that.nullable &&
+                Objects.equals(name, that.name) &&
+                valueType == that.valueType &&
+                Objects.equals(actions, that.actions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, nullable, valueType, actions);
     }
 }
