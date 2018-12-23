@@ -1,6 +1,7 @@
 package site.zido.elise.downloader;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import site.zido.elise.custom.HttpClientConfig;
 import site.zido.elise.downloader.httpclient.HttpClientHeaderWrapper;
 import site.zido.elise.http.Body;
-import site.zido.elise.http.Http;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultCookie;
@@ -25,7 +25,6 @@ import site.zido.elise.http.impl.DefaultResponse;
 import site.zido.elise.http.impl.HttpClientBodyWrapper;
 import site.zido.elise.task.Task;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HttpClientDownloader implements Downloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloader.class);
     private CloseableHttpClient client;
-    private ConcurrentHashMap<Long, HttpClientContext> contextContainer = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long, CookieStore> cookieContainer = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new Http client downloader.
@@ -55,25 +54,20 @@ public class HttpClientDownloader implements Downloader {
         CloseableHttpResponse httpResponse = null;
         HttpClientContext context = getContext(task);
         HttpUriRequest httpUriRequest = buildRequest(task, request);
-        DefaultResponse response = DefaultResponse.fail();
+        DefaultResponse response = DefaultResponse.fail(request.getUrl());
         try {
             httpResponse = client.execute(httpUriRequest, context);
             response = handleResponse(request, task, httpResponse, context);
             LOGGER.debug("downloading response success {}", request.getUrl());
-            return response;
-        } catch (IOException e) {
-            LOGGER.error("download response {} error", request.getUrl(), e);
-            return response;
+        } catch (Throwable e) {
+            e.printStackTrace();
         } finally {
             if (httpResponse != null) {
                 EntityUtils.consumeQuietly(httpResponse.getEntity());
-                try {
-                    httpResponse.close();
-                } catch (IOException e) {
-                    LOGGER.error("http response close failed", e);
-                }
             }
+            //in order to reuse the connection, do not close the response flow
         }
+        return response;
     }
 
     private DefaultResponse handleResponse(Request request, Task task, HttpResponse httpResponse, HttpClientContext context) {
@@ -98,16 +92,15 @@ public class HttpClientDownloader implements Downloader {
      * @return context
      */
     private HttpClientContext getContext(Task task) {
-        return contextContainer.computeIfAbsent(task.getId(), key -> {
-            final HttpClientContext context = HttpClientContext.create();
-            final HttpClientConfig config = new HttpClientConfig(task.getConfig());
-            boolean disableCookie = config.getDisableCookie();
-            if (disableCookie) {
-                context.setCookieSpecRegistry(name -> null);
-            }
-            context.setCookieStore(new BasicCookieStore());
-            return context;
-        });
+        final HttpClientContext context = HttpClientContext.create();
+        final HttpClientConfig config = new HttpClientConfig(task.getConfig());
+        boolean disableCookie = config.getDisableCookie();
+        if (disableCookie) {
+            context.setCookieSpecRegistry(name -> null);
+        }else{
+            context.setCookieStore(cookieContainer.computeIfAbsent(task.getId(),key->(new BasicCookieStore())));
+        }
+        return context;
     }
 
     private HttpUriRequest buildRequest(Task task, Request request) {

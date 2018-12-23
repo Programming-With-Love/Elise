@@ -34,7 +34,7 @@ public class HtmlUnitDownloader implements Downloader {
     public Response download(Task task, Request request) {
         WebClient webClient = null;
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
-        DefaultResponse response = DefaultResponse.fail();
+        DefaultResponse response = DefaultResponse.fail(request.getUrl());
         try {
             if (proxy != null) {
                 webClient = new WebClient(BrowserVersion.CHROME, proxy.getHost(), proxy.getPort());

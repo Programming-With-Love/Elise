@@ -51,8 +51,9 @@ public class DefaultResponse implements Response {
      *
      * @return the default response
      */
-    public static DefaultResponse fail() {
+    public static DefaultResponse fail(String url) {
         DefaultResponse response = new DefaultResponse();
+        response.setUrl(url);
         response.setDownloadSuccess(false);
         response.setStatusCode(E.StatusCode.CODE_DOWNLOAD_ERROR);
         return response;

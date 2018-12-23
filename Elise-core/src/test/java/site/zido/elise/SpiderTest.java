@@ -3,6 +3,7 @@ package site.zido.elise;
 import org.junit.Assert;
 import org.junit.Test;
 import site.zido.elise.events.SingleEventListener;
+import site.zido.elise.processor.BlankSaver;
 import site.zido.elise.processor.MemorySaver;
 import site.zido.elise.processor.ResultItem;
 import site.zido.elise.scheduler.NoDepuplicationProcessor;
@@ -12,10 +13,13 @@ import site.zido.elise.select.LinkSelectHandler;
 import site.zido.elise.select.RegexSelectHandler;
 import site.zido.elise.task.api.ElementSelectable;
 import site.zido.elise.task.api.PartitionDescriptor;
+import site.zido.elise.utils.SystemClock;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * SpiderTest
@@ -28,7 +32,7 @@ public class SpiderTest {
      */
     @Test
     public void testOnePage() throws InterruptedException {
-        MemorySaver saver = new MemorySaver();
+        MemorySaver saver = new MemorySaver(System.out);
         //构造爬虫
         //爬虫默认为异步运行
         Spider spider = SpiderBuilder
@@ -36,16 +40,6 @@ public class SpiderTest {
                 .setDuplicationProcessor(new NoDepuplicationProcessor())
                 .setSaver(saver)
                 .build();
-
-        //构造抓取器
-//        final ResponseHandler extractor = ExtractorBuilder.create("article")
-//                .source(new CssSelectHandler(".page-container>.blog"))
-//                .addTargetUrl(new LinkSelectHandler("zido.site/?$"))
-//                .addField(FieldExtractorBuilder.create("title")
-//                        .css("h2.blog-header-title").build())
-//                .addField(FieldExtractorBuilder.create("description")
-//                        .css("p.blog-content").build())
-//                .build();
         //为抓取器部署抓取任务
         spider.of(response -> {
             response.modelName("blog");
@@ -80,7 +74,7 @@ public class SpiderTest {
 
     @Test
     public void testMultiPage() throws InterruptedException {
-        Spider spider = SpiderBuilder.defaults();
+        Spider spider = SpiderBuilder.create().setSaver(new BlankSaver(System.out)).build();
         spider.of(response -> {
             response.modelName("project");
             response.asTarget().matchUrl("github\\.com/zidoshare/[^/]*$");
@@ -94,39 +88,42 @@ public class SpiderTest {
 
     @Test
     public void testCancel() throws InterruptedException {
-//        CountDownLatch latch = new CountDownLatch(1);
-//        Spider spider = SpiderBuilder.defaults();
-//        ResponseHandler extractor = ExtractorBuilder.create("project")
-//                .addTargetUrl(new LinkSelectHandler("github.com/zidoshare/[^/]*$"))
-//                .addHelpUrl(new LinkSelectHandler("github.com/zidoshare/[^/]*$"))
-//                .addField(FieldExtractorBuilder.create("title")
-//                        .xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a")
-//                        .build())
-//                .addField(FieldExtractorBuilder.create("description")
-//                        .xpath("//*[@id=\"repo-meta-edit\"]/summary/div[1]/div/span[1]/div/span")
-//                        .build())
-//                .addField(FieldExtractorBuilder.create("readme")
-//                        .xpath("//*[@id=\"readme\"]/div[2]")
-//                        .build())
-//                .build();
-//        spider.addEventListener(new EventListener() {
-//            @Override
-//            public void onCancel() {
-//                latch.countDown();
-//            }
-//        });
-//        spider.of(extractor).execute("http://github.com/zidoshare");
-//        Thread.sleep(3000);
-//        spider.cancel(true);
-//        latch.await();
-    }
+        System.out.println("start in "+ SystemClock.now());
+        AtomicInteger target = new AtomicInteger(0);
+        Spider spider = SpiderBuilder.create().setSaver(new BlankSaver()).build();
+        Operator operator = spider.of(response -> {
+            response.modelName("project");
+            response.asTarget().matchUrl("github\\.com/zidoshare/[^/]*$");
+            response.asHelper().regex("github\\.com/zidoshare/[^/]*$");
+            response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
+            response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
+            response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
+            response.asContent().url().save("source_url");
+        }).execute("http://github.com/zidoshare")
+                .addEventListener(new SingleEventListener() {
+                    @Override
+                    public void onSuccess() {
+                        System.out.println("success in "+ SystemClock.now());
+                        target.incrementAndGet();
+                    }
 
-    @Test
-    public void testSpider() throws InterruptedException {
-//        final Spider spider = SpiderBuilder.defaults();
-//        spider.of(ExtractorBuilder.create("login").build()).execute(RequestBuilder
-//                .post("http://my.scu.edu.cn/userPasswordValidate.portal")
-//                .bodyForm("Login.Token1=xxx&Login.Token2=xxx.&goto=http://my.scu.edu.cn/loginSuccess.portal&gotoOnFail=http://my.scu.edu.cn/loginFailure.portal")
-//                .build()).block();
+                    @Override
+                    public void onRecover() {
+                        System.out.println("recover in "+ SystemClock.now());
+                        target.incrementAndGet();
+                    }
+
+                    @Override
+                    public void onPause() {
+                        System.out.println("pause in "+ SystemClock.now());
+                        target.incrementAndGet();
+                    }
+                });
+        Thread.sleep(1000);
+        spider.pause();
+        Thread.sleep(3000);
+        spider.recover();
+        operator.block();
+        Assert.assertEquals(3,target.get());
     }
 }
