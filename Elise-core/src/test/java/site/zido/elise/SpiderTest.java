@@ -88,6 +88,7 @@ public class SpiderTest {
             response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
             response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
             response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
+            response.asContent().url().save("source_url");
         }).execute("http://github.com/zidoshare").block();
     }
 

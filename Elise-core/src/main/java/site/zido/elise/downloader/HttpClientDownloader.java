@@ -1,6 +1,8 @@
 package site.zido.elise.downloader;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -110,6 +112,8 @@ public class HttpClientDownloader implements Downloader {
 
     private HttpUriRequest buildRequest(Task task, Request request) {
         RequestBuilder builder = RequestBuilder.create(request.getMethod());
+        RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+        builder.setConfig(requestConfig);
         final Body body = request.getBody();
         if (body != null) {
             ByteArrayEntity bodyEntity = new ByteArrayEntity(body.getBytes());

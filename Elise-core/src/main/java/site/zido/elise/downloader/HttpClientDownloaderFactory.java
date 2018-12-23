@@ -35,12 +35,11 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author zido
  */
-public class HttpClientDownloaderFactory implements DownloaderFactory {
+public class HttpClientDownloaderFactory extends AbstractDownloaderFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloaderFactory.class);
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
     private static final String GZIP = "gzip";
     private PoolingHttpClientConnectionManager connectionManager;
-    private Map<Long, Downloader> downloaderContainer = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new Http client downloader factory.
