@@ -15,4 +15,6 @@ public interface DownloaderFactory {
      * @return the downloader
      */
     Downloader create(Task task);
+
+    void release(Task task);
 }

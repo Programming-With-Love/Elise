@@ -18,9 +18,11 @@ public class ResponseContextHolder extends DefaultResponse {
     public ResponseContextHolder(Response response, Config config) {
         super(response);
         Body body = response.getBody();
-        Charset encoding = body.getEncoding();
-        String configCharset = config.get(GlobalConfig.KEY_CHARSET);
-        this.charset = encoding == null ? Charset.forName(configCharset) : encoding;
+        if(body != null) {
+            Charset encoding = body.getEncoding();
+            String configCharset = config.get(GlobalConfig.KEY_CHARSET);
+            this.charset = encoding == null ? Charset.forName(configCharset) : encoding;
+        }
     }
 
     public String getHtml() {
@@ -39,7 +41,8 @@ public class ResponseContextHolder extends DefaultResponse {
             getHtml();
         }
         if (document == null) {
-            document = Jsoup.parse(html,getUrl());
+            String url = getUrl();
+            document = Jsoup.parse(html, url);
         }
         return document;
     }

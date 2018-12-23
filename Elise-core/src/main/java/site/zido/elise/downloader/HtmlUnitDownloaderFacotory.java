@@ -7,7 +7,7 @@ import site.zido.elise.task.Task;
  *
  * @author zido
  */
-public class HtmlUnitDownloaderFacotory implements DownloaderFactory {
+public class HtmlUnitDownloaderFacotory extends AbstractDownloaderFactory {
     @Override
     public Downloader create(Task task) {
         return null;

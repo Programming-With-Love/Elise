@@ -1,10 +1,9 @@
 package site.zido.elise.processor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.ValidateUtils;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zido
  */
 public class MemorySaver extends BlankSaver implements Saver {
-    private static Logger LOGGER = LoggerFactory.getLogger(MemorySaver.class);
     private Map<Long, List<ResultItem>> cup = new ConcurrentHashMap<>();
+
+    public MemorySaver(){
+
+    }
+    public MemorySaver(PrintStream stream) {
+        super(stream);
+    }
 
     /**
      * Gets cup.

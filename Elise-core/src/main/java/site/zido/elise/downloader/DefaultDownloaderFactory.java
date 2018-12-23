@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author zido
  */
-public final class DefaultDownloaderFactory implements DownloaderFactory {
+public final class DefaultDownloaderFactory extends AbstractDownloaderFactory {
     private Map<String, DownloaderFactory> factoryMap = new HashMap<>();
 
     /**
