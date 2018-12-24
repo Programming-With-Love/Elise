@@ -1,24 +1,24 @@
 # Elise 伊莉丝 爬虫框架
 
-![](http://pj99lptli.bkt.clouddn.com/assets/logos/elise-logo.png)
+![elise](http://pj99lptli.bkt.clouddn.com/assets/logos/elise-logo.png)
 
 > 名字取材于游戏《英雄联盟》中的一名英雄-蜘蛛女皇。
 
 ## 简介
 
-Elise一个开源的商业友好的java爬虫框架。从功能设计上来说，不论是从单线程到多线程还是从单机到分布式或者从个人到企业，本框架都将能够满足其网络抓取需求。
+Elise一个开源的商业友好的java爬虫框架。他的目标是建立一个强大的可配置分布式爬虫框架，能够囊括绝大多数使用场景，通过大量的基础组建构建，任何人都能够构建一个复杂的爬虫平台
 
 Elise的优势：
 
-* 流畅、优雅的体验，致力于体验
+* 语义化api，流畅／优雅
 
 * 多线程，速度快
 
 * 自动cookie和会话处理
 
-* 扩展性高
+* 组建化，提供了大量基础组建，扩展性高
 
-* 支持分布式
+* 完全支持分布式
 
 * 提供生命周期回调，任务完成，任务取消,下载成功，下载失败等等一系列回调支持
 
@@ -58,7 +58,7 @@ Elise的优势：
 
 暂无稳定版本，你可以使用`1.0.0-SNAPSHOT`做为版本号来预先体验开发版本
 
-> 请注意：不稳定且许多api暂未实现，请持续关注[ROADMAP.md](./docs/ROADMAP.md)开发路线文档，期待第一个版本的诞生，一定会惊艳到你
+> 请注意：不稳定且许多api暂未实现，请持续关注[ROADMAP.md](./ROADMAP.md)开发路线文档，期待第一个版本的诞生，一定会惊艳到你
 
 ## 快速试用
 
@@ -71,8 +71,8 @@ Elise的优势：
 ```java
 SpiderBuilder.defaults().of(response -> {
     response.modelName("project");
-    response.asTarget().matchUrl(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
-    response.asHelper().filter(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+    response.asTarget().matchUrl("github\\.com/zidoshare/[^/]*$");
+    response.asHelper().regex("github\\.com/zidoshare/[^/]*$");
     response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
     response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
     response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
@@ -83,7 +83,7 @@ SpiderBuilder.defaults().of(response -> {
 
 依靠高度封装的api,试着写下`response.`你能轻松的知道接下来可以做什么。
 
-或者转到[使用文档](./docs/TUTORIAL.md)，详细的看看Elise的使用吧
+或者转到[使用文档](./TUTORIAL.md)，详细的看看Elise的使用吧
 
 ## 构建指北
 
@@ -97,7 +97,7 @@ Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版
 
 因为作者是使用idea进行开发，所以推荐的开发编辑器为IntelliJ IDEA。
 
-如果你在其他编辑器中开发，请确保你的编辑器中的配置文件/构建文件/缓存等不会出现在提交目录中。这可以在[.gitignore](https://git-scm.com/docs/gitignore)文件中进行设置，也欢迎提交类似的pr
+如果你在其他编辑器中开发，请确保你的编辑器中的配置文件/构建文件/缓存等不会出现在提交目录中。这可以在[.gitignore](https://git-scm.com/gitignore)文件中进行设置，也欢迎提交类似的pr
 
 ## 状态
 
@@ -105,13 +105,13 @@ Elise框架使用maven构建，并使用大量jdk8特性，请保证你的jdk版
 
 目前还没能达到正式版本的状态。不过已经能基本保证正常运行，可以自行clone代码构建运行。
 
-开发路线参考 [ROADMAP.md](./docs/ROADMAP.md)。
+开发路线参考 [ROADMAP.md](./ROADMAP.md)。
 
 ## 贡献
 
-行为准则请参阅[CODE_OF_CONDUCT.md](./docs/CODE_OF_CONDUCT.md)
+行为准则请参阅[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 
-请查看[贡献说明](./docs/CONTRIBUTING.md)。
+请查看[贡献说明](./CONTRIBUTING.md)。
 
 ## 交流反馈
 

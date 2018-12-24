@@ -18,7 +18,7 @@ API和功能请求应作为PR提交到本文档。
 
 * 爬取结果的处理，目前使用Saver的机制，并不能很好的配合使用者，需要进行讨论。
 
-* (已完成)ResponseHandler支持。
+* (已完成 X 2)ResponseHandler支持。
 
     ```java
     SpiderBuilder.defaults().of(response -> {
