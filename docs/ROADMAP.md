@@ -10,7 +10,7 @@ API和功能请求应作为PR提交到本文档。
 
 * HtmlUnitDownloader下载器适配以及HtmlUnitDownloaderFactory构建工厂类
 
-* Spider提供的`pause`/`recover`功能实现，提供暂停/恢复功能（已写接口，但并未实现，可查看//TODO)
+* (已完成)Spider提供的`pause`/`recover`功能实现，提供暂停/恢复功能（已写接口，但并未实现，可查看//TODO)
 
 * proxy代理。目前对于proxy并没有比较好的想法，因为代理的情况很多，考虑很多代理提供商会有`http隧道`和`直接ip`等多种代理方式。目前代理配置了并不会起作用
 
