@@ -10,7 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The interface Data descriptor.
+ * Data descriptor.
+ * describe how to extract data.
  *
  * @author zido
  */
@@ -35,21 +36,21 @@ public class DataDescriptor {
     }
 
     /**
-     * Url value.
+     * get data from url
      *
-     * @return the value
+     * @return the value descriptor
      */
     public Value url() {
         return getValue(Source.URL, FieldType.TEXT);
     }
 
     /**
-     * Status code value.
+     * get data from status code
      *
-     * @return the value
+     * @return the value descriptor
      */
     public Value statusCode() {
-        return getValue(Source.CODE,FieldType.NUMBER);
+        return getValue(Source.CODE, FieldType.NUMBER);
     }
 
     private Value getValue(String source, FieldType type) {
