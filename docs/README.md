@@ -1,6 +1,6 @@
 # Elise 伊莉丝 爬虫框架
 
-![elise](http://pj99lptli.bkt.clouddn.com/assets/logos/elise-logo.png)
+![elise](./elise.png)
 
 > 名字取材于游戏《英雄联盟》中的一名英雄-蜘蛛女皇。
 
