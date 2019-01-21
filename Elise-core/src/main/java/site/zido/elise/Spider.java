@@ -14,7 +14,7 @@ import site.zido.elise.task.api.ResponseHandler;
 public interface Spider extends EventSupport {
 
     /**
-     * Of operator.
+     * create a new task by response handler api.
      *
      * @param handler the handler
      * @param config  the config
@@ -23,12 +23,32 @@ public interface Spider extends EventSupport {
     Operator of(ResponseHandler handler, Config config);
 
     /**
-     * Of operator.
+     * create a new task by response handler api.
      *
      * @param handler the handler
      * @return the operator
      */
-    Operator of(ResponseHandler handler);
+    default Operator of(ResponseHandler handler){
+        return of(handler,null);
+    }
+
+    /**
+     * create a new task by model class
+     *
+     * @param modelClass the model class
+     * @return the operator
+     */
+    default Operator of(Class<?> modelClass){
+        return of(modelClass,null);
+    }
+
+    /**
+     * create a new task by model class and config
+     * @param modelClass the model class
+     * @param config the config
+     * @return the operator
+     */
+    Operator of(Class<?> modelClass, Config config);
 
 
     /**

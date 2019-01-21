@@ -65,8 +65,8 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     }
 
     @Override
-    public Operator of(ResponseHandler handler) {
-        return of(handler, null);
+    public Operator of(Class<?> modelClass, Config config) {
+        return null;
     }
 
     @Override

@@ -156,16 +156,14 @@ public class SpiderBuilder {
         }
         if (responseProcessor == null) {
             responseProcessor = new DefaultResponseProcessor(saver);
-            if(responseProcessor instanceof DefaultResponseProcessor){
-                DefaultResponseProcessor drp = (DefaultResponseProcessor) responseProcessor;
-                drp.registerSelector(E.Action.XPATH_SELECTOR,new XpathSelectHandler());
-                drp.registerSelector(E.Action.MATCH_LINK,new RegexSelectHandler());
-                drp.registerSelector(E.Action.CSS_SELECTOR,new CssSelectHandler());
-                drp.registerSelector(E.Action.LINK_SELECTOR,new LinkSelectHandler("a:href"));
-                drp.registerSelector(E.Action.MATCH_NUMBER,new NumberMatcherSelectHandler());
-                drp.registerSelector(E.Action.SELECT_ORIGIN,new OriginSelectorHandler());
-                drp.registerSelector(E.Action.SELECT_URL,new OriginSelectorHandler());
-            }
+            DefaultResponseProcessor drp = (DefaultResponseProcessor) responseProcessor;
+            drp.registerSelector(E.Action.XPATH_SELECTOR,new XpathSelectHandler());
+            drp.registerSelector(E.Action.MATCH_LINK,new RegexSelectHandler());
+            drp.registerSelector(E.Action.CSS_SELECTOR,new CssSelectHandler());
+            drp.registerSelector(E.Action.LINK_SELECTOR,new LinkSelectHandler("a:href"));
+            drp.registerSelector(E.Action.MATCH_NUMBER,new NumberMatcherSelectHandler());
+            drp.registerSelector(E.Action.SELECT_ORIGIN,new OriginSelectorHandler());
+            drp.registerSelector(E.Action.SELECT_URL,new OriginSelectorHandler());
         }
         if (countManager == null) {
             countManager = new DefaultMemoryCountManager();
