@@ -45,6 +45,7 @@
         <module>Elise-redis-support</module>
         <module>Elise-jedis-support</module>
         <module>Elise-kafka-support</module>
+        <module>Elise-client</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

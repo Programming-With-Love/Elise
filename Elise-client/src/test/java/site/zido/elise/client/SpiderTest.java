@@ -1,21 +1,18 @@
-package site.zido.elise;
+package site.zido.elise.client;
 
 import org.junit.Assert;
 import org.junit.Test;
+import site.zido.elise.Operator;
+import site.zido.elise.Spider;
 import site.zido.elise.events.SingleEventListener;
 import site.zido.elise.processor.BlankSaver;
 import site.zido.elise.processor.MemorySaver;
 import site.zido.elise.processor.ResultItem;
 import site.zido.elise.scheduler.NoDepuplicationProcessor;
-import site.zido.elise.select.CssSelectHandler;
 import site.zido.elise.select.CssSelector;
-import site.zido.elise.select.LinkSelectHandler;
-import site.zido.elise.select.RegexSelectHandler;
-import site.zido.elise.task.api.ElementSelectable;
 import site.zido.elise.task.api.PartitionDescriptor;
 import site.zido.elise.utils.SystemClock;
 
-import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
