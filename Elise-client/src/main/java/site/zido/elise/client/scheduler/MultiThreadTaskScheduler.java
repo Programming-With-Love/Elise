@@ -1,9 +1,12 @@
-package site.zido.elise.scheduler;
+package site.zido.elise.client.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
+import site.zido.elise.scheduler.AbstractScheduler;
+import site.zido.elise.scheduler.Seed;
+import site.zido.elise.scheduler.TaskScheduler;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.ModuleNamedDefaultThreadFactory;
 
@@ -11,13 +14,13 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * This default task scheduler provides thread-level task scheduling that is implemented from {@link TaskScheduler}.
+ * This multi-thread task scheduler provides thread-level task scheduling that is implemented from {@link TaskScheduler}.
  *
  * @author zido
  */
-public class DefaultTaskScheduler extends AbstractScheduler implements Runnable {
+public class MultiThreadTaskScheduler extends AbstractScheduler implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTaskScheduler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MultiThreadTaskScheduler.class);
     private final ThreadPoolExecutor executor;
     private final LinkedBlockingQueue<Seed> queue = new LinkedBlockingQueue<>();
     private final ExecutorService rootExecutor = Executors.newFixedThreadPool(1, new ModuleNamedDefaultThreadFactory("task queue processor"));
@@ -26,7 +29,7 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
     /**
      * Instantiates a new Default task scheduler.
      */
-    public DefaultTaskScheduler() {
+    public MultiThreadTaskScheduler() {
         this(Runtime.getRuntime().availableProcessors() * 2);
     }
 
@@ -35,7 +38,7 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
      *
      * @param threadNum the thread num
      */
-    public DefaultTaskScheduler(int threadNum) {
+    public MultiThreadTaskScheduler(int threadNum) {
         this.executor = new ThreadPoolExecutor(threadNum,
                 threadNum,
                 1,
@@ -48,7 +51,7 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
     /**
      * Pre start.
      */
-    public void preStart() {
+    private void preStart() {
         if (RUNNING.compareAndSet(false, true)) {
             rootExecutor.execute(this);
         }
@@ -61,7 +64,7 @@ public class DefaultTaskScheduler extends AbstractScheduler implements Runnable 
      * @param request  the request
      * @param response the response
      */
-    public void processPage(Task task, Request request, Response response) {
+    private void processPage(Task task, Request request, Response response) {
         preStart();
         queue.offer(new Seed(task, request, response));
     }

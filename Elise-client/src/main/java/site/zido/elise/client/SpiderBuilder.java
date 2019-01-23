@@ -1,5 +1,8 @@
-package site.zido.elise;
+package site.zido.elise.client;
 
+import site.zido.elise.E;
+import site.zido.elise.Spider;
+import site.zido.elise.client.scheduler.MultiThreadTaskScheduler;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
 import site.zido.elise.custom.GlobalConfigBuilder;
@@ -180,11 +183,11 @@ public class SpiderBuilder {
                 ((DefaultDownloaderFactory) downloaderFactory).registerFactory("httpclient", new HttpClientDownloaderFactory());
             }
         }
-        DefaultTaskScheduler scheduler;
+        MultiThreadTaskScheduler scheduler;
         if (threadNum > 0) {
-            scheduler = new DefaultTaskScheduler(threadNum);
+            scheduler = new MultiThreadTaskScheduler(threadNum);
         } else {
-            scheduler = new DefaultTaskScheduler();
+            scheduler = new MultiThreadTaskScheduler();
         }
         if (globalConfig == null) {
             globalConfig = GlobalConfigBuilder.defaults();
