@@ -21,5 +21,9 @@
             <groupId>site.zido</groupId>
             <artifactId>Elise-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>site.zido</groupId>
+            <artifactId>Elise-distributed</artifactId>
+        </dependency>
     </dependencies>
 </project>
