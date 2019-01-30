@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.zido.elise.distributed.AbstractQueueScheduler;
 import site.zido.elise.http.Request;
-import site.zido.elise.scheduler.AbstractScheduler;
 import site.zido.elise.scheduler.Seed;
 import site.zido.elise.task.Task;
 
@@ -20,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author zido
  */
-public class RedisTaskScheduler extends AbstractQueueScheduler implements Runnable {
+public class RedisTaskScheduler extends AbstractQueueScheduler {
     private static Logger LOGGER = LoggerFactory.getLogger(RedisTaskScheduler.class);
     private RedisClient redisClient;
     private StatefulRedisConnection<String, String> connection;
@@ -38,9 +37,9 @@ public class RedisTaskScheduler extends AbstractQueueScheduler implements Runnab
     }
 
     @Override
-    public void run() {
-        preStart();
-        //TODO 工作密取获取种子进行任务下载
+    protected Seed readSeedFromQueue() {
+        //TODO read from queue
+        return null;
     }
 
     /**
@@ -49,6 +48,9 @@ public class RedisTaskScheduler extends AbstractQueueScheduler implements Runnab
     private void preStart() {
         if (STATE.compareAndSet(false, true)) {
             connection = redisClient.connect();
+            if (mapper == null) {
+                mapper = new ObjectMapper();
+            }
         }
     }
 
@@ -68,5 +70,9 @@ public class RedisTaskScheduler extends AbstractQueueScheduler implements Runnab
     public void cancel(boolean ifRunning) {
         connection.close();
         redisClient.shutdown();
+    }
+
+    public void setMapper(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 }
