@@ -6,11 +6,11 @@
 
 ## 简介
 
-Elise一个开源的商业友好的java爬虫框架。他的目标是建立一个强大的可配置分布式爬虫框架，能够囊括绝大多数使用场景，通过大量的基础组建构建，任何人都能够构建一个复杂的爬虫平台
+Elise一个开源的商业友好的java爬虫框架。他的目标是建立一个强大的可配置分布式爬虫框架，能够囊括绝大多数使用场景，通过大量的基础组件构建，任何人都能够构建一个复杂的傻瓜式爬虫平台
 
 Elise的优势：
 
-* 语义化api，流畅／优雅
+* 傻瓜式爬虫支持，语义化api，流畅／优雅
 
 * 多线程，速度快
 
@@ -51,7 +51,7 @@ Elise的优势：
 ```
 <dependency>
     <groupId>site.zido</groupId>
-    <artifactId>Elise-core</artifactId>
+    <artifactId>Elise-client</artifactId>
     <version>{version}</version>
 </dependency>
 ```
@@ -64,9 +64,9 @@ Elise的优势：
 
 轻松利用response回调句柄像说话一样简单的爬取一个网站,语义化api，使用绝不迷茫！
 
-优雅的api,让你乐在其中：
+优雅的api：
 
-> 尝试以舒爽的api爬取我的github仓库吧：
+> 尝试爬取我的github仓库：
 
 ```java
 SpiderBuilder.defaults().of(response -> {
