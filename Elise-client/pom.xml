@@ -17,8 +17,8 @@
             <artifactId>Elise-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>site.zido</groupId>
+            <artifactId>Elise-test-server</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
