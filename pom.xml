@@ -46,6 +46,7 @@
         <module>Elise-jedis-support</module>
         <module>Elise-kafka-support</module>
         <module>Elise-client</module>
+        <module>Elise-test-server</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -87,6 +88,11 @@
             <dependency>
                 <groupId>site.zido</groupId>
                 <artifactId>Elise-core</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>site.zido</groupId>
+                <artifactId>Elise-test-server</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>

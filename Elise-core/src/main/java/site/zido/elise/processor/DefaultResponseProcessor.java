@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
  * @author zido
  */
 public class DefaultResponseProcessor implements ListenableResponseProcessor {
-    private static Logger LOGGER = LoggerFactory.getLogger(DefaultResponseProcessor.class);
     private static final String HTTP_LABEL = "http";
+    private static Logger LOGGER = LoggerFactory.getLogger(DefaultResponseProcessor.class);
     private Set<ProcessorEventListener> listeners = new HashSet<>();
     private Saver saver;
     private Map<String, SelectHandler> selectors = new HashMap<>();
@@ -163,6 +163,9 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                         }
                         item.put(field.getName(), values, field.getValueType());
                     }
+                } else if (!field.isNullable()) {
+                    item = null;
+                    break;
                 }
             }
             if (isAddNew && item != null) {
