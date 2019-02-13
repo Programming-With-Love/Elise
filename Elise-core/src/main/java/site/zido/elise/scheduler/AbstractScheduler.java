@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 
 /**
  * Abstract Scheduler,support most life cycle methods
@@ -41,9 +40,6 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     private static final byte STATE_PAUSE = 1;
     private static final byte STATE_CANCEL = 2;
     private static final byte STATE_CANCEL_NOW = 3;
-    /**
-     * The Logger.
-     */
     protected static Logger LOGGER = LoggerFactory.getLogger(TaskScheduler.class);
     private final Map<Long, Byte> stateMap = new HashMap<>();
     private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
@@ -66,7 +62,8 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
 
     @Override
     public Operator of(Class<?> modelClass, Config config) {
-        return null;
+        //TODO add annotations support
+        throw new UnsupportedOperationException("annotations unsupported");
     }
 
     @Override
@@ -284,10 +281,10 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
 
     @Override
     public synchronized boolean pause() {
-        stateMap.replaceAll((key,value) -> {
-            if(value == STATE_START){
+        stateMap.replaceAll((key, value) -> {
+            if (value == STATE_START) {
                 return STATE_PAUSE;
-            }else{
+            } else {
                 return value;
             }
         });
@@ -296,9 +293,9 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
 
     @Override
     public synchronized void recover() {
-        stateMap.forEach((key,value) -> {
-            if(value == 1){
-                recover(new DefaultTask(key,null,null));
+        stateMap.forEach((key, value) -> {
+            if (value == 1) {
+                recover(new DefaultTask(key, null, null));
             }
         });
     }
@@ -314,7 +311,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
                 ((TaskEventListener) eventListener).onRecover(task);
             }
         });
-        stateMap.put(task.getId(),STATE_START);
+        stateMap.put(task.getId(), STATE_START);
         Set<Seed> set = pauseMap.getOrDefault(task.getId(), new HashSet<>());
         for (Seed seed : set) {
             if (seed.getResponse() != null) {
