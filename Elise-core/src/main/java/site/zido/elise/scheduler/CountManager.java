@@ -18,37 +18,7 @@ public interface CountManager {
      */
     int count(Task task);
 
-    /**
-     * Incr.
-     *
-     * @param task     the task
-     * @param num      the num
-     * @param listener the listener
-     */
-    void incr(Task task, int num, CountListener listener);
+    int incr(Task task,int num);
 
-    /**
-     * Incr.
-     *
-     * @param task the task
-     * @param num  the num
-     */
-    default void incr(Task task, int num) {
-        incr(task, num, null);
-    }
-
-    /**
-     * The interface Count listener.
-     *
-     * @author zido
-     */
-    @FunctionalInterface
-    interface CountListener extends EventListener {
-        /**
-         * Result.
-         *
-         * @param num the num
-         */
-        void result(int num);
-    }
+    void release(Task task);
 }

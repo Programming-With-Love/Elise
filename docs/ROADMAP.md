@@ -14,7 +14,7 @@ API和功能请求应作为PR提交到本文档。
 
 * proxy代理。目前对于proxy并没有比较好的想法，因为代理的情况很多，考虑很多代理提供商会有`http隧道`和`直接ip`等多种代理方式。目前代理配置了并不会起作用
 
-* 注解配置支持。`spider.of(xxx.class)`方法，读取类注解构建ModelExtractor
+* (低优先级)注解配置支持。`spider.of(xxx.class)`方法，读取类注解构建ModelExtractor
 
 * 爬取结果的处理，目前使用Saver的机制，并不能很好的配合使用者，需要进行讨论。
 
