@@ -2,6 +2,7 @@ package site.zido.elise.client;
 
 import site.zido.elise.E;
 import site.zido.elise.Spider;
+import site.zido.elise.client.scheduler.MemerySpiderContext;
 import site.zido.elise.client.scheduler.MultiThreadTaskScheduler;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
@@ -34,6 +35,7 @@ public class SpiderBuilder {
     private DownloaderFactory downloaderFactory;
     private int threadNum;
     private Config globalConfig;
+    private SpiderContext spiderContext;
 
     /**
      * Instantiates a new Spider builder.
@@ -148,6 +150,11 @@ public class SpiderBuilder {
         return this;
     }
 
+    public SpiderBuilder setContext(SpiderContext spiderContext){
+        this.spiderContext = spiderContext;
+        return this;
+    }
+
     /**
      * Build spider.
      *
@@ -156,6 +163,9 @@ public class SpiderBuilder {
     public Spider build() {
         if (saver == null) {
             saver = new BlankSaver();
+        }
+        if(spiderContext == null){
+            spiderContext = new MemerySpiderContext();
         }
         if (responseProcessor == null) {
             responseProcessor = new DefaultResponseProcessor(saver);

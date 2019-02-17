@@ -26,13 +26,16 @@ public class DefaultMemoryCountManager implements CountManager {
     }
 
     @Override
-    public synchronized void incr(Task task, int num, CountListener listener) {
+    public synchronized int incr(Task task, int num) {
         final int i = container.getOrDefault(task.getId(), 0) + num;
         container.put(task.getId(), i);
         LOGGER.debug("count result:" + i);
-        if (listener != null) {
-            listener.result(i);
-        }
+        return i;
+    }
+
+    @Override
+    public void release(Task task) {
+        container.remove(task.getId());
     }
 
 }

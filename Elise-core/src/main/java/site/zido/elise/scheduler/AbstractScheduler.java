@@ -24,11 +24,11 @@ import site.zido.elise.task.model.Model;
 import site.zido.elise.utils.EventUtils;
 import site.zido.elise.utils.IdWorker;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static site.zido.elise.scheduler.SpiderContext.*;
 
 /**
  * Abstract Scheduler,support most life cycle methods
@@ -36,15 +36,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zido
  */
 public abstract class AbstractScheduler implements Spider, OperationalTaskScheduler {
-    private static final byte STATE_START = 0;
-    private static final byte STATE_PAUSE = 1;
-    private static final byte STATE_CANCEL = 2;
-    private static final byte STATE_CANCEL_NOW = 3;
-    protected static Logger LOGGER = LoggerFactory.getLogger(TaskScheduler.class);
-    private final Map<Long, Byte> stateMap = new HashMap<>();
-    private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
-    private Set<EventListener> listeners = new HashSet<>();
 
+    protected static Logger LOGGER = LoggerFactory.getLogger(TaskScheduler.class);
+    private Set<EventListener> listeners = new HashSet<>();
+    private SpiderContext spiderContext;
     private ResponseProcessor responseProcessor;
     private CountManager countManager;
     private DuplicationProcessor duplicationProcessor;
@@ -57,7 +52,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         handler.onHandle(response);
         Model model = response.getModel();
         final DefaultTask task = new DefaultTask(IdWorker.nextId(), model, ConfigUtils.mergeConfig(config, this.config));
-        return new DefaultOperator(task, this);
+        return spiderContext.init(task, this);
     }
 
     @Override
@@ -68,7 +63,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
 
     @Override
     public void pushRequest(Task task, Request request) {
-        Byte state = stateMap.computeIfAbsent(task.getId(), key -> STATE_START);
+        byte state = spiderContext.getState(task);
         //will no longer receive new requests when the task is in the canceled state
         if (state >= STATE_CANCEL) {
             return;
@@ -79,7 +74,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
                 || !duplicationProcessor.isDuplicate(task, request)) {
             if (state == STATE_PAUSE) {
                 LOGGER.debug(task.getId() + "[" + request.getUrl() + "] received pause");
-                addToPauseMap(task.getId(), new Seed(task, request));
+                addToPauseMap(task, new Seed(task, request));
                 countEvent(state, task);
                 return;
             }
@@ -89,8 +84,8 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         }
     }
 
-    private void addToPauseMap(Long taskId, Seed seed) {
-        Set<Seed> seeds = pauseMap.computeIfAbsent(taskId, k -> new HashSet<>());
+    private void addToPauseMap(Task task, Seed seed) {
+        List<Seed> seeds = spiderContext.getSeeds(task);
         seeds.add(seed);
     }
 
@@ -103,9 +98,9 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
      */
     protected void onProcess(Task task, Request request, Response response) {
         //will no longer process any pages when the task is in the cancel_now state
-        final Byte state = stateMap.get(task.getId());
+        final byte state = spiderContext.getState(task);
         if (state == STATE_PAUSE) {
-            addToPauseMap(task.getId(), new Seed(task, request));
+            addToPauseMap(task, new Seed(task, request));
             countEvent(state, task);
             return;
         }
@@ -138,33 +133,40 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     }
 
     private void countEvent(final byte state, Task task) {
-        countManager.incr(task, -1, i -> {
-            if (i == 0) {
+        int i = countManager.incr(task, -1);
+        if (i == 0) {
+            if (state == STATE_PAUSE) {
+                EventUtils.notifyListeners(listeners, listener -> {
+                    if (listener instanceof TaskEventListener) {
+                        ((TaskEventListener) listener).onPause(task);
+                    }
+                });
+            } else {
                 if (state == STATE_START) {
                     EventUtils.notifyListeners(listeners, listener -> {
                         if (listener instanceof TaskEventListener) {
                             ((TaskEventListener) listener).onSuccess(task);
                         }
                     });
-                    //release downloader
-                    downloaderFactory.release(task);
                 } else if (state >= STATE_CANCEL) {
                     EventUtils.notifyListeners(listeners, listener -> {
                         if (listener instanceof TaskEventListener) {
                             ((TaskEventListener) listener).onCancel(task);
                         }
                     });
-                    //release downloader
-                    downloaderFactory.release(task);
-                } else if (state == STATE_PAUSE) {
-                    EventUtils.notifyListeners(listeners, listener -> {
-                        if (listener instanceof TaskEventListener) {
-                            ((TaskEventListener) listener).onPause(task);
-                        }
-                    });
                 }
+                releaseResourcesByTask(task);
             }
-        });
+        }
+    }
+
+    private void releaseResourcesByTask(Task task) {
+        //release downloader
+        downloaderFactory.release(task);
+        //release count manager
+        countManager.release(task);
+        //release context
+        spiderContext.release(task);
     }
 
     /**
@@ -260,59 +262,46 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     @Override
     public boolean cancel(Task task, boolean giveUpSeeds) {
         final byte newState = giveUpSeeds ? STATE_CANCEL_NOW : STATE_CANCEL;
-        synchronized (stateMap) {
-            final Byte currentState = stateMap.get(task.getId());
-            if (currentState != 0) {
-                return currentState == newState;
-            }
+        final byte currentState = spiderContext.getState(task);
+        if (currentState != 0) {
+            return currentState == newState;
         }
-        stateMap.put(task.getId(), newState);
+        spiderContext.setState(task, newState);
         return true;
     }
 
     @Override
     public synchronized void pause(Task task) {
-        final Byte currentState = stateMap.get(task.getId());
+        final byte currentState = spiderContext.getState(task);
         if (currentState != STATE_START) {
             return;
         }
-        stateMap.put(task.getId(), STATE_PAUSE);
+        spiderContext.setState(task, STATE_PAUSE);
     }
 
     @Override
     public synchronized boolean pause() {
-        stateMap.replaceAll((key, value) -> {
-            if (value == STATE_START) {
-                return STATE_PAUSE;
-            } else {
-                return value;
-            }
-        });
+        spiderContext.setState(STATE_START, STATE_PAUSE);
         return true;
     }
 
     @Override
     public synchronized void recover() {
-        stateMap.forEach((key, value) -> {
-            if (value == 1) {
-                recover(new DefaultTask(key, null, null));
-            }
-        });
+        List<Task> tasks = spiderContext.getTasksByState((byte) 1);
+        for (Task task : tasks) {
+            recover(task);
+        }
     }
 
     @Override
     public synchronized void recover(Task task) {
-        final Byte currentState = stateMap.get(task.getId());
-        if (currentState == null) {
-            return;
-        }
         EventUtils.notifyListeners(listeners, eventListener -> {
             if (eventListener instanceof TaskEventListener) {
                 ((TaskEventListener) eventListener).onRecover(task);
             }
         });
-        stateMap.put(task.getId(), STATE_START);
-        Set<Seed> set = pauseMap.getOrDefault(task.getId(), new HashSet<>());
+        spiderContext.setState(task, STATE_START);
+        List<Seed> set = spiderContext.getSeeds(task);
         for (Seed seed : set) {
             if (seed.getResponse() != null) {
                 onProcess(seed.getTask(), seed.getRequest(), seed.getResponse());
@@ -367,5 +356,9 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     public AbstractScheduler setConfig(Config config) {
         this.config = config;
         return this;
+    }
+
+    public void setSpiderContext(SpiderContext spiderContext) {
+        this.spiderContext = spiderContext;
     }
 }
