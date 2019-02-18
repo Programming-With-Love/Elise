@@ -51,7 +51,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         DefaultSelectableResponse response = new DefaultSelectableResponse();
         handler.onHandle(response);
         Model model = response.getModel();
-        final DefaultTask task = new DefaultTask(IdWorker.nextId(), model, ConfigUtils.mergeConfig(config, this.config));
+        final DefaultTask task = new DefaultTask(model, ConfigUtils.mergeConfig(config, this.config));
         return spiderContext.init(task, this);
     }
 
@@ -73,7 +73,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
                 || noNeedToRemoveDuplicate(request)
                 || !duplicationProcessor.isDuplicate(task, request)) {
             if (state == STATE_PAUSE) {
-                LOGGER.debug(task.getId() + "[" + request.getUrl() + "] received pause");
+                LOGGER.debug(task + "[" + request.getUrl() + "] received pause");
                 addToPauseMap(task, new Seed(task, request));
                 countEvent(state, task);
                 return;

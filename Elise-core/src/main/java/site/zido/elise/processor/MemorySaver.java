@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zido
  */
 public class MemorySaver extends BlankSaver implements Saver {
-    private Map<Long, List<ResultItem>> cup = new ConcurrentHashMap<>();
+    private Map<Task, List<ResultItem>> cup = new ConcurrentHashMap<>();
 
     public MemorySaver(){
 
@@ -29,20 +29,20 @@ public class MemorySaver extends BlankSaver implements Saver {
      *
      * @return the cup
      */
-    public Map<Long, List<ResultItem>> getCup() {
+    public Map<Task, List<ResultItem>> getCup() {
         return cup;
     }
 
     @Override
     public void save(ResultItem resultItem, Task task) {
-        List<ResultItem> resultItems = cup.computeIfAbsent(task.getId(), k -> new ArrayList<>());
+        List<ResultItem> resultItems = cup.computeIfAbsent(task, k -> new ArrayList<>());
         resultItems.add(resultItem);
         super.save(resultItem, task);
     }
 
     @Override
     public ResultItem next(Task task, ResultItem item) {
-        List<ResultItem> resultItems = cup.get(task.getId());
+        List<ResultItem> resultItems = cup.get(task);
         if (ValidateUtils.isEmpty(resultItems)) {
             return null;
         }
@@ -68,6 +68,6 @@ public class MemorySaver extends BlankSaver implements Saver {
 
     @Override
     public int size(Task task) {
-        return cup.computeIfAbsent(task.getId(), k -> new ArrayList<>()).size();
+        return cup.computeIfAbsent(task, k -> new ArrayList<>()).size();
     }
 }

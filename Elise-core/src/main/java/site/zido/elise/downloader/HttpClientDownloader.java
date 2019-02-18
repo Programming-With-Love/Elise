@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HttpClientDownloader implements Downloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientDownloader.class);
     private CloseableHttpClient client;
-    private ConcurrentHashMap<Long, CookieStore> cookieContainer = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Task, CookieStore> cookieContainer = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new Http client downloader.
@@ -98,7 +98,7 @@ public class HttpClientDownloader implements Downloader {
         if (disableCookie) {
             context.setCookieSpecRegistry(name -> null);
         }else{
-            context.setCookieStore(cookieContainer.computeIfAbsent(task.getId(),key->(new BasicCookieStore())));
+            context.setCookieStore(cookieContainer.computeIfAbsent(task,key->(new BasicCookieStore())));
         }
         return context;
     }

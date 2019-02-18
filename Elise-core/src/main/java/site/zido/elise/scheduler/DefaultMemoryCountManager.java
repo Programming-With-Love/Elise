@@ -14,11 +14,11 @@ import java.util.Map;
  */
 public class DefaultMemoryCountManager implements CountManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMemoryCountManager.class);
-    private Map<Long, Integer> container = new HashMap<>();
+    private Map<Task, Integer> container = new HashMap<>();
 
     @Override
     public int count(Task task) {
-        final Integer number = container.get(task.getId());
+        final Integer number = container.get(task);
         if (number == null) {
             return 0;
         }
@@ -27,15 +27,15 @@ public class DefaultMemoryCountManager implements CountManager {
 
     @Override
     public synchronized int incr(Task task, int num) {
-        final int i = container.getOrDefault(task.getId(), 0) + num;
-        container.put(task.getId(), i);
+        final int i = container.getOrDefault(task, 0) + num;
+        container.put(task, i);
         LOGGER.debug("count result:" + i);
         return i;
     }
 
     @Override
     public void release(Task task) {
-        container.remove(task.getId());
+        container.remove(task);
     }
 
 }

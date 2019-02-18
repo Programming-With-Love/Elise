@@ -16,16 +16,16 @@ import java.util.Set;
  */
 public final class SingleListenerContainer implements TaskEventListener {
     private Set<SingleEventListener> listeners = new HashSet<>();
-    private long taskId;
+    private Task task;
     private RecyclingCallback callback;
 
     /**
      * Instantiates a new Single listener container.
      *
-     * @param taskId the task id
+     * @param task the task
      */
-    public SingleListenerContainer(long taskId) {
-        this.taskId = taskId;
+    public SingleListenerContainer(Task task) {
+        this.task = task;
     }
 
     /**
@@ -48,21 +48,21 @@ public final class SingleListenerContainer implements TaskEventListener {
 
     @Override
     public void onDownloadSuccess(Task task, Request request, Response response) {
-        if (this.taskId == task.getId()) {
+        if (this.task.equals(task)) {
             EventUtils.notifyListeners(listeners, listener -> listener.onDownloadSuccess(request, response));
         }
     }
 
     @Override
     public void onDownloadError(Task task, Request request, Response response) {
-        if (this.taskId == task.getId()) {
+        if (this.task.equals(task)) {
             EventUtils.notifyListeners(listeners, listener -> listener.onDownloadSuccess(request, response));
         }
     }
 
     @Override
     public void onSuccess(Task task) {
-        if (this.taskId == task.getId()) {
+        if (this.task.equals(task)) {
             EventUtils.notifyListeners(listeners, SingleEventListener::onSuccess);
         }
         callback.onRecycling();
@@ -70,21 +70,21 @@ public final class SingleListenerContainer implements TaskEventListener {
 
     @Override
     public void onPause(Task task) {
-        if (this.taskId == task.getId()) {
+        if (this.task.equals(task)) {
             EventUtils.notifyListeners(listeners, SingleEventListener::onPause);
         }
     }
 
     @Override
     public void onRecover(Task task) {
-        if (this.taskId == task.getId()) {
+        if (this.task.equals(task)) {
             EventUtils.notifyListeners(listeners, SingleEventListener::onRecover);
         }
     }
 
     @Override
     public void onCancel(Task task) {
-        if (this.taskId == task.getId()) {
+        if (this.task.equals(task)) {
             EventUtils.notifyListeners(listeners, SingleEventListener::onCancel);
         }
         callback.onRecycling();
@@ -92,7 +92,7 @@ public final class SingleListenerContainer implements TaskEventListener {
 
     @Override
     public void onSaveSuccess(Task task, ResultItem resultItem) {
-        if (this.taskId == task.getId()) {
+        if (this.task.equals(task)) {
             EventUtils.notifyListeners(listeners, listener -> listener.onSaveSuccess(resultItem));
         }
     }

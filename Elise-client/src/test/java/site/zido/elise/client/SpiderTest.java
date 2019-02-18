@@ -12,6 +12,7 @@ import site.zido.elise.processor.MemorySaver;
 import site.zido.elise.processor.ResultItem;
 import site.zido.elise.scheduler.NoDepuplicationProcessor;
 import site.zido.elise.select.CssSelector;
+import site.zido.elise.task.Task;
 import site.zido.elise.task.api.PartitionDescriptor;
 import site.zido.elise.test.Server;
 import site.zido.elise.utils.SystemClock;
@@ -79,11 +80,11 @@ public class SpiderTest {
                 //让爬虫抓取完该任务后取消运行，如果传入true会立即取消运行
                 .block();
         Assert.assertTrue(ifSuccess[0]);
-        Map<Long, List<ResultItem>> cup = saver.getCup();
-        Set<Long> keys = cup.keySet();
+        Map<Task, List<ResultItem>> cup = saver.getCup();
+        Set<Task> keys = cup.keySet();
         Assert.assertEquals(1, keys.size());
-        Long key = null;
-        for (Long k : keys) {
+        Task key = null;
+        for (Task k : keys) {
             key = k;
         }
         List<ResultItem> resultItems = cup.get(key);
@@ -111,11 +112,11 @@ public class SpiderTest {
             response.asContent().html().css(".content>p").text().save("description").nullable(false);
             response.asContent().url().save("source_url");
         }).execute(MULTI_PATH_ENTRY).block();
-        Map<Long, List<ResultItem>> cup = saver.getCup();
-        Set<Long> keys = cup.keySet();
+        Map<Task, List<ResultItem>> cup = saver.getCup();
+        Set<Task> keys = cup.keySet();
         Assert.assertEquals(1, keys.size());
-        Long key = null;
-        for (Long k : keys) {
+        Task key = null;
+        for (Task k : keys) {
             key = k;
         }
         List<ResultItem> resultItems = cup.get(key);

@@ -91,7 +91,7 @@ public class HttpClientDownloaderFactory extends AbstractDownloaderFactory {
     @Override
     public Downloader create(Task task) {
         //The same task is only created once
-        return downloaderContainer.computeIfAbsent(task.getId(), key -> {
+        return downloaderContainer.computeIfAbsent(task, key -> {
             HttpClientBuilder builder = HttpClients.custom();
             //all client use the same connection pool
             builder.setConnectionManager(connectionManager);

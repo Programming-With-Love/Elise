@@ -185,7 +185,7 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
                 }
             }
         } else {
-            LOGGER.info("response not find anything, response {}", response.getUrl());
+            LOGGER.debug("response not find anything, response {}", response.getUrl());
         }
         return links;
     }

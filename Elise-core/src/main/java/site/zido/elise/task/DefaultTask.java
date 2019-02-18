@@ -1,9 +1,10 @@
 package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
-import site.zido.elise.task.api.DefaultSelectableResponse;
-import site.zido.elise.task.api.ResponseHandler;
 import site.zido.elise.task.model.Model;
+import site.zido.elise.utils.IdWorker;
+
+import java.util.Objects;
 
 /**
  * default extractor task
@@ -26,35 +27,26 @@ public class DefaultTask implements Task {
     /**
      * Instantiates a new Default task.
      *
-     * @param id     the id
      * @param model  the extractor model
      * @param config the config
      */
-    public DefaultTask(Long id, Model model, Config config) {
-        this.id = id;
+    public DefaultTask(Model model, Config config) {
+        this.id = IdWorker.nextId();
         this.model = model;
         this.config = config;
     }
 
-    @Override
     public long getId() {
         return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     * @return the id
-     */
-    public DefaultTask setId(Long id) {
-        this.id = id;
-        return this;
     }
 
     @Override
     public Model getModel() {
         return this.model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 
     @Override
@@ -73,7 +65,25 @@ public class DefaultTask implements Task {
         return this;
     }
 
-    public void setModel(Model model) {
-        this.model = model;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DefaultTask that = (DefaultTask) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return model.getName() + "(id:" + this.id + ")";
     }
 }

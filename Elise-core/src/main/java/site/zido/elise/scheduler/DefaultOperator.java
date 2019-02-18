@@ -35,7 +35,7 @@ public class DefaultOperator implements Operator, SingleListenerContainer.Recycl
         Asserts.notNull(scheduler);
         this.scheduler = scheduler;
         this.task = task;
-        container = new SingleListenerContainer(task.getId());
+        container = new SingleListenerContainer(task);
         container.setCallback(this);
         scheduler.addEventListener(container);
 

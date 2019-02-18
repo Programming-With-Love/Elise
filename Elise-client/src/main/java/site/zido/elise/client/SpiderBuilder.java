@@ -2,7 +2,7 @@ package site.zido.elise.client;
 
 import site.zido.elise.E;
 import site.zido.elise.Spider;
-import site.zido.elise.client.scheduler.MemerySpiderContext;
+import site.zido.elise.client.scheduler.MemorySpiderContext;
 import site.zido.elise.client.scheduler.MultiThreadTaskScheduler;
 import site.zido.elise.custom.Config;
 import site.zido.elise.custom.GlobalConfig;
@@ -165,7 +165,7 @@ public class SpiderBuilder {
             saver = new BlankSaver();
         }
         if(spiderContext == null){
-            spiderContext = new MemerySpiderContext();
+            spiderContext = new MemorySpiderContext();
         }
         if (responseProcessor == null) {
             responseProcessor = new DefaultResponseProcessor(saver);
@@ -207,6 +207,7 @@ public class SpiderBuilder {
         scheduler.setCountManager(countManager);
         scheduler.setDuplicationProcessor(duplicationProcessor);
         scheduler.setDownloaderFactory(downloaderFactory);
+        scheduler.setSpiderContext(spiderContext);
         if (!this.listeners.isEmpty()) {
             for (EventListener listener : listeners) {
                 scheduler.addEventListener(listener);

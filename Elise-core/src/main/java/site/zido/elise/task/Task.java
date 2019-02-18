@@ -9,12 +9,6 @@ import site.zido.elise.task.model.Model;
  * @author zido
  */
 public interface Task {
-    /**
-     * Get task id
-     *
-     * @return id id
-     */
-    long getId();
 
     /**
      * get the model extractor

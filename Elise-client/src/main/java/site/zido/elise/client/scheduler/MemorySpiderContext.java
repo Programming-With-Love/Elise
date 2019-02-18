@@ -12,7 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MemerySpiderContext implements SpiderContext {
+/**
+ * a spider context in memory
+ * @author zido
+ */
+public class MemorySpiderContext implements SpiderContext {
     private Map<Task, ContextItem> itemMap = new HashMap<>();
 
     @Override
