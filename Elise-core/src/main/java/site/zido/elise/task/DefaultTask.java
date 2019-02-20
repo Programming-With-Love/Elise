@@ -36,10 +36,6 @@ public class DefaultTask implements Task {
         this.config = config;
     }
 
-    public long getId() {
-        return id;
-    }
-
     @Override
     public Model getModel() {
         return this.model;

@@ -76,7 +76,7 @@ public class MemorySpiderContext implements SpiderContext {
 
 
     private class ContextItem {
-        byte state;
+        volatile byte state;
         List<Seed> seeds;
         Operator operator;
     }
