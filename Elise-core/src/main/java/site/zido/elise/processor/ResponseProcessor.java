@@ -20,4 +20,6 @@ public interface ResponseProcessor {
      * @return results set
      */
     Set<String> process(Task task, Response response) throws SelectorMatchException;
+
+    Saver getSaver();
 }

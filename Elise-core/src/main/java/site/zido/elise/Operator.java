@@ -2,6 +2,9 @@ package site.zido.elise;
 
 import site.zido.elise.events.SingleEventListener;
 import site.zido.elise.http.Request;
+import site.zido.elise.processor.ResultItem;
+
+import java.util.Iterator;
 
 /**
  * The interface Operator.
@@ -37,7 +40,7 @@ public interface Operator {
      * @return this operator
      * @throws InterruptedException thread interrupted
      */
-    Operator block() throws InterruptedException;
+    Iterator<ResultItem> block() throws InterruptedException;
 
     /**
      * Add url operator.

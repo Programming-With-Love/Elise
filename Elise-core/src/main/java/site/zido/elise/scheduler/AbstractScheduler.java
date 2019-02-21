@@ -361,4 +361,8 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     public void setSpiderContext(SpiderContext spiderContext) {
         this.spiderContext = spiderContext;
     }
+
+    public ResponseProcessor getResponseProcessor() {
+        return responseProcessor;
+    }
 }

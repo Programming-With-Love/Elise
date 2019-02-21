@@ -57,8 +57,8 @@ public class MemorySpiderContext implements SpiderContext {
     @Override
     public void setState(byte oldState, byte newState) {
         itemMap.forEach((task, contextItem) -> {
-            if (contextItem.state == STATE_START) {
-                contextItem.state = STATE_PAUSE;
+            if (contextItem.state == oldState) {
+                contextItem.state = newState;
             }
         });
     }

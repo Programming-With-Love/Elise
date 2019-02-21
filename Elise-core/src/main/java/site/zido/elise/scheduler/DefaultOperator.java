@@ -5,9 +5,12 @@ import site.zido.elise.events.SingleEventListener;
 import site.zido.elise.events.SingleListenerContainer;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.RequestBuilder;
+import site.zido.elise.processor.ResultItem;
+import site.zido.elise.processor.Saver;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.Asserts;
 
+import java.util.Iterator;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -60,14 +63,26 @@ public class DefaultOperator implements Operator, SingleListenerContainer.Recycl
     }
 
     @Override
-    public Operator block() throws InterruptedException {
+    public Iterator<ResultItem> block() throws InterruptedException {
         lock.lock();
         try {
             condition.await();
         } finally {
             lock.unlock();
         }
-        return this;
+        Saver saver = scheduler.getResponseProcessor().getSaver();
+        return new Iterator<ResultItem>() {
+            private ResultItem current;
+            @Override
+            public boolean hasNext() {
+                return saver.hasNext(task,current);
+            }
+
+            @Override
+            public ResultItem next() {
+                return (current = saver.next(task,current));
+            }
+        };
     }
 
     @Override

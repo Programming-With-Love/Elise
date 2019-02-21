@@ -190,6 +190,11 @@ public class DefaultResponseProcessor implements ListenableResponseProcessor {
         return links;
     }
 
+    @Override
+    public Saver getSaver() {
+        return saver;
+    }
+
 
     private List<Object> processField(List<Object> values, FieldType fieldType) {
         if (!values.isEmpty()) {
