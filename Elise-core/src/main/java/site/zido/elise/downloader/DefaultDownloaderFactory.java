@@ -41,9 +41,8 @@ public final class DefaultDownloaderFactory extends AbstractDownloaderFactory {
      * @param factory the factory
      * @return the default downloader factory
      */
-    public DefaultDownloaderFactory registerFactory(String key, DownloaderFactory factory) {
+    public void registerFactory(String key, DownloaderFactory factory) {
         factoryMap.put(key, factory);
-        return this;
     }
 
     /**
