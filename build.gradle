@@ -1,0 +1,63 @@
+allprojects {
+    group = 'site.zido'
+    version = '1.0.0-SNAPSHOT'
+}
+description = "Elise - 简单/强大/流畅的爬虫框架"
+buildscript {
+    repositories {
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public" }
+        maven { url "https://maven.aliyun.com/nexus/content/repositories/gradle-plugin" }
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+}
+ext {
+    configuration = [
+            javaVersion = JavaVersion.VERSION_1_8
+    ]
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'signing'
+    apply plugin: 'maven-publish'
+    sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.deprecation = true
+        options.compilerArgs += ["-parameters"]
+    }
+
+    task packageSources(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+    artifacts.archives packageSources
+    repositories {
+        mavenLocal()
+
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        jcenter()
+    }
+    //noinspection GroovyAssignabilityCheck
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from sourceSets.main.allJava
+    }
+    javadoc {
+        afterEvaluate {
+            configure(options) {
+                encoding "UTF-8"
+                charSet 'UTF-8'
+                author true
+                version true
+                failOnError false
+                links "http://docs.oracle.com/javase/8/docs/api"
+            }
+        }
+    }
+
+
+}

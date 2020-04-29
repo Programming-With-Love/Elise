@@ -1,0 +1,6 @@
+
+description = ''
+dependencies {
+  compile project(':Elise-core')
+  testCompile project(':Elise-test-server')
+}

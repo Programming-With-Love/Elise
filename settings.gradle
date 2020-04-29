@@ -1,0 +1,9 @@
+rootProject.name = 'Elise-build'
+include ':Elise-core'
+include ':Elise-distributed'
+include ':Elise-redis-support'
+include ':Elise-jedis-support'
+include ':Elise-kafka-support'
+include ':Elise-client'
+include ':Elise-test-server'
+

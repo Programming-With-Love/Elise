@@ -1,0 +1,20 @@
+
+description = 'Elise-core'
+dependencies {
+    compile(group: 'com.virjar', name: 'sipsoup', version:'1.6') {
+exclude(module: 'logback-core')
+exclude(module: 'logback-classic')
+exclude(module: 'log4j')
+exclude(module: 'slf4j-log4j12')
+    }
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.3'
+    compile group: 'org.jsoup', name: 'jsoup', version:'1.10.3'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.25'
+    compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version:'2.30'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.8'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.10.4'
+    testCompile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version:'2.11.0'
+    testCompile group: 'org.apache.logging.log4j', name: 'log4j-api', version:'2.11.0'
+    testCompile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.11.0'
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+}
