@@ -1,6 +1,5 @@
-
-description = ''
+description = 'Elise client'
 dependencies {
-  compile project(':Elise-core')
-  testCompile project(':Elise-test-server')
+    implementation project(':Elise-core')
+    testImplementation project(':Elise-test-server')
 }
