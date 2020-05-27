@@ -29,7 +29,7 @@ public final class Partition {
         if (o == null || getClass() != o.getClass()) return false;
         Partition partition = (Partition) o;
         return Objects.equals(action, partition.action) &&
-                Objects.equals(fields, partition.fields);
+            Objects.equals(fields, partition.fields);
     }
 
     @Override

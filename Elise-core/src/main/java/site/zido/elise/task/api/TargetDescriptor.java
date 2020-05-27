@@ -48,7 +48,7 @@ public class TargetDescriptor {
     }
 
     public TargetDescriptor and() {
-        if(targetActions.isEmpty()){
+        if (targetActions.isEmpty()) {
             return this;
         }
         List<Action> children = new LinkedList<>();

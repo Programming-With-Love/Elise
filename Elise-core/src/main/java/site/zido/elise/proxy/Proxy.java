@@ -113,10 +113,10 @@ public class Proxy {
     @Override
     public String toString() {
         return "Proxy{" +
-                "host='" + host + '\'' +
-                ", port=" + port +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+            "host='" + host + '\'' +
+            ", port=" + port +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            '}';
     }
 }

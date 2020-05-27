@@ -28,7 +28,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Http client downloader factory.
@@ -46,9 +45,9 @@ public class HttpClientDownloaderFactory extends AbstractDownloaderFactory {
      */
     public HttpClientDownloaderFactory() {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.INSTANCE)
-                .register("https", buildSSLConnectionSocketFactory())
-                .build();
+            .register("http", PlainConnectionSocketFactory.INSTANCE)
+            .register("https", buildSSLConnectionSocketFactory())
+            .build();
         connectionManager = new PoolingHttpClientConnectionManager(reg);
         connectionManager.setDefaultMaxPerRoute(100);
     }
@@ -57,8 +56,8 @@ public class HttpClientDownloaderFactory extends AbstractDownloaderFactory {
         try {
             // 优先绕过安全证书
             return new SSLConnectionSocketFactory(createIgnoreVerifySSL(), new String[]{"SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"},
-                    null,
-                    new DefaultHostnameVerifier());
+                null,
+                new DefaultHostnameVerifier());
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
             LOGGER.error("create ssl connection socket factory error,and use default ssl connection", e);
         }

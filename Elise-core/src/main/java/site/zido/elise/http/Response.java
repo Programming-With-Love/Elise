@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface Response extends HttpModel {
     boolean isDownloadSuccess();
+
     /**
      * Gets status code.
      *

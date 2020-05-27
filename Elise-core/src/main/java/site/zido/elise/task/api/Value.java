@@ -9,16 +9,18 @@ import site.zido.elise.task.model.ModelField;
  */
 public class Value {
     private ModelField field;
-    public Value(ModelField field){
+
+    public Value(ModelField field) {
         this.field = field;
     }
+
     /**
      * Save value.
      *
      * @param name the name
      * @return the value
      */
-    public Value save(String name){
+    public Value save(String name) {
         field.setName(name);
         return this;
     }
@@ -29,7 +31,7 @@ public class Value {
      * @param nullable the nullable
      * @return the value
      */
-    public Value nullable(boolean nullable){
+    public Value nullable(boolean nullable) {
         field.setNullable(nullable);
         return this;
     }

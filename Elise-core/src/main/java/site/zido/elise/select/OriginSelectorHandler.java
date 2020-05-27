@@ -12,10 +12,10 @@ public class OriginSelectorHandler implements SelectHandler {
     public List<Object> select(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
         String source = action.getSource();
         if (Source.matchSource(source, Source.URL)) {
-           return Collections.singletonList(response.getUrl());
-        }else if(Source.matchSource(source,Source.CODE)){
+            return Collections.singletonList(response.getUrl());
+        } else if (Source.matchSource(source, Source.CODE)) {
             return Collections.singletonList(response.getStatusCode());
-        }else if(Source.matchSource(source,Source.HTML,Source.TEXT)){
+        } else if (Source.matchSource(source, Source.HTML, Source.TEXT)) {
             return Collections.singletonList(response.getHtml());
         }
         return null;

@@ -40,12 +40,12 @@ public class MultiThreadTaskScheduler extends AbstractScheduler implements Runna
      */
     public MultiThreadTaskScheduler(int threadNum) {
         this.executor = new ThreadPoolExecutor(threadNum,
-                threadNum,
-                1,
-                TimeUnit.MINUTES,
-                new LinkedBlockingQueue<>(),
-                new ModuleNamedDefaultThreadFactory("default task scheduler"),
-                new ThreadPoolExecutor.CallerRunsPolicy());
+            threadNum,
+            1,
+            TimeUnit.MINUTES,
+            new LinkedBlockingQueue<>(),
+            new ModuleNamedDefaultThreadFactory("default task scheduler"),
+            new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**

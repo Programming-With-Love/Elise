@@ -32,6 +32,7 @@ public class DefaultSelectableResponseTest {
         while ((line = reader.readLine()) != null) {
             builder.append(line.trim());
         }
-        Assert.assertEquals(builder.toString(), mapper.writeValueAsString(model));
+        //格式化一次
+        Assert.assertEquals(mapper.writeValueAsString(mapper.readTree(builder.toString())), mapper.writeValueAsString(model));
     }
 }

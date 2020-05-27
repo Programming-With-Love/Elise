@@ -97,8 +97,8 @@ public class HttpClientDownloader implements Downloader {
         boolean disableCookie = config.getDisableCookie();
         if (disableCookie) {
             context.setCookieSpecRegistry(name -> null);
-        }else{
-            context.setCookieStore(cookieContainer.computeIfAbsent(task.getId(),key->(new BasicCookieStore())));
+        } else {
+            context.setCookieStore(cookieContainer.computeIfAbsent(task.getId(), key -> (new BasicCookieStore())));
         }
         return context;
     }

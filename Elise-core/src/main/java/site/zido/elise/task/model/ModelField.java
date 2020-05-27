@@ -60,9 +60,9 @@ public final class ModelField {
         if (o == null || getClass() != o.getClass()) return false;
         ModelField that = (ModelField) o;
         return nullable == that.nullable &&
-                Objects.equals(name, that.name) &&
-                valueType == that.valueType &&
-                Objects.equals(actions, that.actions);
+            Objects.equals(name, that.name) &&
+            valueType == that.valueType &&
+            Objects.equals(actions, that.actions);
     }
 
     @Override

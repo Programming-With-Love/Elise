@@ -18,6 +18,7 @@ public interface ResponseProcessor {
      * @param task     task.
      * @param response response.
      * @return results set
+     * @throws SelectorMatchException when selector matcher error
      */
     Set<String> process(Task task, Response response) throws SelectorMatchException;
 }

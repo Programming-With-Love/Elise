@@ -66,6 +66,7 @@ public class MappedConfig extends HashMap<String, Object> implements Config {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T get(String key) {
         return (T) super.get(key);
     }

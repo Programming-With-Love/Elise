@@ -1,8 +1,7 @@
-
 description = ''
 dependencies {
-    compile group: 'org.springframework.kafka', name: 'spring-kafka', version:'2.1.4.RELEASE'
-  compile project(':Elise-distributed')
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.8'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.10.4'
+    compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.4.RELEASE'
+    compile project(':Elise-distributed')
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10.4'
 }

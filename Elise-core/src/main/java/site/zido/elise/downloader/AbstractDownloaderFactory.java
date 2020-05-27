@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractDownloaderFactory implements DownloaderFactory {
     protected Map<Long, Downloader> downloaderContainer = new ConcurrentHashMap<>();
+
     @Override
     public void release(Task task) {
         //release downloader

@@ -107,8 +107,8 @@ public class Seed implements Serializable {
         }
         Seed seed = (Seed) o;
         return Objects.equals(task, seed.task) &&
-                Objects.equals(request, seed.request) &&
-                Objects.equals(response, seed.response);
+            Objects.equals(request, seed.request) &&
+            Objects.equals(response, seed.response);
     }
 
     @Override

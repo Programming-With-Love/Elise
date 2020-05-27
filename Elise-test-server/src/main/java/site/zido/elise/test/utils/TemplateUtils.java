@@ -7,7 +7,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class TemplateUtils {
     public static String createHtml(String filename, Object... params) {
         InputStream inputStream = ResourcesUtils.get("html" + File.separator + filename);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,UTF_8));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, UTF_8));
         String line;
         StringBuilder sb = new StringBuilder();
         while (true) {

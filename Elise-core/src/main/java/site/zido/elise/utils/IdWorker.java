@@ -160,9 +160,9 @@ public class IdWorker {
         long dataCenterIdShift = sequenceBits + workerIdBits;
         long twEpoch = 1288834974657L;
         return ((timeStamp - twEpoch)) << timestampLeftShift
-                | (dataCenterId << dataCenterIdShift)
-                | (workerId << sequenceBits)
-                | sequence;
+            | (dataCenterId << dataCenterIdShift)
+            | (workerId << sequenceBits)
+            | sequence;
         //机器ID向左移12位
     }
 

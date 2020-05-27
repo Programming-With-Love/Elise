@@ -17,9 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MemorySaver extends BlankSaver implements Saver {
     private Map<Long, List<ResultItem>> cup = new ConcurrentHashMap<>();
 
-    public MemorySaver(){
+    public MemorySaver() {
 
     }
+
     public MemorySaver(PrintStream stream) {
         super(stream);
     }

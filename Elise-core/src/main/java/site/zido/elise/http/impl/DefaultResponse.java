@@ -146,11 +146,6 @@ public class DefaultResponse implements Response {
         return body;
     }
 
-    @Override
-    public List<Cookie> getCookies() {
-        return this.cookies;
-    }
-
     /**
      * Sets body.
      *
@@ -158,6 +153,20 @@ public class DefaultResponse implements Response {
      */
     public void setBody(Body body) {
         this.body = body;
+    }
+
+    @Override
+    public List<Cookie> getCookies() {
+        return this.cookies;
+    }
+
+    /**
+     * Sets cookies.
+     *
+     * @param cookies the cookies
+     */
+    public void setCookies(List<Cookie> cookies) {
+        this.cookies = cookies;
     }
 
     @Override
@@ -177,14 +186,5 @@ public class DefaultResponse implements Response {
      */
     public void setHeader(Header header) {
         headers.add(header);
-    }
-
-    /**
-     * Sets cookies.
-     *
-     * @param cookies the cookies
-     */
-    public void setCookies(List<Cookie> cookies) {
-        this.cookies = cookies;
     }
 }

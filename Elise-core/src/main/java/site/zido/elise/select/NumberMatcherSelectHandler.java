@@ -45,10 +45,8 @@ public class NumberMatcherSelectHandler implements SelectHandler {
         }
         if (sep == DEFAULT_CHAR_SEP && !CHECK_PATTERN.matcher(express).find()) {
             return false;
-        } else if (!express.matches(String.format(PATTERN_TEMPLATE, sep))) {
-            return false;
         }
-        return true;
+        return express.matches(String.format(PATTERN_TEMPLATE, sep));
     }
 
     @Override

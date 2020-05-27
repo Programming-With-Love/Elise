@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 
 /**
  * Abstract Scheduler,support most life cycle methods
@@ -78,8 +77,8 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
         }
         LOGGER.debug("get a candidate url {}", request.getUrl());
         if (shouldReserved(request)
-                || noNeedToRemoveDuplicate(request)
-                || !duplicationProcessor.isDuplicate(task, request)) {
+            || noNeedToRemoveDuplicate(request)
+            || !duplicationProcessor.isDuplicate(task, request)) {
             if (state == STATE_PAUSE) {
                 LOGGER.debug(task.getId() + "[" + request.getUrl() + "] received pause");
                 addToPauseMap(task.getId(), new Seed(task, request));
@@ -284,10 +283,10 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
 
     @Override
     public synchronized boolean pause() {
-        stateMap.replaceAll((key,value) -> {
-            if(value == STATE_START){
+        stateMap.replaceAll((key, value) -> {
+            if (value == STATE_START) {
                 return STATE_PAUSE;
-            }else{
+            } else {
                 return value;
             }
         });
@@ -296,9 +295,9 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
 
     @Override
     public synchronized void recover() {
-        stateMap.forEach((key,value) -> {
-            if(value == 1){
-                recover(new DefaultTask(key,null,null));
+        stateMap.forEach((key, value) -> {
+            if (value == 1) {
+                recover(new DefaultTask(key, null, null));
             }
         });
     }
@@ -314,7 +313,7 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
                 ((TaskEventListener) eventListener).onRecover(task);
             }
         });
-        stateMap.put(task.getId(),STATE_START);
+        stateMap.put(task.getId(), STATE_START);
         Set<Seed> set = pauseMap.getOrDefault(task.getId(), new HashSet<>());
         for (Seed seed : set) {
             if (seed.getResponse() != null) {

@@ -23,7 +23,7 @@ import java.net.URI;
  * @author zido
  */
 public class CustomRedirectStrategy extends LaxRedirectStrategy {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context) throws ProtocolException {

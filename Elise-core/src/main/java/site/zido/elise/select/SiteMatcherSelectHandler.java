@@ -22,6 +22,7 @@ public class SiteMatcherSelectHandler implements SelectHandler {
      * a character can match any number of characters
      */
     private static final char MORE_MATCH_CHAR = '*';
+
     private boolean match(char[] origin, char[] express, int originIndex, int expressIndex) {
         if (originIndex == origin.length && expressIndex == express.length) {
             return true;

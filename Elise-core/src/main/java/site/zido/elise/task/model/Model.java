@@ -60,10 +60,10 @@ public final class Model {
         }
         Model model = (Model) o;
         return Objects.equals(name, model.name) &&
-                Objects.equals(targets, model.targets) &&
-                Objects.equals(helpers, model.helpers) &&
-                Objects.equals(partition, model.partition) &&
-                Objects.equals(fields, model.fields);
+            Objects.equals(targets, model.targets) &&
+            Objects.equals(helpers, model.helpers) &&
+            Objects.equals(partition, model.partition) &&
+            Objects.equals(fields, model.fields);
     }
 
     @Override

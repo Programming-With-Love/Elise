@@ -17,13 +17,14 @@ public class HelpDescriptor {
     public HelpDescriptor(List<Action> action) {
         this.helpActions = action;
     }
+
     /**
      * Filter help descriptor.
      *
      * @param regex the regex express
      * @return the help descriptor
      */
-    public HelpDescriptor regex(String regex){
+    public HelpDescriptor regex(String regex) {
         Action action = new Action();
         action.setToken(E.Action.LINK_SELECTOR);
         action.setExtras(new Object[]{regex});
@@ -31,8 +32,9 @@ public class HelpDescriptor {
         helpActions.add(action);
         return this;
     }
+
     public HelpDescriptor and() {
-        if(helpActions.isEmpty()){
+        if (helpActions.isEmpty()) {
             return this;
         }
         List<Action> children = new LinkedList<>();
@@ -40,7 +42,8 @@ public class HelpDescriptor {
         action.setChildren(children);
         return new HelpDescriptor(children);
     }
-    public HelpDescriptor or(){
+
+    public HelpDescriptor or() {
         return this;
     }
 }

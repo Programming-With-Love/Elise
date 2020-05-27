@@ -53,10 +53,10 @@ public class SpiderTest {
         //构造爬虫
         //爬虫默认为异步运行
         Spider spider = SpiderBuilder
-                .create()
-                .setDuplicationProcessor(new NoDepuplicationProcessor())
-                .setSaver(saver)
-                .build();
+            .create()
+            .setDuplicationProcessor(new NoDepuplicationProcessor())
+            .setSaver(saver)
+            .build();
         //为抓取器部署抓取任务
         spider.of(response -> {
             response.modelName("blog");
@@ -76,8 +76,8 @@ public class SpiderTest {
             }
             //为该任务添加一个入口
         }).execute(ONE_PATH)
-                //让爬虫抓取完该任务后取消运行，如果传入true会立即取消运行
-                .block();
+            //让爬虫抓取完该任务后取消运行，如果传入true会立即取消运行
+            .block();
         Assert.assertTrue(ifSuccess[0]);
         Map<Long, List<ResultItem>> cup = saver.getCup();
         Set<Long> keys = cup.keySet();
@@ -136,25 +136,25 @@ public class SpiderTest {
             response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
             response.asContent().url().save("source_url");
         }).execute("http://github.com/zidoshare")
-                .addEventListener(new SingleEventListener() {
-                    @Override
-                    public void onSuccess() {
-                        System.out.println("success in " + SystemClock.now());
-                        target.incrementAndGet();
-                    }
+            .addEventListener(new SingleEventListener() {
+                @Override
+                public void onSuccess() {
+                    System.out.println("success in " + SystemClock.now());
+                    target.incrementAndGet();
+                }
 
-                    @Override
-                    public void onRecover() {
-                        System.out.println("recover in " + SystemClock.now());
-                        target.incrementAndGet();
-                    }
+                @Override
+                public void onRecover() {
+                    System.out.println("recover in " + SystemClock.now());
+                    target.incrementAndGet();
+                }
 
-                    @Override
-                    public void onPause() {
-                        System.out.println("pause in " + SystemClock.now());
-                        target.incrementAndGet();
-                    }
-                });
+                @Override
+                public void onPause() {
+                    System.out.println("pause in " + SystemClock.now());
+                    target.incrementAndGet();
+                }
+            });
         Thread.sleep(1000);
         spider.pause();
         Thread.sleep(3000);

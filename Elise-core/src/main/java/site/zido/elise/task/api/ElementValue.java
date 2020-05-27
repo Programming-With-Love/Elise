@@ -12,7 +12,7 @@ public class ElementValue {
     private ModelField field;
     private ElementSelectable top;
 
-    public ElementValue(ElementSelectable top,ModelField field) {
+    public ElementValue(ElementSelectable top, ModelField field) {
         this.field = field;
         this.top = top;
     }
@@ -47,7 +47,7 @@ public class ElementValue {
         return new Value(field);
     }
 
-    public ElementSelectable or(){
+    public ElementSelectable or() {
         return top;
     }
 }

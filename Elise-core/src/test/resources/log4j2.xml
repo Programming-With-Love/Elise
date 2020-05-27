@@ -5,13 +5,13 @@
     </properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="${console-pattern}" />
+            <PatternLayout pattern="${console-pattern}"/>
         </Console>
     </Appenders>
 
     <Loggers>
         <Root level="info">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="Console"/>
         </Root>
     </Loggers>
 </Configuration>

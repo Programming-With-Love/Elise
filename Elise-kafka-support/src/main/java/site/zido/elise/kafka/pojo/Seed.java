@@ -1,9 +1,9 @@
 package site.zido.elise.kafka.pojo;
 
-import site.zido.elise.task.DefaultTask;
 import site.zido.elise.http.Request;
 import site.zido.elise.http.Response;
 import site.zido.elise.http.impl.DefaultResponse;
+import site.zido.elise.task.DefaultTask;
 
 /**
  * 种子，信息载体

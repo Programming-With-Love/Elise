@@ -18,7 +18,7 @@ public class ResponseContextHolder extends DefaultResponse {
     public ResponseContextHolder(Response response, Config config) {
         super(response);
         Body body = response.getBody();
-        if(body != null) {
+        if (body != null) {
             Charset encoding = body.getEncoding();
             String configCharset = config.get(GlobalConfig.KEY_CHARSET);
             this.charset = encoding == null ? Charset.forName(configCharset) : encoding;
@@ -37,7 +37,7 @@ public class ResponseContextHolder extends DefaultResponse {
     }
 
     public Document getDocument() {
-        if(html == null){
+        if (html == null) {
             getHtml();
         }
         if (document == null) {

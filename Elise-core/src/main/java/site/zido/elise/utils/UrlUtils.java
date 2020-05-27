@@ -186,10 +186,10 @@ public class UrlUtils {
     }
 
     private static String urlEncode(
-            final String content,
-            final Charset charset,
-            final BitSet safechars,
-            final boolean blankAsPlus) {
+        final String content,
+        final Charset charset,
+        final BitSet safechars,
+        final boolean blankAsPlus) {
         if (content == null) {
             return null;
         }

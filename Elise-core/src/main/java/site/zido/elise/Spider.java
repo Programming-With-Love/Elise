@@ -28,8 +28,8 @@ public interface Spider extends EventSupport {
      * @param handler the handler
      * @return the operator
      */
-    default Operator of(ResponseHandler handler){
-        return of(handler,null);
+    default Operator of(ResponseHandler handler) {
+        return of(handler, null);
     }
 
     /**
@@ -38,14 +38,15 @@ public interface Spider extends EventSupport {
      * @param modelClass the model class
      * @return the operator
      */
-    default Operator of(Class<?> modelClass){
-        return of(modelClass,null);
+    default Operator of(Class<?> modelClass) {
+        return of(modelClass, null);
     }
 
     /**
      * create a new task by model class and config
+     *
      * @param modelClass the model class
-     * @param config the config
+     * @param config     the config
      * @return the operator
      */
     Operator of(Class<?> modelClass, Config config);

@@ -14,7 +14,10 @@ import site.zido.elise.processor.BlankSaver;
 import site.zido.elise.processor.DefaultResponseProcessor;
 import site.zido.elise.processor.ResponseProcessor;
 import site.zido.elise.processor.Saver;
-import site.zido.elise.scheduler.*;
+import site.zido.elise.scheduler.CountManager;
+import site.zido.elise.scheduler.DefaultMemoryCountManager;
+import site.zido.elise.scheduler.DuplicationProcessor;
+import site.zido.elise.scheduler.HashSetDeduplicationProcessor;
 import site.zido.elise.select.*;
 
 import java.util.HashSet;
@@ -160,13 +163,13 @@ public class SpiderBuilder {
         if (responseProcessor == null) {
             responseProcessor = new DefaultResponseProcessor(saver);
             DefaultResponseProcessor drp = (DefaultResponseProcessor) responseProcessor;
-            drp.registerSelector(E.Action.XPATH_SELECTOR,new XpathSelectHandler());
-            drp.registerSelector(E.Action.MATCH_LINK,new RegexSelectHandler());
-            drp.registerSelector(E.Action.CSS_SELECTOR,new CssSelectHandler());
-            drp.registerSelector(E.Action.LINK_SELECTOR,new LinkSelectHandler("a:href"));
-            drp.registerSelector(E.Action.MATCH_NUMBER,new NumberMatcherSelectHandler());
-            drp.registerSelector(E.Action.SELECT_ORIGIN,new OriginSelectorHandler());
-            drp.registerSelector(E.Action.SELECT_URL,new OriginSelectorHandler());
+            drp.registerSelector(E.Action.XPATH_SELECTOR, new XpathSelectHandler());
+            drp.registerSelector(E.Action.MATCH_LINK, new RegexSelectHandler());
+            drp.registerSelector(E.Action.CSS_SELECTOR, new CssSelectHandler());
+            drp.registerSelector(E.Action.LINK_SELECTOR, new LinkSelectHandler("a:href"));
+            drp.registerSelector(E.Action.MATCH_NUMBER, new NumberMatcherSelectHandler());
+            drp.registerSelector(E.Action.SELECT_ORIGIN, new OriginSelectorHandler());
+            drp.registerSelector(E.Action.SELECT_URL, new OriginSelectorHandler());
         }
         if (countManager == null) {
             countManager = new DefaultMemoryCountManager();

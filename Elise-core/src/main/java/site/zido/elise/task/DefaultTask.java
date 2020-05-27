@@ -1,8 +1,6 @@
 package site.zido.elise.task;
 
 import site.zido.elise.custom.Config;
-import site.zido.elise.task.api.DefaultSelectableResponse;
-import site.zido.elise.task.api.ResponseHandler;
 import site.zido.elise.task.model.Model;
 
 /**
@@ -57,6 +55,10 @@ public class DefaultTask implements Task {
         return this.model;
     }
 
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
     @Override
     public Config getConfig() {
         return config;
@@ -71,9 +73,5 @@ public class DefaultTask implements Task {
     public DefaultTask setConfig(Config config) {
         this.config = config;
         return this;
-    }
-
-    public void setModel(Model model) {
-        this.model = model;
     }
 }

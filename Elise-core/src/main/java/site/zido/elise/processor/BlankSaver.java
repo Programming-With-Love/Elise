@@ -2,8 +2,6 @@ package site.zido.elise.processor;
 
 import site.zido.elise.task.Task;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -16,7 +14,8 @@ import java.util.Map;
  */
 public class BlankSaver implements Saver {
     private PrintStream stream;
-    public BlankSaver(){
+
+    public BlankSaver() {
         stream = new PrintStream(new OutputStream() {
             @Override
             public void write(int b) {
@@ -24,9 +23,11 @@ public class BlankSaver implements Saver {
             }
         });
     }
-    public BlankSaver(PrintStream stream){
+
+    public BlankSaver(PrintStream stream) {
         this.stream = stream;
     }
+
     @Override
     public void save(ResultItem resultItem, Task task) {
         Map<String, List<Object>> all = resultItem.getAll();

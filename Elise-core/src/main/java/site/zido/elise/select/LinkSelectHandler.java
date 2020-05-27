@@ -7,7 +7,6 @@ import site.zido.elise.processor.ResponseContextHolder;
 import site.zido.elise.task.api.Source;
 import site.zido.elise.task.model.Action;
 import site.zido.elise.utils.Safe;
-import site.zido.elise.utils.ValidateUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,11 +20,14 @@ import java.util.regex.Pattern;
  */
 public class LinkSelectHandler implements SelectHandler {
     private String[] defaultLinkProps = new String[0];
-    public LinkSelectHandler(){
+
+    public LinkSelectHandler() {
     }
-    public LinkSelectHandler(String... defaultLinkProps){
+
+    public LinkSelectHandler(String... defaultLinkProps) {
         this.defaultLinkProps = defaultLinkProps;
     }
+
     @Override
     public List<Object> select(ResponseContextHolder response, Object partition, Action action) throws SelectorMatchException {
         Object[] extras = action.getExtras();
@@ -49,7 +51,7 @@ public class LinkSelectHandler implements SelectHandler {
                 }
                 return results;
             }
-        } else if (Source.matchSource(action.getSource(),Source.BODY,Source.HTML)) {
+        } else if (Source.matchSource(action.getSource(), Source.BODY, Source.HTML)) {
             document = response.getDocument();
         }
         if (document == null) {
@@ -57,10 +59,10 @@ public class LinkSelectHandler implements SelectHandler {
         }
         List<Object> results = new ArrayList<>();
         Object[] tmp;
-        if(extras.length == 1){
+        if (extras.length == 1) {
             tmp = defaultLinkProps;
-        }else{
-            tmp = Arrays.copyOfRange(extras,1,extras.length);
+        } else {
+            tmp = Arrays.copyOfRange(extras, 1, extras.length);
         }
         for (int i = 0; i < tmp.length; i++) {
             if (!(tmp[i] instanceof String)) {

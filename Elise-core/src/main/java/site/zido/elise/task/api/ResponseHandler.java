@@ -1,7 +1,5 @@
 package site.zido.elise.task.api;
 
-import site.zido.elise.task.api.SelectableResponse;
-
 /**
  * the response handler
  *

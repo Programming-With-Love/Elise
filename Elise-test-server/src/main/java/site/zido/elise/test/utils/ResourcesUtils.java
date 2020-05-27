@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class ResourcesUtils {
-    public static InputStream get(String path){
+    public static InputStream get(String path) {
         try {
             return new FileInputStream(ResourcesUtils.class.getClassLoader().getResource(path).getFile());
         } catch (FileNotFoundException e) {

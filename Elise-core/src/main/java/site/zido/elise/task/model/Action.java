@@ -48,9 +48,9 @@ public class Action {
         if (o == null || getClass() != o.getClass()) return false;
         Action action = (Action) o;
         return Objects.equals(token, action.token) &&
-                Arrays.equals(extras, action.extras) &&
-                Objects.equals(source, action.source) &&
-                Objects.equals(children, action.children);
+            Arrays.equals(extras, action.extras) &&
+            Objects.equals(source, action.source) &&
+            Objects.equals(children, action.children);
     }
 
     @Override

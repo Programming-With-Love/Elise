@@ -105,17 +105,17 @@ public class SpringKafkaTaskScheduler extends AbstractScheduler {
     }
 
     private KafkaMessageListenerContainer<Long, Seed> createContainer(
-            ContainerProperties containerProps) {
+        ContainerProperties containerProps) {
         Map<String, Object> props = consumerProps();
         DefaultKafkaConsumerFactory<Long, Seed> cf =
-                new DefaultKafkaConsumerFactory<>(props);
+            new DefaultKafkaConsumerFactory<>(props);
         return new KafkaMessageListenerContainer<>(cf, containerProps);
     }
 
     private KafkaTemplate<Long, Seed> createTemplate() {
         Map<String, Object> senderProps = senderProps();
         ProducerFactory<Long, Seed> pf =
-                new DefaultKafkaProducerFactory<>(senderProps);
+            new DefaultKafkaProducerFactory<>(senderProps);
         return new KafkaTemplate<>(pf, true);
     }
 

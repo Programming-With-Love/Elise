@@ -1,7 +1,6 @@
-
 description = ''
 dependencies {
-    compile group: 'io.lettuce', name: 'lettuce-core', version:'5.1.3.RELEASE'
-  compile project(':Elise-core')
-  compile project(':Elise-distributed')
+    compile group: 'io.lettuce', name: 'lettuce-core', version: '5.1.3.RELEASE'
+    compile project(':Elise-core')
+    compile project(':Elise-distributed')
 }
