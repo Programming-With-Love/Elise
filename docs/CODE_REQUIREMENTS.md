@@ -79,51 +79,6 @@ SpiderBuilder.defaults()
 
 使用ModelExtractor的方式爬去暂时不说，因为是pojo传输可以任意扩展到redis，接下来演示对于将要实现的ResponseHandle api的示例
 
-因暂未实现ResponseHandle api。仅给出以下构想：
-
-```java
-//构建分布式爬虫实例
-DistributedSpiderBuilder.defaults()
-.of("taskName",new ResponseHandler(){
-    void onHandle(Response response){
-        //url必须匹配到目标表达式才能被确定为是需要采集的页面
-        response.url().regex("https://a.b.c").asTarget()
-        //url必须匹配到目标表达式才能被确定为是辅助采集的页面
-        response.url().regex("https://a.b.c").asHelp()
-        //从body中选择
-        response.body()
-        //使用xpath匹配
-        .select(new XpathSelector("xxx"))
-        //使用name作为属性名
-        .as("name")
-        //选中文字作为内容
-        .text();
-        //从url中选择
-        response.url()
-        //使用regex匹配
-        .select(new RegexSelector("xxx"))
-        .nullable(false)
-        //使用url作为属性名
-        .as("url")
-        //选中文字作为内容
-        .text();
-        //从body中选择
-        response.body()
-        //使用xpath匹配
-        .select(new XpathSelector("xxx"))
-        //使用name作为属性名
-        .as("description")
-        //选中富文本作为内容
-        .richText();
-    }
-})
-//添加入口
-.execute("https://xxx");
-```
-
-对于这部分的实现，是使用模拟真实情况的方式，预计的实现方式是。response其实是一个代理对象，
-通过response的各种api最终会生成一个ModelExtractor包含在代理Response内部。然后接下来由框架内部获取这个modelExtractor并实现最终爬取，得到与既定单机实现一样的结果。
-
 ## 代码约定
 
 尽可能参照`alibaba开发手册`进行。但是框架本身而言，存在更多的不确定性，所以暂时做出以下两个例外：

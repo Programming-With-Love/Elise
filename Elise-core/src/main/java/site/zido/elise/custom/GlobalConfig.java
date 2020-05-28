@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * The type Global config.
+ * 全局配置类
  *
  * @author zido
  */
@@ -129,9 +129,8 @@ public class GlobalConfig extends MappedConfig {
         if (!(o instanceof Map)) {
             return false;
         }
-        Object otherValue;
         for (String s : this.keySet()) {
-            otherValue = ((Map) o).get(s);
+            Object otherValue = ((Map) o).get(s);
             if (!Objects.equals(get(s), otherValue)) {
                 return false;
             }

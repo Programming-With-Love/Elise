@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zido
  */
 public class HashSetDeduplicationProcessor implements DuplicationProcessor {
-    private Set<String> urls = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<String> urls = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Override
     public boolean isDuplicate(Task task, Request request) {

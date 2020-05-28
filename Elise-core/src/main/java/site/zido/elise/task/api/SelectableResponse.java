@@ -22,21 +22,21 @@ public interface SelectableResponse {
      *
      * @return the target descriptor
      */
-    TargetDescriptor asTarget();
+    TargetDescriptor target();
 
     /**
      * As helper help descriptor.
      *
      * @return the help descriptor
      */
-    HelpDescriptor asHelper();
+    HelpDescriptor helper();
 
     /**
      * As content data descriptor.
      *
      * @return the data descriptor
      */
-    DataDescriptor asContent();
+    DataDescriptor content();
 
-    PartitionDescriptor asPartition(ElementSelector selector);
+    PartitionDescriptor partition(ElementSelector selector);
 }

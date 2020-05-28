@@ -31,27 +31,63 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Abstract Scheduler,support most life cycle methods
+ * 抽象调度程序，支持大多数生命周期方法
  *
  * @author zido
  */
 public abstract class AbstractScheduler implements Spider, OperationalTaskScheduler {
+    /**
+     * 开始状态
+     */
     private static final byte STATE_START = 0;
+    /**
+     * 暂停状态
+     */
     private static final byte STATE_PAUSE = 1;
+    /**
+     * 取消状态
+     */
     private static final byte STATE_CANCEL = 2;
+    /**
+     * 立即取消
+     */
     private static final byte STATE_CANCEL_NOW = 3;
     /**
-     * The Logger.
+     * logger
      */
-    protected static Logger LOGGER = LoggerFactory.getLogger(TaskScheduler.class);
+    protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    /**
+     * 状态容器
+     */
     private final Map<Long, Byte> stateMap = new HashMap<>();
+    /**
+     * 暂停容器
+     */
     private final Map<Long, Set<Seed>> pauseMap = new ConcurrentHashMap<>();
+    /**
+     * 监听器
+     */
     private Set<EventListener> listeners = new HashSet<>();
 
+    /**
+     * 响应处理器
+     */
     private ResponseProcessor responseProcessor;
+    /**
+     * 计数管理器
+     */
     private CountManager countManager;
+    /**
+     * 去重处理器
+     */
     private DuplicationProcessor duplicationProcessor;
+    /**
+     * 下载器工厂
+     */
     private DownloaderFactory downloaderFactory;
+    /**
+     * 配置
+     */
     private Config config;
 
     @Override
@@ -64,13 +100,8 @@ public abstract class AbstractScheduler implements Spider, OperationalTaskSchedu
     }
 
     @Override
-    public Operator of(Class<?> modelClass, Config config) {
-        return null;
-    }
-
-    @Override
     public void pushRequest(Task task, Request request) {
-        Byte state = stateMap.computeIfAbsent(task.getId(), key -> STATE_START);
+        byte state = stateMap.computeIfAbsent(task.getId(), key -> STATE_START);
         //will no longer receive new requests when the task is in the canceled state
         if (state >= STATE_CANCEL) {
             return;

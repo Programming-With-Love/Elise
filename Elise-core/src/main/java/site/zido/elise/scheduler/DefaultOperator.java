@@ -8,6 +8,7 @@ import site.zido.elise.http.RequestBuilder;
 import site.zido.elise.task.Task;
 import site.zido.elise.utils.Asserts;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -64,6 +65,20 @@ public class DefaultOperator implements Operator, SingleListenerContainer.Recycl
         lock.lock();
         try {
             condition.await();
+        } finally {
+            lock.unlock();
+        }
+        return this;
+    }
+
+    @Override
+    public Operator block(long time, TimeUnit unit) throws InterruptedException {
+        //TODO 阻塞固定时间
+        lock.lock();
+        try {
+            if (!condition.await(time, unit)) {
+                throw new RuntimeException("未在指定时间内完成任务");
+            }
         } finally {
             lock.unlock();
         }

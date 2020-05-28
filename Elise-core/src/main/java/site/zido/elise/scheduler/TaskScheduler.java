@@ -4,22 +4,17 @@ import site.zido.elise.http.Request;
 import site.zido.elise.task.Task;
 
 /**
- * the interface of message manager,it provide message service.
- * <p>
- * Each client corresponds to a messageManager, and multiple clients should instantiate multiple message managers.
- * <p>
- * In theory, the client is based on statelessness, either as a download client, an analytics client, or both.
- * Just simply register as the appropriate module
+ * 任务调度器接口，主要用于接收并执行任务
  *
  * @author zido
  */
 public interface TaskScheduler {
 
     /**
-     * If you need to download, you can call this method (usually after the analysis is completed)
+     * 在任务下执行某个请求
      *
-     * @param task    the task
-     * @param request the request
+     * @param task    任务
+     * @param request 请求
      */
     void pushRequest(Task task, Request request);
 }

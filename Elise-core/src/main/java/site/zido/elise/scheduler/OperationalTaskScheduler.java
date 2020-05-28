@@ -3,7 +3,7 @@ package site.zido.elise.scheduler;
 import site.zido.elise.task.Task;
 
 /**
- * The interface Operational task scheduler.
+ * 可操作的任务调度器接口，主要支持一些多余的生命周期方法
  *
  * @author zido
  */

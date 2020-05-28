@@ -19,7 +19,7 @@ public class DefaultSelectableResponse implements SelectableResponse {
     }
 
     @Override
-    public TargetDescriptor asTarget() {
+    public TargetDescriptor target() {
         List<Action> targets = model.getTargets();
         if (targets == null) {
             targets = new LinkedList<>();
@@ -29,7 +29,7 @@ public class DefaultSelectableResponse implements SelectableResponse {
     }
 
     @Override
-    public HelpDescriptor asHelper() {
+    public HelpDescriptor helper() {
         List<Action> helpers = model.getHelpers();
         if (helpers == null) {
             helpers = new LinkedList<>();
@@ -39,7 +39,7 @@ public class DefaultSelectableResponse implements SelectableResponse {
     }
 
     @Override
-    public DataDescriptor asContent() {
+    public DataDescriptor content() {
         List<ModelField> fields = model.getFields();
         if (fields == null) {
             fields = new LinkedList<>();
@@ -49,7 +49,7 @@ public class DefaultSelectableResponse implements SelectableResponse {
     }
 
     @Override
-    public PartitionDescriptor asPartition(ElementSelector selector) {
+    public PartitionDescriptor partition(ElementSelector selector) {
         Partition partition = new Partition();
         model.setPartition(partition);
         partition.setAction(selector);

@@ -23,11 +23,11 @@ API和功能请求应作为PR提交到本文档。
     ```java
     SpiderBuilder.defaults().of(response -> {
         response.modelName("project");
-        response.asTarget().matchUrl(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
-        response.asHelper().filter(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
-        response.asContent().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().save("title");
-        response.asContent().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().save("description");
-        response.asContent().html().xpath("//*[@id=\"readme\"]/div[2]").text().save("readme");
+        response.target().matchUrl(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+        response.helper().filter(new LinkSelector("github\\.com/zidoshare/[^/]*$"));
+        response.content().html().xpath("//*[@id=\"js-repo-pjax-container\"]/div[1]/div/h1/strong/a").text().name("title");
+        response.content().html().xpath("//span[@class=\"text-gray-dark mr-2\"]").text().name("description");
+        response.content().html().xpath("//*[@id=\"readme\"]/div[2]").text().name("readme");
     }).execute("http://github.com/zidoshare").block();
     ```
     api化的构建抓取器

@@ -20,7 +20,7 @@ public class Value {
      * @param name the name
      * @return the value
      */
-    public Value save(String name) {
+    public Value name(String name) {
         field.setName(name);
         return this;
     }

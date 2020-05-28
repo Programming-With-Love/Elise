@@ -31,27 +31,6 @@ public interface Spider extends EventSupport {
     default Operator of(ResponseHandler handler) {
         return of(handler, null);
     }
-
-    /**
-     * create a new task by model class
-     *
-     * @param modelClass the model class
-     * @return the operator
-     */
-    default Operator of(Class<?> modelClass) {
-        return of(modelClass, null);
-    }
-
-    /**
-     * create a new task by model class and config
-     *
-     * @param modelClass the model class
-     * @param config     the config
-     * @return the operator
-     */
-    Operator of(Class<?> modelClass, Config config);
-
-
     /**
      * Cancel the spider.The Spider will no longer accept any new tasks/requests.
      *

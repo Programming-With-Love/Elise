@@ -6,30 +6,30 @@ import java.io.Reader;
 import java.util.Map;
 
 /**
- * the config interface
+ * 配置接口
  *
  * @author zido
  */
 public interface Config extends Map<String, Object> {
 
     /**
-     * parse from reader.
+     * 从reader中解析
      *
-     * @param reader the reader
-     * @throws IOException the io exception
+     * @param reader reader
+     * @throws IOException ex
      */
     void from(Reader reader) throws IOException;
 
     /**
-     * parse from input stream
+     * 从inputStream中解析
      *
-     * @param in the in
-     * @throws IOException the io exception
+     * @param in input stream
+     * @throws IOException ex
      */
     void from(InputStream in) throws IOException;
 
     /**
-     * set the key value pair
+     * 设置键值
      *
      * @param key   the key
      * @param value the value
@@ -37,7 +37,7 @@ public interface Config extends Map<String, Object> {
     void set(String key, Object value);
 
     /**
-     * get the value by key
+     * 获取值
      *
      * @param <T> the type parameter
      * @param key the key

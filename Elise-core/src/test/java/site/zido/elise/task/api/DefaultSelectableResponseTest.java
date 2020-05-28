@@ -13,15 +13,15 @@ public class DefaultSelectableResponseTest {
     public void testBuildModel() throws IOException {
         DefaultSelectableResponse response = new DefaultSelectableResponse();
         response.modelName("test_model");
-        response.asTarget().matchStatusCode("200<300").and().matchUrl("http://xxx.yyy");
-        response.asTarget().matchUrl("http://aaa.bbb");
-        response.asHelper().regex("ddd$").and().regex("^aaa").or().regex("^ccc");
-        response.asContent().statusCode().nullable(false).save("code");
-        response.asContent().url().nullable(false).save("url");
-        PartitionDescriptor partition = response.asPartition(new XpathSelector("//div[@class='profile']"));
-        partition.field().css(".text").rich().save("content").nullable(true);
-        partition.field().xpath(".description").text().save("description");
-        response.asContent().html().css(".author").text().save("author").nullable(false);
+        response.target().matchStatusCode("200<300").and().matchUrl("http://xxx.yyy");
+        response.target().matchUrl("http://aaa.bbb");
+        response.helper().regex("ddd$").and().regex("^aaa").or().regex("^ccc");
+        response.content().statusCode().nullable(false).name("code");
+        response.content().url().nullable(false).name("url");
+        PartitionDescriptor partition = response.partition(new XpathSelector("//div[@class='profile']"));
+        partition.field().css(".text").rich().name("content").nullable(true);
+        partition.field().xpath(".description").text().name("description");
+        response.content().html().css(".author").text().name("author").nullable(false);
         Model model = response.getModel();
 
         ObjectMapper mapper = new ObjectMapper();

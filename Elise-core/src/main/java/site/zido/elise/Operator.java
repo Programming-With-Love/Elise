@@ -3,6 +3,8 @@ package site.zido.elise;
 import site.zido.elise.events.SingleEventListener;
 import site.zido.elise.http.Request;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * The interface Operator.
  *
@@ -38,6 +40,16 @@ public interface Operator {
      * @throws InterruptedException thread interrupted
      */
     Operator block() throws InterruptedException;
+
+    /**
+     * 限时阻塞
+     *
+     * @param time 阻塞时间
+     * @param unit 单位
+     * @return 操作句柄
+     * @throws InterruptedException ex
+     */
+    Operator block(long time, TimeUnit unit) throws InterruptedException;
 
     /**
      * Add url operator.
